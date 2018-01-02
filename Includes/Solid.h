@@ -32,7 +32,7 @@ public:
 	double Vmax() noexcept;
 	double Wmax() noexcept;
 	double Delay() noexcept;
-	void InitTimeStep() noexcept;
+	void TimeStepInitialization() noexcept;
 	void OnOffGravity(bool OnOff) noexcept;
 	void SetVelocityToZero() noexcept;
 	void SetMemoryPosition() noexcept;

@@ -65,7 +65,6 @@ int Evolution::Evolve(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,int &
 		Move::upDateVelocityContainer(Npl, Nplr, Nco, Nelb, pl, plr, co, elb, dat.TIME, dat.dt, gf);
 		dat.mas->UpDateVelocity(dat.dt);
 		
-		
 		// Move
 		Move::moveContainer(Npl, Nplr, Nco, Nelb, pl, plr, co, elb, dat.TIME, dat.dt/2, sph,gf);
 		dat.mas->Move(dat.dt/2);

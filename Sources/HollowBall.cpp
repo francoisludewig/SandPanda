@@ -60,15 +60,14 @@ void HollowBall::writeToFile(FILE *ft) const noexcept {
 
 void HollowBall::Makeavatar(vector<Sphere> & sph, int & Nsph, const int numero) noexcept {
     Sphere *sphl = new Sphere();
-	sphl->x = x;
-	sphl->y = y;
-	sphl->z = z;
+	sphl->X(x);
+	sphl->Y(y);
+	sphl->Z(z);
 	sphl->r = r;
-    sphl->q0 = q0;
-	sphl->q1 = q1;
-	sphl->q2 = q2;
-	sphl->q3 = q3;
-    
+	sphl->Q0(q0);
+	sphl->Q1(q1);
+	sphl->Q2(q2);
+	sphl->Q3(q3);    
 	sphl->bodies = -9;
 	sphl->num = Nsph;
     sphl->m = mass;
@@ -175,9 +174,9 @@ void HollowBall::ContactDetectionInHollowBall(Contact *ct, int & Nct) noexcept {
     
     // Classification des spheres dans les cellules
     for(int i = 0 ; i < NinSph ; i++){
-        nx = (int)(((*inSph[i]).x-xmin)/a);
-        ny = (int)(((*inSph[i]).y-ymin)/a);
-        nz = (int)(((*inSph[i]).z-zmin)/a);
+        nx = (int)(((*inSph[i]).X()-xmin)/a);
+        ny = (int)(((*inSph[i]).Y()-ymin)/a);
+        nz = (int)(((*inSph[i]).Z()-zmin)/a);
         if(nx < N && ny < N && nz < N && nx >= 0 && ny >= 0 && nz >= 0){
             (*inSph[i]).tdl = cell[nx*N*N+ny*N+nz];
             cell[nx*N*N+ny*N+nz] = inSph[i];
@@ -198,18 +197,18 @@ void HollowBall::ContactDetectionWithHollowBall(Contact *ct, int & Nct) noexcept
             do{
                 if((candb = cand->b) == NULL){
                     // Test du contact entre la sphere cand et la HollowBall
-                    dx = x - (cand->x);
-                    dy = y - (cand->y);
-                    dz = z - (cand->z);
+                    dx = x - (cand->X());
+                    dy = y - (cand->Y());
+                    dz = z - (cand->Z());
                     if((D = sqrt(dx*dx+dy*dy+dz*dz)) > (r-cand->r)){
                         ct[Nct].type = 5;
                         ct[Nct].delta = (r-cand->r)-D;
                         ct[Nct].nx = dx/D;
                         ct[Nct].ny = dy/D;
                         ct[Nct].nz = dz/D;
-                        ct[Nct].px = cand->x - dx/D*cand->r;
-                        ct[Nct].py = cand->y - dy/D*cand->r;
-                        ct[Nct].pz = cand->z - dz/D*cand->r;
+                        ct[Nct].px = cand->X() - dx/D*cand->r;
+                        ct[Nct].py = cand->Y() - dy/D*cand->r;
+                        ct[Nct].pz = cand->Z() - dz/D*cand->r;
                         ct[Nct].sa = cand;
                         ct[Nct].sb = avatar;
                         Nct++;
@@ -251,41 +250,41 @@ void HollowBall::UpdateFromSph(double dt) noexcept {
     double a,ca,sa,p0,p1,p2,p3,ql0,ql1,ql2,ql3;
     
     if(!lockVx){
-        x = avatar->x;
-        vx = avatar->vx;
+        x = avatar->X();
+        vx = avatar->Vx();
     }
     else{
-        avatar->x = x;
-        avatar->vx = vx;
+        avatar->X(x);
+        avatar->Vx(vx);
     }
     if(!lockVy){
-        y = avatar->y;
-        vy = avatar->vy;
+        y = avatar->Y();
+        vy = avatar->Vy();
     }
     else{
-        avatar->y = y;
-        avatar->vy = vy;
+        avatar->Y(y);
+        avatar->Vy(vy);
     }
     if(!lockVz){
-        z = avatar->z;
-        vz = avatar->vz;
+        z = avatar->Z();
+        vz = avatar->Vz();
     }
     else{
-        avatar->z = z;
-        avatar->vz = vz;
+        avatar->Z(z);
+        avatar->Vz(vz);
     }
     if(!lockWx)
-        wx = avatar->wx;
+        wx = avatar->Wx();
     else
-        avatar->wx = wx;
+        avatar->Wx(wx);
     if(!lockWy)
-        wy = avatar->wy;
+        wy = avatar->Wy();
     else
-        avatar->wy = wy;
+        avatar->Wy(wy);
     if(!lockWz)
-        wz = avatar->wz;
+        wz = avatar->Wz();
     else
-        avatar->wz = wz;
+        avatar->Wz(wz);
     
     a = sqrt(wx*wx+wy*wy+wz*wz)*dt;
     if(a != 0){

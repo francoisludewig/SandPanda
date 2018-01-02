@@ -26,49 +26,49 @@ void Cone::LimitLink(std::vector<PlanR> & plr) noexcept {
     if(numTop != -9){
         top = &plr[numTop];
         top->Force = 1;
-        lxTop = top->x - x;
-        lyTop = top->y - y;
-        lzTop = top->z - z;
+        lxTop = top->X() - x;
+        lyTop = top->Y() - y;
+        lzTop = top->Z() - z;
     }
     if(numBottom != -9){
         bottom = &plr[numBottom];
         bottom->Force = 1;
-        lxBottom = bottom->x - x;
-        lyBottom = bottom->y - y;
-        lzBottom = bottom->z - z;
+        lxBottom = bottom->X() - x;
+        lyBottom = bottom->Y() - y;
+        lzBottom = bottom->Z() - z;
     }
 }
 
 
 void Cone::LimitForce() noexcept {
     if(top != NULL){
-        Fx += top->Fx;
-        Fy += top->Fy;
-        Fz += top->Fz;
+        Fx += top->GetFx();
+        Fy += top->GetFy();
+        Fz += top->GetFz();
     }
     if(bottom != NULL){
-        Fx += bottom->Fx;
-        Fy += bottom->Fy;
-        Fz += bottom->Fz;
+        Fx += bottom->GetFx();
+        Fy += bottom->GetFy();
+        Fz += bottom->GetFz();
     }
 }
 
 void Cone::LimitUpdate() noexcept {
     if(top != NULL){
-        top->x = x + lxTop;
-        top->y = y + lyTop;
-        top->z = z + lzTop;
-        top->vx = vx;
-        top->vy = vy;
-        top->vz = vz;
+        top->X(x + lxTop);
+        top->Y(y + lyTop);
+        top->Z(z + lzTop);
+        top->Vx(vx);
+        top->Vy(vy);
+        top->Vz(vz);
     }
     if(bottom != NULL){
-        bottom->x = x + lxBottom;
-        bottom->y = y + lyBottom;
-        bottom->z = z + lzBottom;
-        bottom->vx = vx;
-        bottom->vy = vy;
-        bottom->vz = vz;
+        bottom->X(x + lxBottom);
+        bottom->Y(y + lyBottom);
+        bottom->Z(z + lzBottom);
+        bottom->Vx(vx);
+        bottom->Vy(vy);
+        bottom->Vz(vz);
     }
 }
 

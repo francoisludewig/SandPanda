@@ -5,7 +5,7 @@ project(SandPanda VERSION 1.0.0)
 set(SOURCES_FILES
  Sources/AffinityCache.cpp	
  Sources/HollowBall.cpp
- Sources/Bodies.cpp		
+ Sources/Body.cpp		
  Sources/MasterSolid.cpp
  Sources/BodySpecie.cpp		
  Sources/Move.cpp
@@ -35,7 +35,7 @@ set(SOURCES_FILES
 set(INCLUDES_FILES
  Includes/AffinityCache.h
  Includes/HollowBall.h
- Includes/Bodies.h		
+ Includes/Body.h		
  Includes/MasterSolid.h
  Includes/BodySpecie.h		
  Includes/Move.h
@@ -59,6 +59,7 @@ set(INCLUDES_FILES
  Includes/Gravity.h	
  Includes/Velocity.h
  Includes/Sinusoid.h
+ Includes/MechanicalPoint.h
 )
 
 set(SandPanda_FILES

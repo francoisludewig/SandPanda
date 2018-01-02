@@ -55,9 +55,9 @@ void MasterSolid::initCone(int a) noexcept {
 void MasterSolid::addPlan(std::vector<Plan> & pl2, int n, int m) noexcept {
 	pl[m] = &pl2[n];
 	Mass += pl2[n].Mass;
-	x += pl2[n].x*pl2[n].Mass;
-	y += pl2[n].y*pl2[n].Mass;
-	z += pl2[n].z*pl2[n].Mass;
+	x += pl2[n].X()*pl2[n].Mass;
+	y += pl2[n].Y()*pl2[n].Mass;
+	z += pl2[n].Z()*pl2[n].Mass;
 	Fcx += pl2[n].Fcx;
 	Fcy += pl2[n].Fcy;
 	Fcz += pl2[n].Fcz;
@@ -67,9 +67,9 @@ void MasterSolid::addPlan(std::vector<Plan> & pl2, int n, int m) noexcept {
 void MasterSolid::addPlanR(std::vector<PlanR> & plr2, int n, int m) noexcept {
 	plr[m] = &plr2[n];
 	Mass += plr2[n].Mass;
-	x += plr2[n].x*plr2[n].Mass;
-	y += plr2[n].y*plr2[n].Mass;
-	z += plr2[n].z*plr2[n].Mass;
+	x += plr2[n].X()*plr2[n].Mass;
+	y += plr2[n].Y()*plr2[n].Mass;
+	z += plr2[n].Z()*plr2[n].Mass;
 	Fcx += plr2[n].Fcx;
 	Fcy += plr2[n].Fcy;
 	Fcz += plr2[n].Fcz;
@@ -79,9 +79,9 @@ void MasterSolid::addPlanR(std::vector<PlanR> & plr2, int n, int m) noexcept {
 void MasterSolid::addCone(std::vector<Cone> & co2, int n, int m) noexcept {
 	co[m] = &co2[n];
 	Mass += co2[n].Mass;
-	x += co2[n].x*co2[n].Mass;
-	y += co2[n].y*co2[n].Mass;
-	z += co2[n].z*co2[n].Mass;
+	x += co2[n].X()*co2[n].Mass;
+	y += co2[n].Y()*co2[n].Mass;
+	z += co2[n].Z()*co2[n].Mass;
 	Fcx += co2[n].Fcx;
 	Fcy += co2[n].Fcy;
 	Fcz += co2[n].Fcz;
@@ -93,19 +93,19 @@ void MasterSolid::ComputePara() noexcept {
 	y /= Mass;
 	z /= Mass;
 	for(int i = 0 ; i < Npl ; i++){
-		dxpl[i] = pl[i]->x-x;
-		dypl[i] = pl[i]->y-y;
-		dzpl[i] = pl[i]->z-z;
+		dxpl[i] = pl[i]->X()-x;
+		dypl[i] = pl[i]->Y()-y;
+		dzpl[i] = pl[i]->Z()-z;
 	}
 	for(int i = 0 ; i < Nplr ; i++){
-		dxplr[i] = plr[i]->x-x;
-		dyplr[i] = plr[i]->y-y;
-		dzplr[i] = plr[i]->z-z;
+		dxplr[i] = plr[i]->X()-x;
+		dyplr[i] = plr[i]->Y()-y;
+		dzplr[i] = plr[i]->Z()-z;
 	}
 	for(int i = 0 ; i < Nco ; i++){
-		dxco[i] = co[i]->x-x;
-		dyco[i] = co[i]->y-y;
-		dzco[i] = co[i]->z-z;
+		dxco[i] = co[i]->X()-x;
+		dyco[i] = co[i]->Y()-y;
+		dzco[i] = co[i]->Z()-z;
 	}
 	printf("MasterSolid : cm = (%e,%e,%e)\n",x,y,z);
 	printf("MasterSolid : Fc = (%e,%e,%e)\n",Fcx,Fcy,Fcz);
@@ -117,19 +117,19 @@ void MasterSolid::getForces() noexcept {
 	Fy = Fcy;
 	Fz = Fcz;
 	for(int i = 0 ; i < Npl ; i++){
-		Fx += pl[i]->Fx;
-		Fy += pl[i]->Fy;
-		Fz += pl[i]->Fz;
+		Fx += pl[i]->GetFx();
+		Fy += pl[i]->GetFy();
+		Fz += pl[i]->GetFz();
 	}
 	for(int i = 0 ; i < Nplr ; i++){
-		Fx += plr[i]->Fx;
-		Fy += plr[i]->Fy;
-		Fz += plr[i]->Fz;
+		Fx += plr[i]->GetFx();
+		Fy += plr[i]->GetFy();
+		Fz += plr[i]->GetFz();
 	}
 	for(int i = 0 ; i < Nco ; i++){
-		Fx += co[i]->Fx;
-		Fy += co[i]->Fy;
-		Fz += co[i]->Fz;
+		Fx += co[i]->GetFx();
+		Fy += co[i]->GetFy();
+		Fz += co[i]->GetFz();
 	}
 }
 
@@ -151,38 +151,38 @@ void MasterSolid::Move(double h) noexcept {
 
 void MasterSolid::UpDateSolid() noexcept {
 	for(int i = 0 ; i < Npl ; i++){
-		pl[i]->x = x + dxpl[i];
-		pl[i]->y = y + dypl[i];
-		pl[i]->z = z + dzpl[i];
-		pl[i]->vx = vx;
-		pl[i]->vy = vy;
-		pl[i]->vz = vz;
-		pl[i]->wx = 0.;
-		pl[i]->wy = 0.;
-		pl[i]->wz = 0.;
+		pl[i]->X(x + dxpl[i]);
+		pl[i]->Y(y + dypl[i]);
+		pl[i]->Z(z + dzpl[i]);
+		pl[i]->Vx(vx);
+		pl[i]->Vy(vy);
+		pl[i]->Vz(vz);
+		pl[i]->Wx(0.);
+		pl[i]->Wy(0.);
+		pl[i]->Wz(0.);
 		
 	}
 	for(int i = 0 ; i < Nplr ; i++){
-		plr[i]->x = x + dxplr[i];
-		plr[i]->y = y + dyplr[i];
-		plr[i]->z = z + dzplr[i];
-		plr[i]->vx = vx;
-		plr[i]->vy = vy;
-		plr[i]->vz = vz;
-		plr[i]->wx = 0.;
-		plr[i]->wy = 0.;
-		plr[i]->wz = 0.;
+		plr[i]->X(x + dxplr[i]);
+		plr[i]->Y(y + dyplr[i]);
+		plr[i]->Z(z + dzplr[i]);
+		plr[i]->Vx(vx);
+		plr[i]->Vy(vy);
+		plr[i]->Vz(vz);
+		plr[i]->Wx(0.);
+		plr[i]->Wy(0.);
+		plr[i]->Wz(0.);
 	}
 	for(int i = 0 ; i < Nco ; i++){
-		co[i]->x = x + dxco[i];
-		co[i]->y = y + dyco[i];
-		co[i]->z = z + dzco[i];
-		co[i]->vx = vx;
-		co[i]->vy = vy;
-		co[i]->vz = vz;
-		co[i]->wx = 0.;
-		co[i]->wy = 0.;
-		co[i]->wz = 0.;
+		co[i]->X(x + dxco[i]);
+		co[i]->Y(y + dyco[i]);
+		co[i]->Z(z + dzco[i]);
+		co[i]->Vx(vx);
+		co[i]->Vy(vy);
+		co[i]->Vz(vz);
+		co[i]->Wx(0.);
+		co[i]->Wy(0.);
+		co[i]->Wz(0.);
 		co[i]->LimitUpdate();
 	}
 }

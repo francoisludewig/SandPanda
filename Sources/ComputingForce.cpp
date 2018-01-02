@@ -102,18 +102,14 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 			    /* Calcul des leviers et des vitesses des points d'impacte de chaque corps */
 				lax = -a->r*ctl->nx;
 				lay = -a->r*ctl->ny;
-				laz = -a->r*ctl->nz;					
-				Vax = a->vx + a->wy*laz - a->wz*lay;
-				Vay = a->vy + a->wz*lax - a->wx*laz;
-				Vaz = a->vz + a->wx*lay - a->wy*lax;
-				
+				laz = -a->r*ctl->nz;
+				a->PointVelocity(Vax, Vay, Vaz, lax, lay, laz);
+
 				lbx = b->r*ctl->nx;
 				lby = b->r*ctl->ny;
 				lbz = b->r*ctl->nz;
-				Vbx = b->vx + b->wy*lbz - b->wz*lby;
-				Vby = b->vy + b->wz*lbx - b->wx*lbz;
-				Vbz = b->vz + b->wx*lby - b->wy*lbx;
-				
+				b->PointVelocity(Vbx, Vby, Vbz, lbx, lby, lbz);
+
 				// Calcul des vitesses local du contact
 				computeVelocity(Vax, Vay, Vaz, Vbx, Vby, Vbz, ctl, Vn, Vt, Vtx, Vty, Vtz);
 								
@@ -122,10 +118,7 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 					//Calcul de la masse effective
 					meff = a->m*b->m/(a->m+b->m);						
 					// Coefficient visqueux normale fonction de la masse effective meff, de la raideur k et de la restituion en
-					if(en != 0)
-						g0 = sqrt(4*meff*k/(1+(M_PI/log(en))*(M_PI/log(en))));
-					else
-						g0 = sqrt(4*meff*k);
+					g0 = DampingCoefficient(en, meff, k);
 					// Dynamique
 					if(ModelTg == 0){
 						// Calcul du coefficient visqueux tangentiel
@@ -149,26 +142,18 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				ComputeContactForce(ctl, tx, ty, tz, T, N, Fx, Fy, Fz);
 										
 				// Incrementation de la force et du moment sur chaque corps
-				a->Fx += Fx;	
-				a->Fy += Fy;	
-				a->Fz += Fz;
-				a->Mx += (lay*Fz-laz*Fy);
-				a->My += (laz*Fx-lax*Fz);
-				a->Mz += (lax*Fy-lay*Fx);
-				
-				b->Fx -= Fx;	
-				b->Fy -= Fy;	
-				b->Fz -= Fz;
-				b->Mx -= (lby*Fz-lbz*Fy);
-				b->My -= (lbz*Fx-lbx*Fz);
-				b->Mz -= (lbx*Fy-lby*Fx);
-				
-				ctl->xi = a->x;
-				ctl->yi = a->y;
-				ctl->zi = a->z;
-				ctl->xf = b->x;
-				ctl->yf = b->y;
-				ctl->zf = b->z;
+				a->AddForce(Fx, Fy, Fz);
+				a->AddMomemtum((lay*Fz-laz*Fy), (laz*Fx-lax*Fz), (lax*Fy-lay*Fx));
+
+				b->AddForce(-Fx, -Fy, -Fz);
+				b->AddMomemtum(-(lby*Fz-lbz*Fy), -(lbz*Fx-lbx*Fz), -(lbx*Fy-lby*Fx));
+
+				ctl->xi = a->X();
+				ctl->yi = a->Y();
+				ctl->zi = a->Z();
+				ctl->xf = b->X();
+				ctl->yf = b->Y();
+				ctl->zf = b->Z();
 				break;
 				
 			case 10:
@@ -180,17 +165,13 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				/* Calcul des leviers et des vitesses des points d'impacte de chaque corps */
 				lax = -a->r*ctl->nx;
 				lay = -a->r*ctl->ny;
-				laz = -a->r*ctl->nz;					
-				Vax = a->vx + a->wy*laz - a->wz*lay;
-				Vay = a->vy + a->wz*lax - a->wx*laz;
-				Vaz = a->vz + a->wx*lay - a->wy*lax;
-				
-				lbx = bb->r[nb]*ctl->nx + (bb->xg[nb] - bb->x);
-				lby = bb->r[nb]*ctl->ny + (bb->yg[nb] - bb->y);
-				lbz = bb->r[nb]*ctl->nz + (bb->zg[nb] - bb->z);
-				Vbx = bb->vx + bb->wy*lbz - bb->wz*lby;
-				Vby = bb->vy + bb->wz*lbx - bb->wx*lbz;
-				Vbz = bb->vz + bb->wx*lby - bb->wy*lbx;
+				laz = -a->r*ctl->nz;
+				a->PointVelocity(Vax, Vay, Vaz, lax, lay, laz);
+
+				lbx = bb->r[nb]*ctl->nx + (bb->xg[nb] - bb->X());
+				lby = bb->r[nb]*ctl->ny + (bb->yg[nb] - bb->Y());
+				lbz = bb->r[nb]*ctl->nz + (bb->zg[nb] - bb->Z());
+				bb->PointVelocity(Vbx, Vby, Vbz, lbx, lby, lbz);
 				
 				// Calcul des vitesses local du contact
 				computeVelocity(Vax, Vay, Vaz, Vbx, Vby, Vbz, ctl, Vn, Vt, Vtx, Vty, Vtz);
@@ -200,10 +181,7 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 					//Calcul de la masse effective
 					meff = a->m*bb->m/(a->m+bb->m);	
 					// Coefficient visqueux normale fonction de la masse effective meff, de la raideur k et de la restituion en
-					if(en != 0)
-						g0 = sqrt(4*meff*k/(1+(M_PI/log(en))*(M_PI/log(en))));
-					else
-						g0 = sqrt(4*meff*k);
+					g0 = DampingCoefficient(en, meff, k);
 					// Dynamique
 					if(ModelTg == 0){
 						// Calcul du coefficient visqueux tangentiel
@@ -227,19 +205,11 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				ComputeContactForce(ctl, tx, ty, tz, T, N, Fx, Fy, Fz);
 
 				// Incrementation de la force et du moment sur chaque corps
-				a->Fx += Fx;	
-				a->Fy += Fy;	
-				a->Fz += Fz;
-				a->Mx += (lay*Fz-laz*Fy);
-				a->My += (laz*Fx-lax*Fz);
-				a->Mz += (lax*Fy-lay*Fx);
-				
-				bb->Fx -= Fx;	
-				bb->Fy -= Fy;	
-				bb->Fz -= Fz;
-				bb->Mx -= (lby*Fz-lbz*Fy);
-				bb->My -= (lbz*Fx-lbx*Fz);
-				bb->Mz -= (lbx*Fy-lby*Fx);		
+				a->AddForce(Fx, Fy, Fz);
+				a->AddMomemtum((lay*Fz-laz*Fy), (laz*Fx-lax*Fz), (lax*Fy-lay*Fx));
+
+				bb->AddForce(-Fx, -Fy, -Fz);
+				bb->AddMomemtum(-(lby*Fz-lbz*Fy), -(lbz*Fx-lbx*Fz), -(lbx*Fy-lby*Fx));
 				break;
 				
 			case 20:
@@ -250,19 +220,16 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				nb = ctl->nbb;
 								
 				/* Calcul des leviers et des vitesses des points d'impacte de chaque corps */
-				lax = -ba->r[na]*ctl->nx + (ba->xg[na] - ba->x);
-				lay = -ba->r[na]*ctl->ny + (ba->yg[na] - ba->y);
-				laz = -ba->r[na]*ctl->nz + (ba->zg[na] - ba->z);
-				Vax = ba->vx + ba->wy*laz - ba->wz*lay;
-				Vay = ba->vy + ba->wz*lax - ba->wx*laz;
-				Vaz = ba->vz + ba->wx*lay - ba->wy*lax;
+				lax = -ba->r[na]*ctl->nx + (ba->xg[na] - ba->X());
+				lay = -ba->r[na]*ctl->ny + (ba->yg[na] - ba->Y());
+				laz = -ba->r[na]*ctl->nz + (ba->zg[na] - ba->Z());
+				a->PointVelocity(Vax, Vay, Vaz, lax, lay, laz);
 				
-				lbx = bb->r[nb]*ctl->nx + (bb->xg[nb] - bb->x);
-				lby = bb->r[nb]*ctl->ny + (bb->yg[nb] - bb->y);
-				lbz = bb->r[nb]*ctl->nz + (bb->zg[nb] - bb->z);
-				Vbx = bb->vx + bb->wy*lbz - bb->wz*lby;
-				Vby = bb->vy + bb->wz*lbx - bb->wx*lbz;
-				Vbz = bb->vz + bb->wx*lby - bb->wy*lbx;
+				lbx = bb->r[nb]*ctl->nx + (bb->xg[nb] - bb->X());
+				lby = bb->r[nb]*ctl->ny + (bb->yg[nb] - bb->Y());
+				lbz = bb->r[nb]*ctl->nz + (bb->zg[nb] - bb->Z());
+
+				bb->PointVelocity(Vbx, Vby, Vbz, lbx, lby, lbz);
 				
 				// Calcul des vitesses local du contact
 				computeVelocity(Vax, Vay, Vaz, Vbx, Vby, Vbz, ctl, Vn, Vt, Vtx, Vty, Vtz);
@@ -270,11 +237,8 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 								
 				/* Cas du contact physique */
 				if(ctl->delta <= 0){
-					meff = ba->m*bb->m/(ba->m+bb->m);					
-					if(en != 0)
-						g0 = sqrt(4*meff*k/(1+(M_PI/log(en))*(M_PI/log(en))));
-					else
-						g0 = sqrt(4*meff*k);
+					meff = ba->m*bb->m/(ba->m+bb->m);
+					g0 = DampingCoefficient(en, meff, k);
 					// Dynamique
 					if(ModelTg == 0){
 						gt = 10000;				
@@ -292,19 +256,11 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				
 				ComputeContactForce(ctl, tx, ty, tz, T, N, Fx, Fy, Fz);
 				
-				ba->Fx += Fx;	
-				ba->Fy += Fy;	
-				ba->Fz += Fz;
-				ba->Mx += (lay*Fz-laz*Fy);
-				ba->My += (laz*Fx-lax*Fz);
-				ba->Mz += (lax*Fy-lay*Fx);		
-				
-				bb->Fx -= Fx;	
-				bb->Fy -= Fy;	
-				bb->Fz -= Fz;
-				bb->Mx -= (lby*Fz-lbz*Fy);
-				bb->My -= (lbz*Fx-lbx*Fz);
-				bb->Mz -= (lbx*Fy-lby*Fx);		
+				ba->AddForce(Fx, Fy, Fz);
+			    ba->AddMomemtum((lay*Fz-laz*Fy), (laz*Fx-lax*Fz), (lax*Fy-lay*Fx));
+
+				bb->AddForce(-Fx, -Fy, -Fz);
+				bb->AddMomemtum(-(lby*Fz-lbz*Fy), -(lbz*Fx-lbx*Fz), -(lbx*Fy-lby*Fx));
 				break;								
 			case 1:			
 				// Cas du contact entre une sphere et un plan
@@ -314,10 +270,9 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				/* Calcul des leviers et des vitesses des points d'impacte de chaque corps */
 				lax = a->r*ctl->nx;
 				lay = a->r*ctl->ny;
-				laz = a->r*ctl->nz;					
-				Vax = a->vx + a->wy*laz - a->wz*lay;
-				Vay = a->vy + a->wz*lax - a->wx*laz;
-				Vaz = a->vz + a->wx*lay - a->wy*lax;
+				laz = a->r*ctl->nz;
+				a->PointVelocity(Vax, Vay, Vaz, lax, lay, laz);
+
 				
 				lbx = ctl->px - p->V.ox;
 				lby = ctl->py - p->V.oy;
@@ -330,27 +285,14 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				Vby = p->V.ValueOfVy(TIME) + wbz*lbx-wbx*lbz;
 				Vbz = p->V.ValueOfVz(TIME) + wbx*lby-wby*lbx;
 
-                /*
-                p->affiche();
-                printf("b = (%e,%e,%e)\n",a->x,a->y,a->z);
-                printf("n = (%e,%e,%e)\n",ctl->nx,ctl->ny,ctl->nz);
-                //printf("np = (%e,%e,%e)\n",p->nx,p->ny,p->nz);
-                //printf("q = (%e,%e,%e,%e)\n",p->q0,p->q1,p->q2,p->q3);
-                printf("p = (%e,%e,%e)\n",ctl->px,ctl->py,ctl->pz);
-                printf("la = (%e,%e,%e)\n",lax,lay,laz);
-                printf("lb = (%e,%e,%e)\n",lbx,lby,lbz);
-                */
 				// Calcul des vitesses local du contact
 				computeVelocity(Vbx, Vby, Vbz, Vax, Vay, Vaz, ctl, Vn, Vt, Vtx, Vty, Vtz);
 				
 
 				/* Cas du contact physique */
 				if(ctl->delta <= 0){
-					meff = a->m;				
-					if(en != 0)
-						g0 = sqrt(4*meff*k/(1+(M_PI/log(en))*(M_PI/log(en))));
-					else
-						g0 = sqrt(4*meff*k);
+					meff = a->m;
+					g0 = DampingCoefficient(en, meff, k);
 					
 					// Dynamique
 					if(ModelTg == 0){
@@ -375,28 +317,19 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
                     exit(0);
                  */
                 
-				// Ajout de la force et du moment				
-				a->Fx -= Fx;	
-				a->Fy -= Fy;	
-				a->Fz -= Fz;
-				a->Mx -= (lay*Fz-laz*Fy);
-				a->My -= (laz*Fx-lax*Fz);
-				a->Mz -= (lax*Fy-lay*Fx);			
+				// Ajout de la force et du moment
+				a->AddForce(-Fx, -Fy, -Fz);
+				a->AddMomemtum(-(lay*Fz-laz*Fy), -(laz*Fx-lax*Fz), -(lax*Fy-lay*Fx));
+
+			    p->AddForce(Fx, Fy, Fz);
+			    p->AddMomemtum((lby*Fz-lbz*Fy), (lbz*Fx-lbx*Fz), (lbx*Fy-lby*Fx));
 				
-				
-				p->Fx += Fx;
-				p->Fy += Fy;
-				p->Fz += Fz;	
-				p->Mx += (lby*Fz-lbz*Fy);
-				p->My += (lbz*Fx-lbx*Fz);
-				p->Mz += (lbx*Fy-lby*Fx);		
-				
-				ctl->xi = a->x;
-				ctl->yi = a->y;
-				ctl->zi = a->z;
-				ctl->xf = a->x + lax;
-				ctl->yf = a->y + lay;
-				ctl->zf = a->z + laz;
+				ctl->xi = a->X();
+				ctl->yi = a->Y();
+				ctl->zi = a->Z();
+				ctl->xf = a->X() + lax;
+				ctl->yf = a->Y() + lay;
+				ctl->zf = a->Z() + laz;
 
 				break;
 			case 11:
@@ -406,12 +339,10 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				p = ctl->pa;
 				
 				/* Calcul des leviers et des vitesses des points d'impacte de chaque corps */
-				lax = ba->r[na]*ctl->nx + (ba->xg[na] - ba->x);
-				lay = ba->r[na]*ctl->ny + (ba->yg[na] - ba->y);
-				laz = ba->r[na]*ctl->nz + (ba->zg[na] - ba->z);				
-				Vax = ba->vx + ba->wy*laz - ba->wz*lay;
-				Vay = ba->vy + ba->wz*lax - ba->wx*laz;
-				Vaz = ba->vz + ba->wx*lay - ba->wy*lax;
+				lax = ba->r[na]*ctl->nx + (ba->xg[na] - ba->X());
+				lay = ba->r[na]*ctl->ny + (ba->yg[na] - ba->Y());
+				laz = ba->r[na]*ctl->nz + (ba->zg[na] - ba->Z());
+			    ba->PointVelocity(Vax, Vay, Vaz, lax, lay, laz);
 				
 				lbx = ctl->px - p->V.ox;
 				lby = ctl->py - p->V.oy;
@@ -428,12 +359,8 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 		
 				/* Cas du contact physique */
 				if(ctl->delta <= 0){
-					meff = ba->m;				
-					if(en != 0)
-						g0 = sqrt(4*meff*k/(1+(M_PI/log(en))*(M_PI/log(en))));
-					else
-						g0 = sqrt(4*meff*k);
-				
+					meff = ba->m;
+					g0 = DampingCoefficient(en, meff, k);
 					// Dynamique
 					if(ModelTg == 0){
 						gt = 10000;
@@ -450,20 +377,14 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 								
 				ComputeContactForce(ctl, tx, ty, tz, T, N, Fx, Fy, Fz);
 
-				// Ajout de la force et du moment						
-				ba->Fx -= Fx;	
-				ba->Fy -= Fy;	
-				ba->Fz -= Fz;
-				ba->Mx -= (lay*Fz-laz*Fy);
-				ba->My -= (laz*Fx-lax*Fz);
-				ba->Mz -= (lax*Fy-lay*Fx);	
-				
-				p->Fx += Fx;
-				p->Fy += Fy;
-				p->Fz += Fz;	
-				p->Mx += (lby*Fz-lbz*Fy);
-				p->My += (lbz*Fx-lbx*Fz);
-				p->Mz += (lbx*Fy-lby*Fx);		
+				// Ajout de la force et du moment
+
+				a->AddForce(-Fx, -Fy, -Fz);
+				a->AddMomemtum(-(lay*Fz-laz*Fy), -(laz*Fx-lax*Fz), -(lax*Fy-lay*Fx));
+
+				p->AddForce(Fx, Fy, Fz);
+				p->AddMomemtum((lby*Fz-lbz*Fy), (lbz*Fx-lbx*Fz), (lbx*Fy-lby*Fx));
+
 				break;
 			case 2:
 				// Cas du contact entre une sphere et un disque
@@ -473,10 +394,8 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				/* Calcul des leviers et des vitesses des points d'impacte de chaque corps */
 				lax = a->r*ctl->nx;
 				lay = a->r*ctl->ny;
-				laz = a->r*ctl->nz;					
-				Vax = a->vx + a->wy*laz - a->wz*lay;
-				Vay = a->vy + a->wz*lax - a->wx*laz;
-				Vaz = a->vz + a->wx*lay - a->wy*lax;
+				laz = a->r*ctl->nz;
+				a->PointVelocity(Vax, Vay, Vaz, lax, lay, laz);
 				
 				lbx = ctl->px - pr->V.ox;
 				lby = ctl->py - pr->V.oy;
@@ -494,10 +413,7 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				/* Cas du contact physique */
 				if(ctl->delta < 0){
 					meff = a->m;				
-					if(en != 0)
-						g0 = sqrt(4*meff*k/(1+(M_PI/log(en))*(M_PI/log(en))));
-					else
-						g0 = sqrt(4*meff*k);
+					g0 = DampingCoefficient(en, meff, k);
 
 					// Dynamique
 					if(ModelTg == 0){
@@ -515,26 +431,18 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				ComputeContactForce(ctl, tx, ty, tz, T, N, Fx, Fy, Fz);
 
 				// Ajout de la force et du moment
-				a->Fx -= Fx;	
-				a->Fy -= Fy;	
-				a->Fz -= Fz;
-				a->Mx -= (lay*Fz-laz*Fy);
-				a->My -= (laz*Fx-lax*Fz);
-				a->Mz -= (lax*Fy-lay*Fx);			
-				
-				pr->Fx += Fx;
-				pr->Fy += Fy;
-				pr->Fz += Fz;
-				pr->Mx += (lby*Fz-lbz*Fy);
-				pr->My += (lbz*Fx-lbx*Fz);
-				pr->Mz += (lbx*Fy-lby*Fx);	
-				
-				ctl->xi = a->x;
-				ctl->yi = a->y;
-				ctl->zi = a->z;
-				ctl->xf = a->x + lax;
-				ctl->yf = a->y + lay;
-				ctl->zf = a->z + laz;
+				a->AddForce(-Fx, -Fy, -Fz);
+				a->AddMomemtum(-(lay*Fz-laz*Fy), -(laz*Fx-lax*Fz), -(lax*Fy-lay*Fx));
+
+				pr->AddForce(Fx, Fy, Fz);
+				pr->AddMomemtum((lby*Fz-lbz*Fy), (lbz*Fx-lbx*Fz), (lbx*Fy-lby*Fx));
+
+				ctl->xi = a->X();
+				ctl->yi = a->Y();
+				ctl->zi = a->Z();
+				ctl->xf = a->X() + lax;
+				ctl->yf = a->Y() + lay;
+				ctl->zf = a->Z() + laz;
 
 				break;
 	
@@ -545,12 +453,10 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				pr = ctl->par;
 				
 				/* Calcul des leviers et des vitesses des points d'impacte de chaque corps */
-				lax = ba->r[na]*ctl->nx + (ba->xg[na] - ba->x);
-				lay = ba->r[na]*ctl->ny + (ba->yg[na] - ba->y);
-				laz = ba->r[na]*ctl->nz + (ba->zg[na] - ba->z);				
-				Vax = ba->vx + ba->wy*laz - ba->wz*lay;
-				Vay = ba->vy + ba->wz*lax - ba->wx*laz;
-				Vaz = ba->vz + ba->wx*lay - ba->wy*lax;
+				lax = ba->r[na]*ctl->nx + (ba->xg[na] - ba->X());
+				lay = ba->r[na]*ctl->ny + (ba->yg[na] - ba->Y());
+				laz = ba->r[na]*ctl->nz + (ba->zg[na] - ba->Z());
+				ba->PointVelocity(Vax, Vay, Vaz, lax, lay, laz);
 								
 				lbx = ctl->px - pr->V.ox;
 				lby = ctl->py - pr->V.oy;
@@ -568,10 +474,7 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				/* Cas du contact physique */
 				if(ctl->delta < 0){
 					meff = ba->m;				
-					if(en != 0)
-						g0 = sqrt(4*meff*k/(1+(M_PI/log(en))*(M_PI/log(en))));
-					else
-						g0 = sqrt(4*meff*k);
+					g0 = DampingCoefficient(en, meff, k);
 										
 					// Dynamique
 					if(ModelTg == 0){
@@ -590,19 +493,12 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				ComputeContactForce(ctl, tx, ty, tz, T, N, Fx, Fy, Fz);
 
 				// Ajout de la force et du moment
-				ba->Fx -= Fx;	
-				ba->Fy -= Fy;	
-				ba->Fz -= Fz;
-				ba->Mx -= (lay*Fz-laz*Fy);
-				ba->My -= (laz*Fx-lax*Fz);
-				ba->Mz -= (lax*Fy-lay*Fx);		
+				ba->AddForce(-Fx, -Fy, -Fz);
+				ba->AddMomemtum(-(lay*Fz-laz*Fy), -(laz*Fx-lax*Fz), -(lax*Fy-lay*Fx));
+
+				pr->AddForce(Fx, Fy, Fz);
+				pr->AddMomemtum((lby*Fz-lbz*Fy), (lbz*Fx-lbx*Fz), (lbx*Fy-lby*Fx));
 				
-				pr->Fx += Fx;
-				pr->Fy += Fy;
-				pr->Fz += Fz;
-				pr->Mx += (lby*Fz-lbz*Fy);
-				pr->My += (lbz*Fx-lbx*Fz);
-				pr->Mz += (lbx*Fy-lby*Fx);	
 				break;				
 
 			case 3:
@@ -613,10 +509,8 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				/* Calcul des leviers et des vitesses des points d'impacte de chaque corps */
 				lax = a->r*ctl->nx;
 				lay = a->r*ctl->ny;
-				laz = a->r*ctl->nz;					
-				Vax = a->vx + a->wy*laz - a->wz*lay;
-				Vay = a->vy + a->wz*lax - a->wx*laz;
-				Vaz = a->vz + a->wx*lay - a->wy*lax;
+				laz = a->r*ctl->nz;
+				a->PointVelocity(Vax, Vay, Vaz, lax, lay, laz);
 				
 				lbx = ctl->px - cne->V.ox;
 				lby = ctl->py - cne->V.oy;
@@ -632,10 +526,7 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				computeVelocity(Vbx, Vby, Vbz, Vax, Vay, Vaz, ctl, Vn, Vt, Vtx, Vty, Vtz);
 							
 				meff = a->m;
-				if(en != 0)
-						g0 = sqrt(4*meff*k/(1+(M_PI/log(en))*(M_PI/log(en))));
-					else
-						g0 = sqrt(4*meff*k);
+				g0 = DampingCoefficient(en, meff, k);
 				
 				// Dynamique
 				if(ModelTg == 0){
@@ -655,26 +546,18 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				ComputeContactForce(ctl, tx, ty, tz, T, N, Fx, Fy, Fz);
 				
 				// Ajout de la force et du moment
-				a->Fx -= Fx;	
-				a->Fy -= Fy;	
-				a->Fz -= Fz;
-				a->Mx -= (lay*Fz-laz*Fy);
-				a->My -= (laz*Fx-lax*Fz);
-				a->Mz -= (lax*Fy-lay*Fx);
-                
-                cne->Fx += Fx;
-				cne->Fy += Fy;
-				cne->Fz += Fz;
-				cne->Mx += (lay*Fz-laz*Fy);
-				cne->My += (laz*Fx-lax*Fz);
-				cne->Mz += (lax*Fy-lay*Fx);
+				a->AddForce(-Fx, -Fy, -Fz);
+				a->AddMomemtum(-(lay*Fz-laz*Fy), -(laz*Fx-lax*Fz), -(lax*Fy-lay*Fx));
 
-				ctl->xi = a->x;
-				ctl->yi = a->y;
-				ctl->zi = a->z;
-				ctl->xf = a->x + lax;
-				ctl->yf = a->y + lay;
-				ctl->zf = a->z + laz;
+				cne->AddForce(Fx, Fy, Fz);
+				cne->AddMomemtum((lby*Fz-lbz*Fy), (lbz*Fx-lbx*Fz), (lbx*Fy-lby*Fx));
+
+				ctl->xi = a->X();
+				ctl->yi = a->Y();
+				ctl->zi = a->Z();
+				ctl->xf = a->X() + lax;
+				ctl->yf = a->Y() + lay;
+				ctl->zf = a->Z() + laz;
 
 				break;
 			case 13:
@@ -684,12 +567,10 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				cne = ctl->cn;
 				
 				/* Calcul des leviers et des vitesses des points d'impacte de chaque corps */
-				lax = ba->r[na]*ctl->nx + (ba->xg[na] - ba->x);
-				lay = ba->r[na]*ctl->ny + (ba->yg[na] - ba->y);
-				laz = ba->r[na]*ctl->nz + (ba->zg[na] - ba->z);				
-				Vax = ba->vx + ba->wy*laz - ba->wz*lay;
-				Vay = ba->vy + ba->wz*lax - ba->wx*laz;
-				Vaz = ba->vz + ba->wx*lay - ba->wy*lax;
+				lax = ba->r[na]*ctl->nx + (ba->xg[na] - ba->X());
+				lay = ba->r[na]*ctl->ny + (ba->yg[na] - ba->Y());
+				laz = ba->r[na]*ctl->nz + (ba->zg[na] - ba->Z());
+				a->PointVelocity(Vax, Vay, Vaz, lax, lay, laz);
 				
 				lbx = ctl->px - cne->V.ox;
 				lby = ctl->py - cne->V.oy;
@@ -706,10 +587,7 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				
 				meff = ba->m;
 				// Parametre du contact fonction de plan et de l'espece de grain en contact
-				if(en != 0)
-						g0 = sqrt(4*meff*k/(1+(M_PI/log(en))*(M_PI/log(en))));
-					else
-						g0 = sqrt(4*meff*k);
+				g0 = DampingCoefficient(en, meff, k);
 				
 				// Dynamique
 				if(ModelTg == 0){
@@ -731,18 +609,12 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				ComputeContactForce(ctl, tx, ty, tz, T, N, Fx, Fy, Fz);
 				
 				// Ajout de la force et du moment
-				ba->Fx -= Fx;	
-				ba->Fy -= Fy;	
-				ba->Fz -= Fz;
-				ba->Mx -= (lay*Fz-laz*Fy);
-				ba->My -= (laz*Fx-lax*Fz);
-				ba->Mz -= (lax*Fy-lay*Fx);
-                cne->Fx += Fx;
-				cne->Fy += Fy;
-				cne->Fz += Fz;
-				cne->Mx += (lay*Fz-laz*Fy);
-				cne->My += (laz*Fx-lax*Fz);
-				cne->Mz += (lax*Fy-lay*Fx);
+
+				ba->AddForce(-Fx, -Fy, -Fz);
+				ba->AddMomemtum(-(lay*Fz-laz*Fy), -(laz*Fx-lax*Fz), -(lax*Fy-lay*Fx));
+
+				cne->AddForce(Fx, Fy, Fz);
+				cne->AddMomemtum((lby*Fz-lbz*Fy), (lbz*Fx-lbx*Fz), (lbx*Fy-lby*Fx));
 
 				break;
 			case 4:
@@ -753,10 +625,8 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				/* Calcul des leviers et des vitesses des points d'impacte de chaque corps */
 				lax = -a->r*ctl->nx;
 				lay = -a->r*ctl->ny;
-				laz = -a->r*ctl->nz;					
-				Vax = a->vx + a->wy*laz - a->wz*lay;
-				Vay = a->vy + a->wz*lax - a->wx*laz;
-				Vaz = a->vz + a->wx*lay - a->wy*lax;
+				laz = -a->r*ctl->nz;
+				a->PointVelocity(Vax, Vay, Vaz, lax, lay, laz);
 				
 				lbx = ctl->px - elw->V.ox;
 				lby = ctl->py - elw->V.oy;
@@ -772,10 +642,7 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				computeVelocity(Vbx, Vby, Vbz, Vax, Vay, Vaz, ctl, Vn, Vt, Vtx, Vty, Vtz);
 				
 				meff = a->m;
-				if(en != 0)
-						g0 = sqrt(4*meff*k/(1+(M_PI/log(en))*(M_PI/log(en))));
-					else
-						g0 = sqrt(4*meff*k);
+				g0 = DampingCoefficient(en, meff, k);
 			
 				// Dynamique
 				if(ModelTg == 0){
@@ -793,13 +660,10 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				ComputeContactForce(ctl, tx, ty, tz, T, N, Fx, Fy, Fz);
 
 				// Ajout de la force et du moment
-				a->Fx -= Fx;	
-				a->Fy -= Fy;	
-				a->Fz -= Fz;
-				a->Mx -= (lay*Fz-laz*Fy);
-				a->My -= (laz*Fx-lax*Fz);
-				a->Mz -= (lax*Fy-lay*Fx);			
-			
+				a->AddForce(-Fx, -Fy, -Fz);
+				a->AddMomemtum(-(lay*Fz-laz*Fy), -(laz*Fx-lax*Fz), -(lax*Fy-lay*Fx));
+
+
 				break;
 			case 14 :
 				// Cas du contact entre une particule et un coude
@@ -808,12 +672,10 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				elw = ctl->ew;
 
 				/* Calcul des leviers et des vitesses des points d'impacte de chaque corps */
-				lax = -ba->r[na]*ctl->nx + (ba->xg[na] - ba->x);
-				lay = -ba->r[na]*ctl->ny + (ba->yg[na] - ba->y);
-				laz = -ba->r[na]*ctl->nz + (ba->zg[na] - ba->z);
-				Vax = ba->vx + ba->wy*laz - ba->wz*lay;
-				Vay = ba->vy + ba->wz*lax - ba->wx*laz;
-				Vaz = ba->vz + ba->wx*lay - ba->wy*lax;
+				lax = -ba->r[na]*ctl->nx + (ba->xg[na] - ba->X());
+				lay = -ba->r[na]*ctl->ny + (ba->yg[na] - ba->Y());
+				laz = -ba->r[na]*ctl->nz + (ba->zg[na] - ba->Z());
+				ba->PointVelocity(Vax, Vay, Vaz, lax, lay, laz);
 				
 				lbx = ctl->px - elw->V.ox;
 				lby = ctl->py - elw->V.oy;
@@ -829,10 +691,7 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				computeVelocity(Vbx, Vby, Vbz, Vax, Vay, Vaz, ctl, Vn, Vt, Vtx, Vty, Vtz);
 							
 				meff = ba->m;
-				if(en != 0)
-						g0 = sqrt(4*meff*k/(1+(M_PI/log(en))*(M_PI/log(en))));
-					else
-						g0 = sqrt(4*meff*k);
+				g0 = DampingCoefficient(en, meff, k);
 							
 				// Dynamique
 				if(ModelTg == 0){
@@ -850,13 +709,9 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				ComputeContactForce(ctl, tx, ty, tz, T, N, Fx, Fy, Fz);
 
 				// Ajout de la force et du moment
-				ba->Fx -= Fx;	
-				ba->Fy -= Fy;	
-				ba->Fz -= Fz;
-				ba->Mx -= (lay*Fz-laz*Fy);
-				ba->My -= (laz*Fx-lax*Fz);
-				ba->Mz -= (lax*Fy-lay*Fx);		
-				
+				ba->AddForce(-Fx, -Fy, -Fz);
+				ba->AddMomemtum(-(lay*Fz-laz*Fy), -(laz*Fx-lax*Fz), -(lax*Fy-lay*Fx));
+
 				break;
             case 5:
                 // Cas du contact entre deux spheres
@@ -866,16 +721,13 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				lax = -a->r*ctl->nx;
 				lay = -a->r*ctl->ny;
 				laz = -a->r*ctl->nz;
-				Vax = a->vx + a->wy*laz - a->wz*lay;
-				Vay = a->vy + a->wz*lax - a->wx*laz;
-				Vaz = a->vz + a->wx*lay - a->wy*lax;
+				a->PointVelocity(Vax, Vay, Vaz, lax, lay, laz);
 				
 				lbx = -b->r*ctl->nx;
 				lby = -b->r*ctl->ny;
 				lbz = -b->r*ctl->nz;
-				Vbx = b->vx + b->wy*lbz - b->wz*lby;
-				Vby = b->vy + b->wz*lbx - b->wx*lbz;
-				Vbz = b->vz + b->wx*lby - b->wy*lbx;
+
+				b->PointVelocity(Vbx, Vby, Vbz, lbx, lby, lbz);
 				
 				// Calcul des vitesses local du contact
 				computeVelocity(Vax, Vay, Vaz, Vbx, Vby, Vbz, ctl, Vn, Vt, Vtx, Vty, Vtz);
@@ -885,10 +737,7 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 					//Calcul de la masse effective
 					meff = a->m*b->m/(a->m+b->m);
 					// Coefficient visqueux normale fonction de la masse effective meff, de la raideur k et de la restituion en
-					if(en != 0)
-						g0 = sqrt(4*meff*k/(1+(M_PI/log(en))*(M_PI/log(en))));
-					else
-						g0 = sqrt(4*meff*k);
+					g0 = DampingCoefficient(en, meff, k);
 					// Dynamique
 					if(ModelTg == 0){
 						// Calcul du coefficient visqueux tangentiel
@@ -911,20 +760,13 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				ComputeContactForce(ctl, tx, ty, tz, T, N, Fx, Fy, Fz);
                 
 				// Incrementation de la force et du moment sur chaque corps
-				a->Fx += Fx;
-				a->Fy += Fy;
-				a->Fz += Fz;
-				a->Mx += (lay*Fz-laz*Fy);
-				a->My += (laz*Fx-lax*Fz);
-				a->Mz += (lax*Fy-lay*Fx);
-				
-				b->Fx -= Fx;
-				b->Fy -= Fy;
-				b->Fz -= Fz;
-				b->Mx -= (lby*Fz-lbz*Fy);
-				b->My -= (lbz*Fx-lbx*Fz);
-				b->Mz -= (lbx*Fy-lby*Fx);
-                break;
+				a->AddForce(Fx, Fy, Fz);
+				a->AddMomemtum((lay*Fz-laz*Fy), (laz*Fx-lax*Fz), (lax*Fy-lay*Fx));
+
+				b->AddForce(-Fx, -Fy, -Fz);
+				b->AddMomemtum(-(lby*Fz-lbz*Fy), -(lbz*Fx-lbx*Fz), -(lbx*Fy-lby*Fx));
+
+				break;
             case 6:
                 // Cas du contact entre une sphere et une particules
 				a = ctl->sa;
@@ -935,16 +777,12 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				lbx = -a->r*ctl->nx;
 				lby = -a->r*ctl->ny;
 				lbz = -a->r*ctl->nz;
-				Vbx = a->vx + a->wy*lbz - a->wz*lby;
-				Vby = a->vy + a->wz*lbx - a->wx*lbz;
-				Vbz = a->vz + a->wx*lby - a->wy*lbx;
+				a->PointVelocity(Vbx, Vby, Vbz, lbx, lby, lbz);
             
-				lax = -bb->r[nb]*ctl->nx + (bb->xg[nb] - bb->x);
-				lay = -bb->r[nb]*ctl->ny + (bb->yg[nb] - bb->y);
-				laz = -bb->r[nb]*ctl->nz + (bb->zg[nb] - bb->z);
-				Vax = bb->vx + bb->wy*laz - bb->wz*lay;
-				Vay = bb->vy + bb->wz*lax - bb->wx*laz;
-				Vaz = bb->vz + bb->wx*lay - bb->wy*lax;
+				lax = -bb->r[nb]*ctl->nx + (bb->xg[nb] - bb->X());
+				lay = -bb->r[nb]*ctl->ny + (bb->yg[nb] - bb->Y());
+				laz = -bb->r[nb]*ctl->nz + (bb->zg[nb] - bb->Z());
+				bb->PointVelocity(Vax, Vay, Vaz, lax, lay, laz);
 				
 				// Calcul des vitesses local du contact
 				computeVelocity(Vax, Vay, Vaz, Vbx, Vby, Vbz, ctl, Vn, Vt, Vtx, Vty, Vtz);
@@ -954,10 +792,7 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 					//Calcul de la masse effective
 					meff = a->m*bb->m/(a->m+bb->m);
 					// Coefficient visqueux normale fonction de la masse effective meff, de la raideur k et de la restituion en
-					if(en != 0)
-						g0 = sqrt(4*meff*k/(1+(M_PI/log(en))*(M_PI/log(en))));
-					else
-						g0 = sqrt(4*meff*k);
+					g0 = DampingCoefficient(en, meff, k);
 					// Dynamique
 					if(ModelTg == 0){
 						// Calcul du coefficient visqueux tangentiel
@@ -981,19 +816,12 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				ComputeContactForce(ctl, tx, ty, tz, T, N, Fx, Fy, Fz);
                 
 				// Incrementation de la force et du moment sur chaque corps
-				a->Fx -= Fx;
-				a->Fy -= Fy;
-				a->Fz -= Fz;
-				a->Mx -= (lby*Fz-lbz*Fy);
-				a->My -= (lbz*Fx-lbx*Fz);
-				a->Mz -= (lbx*Fy-lby*Fx);
-				
-				bb->Fx += Fx;
-				bb->Fy += Fy;
-				bb->Fz += Fz;
-				bb->Mx += (lay*Fz-laz*Fy);
-				bb->My += (laz*Fx-lax*Fz);
-				bb->Mz += (lax*Fy-lay*Fx);
+				a->AddForce(-Fx, -Fy, -Fz);
+				a->AddMomemtum(-(lby*Fz-lbz*Fy), -(lbz*Fx-lbx*Fz), -(lbx*Fy-lby*Fx));
+
+				bb->AddForce(Fx, Fy, Fz);
+				bb->AddMomemtum((lay*Fz-laz*Fy), (laz*Fx-lax*Fz), (lax*Fy-lay*Fx));
+
                 break;
 		}
 		ctl->Fx = Fx;
@@ -1002,4 +830,3 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 		ctl++;
 	}
 }
-

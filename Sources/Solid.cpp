@@ -159,11 +159,11 @@ void Solid::UpdateGravityForceFromGB(int & Nsph,std::vector<Sphere> & sph, Gravi
 			Fz = 0;
 			for(int i = 0 ; i < Ngb ; i++){
 				if(gt.ngx*gt.G != 0)
-					Fx += sph[num[i]].Fx;
+					Fx += sph[num[i]].GetFx();
 					if(gt.ngy*gt.G != 0)
-						Fy += sph[num[i]].Fy;
+						Fy += sph[num[i]].GetFy();
 						if(gt.ngz*gt.G != 0)
-							Fz += sph[num[i]].Fz;
+							Fz += sph[num[i]].GetFz();
 							}
 		}
 	}
@@ -248,9 +248,9 @@ void Solid::UpdateForceFromGB(int & Nsph, std::vector<Sphere> & sph) noexcept {
 		Fy = 0;
 		Fz = 0;
 		for(int i = 0 ; i < Ngb ; i++){
-			Fx += sph[num[i]].Fx;
-			Fy += sph[num[i]].Fy;
-			Fz += sph[num[i]].Fz;
+			Fx += sph[num[i]].GetFx();
+			Fy += sph[num[i]].GetFy();
+			Fz += sph[num[i]].GetFz();
 		}
 	}
 }
@@ -309,11 +309,11 @@ void Solid::UpDateGravityLinkedSphere(std::vector<Sphere> & sph, double time, Gr
 	if(activeGravity == 1){
 		for(int i = 0 ; i < Ngb ; i++){
 			if(gt.ngx*gt.G != 0)
-				sph[num[i]].x = x;
+				sph[num[i]].X(x);
 				if(gt.ngy*gt.G != 0)
-					sph[num[i]].y = y;
+					sph[num[i]].Y(y);
 					if(gt.ngz*gt.G != 0)
-						sph[num[i]].z = z;
+						sph[num[i]].Z(z);
 						}
 	}
 }
@@ -339,18 +339,18 @@ void Solid::UpDateLinkedSphere(std::vector<Sphere> & sph, double time, Gravity& 
 		opy = GBy[i] - y;
 		opz = GBz[i] - z;
 		
-		sph[num[i]].vx = vx + (wy*opz-wz*opy);
-		sph[num[i]].vy = vy + (wz*opx-wx*opz);
-		sph[num[i]].vz = vz + (wx*opy-wy*opx);
+		sph[num[i]].Vx(vx + (wy*opz-wz*opy));
+		sph[num[i]].Vy(vy + (wz*opx-wx*opz));
+		sph[num[i]].Vz(vz + (wx*opy-wy*opx));
 		
-		sph[num[i]].wx = wx;
-		sph[num[i]].wy = wy;
-		sph[num[i]].wz = wz;
+		sph[num[i]].Wx(wx);
+		sph[num[i]].Wy(wy);
+		sph[num[i]].Wz(wz);
 		// Mise a jour des gB uniquement si autorise
 		if(ControlGB == 1){
-			sph[num[i]].x = x + GBx[i]*nx + GBy[i]*tx + GBz[i]*sx;
-			sph[num[i]].y = y + GBx[i]*ny + GBy[i]*ty + GBz[i]*sy;
-			sph[num[i]].z = z + GBx[i]*nz + GBy[i]*tz + GBz[i]*sz;
+			sph[num[i]].X(x + GBx[i]*nx + GBy[i]*tx + GBz[i]*sx);
+			sph[num[i]].Y(y + GBx[i]*ny + GBy[i]*ty + GBz[i]*sy);
+			sph[num[i]].Z(z + GBx[i]*nz + GBy[i]*tz + GBz[i]*sz);
 		}
 	}
 }
@@ -369,7 +369,6 @@ void Solid::SetControlGB(int v, std::vector<Sphere> & sph) noexcept {
 	}
 }
 
-
 void Solid::UpDateGravityVelocityLinkedSphere(std::vector<Sphere> & sph, double time, Gravity& gt) noexcept {
 	double opx,opy,opz;
 	if(activeGravity == 1){
@@ -385,12 +384,12 @@ void Solid::UpDateGravityVelocityLinkedSphere(std::vector<Sphere> & sph, double 
 		opy = GBy[i] - y;
 		opz = GBz[i] - z;
 		
-		sph[num[i]].vx = vx + (wy*opz-wz*opy);
-		sph[num[i]].vy = vy + (wz*opx-wx*opz);
-		sph[num[i]].vz = vz + (wx*opy-wy*opx);
-		sph[num[i]].wx = wx;
-		sph[num[i]].wy = wy;
-		sph[num[i]].wz = wz;
+		sph[num[i]].Vx(vx + (wy*opz-wz*opy));
+		sph[num[i]].Vy(vy + (wz*opx-wx*opz));
+		sph[num[i]].Vz(vz + (wx*opy-wy*opx));
+		sph[num[i]].Wx(wx);
+		sph[num[i]].Wy(wy);
+		sph[num[i]].Wz(wz);
 	}
 }
 
@@ -410,13 +409,13 @@ void Solid::UpDateVelocityLinkedSphere(std::vector<Sphere> & sph, double time) n
 		opy = GBy[i] - y;
 		opz = GBz[i] - z;
 		
-		sph[num[i]].vx = vx + (wy*opz-wz*opy);
-		sph[num[i]].vy = vy + (wz*opx-wx*opz);
-		sph[num[i]].vz = vz + (wx*opy-wy*opx);
+		sph[num[i]].Vx(vx + (wy*opz-wz*opy));
+		sph[num[i]].Vy(vy + (wz*opx-wx*opz));
+		sph[num[i]].Vz(vz + (wx*opy-wy*opx));
 		
-		sph[num[i]].wx = wx;
-		sph[num[i]].wy = wy;
-		sph[num[i]].wz = wz;
+		sph[num[i]].Wx(wx);
+		sph[num[i]].Wy(wy);
+		sph[num[i]].Wz(wz);
 	}
 }
 
@@ -506,7 +505,7 @@ void Solid::SetMass(double m) noexcept {
 	Mass = m;
 }
 
-void Solid::InitTimeStep() noexcept {
+void Solid::TimeStepInitialization() noexcept {
 	Fx = 0.;
 	Fy = 0.;
 	Fz = 0.;

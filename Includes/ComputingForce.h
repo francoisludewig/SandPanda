@@ -22,6 +22,13 @@ public:
 	static void Compute(Contact *ct, const int Nct,Data & dat) noexcept;
 
 private:
+	static inline double DampingCoefficient(const double& en, const double& meff, const double& k) {
+		if(en != 0)
+			return sqrt(4*meff*k/(1+(M_PI/log(en))*(M_PI/log(en))));
+
+		return sqrt(4*meff*k);
+	}
+
 	/* Fonction qui calcul la force globale au contact */
 	static inline void ComputeContactForce(Contact *ctv, const double tx, const double ty, const double tz, const double T, const double N, double & Fx, double & Fy, double & Fz) noexcept {
 		if(T != 0){

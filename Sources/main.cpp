@@ -200,7 +200,6 @@ int main(int argc,char **argv){
 	printf("Ncell = %d\n",Ncell);
 	Sphere *cell[Ncell];
 	
-	
 	printf("List of Linking Cell for Solid\n");
 	printf("------------------------------\n\n");
 	// Making list of linking cell for each solid
@@ -209,6 +208,7 @@ int main(int argc,char **argv){
 	ContactDetection::listCellForCone(&dat, co, Nco, gf);
 	ContactDetection::listCellForElbow(&dat, elb, Nelb);
 	printf("\n");
+	
 	// Control taille de la memoire demandee
 	printf("Etat de la memoire\n");
 	printf("------------------\n\n");

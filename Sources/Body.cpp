@@ -197,9 +197,9 @@ void Body::Move(double dt) noexcept {
 
 void Body::UpDateLinkedSphere(vector<Sphere> & sph) noexcept {
 	UpDateLinkedSphereTp();
-	sph[numl].x = x;
-	sph[numl].y = y;
-	sph[numl].z = z;
+	sph[numl].X(x);
+	sph[numl].Y(y);
+	sph[numl].Z(z);
 }
 
 void Body::UpDateLinkedSphereTp() noexcept {
@@ -258,9 +258,9 @@ void Body::UploadSpecies(int Nbdsp, vector<BodySpecie> bdsp,vector<Sphere> & sph
 			}
 	
 	Sphere *sphl = new Sphere();
-	sphl->x = x;
-	sphl->y = y;
-	sphl->z = z;
+	sphl->X(x);
+	sphl->Y(y);
+	sphl->Z(z);
 	sphl->r = bdsp[sp].FeretMax/2.;
 	sphl->num = Nsph;
 	sphl->bodies = numero;
