@@ -257,14 +257,11 @@ void Body::UploadSpecies(int Nbdsp, vector<BodySpecie> bdsp,vector<Sphere> & sph
 			zg.push_back(z + nz*bdsp[sp].xl[j] + tz*bdsp[sp].yl[j] + sz*bdsp[sp].zl[j]);
 			}
 	
-	Sphere *sphl = new Sphere();
+	Sphere *sphl = new Sphere(numero, NhollowBall, bdsp[sp].FeretMax/2.);
 	sphl->X(x);
 	sphl->Y(y);
 	sphl->Z(z);
-	sphl->r = bdsp[sp].FeretMax/2.;
-	sphl->num = Nsph;
-	sphl->bodies = numero;
-	sphl->NhollowBall = NhollowBall;
+	sphl->Num(Nsph);
 	numl = Nsph;
 	sph.push_back(*sphl);
 	Nsph++;

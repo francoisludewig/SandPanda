@@ -45,6 +45,19 @@ Sphere::Sphere() noexcept {
 	Nneighbour2 = 0;
 }
 
+Sphere::Sphere(int bodies, int nHollowBall, double radius) noexcept : Sphere() {
+	this->bodies = bodies;
+	this->NhollowBall = nHollowBall;
+	this->r = radius;
+}
+
+
+Sphere::Sphere(double radius, double mass, double inertia) noexcept : Sphere() {
+	this->r = radius;
+	this->m = mass;
+	this->I = inertia;
+}
+
 Sphere::~Sphere() noexcept {
 	b = NULL;
 	tdl = NULL;
@@ -59,17 +72,6 @@ void Sphere::SphDealloc() noexcept {
 	delete [] NumNeighbour2;
 	delete [] type2;
 	delete [] NumFromBody2;
-}
-
-double Sphere::Radius() const noexcept {
-	return r;
-}
-double Sphere::Rho() const noexcept {
-	return rho;
-}
-
-double Sphere::Mass() const noexcept {
-	return m;
 }
 
 int Sphere::count() const noexcept {
@@ -259,32 +261,14 @@ void Sphere::affiche() const noexcept {
 	printf("\tw = (%e,%e,%e) & |w| = %e\n\n",wx,wy,wz,sqrt(wx*wx+wy*wy+wz*wz));
 }
 
-void Sphere::setRadius(double alpha) noexcept {
-	if(autoIntegrate){
-		r = r*alpha;
-		m = 4./3.*rho*pow(r,3)*M_PI;
-		I = 2./5.*m*r*r;
-		vx = 0;
-		vy = 0;
-		vz = 0;
-		wx = 0;
-		wy = 0;
-		wz = 0;
-	}
-}
-
 void Sphere::sphereLinking(int & Nsph , vector<Sphere> & sph,  vector<Body> & bd) noexcept {
 	for(int i = 0 ; i < Nsph ; i++){
-		sph[i].num = i;
+		sph[i].Num(i);
 		if(sph[i].bodies != -9){
-			sph[i].b = &bd[sph[i].bodies];
+			sph[i].SetBody(&bd[sph[i].bodies]);
 			sph[i].autoIntegrate = 0;
 		}
 	}
-}
-
-int Sphere::Num() const noexcept {
-	return num;
 }
 
 // TODO Implement swapable container with RAII
@@ -346,10 +330,6 @@ void Sphere::ComputeRD(double R, double w, double t) noexcept {
     Fy += m * ( R*w*w*sin(w*t) + y*w*w - 2*(-w)*vx );
 }
 
-double Sphere::radius() const noexcept {
-	return r;
-}
-
 int Sphere::NoBodies() const noexcept {
 	if(bodies == -9)
 		return 1;
@@ -364,26 +344,3 @@ int Sphere::NoAvatar() const noexcept {
         return 1;
 }
 
-double Sphere::getFx() const noexcept {
-	return Fx;
-}
-
-double Sphere::getFy() const noexcept {
-	return Fy;
-}
-
-double Sphere::getFz() const noexcept {
-	return Fz;
-}
-
-double Sphere::getRho() const noexcept {
-	return rho;
-}
-
-int Sphere::HollowballNum() const noexcept {
-    return NhollowBall;
-}
-
-void Sphere::setIsHollowBall(bool a) noexcept {
-    isHollowBall = a;
-}

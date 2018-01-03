@@ -360,11 +360,11 @@ void Solid::SetControlGB(int v, std::vector<Sphere> & sph) noexcept {
 		ControlGB = v;
 		if(ControlGB == 1){
 			for(int i = 0 ; i < Ngb ; i++)
-				sph[num[i]].autoIntegrate = 0;
+				sph[num[i]].DisableIntegration();// autoIntegrate = 0;
 				}
 		if(ControlGB == 0){
 			for(int i = 0 ; i < Ngb ; i++)
-				sph[num[i]].autoIntegrate = 1;
+				sph[num[i]].EnableIntegration();// autoIntegrate = 1;
 				}
 	}
 }

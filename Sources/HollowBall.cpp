@@ -59,20 +59,16 @@ void HollowBall::writeToFile(FILE *ft) const noexcept {
 }
 
 void HollowBall::Makeavatar(vector<Sphere> & sph, int & Nsph, const int numero) noexcept {
-    Sphere *sphl = new Sphere();
+    Sphere *sphl = new Sphere(r, mass, Inertia);
 	sphl->X(x);
 	sphl->Y(y);
 	sphl->Z(z);
-	sphl->r = r;
 	sphl->Q0(q0);
 	sphl->Q1(q1);
 	sphl->Q2(q2);
 	sphl->Q3(q3);    
-	sphl->bodies = -9;
-	sphl->num = Nsph;
-    sphl->m = mass;
-    sphl->I = Inertia;
-    sphl->isHollowBall = true;
+	sphl->Num(Nsph);
+    sphl->IsHollowBall();
 	//sphl->NhollowBall = numero;
 	sph.push_back(*sphl);
 	delete sphl;
@@ -167,7 +163,7 @@ void HollowBall::ContactDetectionInHollowBall(Contact *ct, int & Nct) noexcept {
 
     
     for(int i = 0 ; i < NinSph ; i++)
-        (*inSph[i]).tdl = NULL;
+        (*inSph[i]).TDL(NULL);
      
     for(int i = 0 ; i < N*N*N ; i++)
         cell[i] = NULL;
@@ -178,7 +174,7 @@ void HollowBall::ContactDetectionInHollowBall(Contact *ct, int & Nct) noexcept {
         ny = (int)(((*inSph[i]).Y()-ymin)/a);
         nz = (int)(((*inSph[i]).Z()-zmin)/a);
         if(nx < N && ny < N && nz < N && nx >= 0 && ny >= 0 && nz >= 0){
-            (*inSph[i]).tdl = cell[nx*N*N+ny*N+nz];
+            (*inSph[i]).TDL(cell[nx*N*N+ny*N+nz]);
             cell[nx*N*N+ny*N+nz] = inSph[i];
         }
     }
@@ -195,20 +191,20 @@ void HollowBall::ContactDetectionWithHollowBall(Contact *ct, int & Nct) noexcept
         cand = cell[list[i]];
         if(cand != NULL){
             do{
-                if((candb = cand->b) == NULL){
+                if((candb = cand->GetBody()) == NULL){
                     // Test du contact entre la sphere cand et la HollowBall
                     dx = x - (cand->X());
                     dy = y - (cand->Y());
                     dz = z - (cand->Z());
-                    if((D = sqrt(dx*dx+dy*dy+dz*dz)) > (r-cand->r)){
+                    if((D = sqrt(dx*dx+dy*dy+dz*dz)) > (r-cand->Radius())){
                         ct[Nct].type = 5;
-                        ct[Nct].delta = (r-cand->r)-D;
+                        ct[Nct].delta = (r-cand->Radius())-D;
                         ct[Nct].nx = dx/D;
                         ct[Nct].ny = dy/D;
                         ct[Nct].nz = dz/D;
-                        ct[Nct].px = cand->X() - dx/D*cand->r;
-                        ct[Nct].py = cand->Y() - dy/D*cand->r;
-                        ct[Nct].pz = cand->Z() - dz/D*cand->r;
+                        ct[Nct].px = cand->X() - dx/D*cand->Radius();
+                        ct[Nct].py = cand->Y() - dy/D*cand->Radius();
+                        ct[Nct].pz = cand->Z() - dz/D*cand->Radius();
                         ct[Nct].sa = cand;
                         ct[Nct].sb = avatar;
                         Nct++;
@@ -241,7 +237,7 @@ void HollowBall::ContactDetectionWithHollowBall(Contact *ct, int & Nct) noexcept
                         }
                     }
                 }
-            }while((cand = cand->tdl) != NULL);
+            }while((cand = cand->TDL()) != NULL);
         }
     }
 }

@@ -25,9 +25,9 @@ int ContactDetection::ContactSphBody(Sphere *a, Body *b, Contact *ct, int &Nct) 
 	Nz = Nz/norme;
 	
 	// Point central du segment joignant les centres de masse
-	xc = a->X() - Nx*a->r;
-	yc = a->Y() - Ny*a->r;
-	zc = a->Z() - Nz*a->r;
+	xc = a->X() - Nx*a->Radius();
+	yc = a->Y() - Ny*a->Radius();
+	zc = a->Z() - Nz*a->Radius();
 	
 	double delta[b->Ng];
 	// Liste des sph de b
@@ -42,12 +42,12 @@ int ContactDetection::ContactSphBody(Sphere *a, Body *b, Contact *ct, int &Nct) 
 			px = a->X() - b->xg[i];
 			py = a->Y() - b->yg[i];
 			pz = a->Z() - b->zg[i];
-			Q = (a->r+b->r[i]);
+			Q = (a->Radius()+b->r[i]);
 			P2 = px*px+py*py+pz*pz;
 			if(P2 < Q*Q){
 				P2 = sqrt(P2);
 				ct[Nct].type = 10;
-				ct[Nct].delta = P2-(a->r+b->r[i]);
+				ct[Nct].delta = P2-Q;
 				
 				ct[Nct].nx = px/P2;
 				ct[Nct].ny = py/P2;
@@ -76,18 +76,18 @@ int ContactDetection::ContactSphBodyPeriodic(Sphere *a, Body *b, Contact *ct, in
 	int Nctfound = 0;
 	double Nx,Ny,Nz,xc,yc,zc,norme;
 	// Vecteur normal joignant les centres de masse
-	Nx = a->x2-b->X();
-	Ny = a->y2-b->Y();
-	Nz = a->z2-b->Z();
+	Nx = a->X2()-b->X();
+	Ny = a->Y2()-b->Y();
+	Nz = a->Z2()-b->Z();
 	norme = sqrt(Nx*Nx+Ny*Ny+Nz*Nz);
 	Nx = Nx/norme;
 	Ny = Ny/norme;
 	Nz = Nz/norme;
 	
 	// Point central du segment joignant les centres de masse
-	xc = a->x2 - Nx*a->r;
-	yc = a->y2 - Ny*a->r;
-	zc = a->z2 - Nz*a->r;
+	xc = a->X2() - Nx*a->Radius();
+	yc = a->Y2() - Ny*a->Radius();
+	zc = a->Z2() - Nz*a->Radius();
 	
 	double delta[b->Ng];
 	// Liste des sph de b
@@ -99,15 +99,15 @@ int ContactDetection::ContactSphBodyPeriodic(Sphere *a, Body *b, Contact *ct, in
 	for(int i = b->Ng ; i--;){
 		if(delta[i] > -b->r[i]){
 			double px,py,pz,Q,P2;
-			px = a->x2 - b->xg[i];
-			py = a->y2 - b->yg[i];
-			pz = a->z2 - b->zg[i];
-			Q = (a->r+b->r[i]);
+			px = a->X2() - b->xg[i];
+			py = a->Y2() - b->yg[i];
+			pz = a->Z2() - b->zg[i];
+			Q = (a->Radius()+b->r[i]);
 			P2 = px*px+py*py+pz*pz;
 			if(P2 < Q*Q){
 				P2 = sqrt(P2);
 				ct[Nct].type = 10;
-				ct[Nct].delta = P2-(a->r+b->r[i]);
+				ct[Nct].delta = P2-(a->Radius()+b->r[i]);
 				
 				ct[Nct].nx = px/P2;
 				ct[Nct].ny = py/P2;
@@ -239,12 +239,12 @@ int ContactDetection::ContactBodyBody(Body *a, Body *b, Contact *ct, int &Nct, d
 
 int ContactDetection::ContactSphSph(Sphere *a, Sphere *b, Contact *ct, int & Nct) noexcept {
 	int rtn = 0;
-	if(a->bodies == -9 && b->bodies == -9){
+	if(a->Bodies() == -9 && b->Bodies() == -9){
 		double px,py,pz,Q,P2;
 		px = a->X() - b->X();
 		py = a->Y() - b->Y();
 		pz = a->Z() - b->Z();
-		Q = (a->r+b->r);
+		Q = (a->Radius()+b->Radius());
 		P2 = px*px+py*py+pz*pz;
 		if(P2 < Q*Q){
 			P2 = sqrt(P2);
@@ -264,14 +264,14 @@ int ContactDetection::ContactSphSph(Sphere *a, Sphere *b, Contact *ct, int & Nct
 			rtn = 1;
 		}
 	}
-	if(a->bodies != -9 && b->bodies == -9){
-		rtn = ContactSphBody(b, a->b,ct,Nct);
+	if(a->Bodies() != -9 && b->Bodies() == -9){
+		rtn = ContactSphBody(b, a->GetBody(),ct,Nct);
 	}
-	if(a->bodies == -9 && b->bodies != -9){
-		rtn = ContactSphBody(a, b->b,ct,Nct);
+	if(a->Bodies() == -9 && b->Bodies() != -9){
+		rtn = ContactSphBody(a, b->GetBody(),ct,Nct);
 	}
-	if(a->bodies != -9 && b->bodies != -9){
-		 rtn = ContactBodyBody(a->b, b->b,ct,Nct,a->r,b->r);
+	if(a->Bodies() != -9 && b->Bodies() != -9){
+		 rtn = ContactBodyBody(a->GetBody(), b->GetBody(),ct,Nct,a->Radius(),b->Radius());
 	}
 	return rtn;
 }
@@ -279,17 +279,17 @@ int ContactDetection::ContactSphSph(Sphere *a, Sphere *b, Contact *ct, int & Nct
 void ContactDetection::ContactSphSphPeriodic(Sphere *a, Sphere *b, Contact *ct, int & Nct) noexcept {
 	int rtn = 0;
 	if(a->Num() != b->Num()){
-		if((a->bodies == -9 && b->bodies == -9)){
+		if((a->Bodies() == -9 && b->Bodies() == -9)){
 			double px,py,pz,P2,Q;
-			px = a->x2 - b->X();
-			py = a->y2 - b->Y();
-			pz = a->z2 - b->Z();
+			px = a->X2() - b->X();
+			py = a->Y2() - b->Y();
+			pz = a->Z2() - b->Z();
 			P2 = px*px+py*py+pz*pz;
-			Q = (a->r+b->r);
+			Q = (a->Radius()+b->Radius());
 			if(P2 < Q*Q){
 				P2 = sqrt(P2);
 				ct[Nct].type = 0;
-				ct[Nct].delta = P2-(a->r+b->r);
+				ct[Nct].delta = P2-Q;
 				ct[Nct].nx = px/P2;
 				ct[Nct].ny = py/P2;
 				ct[Nct].nz = pz/P2;
@@ -303,27 +303,27 @@ void ContactDetection::ContactSphSphPeriodic(Sphere *a, Sphere *b, Contact *ct, 
 		}
 		
 		else{
-			if(a->bodies != -9 && b->bodies == -9){
-				rtn = ContactSphBodyPeriodic(b, a->b,ct,Nct);
+			if(a->Bodies() != -9 && b->Bodies() == -9){
+				rtn = ContactSphBodyPeriodic(b, a->GetBody(),ct,Nct);
 			}
-			if(a->bodies == -9 && b->bodies != -9){
-				rtn = ContactSphBodyPeriodic(a, b->b,ct,Nct);
+			if(a->Bodies() == -9 && b->Bodies() != -9){
+				rtn = ContactSphBodyPeriodic(a, b->GetBody(),ct,Nct);
 			}
-			if(a->bodies != -9 && b->bodies != -9){
+			if(a->Bodies() != -9 && b->Bodies() != -9){
 				double tpx,tpy,tpz;
 				tpx = a->X();
 				tpy = a->Y();
 				tpz = a->Z();
-				(a->b)->X(a->x2);
-				(a->b)->Y(a->y2);
-				(a->b)->Z(a->z2);
-				(a->b)->UpDateLinkedSphereTp();
+				(a->GetBody())->X(a->X2());
+				(a->GetBody())->Y(a->Y2());
+				(a->GetBody())->Z(a->Z2());
+				(a->GetBody())->UpDateLinkedSphereTp();
 				
-				rtn = ContactBodyBody(a->b, b->b,ct,Nct,a->r,b->r);
-				(a->b)->X(tpx);
-				(a->b)->Y(tpy);
-				(a->b)->Z(tpz);
-				(a->b)->UpDateLinkedSphereTp();
+				rtn = ContactBodyBody(a->GetBody(), b->GetBody(),ct,Nct,a->Radius(),b->Radius());
+				(a->GetBody())->X(tpx);
+				(a->GetBody())->Y(tpy);
+				(a->GetBody())->Z(tpz);
+				(a->GetBody())->UpDateLinkedSphereTp();
 				
 			}
 		}
@@ -419,16 +419,16 @@ void ContactDetection::ContactBodyPlan(Plan & p, Body *b, Contact *ct, int & Nct
 }
 
 void ContactDetection::ContactSphPlan(Plan & p, Sphere *b, Contact *ct, int & Nct) noexcept {
-	if(b->bodies == -9){
+	if(b->Bodies() == -9){
 		double px,py,pz,pn,pt,ps,nn,nnx,nny,nnz;
-		px = b->X() - b->r*p.nx;
-		py = b->Y() - b->r*p.ny;
-		pz = b->Z() - b->r*p.nz;
+		px = b->X() - b->Radius()*p.nx;
+		py = b->Y() - b->Radius()*p.ny;
+		pz = b->Z() - b->Radius()*p.nz;
 		pn = (px-p.X())*p.nx+(py-p.Y())*p.ny+(pz-p.Z())*p.nz;
 		pt = (px-p.X())*p.tx+(py-p.Y())*p.ty+(pz-p.Z())*p.tz;
 		ps = (px-p.X())*p.sx+(py-p.Y())*p.sy+(pz-p.Z())*p.sz;
 		if((fabs(pt) < p.dt/2) && (fabs(ps) < p.ds/2)){
-			if( (pn <= 0.0) && (pn > -b->r)){
+			if( (pn <= 0.0) && (pn > -b->Radius())){
 				ct[Nct].type = 1;
 				ct[Nct].delta = pn;
 				ct[Nct].px = px;
@@ -448,16 +448,16 @@ void ContactDetection::ContactSphPlan(Plan & p, Sphere *b, Contact *ct, int & Nc
 			}
 			else{
 				if(p.sigma != 0)
-					b->ct_pl = 0;
+					b->Ct_pl(0);
 			}
 			if(p.inAndOut == 1){
-				px = b->X() + b->r*p.nx;
-				py = b->Y() + b->r*p.ny;
-				pz = b->Z() + b->r*p.nz;
+				px = b->X() + b->Radius()*p.nx;
+				py = b->Y() + b->Radius()*p.ny;
+				pz = b->Z() + b->Radius()*p.nz;
 				pn = (px-p.X())*(-p.nx)+(py-p.Y())*(-p.ny)+(pz-p.Z())*(-p.nz);
 				pt = (px-p.X())*p.tx+(py-p.Y())*p.ty+(pz-p.Z())*p.tz;
 				ps = (px-p.X())*p.sx+(py-p.Y())*p.sy+(pz-p.Z())*p.sz;
-				if( (pn <= 0.0) && (pn > -b->r)){
+				if( (pn <= 0.0) && (pn > -b->Radius())){
 					ct[Nct].type = 1;
 					ct[Nct].delta = pn;
 					ct[Nct].px = px;
@@ -473,7 +473,7 @@ void ContactDetection::ContactSphPlan(Plan & p, Sphere *b, Contact *ct, int & Nc
 				}
 				else{
 					if(p.sigma != 0)
-						b->ct_pl = 0;
+						b->Ct_pl(0);
 				}
 			}
 		}
@@ -500,8 +500,8 @@ void ContactDetection::ContactSphPlan(Plan & p, Sphere *b, Contact *ct, int & Nc
 			nny = py-b->Y();
 			nnz = pz-b->Z();
 			nn = sqrt(nnx*nnx+nny*nny+nnz*nnz);
-			if(nn <= b->r){
-				ct[Nct].delta = nn - b->r;
+			if(nn <= b->Radius()){
+				ct[Nct].delta = nn - b->Radius();
 				ct[Nct].type = 1;
 				ct[Nct].px = px;
 				ct[Nct].py = py;
@@ -516,7 +516,7 @@ void ContactDetection::ContactSphPlan(Plan & p, Sphere *b, Contact *ct, int & Nc
 		}
 	}
 	else
-		ContactBodyPlan(p,b->b,ct,Nct);
+		ContactBodyPlan(p,b->GetBody(),ct,Nct);
 }
 
 void ContactDetection::ContactSphPlanPeriodic(Sphere *llist[], Plan & p, Plan & p2, Sphere *b, const double rmax) noexcept {
@@ -527,15 +527,15 @@ void ContactDetection::ContactSphPlanPeriodic(Sphere *llist[], Plan & p, Plan & 
 	pn = (px-p.X())*p.nx+(py-p.Y())*p.ny+(pz-p.Z())*p.nz;
 	pt = (px-p.X())*p.tx+(py-p.Y())*p.ty+(pz-p.Z())*p.tz;
 	ps = (px-p.X())*p.sx+(py-p.Y())*p.sy+(pz-p.Z())*p.sz;
-	if( (pn <= (b->r+rmax)) && (pn > -2*b->r) && (fabs(pt) < p.dt/2+b->r) &&
-	   (fabs(ps) < p.ds/2+b->r) ){
+	if( (pn <= (b->Radius()+rmax)) && (pn > -2*b->Radius()) && (fabs(pt) < p.dt/2+b->Radius()) &&
+	   (fabs(ps) < p.ds/2+b->Radius()) ){
 		pt = (px-p2.X())*p2.tx+(py-p2.Y())*p2.ty+(pz-p2.Z())*p2.tz;
 		ps = (px-p2.X())*p2.sx+(py-p2.Y())*p2.sy+(pz-p2.Z())*p2.sz;
-		b->x2 = p2.X() + (-pn)*p2.nx + pt*p2.tx + ps*p2.sx;
-		b->y2 = p2.Y() + (-pn)*p2.ny + pt*p2.ty + ps*p2.sy;
-		b->z2 = p2.Z() + (-pn)*p2.nz + pt*p2.tz + ps*p2.sz;
+		b->X2(p2.X() + (-pn)*p2.nx + pt*p2.tx + ps*p2.sx);
+		b->Y2(p2.Y() + (-pn)*p2.ny + pt*p2.ty + ps*p2.sy);
+		b->Z2(p2.Z() + (-pn)*p2.nz + pt*p2.tz + ps*p2.sz);
 		llist[p.Nlist] = b;
-		p.list[p.Nlist] = b->num;
+		p.list[p.Nlist] = b->Num();
 		p.Nlist++;
 	}
 }
@@ -567,15 +567,15 @@ void ContactDetection::ContactBodyPlanR(PlanR & p, Body *b, Contact *ct, int & N
 }
 
 void ContactDetection::ContactSphPlanR(PlanR & p, Sphere *b, Contact *ct, int & Nct) noexcept {
-	if(b->bodies == -9){
+	if(b->Bodies() == -9){
 		double px,py,pz,pn,pt,ps;
-		px = b->X() - b->r*p.nx;
-		py = b->Y() - b->r*p.ny;
-		pz = b->Z() - b->r*p.nz;
+		px = b->X() - b->Radius()*p.nx;
+		py = b->Y() - b->Radius()*p.ny;
+		pz = b->Z() - b->Radius()*p.nz;
 		pn = (px-p.X())*p.nx+(py-p.Y())*p.ny+(pz-p.Z())*p.nz;
 		pt = (px-p.X())*p.tx+(py-p.Y())*p.ty+(pz-p.Z())*p.tz;
 		ps = (px-p.X())*p.sx+(py-p.Y())*p.sy+(pz-p.Z())*p.sz;
-		if((pn >= -b->r) && (pn < 0.0) && (sqrt(pt*pt+ps*ps) < p.r)){
+		if((pn >= -b->Radius()) && (pn < 0.0) && (sqrt(pt*pt+ps*ps) < p.r)){
 			ct[Nct].delta = pn;
 			ct[Nct].type = 2;
 			ct[Nct].px = px;
@@ -590,7 +590,7 @@ void ContactDetection::ContactSphPlanR(PlanR & p, Sphere *b, Contact *ct, int & 
 		}
 	}
 	else
-		ContactBodyPlanR(p,b->b,ct,Nct);
+		ContactBodyPlanR(p,b->GetBody(),ct,Nct);
 }
 
 void ContactDetection::ContactBodyCone(Cone & p, Body *b, Contact *ct, int & Nct) noexcept {
@@ -723,7 +723,7 @@ void ContactDetection::ContactBodyCone(Cone & p, Body *b, Contact *ct, int & Nct
 }
 
 void ContactDetection::ContactSphCone(Cone & p, Sphere *b, Contact *ct, int & Nct) noexcept {
-	if(b->bodies == -9){
+	if(b->Bodies() == -9){
 		double px,py,pz,pn,pt,ps,N,Tx,Ty,Tz,Nx,Ny,Nz,delta2,Qn,Qt,dr,h;
 		double nnx,nny,nnz,nn;
 		double a,bb,Y;
@@ -734,7 +734,7 @@ void ContactDetection::ContactSphCone(Cone & p, Sphere *b, Contact *ct, int & Nc
 		pt = (px-p.X())*p.tx+(py-p.Y())*p.ty+(pz-p.Z())*p.tz;
 		ps = (px-p.X())*p.sx+(py-p.Y())*p.sy+(pz-p.Z())*p.sz;
 		
-		if(fabs(pn) <= p.h/2 + b->r){
+		if(fabs(pn) <= p.h/2 + b->Radius()){
 			N = sqrt(pt*pt+ps*ps);
 			Tx = (pt*p.tx + ps*p.sx)/N;
 			Ty = (pt*p.ty + ps*p.sy)/N;
@@ -747,11 +747,11 @@ void ContactDetection::ContactSphCone(Cone & p, Sphere *b, Contact *ct, int & Nc
 			
 			if(dr == 0){
 				if(fabs(pn) <= p.h/2){
-					if(fabs(N-p.r0) <= b->r){
+					if(fabs(N-p.r0) <= b->Radius()){
 						px = p.X() + pn*Nx + p.r0*Tx;
 						py = p.Y() + pn*Ny + p.r0*Ty;
 						pz = p.Z() + pn*Nz + p.r0*Tz;
-						ct[Nct].delta = fabs(N-p.r0) - b->r;
+						ct[Nct].delta = fabs(N-p.r0) - b->Radius();
 						ct[Nct].type = 3;
 						ct[Nct].px = px;
 						ct[Nct].py = py;
@@ -780,8 +780,8 @@ void ContactDetection::ContactSphCone(Cone & p, Sphere *b, Contact *ct, int & Nc
 					nny = py-b->Y();
 					nnz = pz-b->Z();
 					nn = sqrt(nnx*nnx+nny*nny+nnz*nnz);
-					if(nn < b->r){
-						ct[Nct].delta = nn - b->r;
+					if(nn < b->Radius()){
+						ct[Nct].delta = nn - b->Radius();
 						ct[Nct].type = 3;
 						ct[Nct].px = px;
 						ct[Nct].py = py;
@@ -802,14 +802,14 @@ void ContactDetection::ContactSphCone(Cone & p, Sphere *b, Contact *ct, int & Nc
 				Y = sqrt(dr*dr+h*h);
 				delta2 = -(N - pn/a + bb/a)*h/Y;
 				
-				if(fabs(delta2) <= b->r){
+				if(fabs(delta2) <= b->Radius()){
 					Qn = pn + delta2*dr/Y;
 					Qt = N + delta2*h/Y;
 					px = p.X() + Qn*Nx + Qt*Tx;
 					py = p.Y() + Qn*Ny + Qt*Ty;
 					pz = p.Z() + Qn*Nz + Qt*Tz;
 					if(Qn < h/2. && Qn > -h/2.){
-						ct[Nct].delta = fabs(delta2) - b->r;
+						ct[Nct].delta = fabs(delta2) - b->Radius();
 						ct[Nct].type = 3;
 						ct[Nct].px = px;
 						ct[Nct].py = py;
@@ -840,8 +840,8 @@ void ContactDetection::ContactSphCone(Cone & p, Sphere *b, Contact *ct, int & Nc
 						nny = py-b->Y();
 						nnz = pz-b->Z();
 						nn = sqrt(nnx*nnx+nny*nny+nnz*nnz);
-						if(nn <= b->r){
-							ct[Nct].delta = nn - b->r;
+						if(nn <= b->Radius()){
+							ct[Nct].delta = nn - b->Radius();
 							ct[Nct].type = 3;
 							ct[Nct].px = px;
 							ct[Nct].py = py;
@@ -859,7 +859,7 @@ void ContactDetection::ContactSphCone(Cone & p, Sphere *b, Contact *ct, int & Nc
 		}
 	}
 	else
-		ContactBodyCone(p,b->b,ct,Nct);
+		ContactBodyCone(p,b->GetBody(),ct,Nct);
 }
 
 void ContactDetection::ContactBodyElbow(Elbow & p, Body *b, Contact *ct, int & Nct) noexcept {
@@ -913,7 +913,7 @@ void ContactDetection::ContactBodyElbow(Elbow & p, Body *b, Contact *ct, int & N
 }
 
 void ContactDetection::ContactSphElbow(Elbow & p, Sphere *b, Contact *ct, int & Nct) noexcept {
-	if(b->bodies == -9){
+	if(b->Bodies() == -9){
 		double rl,D,pn,pt,ps,alphal;
 		double cx,cy,cz,nx,ny,nz;
 		
@@ -940,8 +940,8 @@ void ContactDetection::ContactSphElbow(Elbow & p, Sphere *b, Contact *ct, int & 
 				cy = p.y + (pn*p.ny + pt*p.ty)/rl*p.R;
 				cz = p.z + (pn*p.nz + pt*p.tz)/rl*p.R;
 				D = sqrt(pow(b->X()-cx,2)+pow(b->Y()-cy,2)+pow(b->Z()-cz,2));
-				if(p.r-(D+b->r) < 0){
-					ct[Nct].delta =  p.r-(D+b->r);
+				if(p.r-(D+b->Radius()) < 0){
+					ct[Nct].delta =  p.r-(D+b->Radius());
 					ct[Nct].type = 4;
 					nx = -(cx - b->X());
 					ny = -(cy - b->Y());
@@ -950,9 +950,9 @@ void ContactDetection::ContactSphElbow(Elbow & p, Sphere *b, Contact *ct, int & 
 					ct[Nct].nx = nx/D;
 					ct[Nct].ny = ny/D;
 					ct[Nct].nz = nz/D;
-					ct[Nct].px = b->X() + b->r*ct[Nct].nx;
-					ct[Nct].py = b->Y() + b->r*ct[Nct].ny;
-					ct[Nct].pz = b->Z() + b->r*ct[Nct].nz;
+					ct[Nct].px = b->X() + b->Radius()*ct[Nct].nx;
+					ct[Nct].py = b->Y() + b->Radius()*ct[Nct].ny;
+					ct[Nct].pz = b->Z() + b->Radius()*ct[Nct].nz;
 					ct[Nct].sa = b;
 					ct[Nct].ew = &p;
 					Nct++;
@@ -961,14 +961,14 @@ void ContactDetection::ContactSphElbow(Elbow & p, Sphere *b, Contact *ct, int & 
 		}
 	}
 	else
-		ContactBodyElbow(p,b->b,ct,Nct);
+		ContactBodyElbow(p,b->GetBody(),ct,Nct);
 }
 
 void ContactDetection::linkedCell(vector<Sphere> & sph, const int Nsph, const Data *dat, Sphere *cell[]) noexcept {
 	int x,y,z;
 	// Initialisation du tableau tdl
 	for(int i = Nsph ; i--;)
-		sph[i].tdl = NULL;
+		sph[i].TDL(NULL);
 	
 	// Initialisation du tableau Cell
 	for(int i = dat->Ncellmax ; i--;)
@@ -983,7 +983,7 @@ void ContactDetection::linkedCell(vector<Sphere> & sph, const int Nsph, const Da
 			if(x < dat->Nx && y < dat->Ny && z < dat->Nz && x >= 0 && y >= 0 && z >= 0){
 				//printf("Found it\n");
 				//printf("%d in %d\n",i,x*dat->Ny*dat->Nz+y*dat->Nz+z);
-				sph[i].tdl = cell[x*dat->Ny*dat->Nz+y*dat->Nz+z];
+				sph[i].TDL(cell[x*dat->Ny*dat->Nz+y*dat->Nz+z]);
 				cell[x*dat->Ny*dat->Nz+y*dat->Nz+z] = &sph[i];
 			}
 		}
@@ -1573,7 +1573,7 @@ void ContactDetection::sphContact(const int Nx0, const int Nx1, const int Nx, co
 					do{
 						//cand[Ncand]->affiche();
 						Ncand++;
-					}while((cand[Ncand] = cand[Ncand-1]->tdl) != NULL);
+					}while((cand[Ncand] = cand[Ncand-1]->TDL()) != NULL);
 					
 					// test dans le meme boite
 					for(l = 0 ; l < Ncand ; l++){
@@ -1589,7 +1589,7 @@ void ContactDetection::sphContact(const int Nx0, const int Nx1, const int Nx, co
 								for(l = 0 ; l < Ncand ; l++){
 									ContactSphSph(cand[l],anta,ctl,Nctl);
 								}
-							}while((anta = anta->tdl) != NULL);
+							}while((anta = anta->TDL()) != NULL);
 						}
 					}
 					if(j+1 < Ny){
@@ -1599,7 +1599,7 @@ void ContactDetection::sphContact(const int Nx0, const int Nx1, const int Nx, co
 								for(l = 0 ; l < Ncand ; l++){
 									ContactSphSph(cand[l],anta,ctl,Nctl);
 								}
-							}while((anta = anta->tdl) != NULL);
+							}while((anta = anta->TDL()) != NULL);
 						}
 					}
 					if(k+1 < Nz){
@@ -1609,7 +1609,7 @@ void ContactDetection::sphContact(const int Nx0, const int Nx1, const int Nx, co
 								for(l = 0 ; l < Ncand ; l++){
 									ContactSphSph(cand[l],anta,ctl,Nctl);
 								}
-							}while((anta = anta->tdl) != NULL);
+							}while((anta = anta->TDL()) != NULL);
 						}
 					}
 					// plan XY
@@ -1620,7 +1620,7 @@ void ContactDetection::sphContact(const int Nx0, const int Nx1, const int Nx, co
 								for(l = 0 ; l < Ncand ; l++){
 									ContactSphSph(cand[l],anta,ctl,Nctl);
 								}
-							}while((anta = anta->tdl) != NULL);
+							}while((anta = anta->TDL()) != NULL);
 						}
 					}
 					if(i+1 < Nx && j-1 >= 0){
@@ -1630,7 +1630,7 @@ void ContactDetection::sphContact(const int Nx0, const int Nx1, const int Nx, co
 								for(l = 0 ; l < Ncand ; l++){
 									ContactSphSph(cand[l],anta,ctl,Nctl);
 								}
-							}while((anta = anta->tdl) != NULL);
+							}while((anta = anta->TDL()) != NULL);
 						}
 					}
 					// plan XZ
@@ -1641,7 +1641,7 @@ void ContactDetection::sphContact(const int Nx0, const int Nx1, const int Nx, co
 								for(l = 0 ; l < Ncand ; l++){
 									ContactSphSph(cand[l],anta,ctl,Nctl);
 								}
-							}while((anta = anta->tdl) != NULL);
+							}while((anta = anta->TDL()) != NULL);
 						}
 					}
 					if(i+1 < Nx && k-1 >= 0){
@@ -1651,7 +1651,7 @@ void ContactDetection::sphContact(const int Nx0, const int Nx1, const int Nx, co
 								for(l = 0 ; l < Ncand ; l++){
 									ContactSphSph(cand[l],anta,ctl,Nctl);
 								}
-							}while((anta = anta->tdl) != NULL);
+							}while((anta = anta->TDL()) != NULL);
 						}
 					}
 					// plan YZ
@@ -1662,7 +1662,7 @@ void ContactDetection::sphContact(const int Nx0, const int Nx1, const int Nx, co
 								for(l = 0 ; l < Ncand ; l++){
 									ContactSphSph(cand[l],anta,ctl,Nctl);
 								}
-							}while((anta = anta->tdl) != NULL);
+							}while((anta = anta->TDL()) != NULL);
 						}
 					}
 					if(j+1 < Ny && k-1 >= 0){
@@ -1672,7 +1672,7 @@ void ContactDetection::sphContact(const int Nx0, const int Nx1, const int Nx, co
 								for(l = 0 ; l < Ncand ; l++){
 									ContactSphSph(cand[l],anta,ctl,Nctl);
 								}
-							}while((anta = anta->tdl) != NULL);
+							}while((anta = anta->TDL()) != NULL);
 						}
 					}
 					// tripple
@@ -1683,7 +1683,7 @@ void ContactDetection::sphContact(const int Nx0, const int Nx1, const int Nx, co
 								for(l = 0 ; l < Ncand ; l++){
 									ContactSphSph(cand[l],anta,ctl,Nctl);
 								}
-							}while((anta = anta->tdl) != NULL);
+							}while((anta = anta->TDL()) != NULL);
 						}
 					}
 					if(i+1 < Nx && j+1 < Ny && k-1 >= 0){
@@ -1693,7 +1693,7 @@ void ContactDetection::sphContact(const int Nx0, const int Nx1, const int Nx, co
 								for(l = 0 ; l < Ncand ; l++){
 									ContactSphSph(cand[l],anta,ctl,Nctl);
 								}
-							}while((anta = anta->tdl) != NULL);
+							}while((anta = anta->TDL()) != NULL);
 						}
 					}
 					if(i+1 < Nx && j-1 >= 0 && k+1 < Nz){
@@ -1703,7 +1703,7 @@ void ContactDetection::sphContact(const int Nx0, const int Nx1, const int Nx, co
 								for(l = 0 ; l < Ncand ; l++){
 									ContactSphSph(cand[l],anta,ctl,Nctl);
 								}
-							}while((anta = anta->tdl) != NULL);
+							}while((anta = anta->TDL()) != NULL);
 						}
 					}
 					if(i-1 >= 0 && j+1 < Ny && k+1 < Nz){
@@ -1713,7 +1713,7 @@ void ContactDetection::sphContact(const int Nx0, const int Nx1, const int Nx, co
 								for(l = 0 ; l < Ncand ; l++){
 									ContactSphSph(cand[l],anta,ctl,Nctl);
 								}
-							}while((anta = anta->tdl) != NULL);
+							}while((anta = anta->TDL()) != NULL);
 						}
 					}
 				}
@@ -1739,7 +1739,7 @@ void ContactDetection::sphPlanContact(const int &Nsph, const int &Npl, int & Nct
 				if((anta = cell[pl[i].Cell[j]]) != NULL){
 					do{
 						ContactSphPlan(pl[i], anta, ct, Nct);
-					}while((anta = anta->tdl) != NULL);
+					}while((anta = anta->TDL()) != NULL);
 				}
 			}
 		}
@@ -1751,7 +1751,7 @@ void ContactDetection::sphPlanContact(const int &Nsph, const int &Npl, int & Nct
 					if((anta = cell[pl[i].Cell[j]]) != NULL){
 						do{
 							ContactSphPlanPeriodic(llistI, pl[i], pl[pl[i].periodic], anta, rmax);
-						}while((anta = anta->tdl) != NULL);
+						}while((anta = anta->TDL()) != NULL);
 					}
 				}
 				Sphere *llistK[Nsph];
@@ -1761,7 +1761,7 @@ void ContactDetection::sphPlanContact(const int &Nsph, const int &Npl, int & Nct
 					if((anta = cell[pl[k].Cell[j]]) != NULL){
 						do{
 							ContactSphPlanPeriodic(llistK, pl[k], pl[pl[k].periodic], anta, rmax);
-						}while((anta = anta->tdl) != NULL);
+						}while((anta = anta->TDL()) != NULL);
 					}
 				}
 				
@@ -1799,7 +1799,7 @@ void ContactDetection::sphPlanContactOMP(const int &Nsph, const int &Npl, int & 
 							if((anta = cell[pl[i].Cell[j]]) != NULL){
 								do{
 									ContactSphPlan(pl[i], anta, ct, Nct);
-								}while((anta = anta->tdl) != NULL);
+								}while((anta = anta->TDL()) != NULL);
 							}
 						}
 					}
@@ -1809,7 +1809,7 @@ void ContactDetection::sphPlanContactOMP(const int &Nsph, const int &Npl, int & 
 							if((anta = cell[pl[i].Cell[j]]) != NULL){
 								do{
 									ContactSphPlan(pl[i], anta, cta, Ncta);
-								}while((anta = anta->tdl) != NULL);
+								}while((anta = anta->TDL()) != NULL);
 							}
 						}
 					}
@@ -1832,7 +1832,7 @@ void ContactDetection::sphPlanContactOMP(const int &Nsph, const int &Npl, int & 
 								if((anta = cell[pl[i].Cell[j]]) != NULL){
 									do{
 										ContactSphPlanPeriodic(llistI, pl[i],pl[pl[i].periodic], anta,rmax);
-									}while((anta = anta->tdl) != NULL);
+									}while((anta = anta->TDL()) != NULL);
 								}
 							}
 						}
@@ -1843,7 +1843,7 @@ void ContactDetection::sphPlanContactOMP(const int &Nsph, const int &Npl, int & 
 								if((anta = cell[pl[k].Cell[j]]) != NULL){
 									do{
 										ContactSphPlanPeriodic(llistK, pl[k],pl[pl[k].periodic], anta,rmax);
-									}while((anta = anta->tdl) != NULL);
+									}while((anta = anta->TDL()) != NULL);
 								}
 							}
 						}
@@ -1887,7 +1887,7 @@ void ContactDetection::sphPlanRContact(const int &Nplr, int & Nct, vector<PlanR>
 			if((anta = cell[plr[i].Cell[j]]) != NULL){
 				do{
 					ContactSphPlanR(plr[i], anta, ct, Nct);
-				}while((anta = anta->tdl) != NULL);
+				}while((anta = anta->TDL()) != NULL);
 			}
 		}
 	}
@@ -1900,7 +1900,7 @@ void ContactDetection::sphConeContact(const int &Nco, int & Nct, vector<Cone> & 
 			if((anta = cell[co[i].Cell[j]]) != NULL){
 				do{
 					ContactSphCone(co[i], anta, ct, Nct);
-				}while((anta = anta->tdl) != NULL);
+				}while((anta = anta->TDL()) != NULL);
 			}
 		}
 	}
@@ -1913,7 +1913,7 @@ void ContactDetection::sphElbowContact(const int &Nelb, int & Nct, vector<Elbow>
 			if((anta = cell[elb[i].Cell[j]]) != NULL){
 				do{
 					ContactSphElbow(elb[i], anta, ct, Nct);
-				}while((anta = anta->tdl) != NULL);
+				}while((anta = anta->TDL()) != NULL);
 			}
 		}
 	}

@@ -11,39 +11,77 @@ class Gravity;
 class Body;
 class Elongation;
 
-class Sphere: public MechanicalPoint{
-public:
+class Sphere final : public MechanicalPoint{
+private:
 	static const int maxContact = 50;
-	
 	int num;
 	double x2,y2,z2;
 	int sp,bodies,NhollowBall;
-	double r,m,I,rho;
-	double r0;
-	bool isHollowBall;
-	Body *b;
-	bool autoIntegrate;
+
 	Sphere *tdl;
-	// Data contact statique
+	Body *b;
+
 	Elongation *xsi,*xsi2;
 	int *NumNeighbour,*NumNeighbour2;
 	int Nneighbour,Nneighbour2;
 	int *type,*type2;
 	int *NumFromBody,*NumFromBody2;
-	
+	double r0;
+
+	bool isHollowBall;
+	bool autoIntegrate;
+	double r,m,I,rho;
 	//Contact avec plan
 	double ct_pl_nx,ct_pl_ny,ct_pl_nz;
 	int ct_pl;
-	
+
 public:
 	Sphere() noexcept;
+	Sphere(int bodies, int nHollowBall, double radius) noexcept;
+	Sphere(double radius, double mass, double inertia) noexcept;
 	~Sphere() noexcept;
 	
+	int Num() const noexcept { return num; }
+	void Num(int rhs) noexcept { this->num = rhs; }
+
+	double X2() const noexcept { return x2; }
+	void X2(double rhs) noexcept { this->x2 = rhs; }
+	double Y2() const noexcept { return y2; }
+	void Y2(double rhs) noexcept { this->y2 = rhs; }
+	double Z2() const noexcept { return z2; }
+	void Z2(double rhs) noexcept { this->z2 = rhs; }
+
+	int Bodies() const noexcept { return bodies; }
+
+	double Radius() const noexcept { return r; }
+
+	int HollowballNum() const noexcept { return NhollowBall; }
+	double Rho() const noexcept { return rho; }
+	double Mass() const noexcept { return m; }
+
+	Sphere* TDL() const noexcept { return tdl; }
+	void TDL(Sphere* rhs) noexcept { this->tdl = rhs; }
+
+	Body* GetBody() const noexcept { return b; }
+	void SetBody(Body* rhs) noexcept { this->b = rhs; }
+
+	void EnableIntegration() noexcept { this->autoIntegrate = true; }
+	void DisableIntegration() noexcept { this->autoIntegrate = false; }
+    void IsHollowBall() noexcept { this->isHollowBall = true; }
+
+    int Ct_pl() const noexcept { return ct_pl; }
+    void Ct_pl(int rhs) noexcept { ct_pl = rhs; }
+
+    int Ct_pl_nx() const noexcept { return ct_pl_nx; }
+    void Ct_pl_nx(int rhs) noexcept { ct_pl_nx = rhs; }
+
+    int Ct_pl_ny() const noexcept { return ct_pl_ny; }
+    void Ct_pl_ny(int rhs) noexcept { ct_pl_ny = rhs; }
+
+    int Ct_pl_nz() const noexcept { return ct_pl_nz; }
+    void Ct_pl_nz(int rhs) noexcept { ct_pl_nz = rhs; }
+
 	void SphDealloc() noexcept;
-	int HollowballNum() const noexcept;
-	double Radius() const noexcept;
-	double Rho() const noexcept;
-	double Mass() const noexcept;
 	void affiche() const noexcept;
 	void readFromFile(FILE *ft) noexcept;
 	void writeToFile(FILE *ft) const noexcept;
@@ -55,25 +93,17 @@ public:
 	void Freeze(double dt, double vr) noexcept;
 	void upDateVelocity(double dt, Gravity & g, double g0) noexcept;
 	
-	int Num() const noexcept;
 	void move(double dt) noexcept;
 	
 	void InitXsi() noexcept;
 	void AddXsi(Elongation& e, int n, int t, int nob) noexcept;
 	Elongation FoundIt(int n, int t, int nob) const noexcept;
-	double radius() const noexcept;
-	void setRadius(double alpha) noexcept;
 	int NoBodies() const noexcept;
 	int NoAvatar() const noexcept;
 	void CancelVelocity() noexcept;
 	void RandomVelocity(double V, double W) noexcept;
 	
 	bool Border() const noexcept;
-	double getFx() const noexcept;
-	double getFy() const noexcept;
-	double getFz() const noexcept;
-	double getRho() const noexcept;
-	void setIsHollowBall(bool a) noexcept;
 	void ComputeCTD(double R, double w, double t) noexcept;
 	void ComputeRD(double R, double w, double t) noexcept;
 	int count() const noexcept;

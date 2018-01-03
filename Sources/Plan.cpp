@@ -36,23 +36,23 @@ void Plan::SetAlpha(double a) noexcept {
 void Plan::Normal(Contact *c, Sphere *s) noexcept {
 	double r,phi,theta;
 	if(sigma != 0){
-		if(s->ct_pl == 0){
+		if(s->Ct_pl() == 0){
 			r = sigma + ((double)(rand()%RAND_MAX)/RAND_MAX)*(1.-sigma);
 			phi = acos(r);
 			theta = ((double)(rand()%RAND_MAX)/RAND_MAX)*2*M_PI;
 			c->nx = sin(phi)*cos(theta);
 			c->ny = sin(phi)*sin(theta);
 			c->nz = -cos(phi);
-			s->ct_pl_nx = c->nx;
-			s->ct_pl_ny = c->ny;
-			s->ct_pl_nz = c->nz;
-			s->ct_pl = 1;
+			s->Ct_pl_nx(c->nx);
+			s->Ct_pl_ny(c->ny);
+			s->Ct_pl_nz(c->nz);
+			s->Ct_pl (1);
 		}
 		else{
-			c->nx = s->ct_pl_nx;
-			c->ny = s->ct_pl_ny;
-			c->nz = s->ct_pl_nz;
-			s->ct_pl = 1;
+			c->nx = s->Ct_pl_nx();
+			c->ny = s->Ct_pl_ny();
+			c->nz = s->Ct_pl_nz();
+			s->Ct_pl(1);
 		}
 	}
 }

@@ -259,7 +259,7 @@ int Evolution::EvolveMelt(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,i
 	do{
 		dat.TIME += dat.dt;
 		dtl = dat.dt;
-		r0 = sph[0].radius();
+		r0 = sph[0].Radius();
 		// Position anticipation
 		Move::moveContainer(Npl, Nplr, Nco, Nelb, pl, plr, co, elb, dat.TIME, dat.dt/2, sph,gf);
 		Move::moveSphere(Nsph, sph, dat.dt/2);
@@ -323,7 +323,7 @@ int Evolution::EvolveMelt(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,i
 						Ntp++;
 			}
 		}
-		r1 = sph[0].radius();
+		r1 = sph[0].Radius();
 		dat.dt = dtl*pow(r1/r0,3./2.);
 	}while(dat.TIME < dat.Total-dat.dt);
 	printf("\n");
@@ -343,7 +343,7 @@ int Evolution::EvolveMeltOMP(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsp
 		do{
 			dat.TIME += dat.dt;
 			dtl = dat.dt;
-			r0 = sph[0].radius();
+			r0 = sph[0].Radius();
 			
 			// Position anticipation
 			Move::moveContainer(Npl, Nplr, Nco, Nelb, pl, plr, co, elb, dat.TIME, dat.dt/2, sph,gf);
@@ -461,7 +461,7 @@ int Evolution::EvolveMeltOMP(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsp
 							Ntp++;
 				}
 			}
-			r1 = sph[0].radius();
+			r1 = sph[0].Radius();
 			dat.dt = dtl*pow(r1/r0,3./2.);
 		}while(dat.TIME < dat.Total-dat.dt);
 	return(Ntp);
