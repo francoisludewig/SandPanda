@@ -81,3 +81,48 @@ protected:
 	double Fx, Fy, Fz;
 	double Mx, My, Mz;
 };
+
+
+class MechanicalPointWithBase : public MechanicalPoint {
+
+public:
+	MechanicalPointWithBase() noexcept : MechanicalPoint(),
+	nx(1), ny(0), nz(0),
+	tx(0), ty(1), tz(0),
+	sx(0), sy(0), sz(1) {}
+
+	MechanicalPointWithBase(const MechanicalPointWithBase& other) noexcept = default;
+	MechanicalPointWithBase(MechanicalPointWithBase&& other) noexcept = default;
+	MechanicalPointWithBase& operator=(const MechanicalPointWithBase& other) noexcept = default;
+	MechanicalPointWithBase& operator=(MechanicalPointWithBase&& other) noexcept = default;
+
+	double Nx() const noexcept { return nx; }
+	double Ny() const noexcept { return ny; }
+	double Nz() const noexcept { return nz; }
+	double Tx() const noexcept { return tx; }
+	double Ty() const noexcept { return ty; }
+	double Tz() const noexcept { return tz; }
+	double Sx() const noexcept { return sx; }
+	double Sy() const noexcept { return sy; }
+	double Sz() const noexcept { return sz; }
+
+protected:
+	double nx, ny, nz;
+	double tx, ty, tz;
+	double sx, sy, sz;
+
+	void QuaternionToBase() noexcept {
+		nx = 1 - 2*q2*q2 - 2*q3*q3;
+		ny = 2*q1*q2 + 2*q3*q0;
+		nz = 2*q1*q3 - 2*q2*q0;
+
+		tx = 2*q1*q2 - 2*q3*q0;
+		ty = 1 - 2*q1*q1 - 2*q3*q3;
+		tz = 2*q2*q3 + 2*q1*q0;
+
+		sx = 2*q1*q3 + 2*q2*q0;
+		sy = 2*q2*q3 - 2*q1*q0;
+		sz = 1 - 2*q1*q1 - 2*q2*q2;
+	}
+
+};

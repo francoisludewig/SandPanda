@@ -11,6 +11,7 @@
 #include "../Includes/Body.h"
 #include "../Includes/Contact.h"
 #include "../Includes/Data.h"
+#include "../Includes/HollowBall.h"
 
 int ContactDetection::ContactSphBody(Sphere *a, Body *b, Contact *ct, int &Nct) noexcept {
 	int Nctfound = 0;
@@ -333,12 +334,12 @@ void ContactDetection::ContactSphSphPeriodic(Sphere *a, Sphere *b, Contact *ct, 
 void ContactDetection::ContactBodyPlan(Plan & p, Body *b, Contact *ct, int & Nct) noexcept {
 	double px,py,pz,pn,pt,ps,nn,nnx,nny,nnz;
 	for(int i = 0 ; i < b->Ng ; i++){
-		px = b->xg[i] - b->r[i]*p.nx;
-		py = b->yg[i] - b->r[i]*p.ny;
-		pz = b->zg[i] - b->r[i]*p.nz;
-		pn = (px-p.X())*p.nx+(py-p.Y())*p.ny+(pz-p.Z())*p.nz;
-		pt = (px-p.X())*p.tx+(py-p.Y())*p.ty+(pz-p.Z())*p.tz;
-		ps = (px-p.X())*p.sx+(py-p.Y())*p.sy+(pz-p.Z())*p.sz;
+		px = b->xg[i] - b->r[i]*p.Nx();
+		py = b->yg[i] - b->r[i]*p.Ny();
+		pz = b->zg[i] - b->r[i]*p.Nz();
+		pn = (px-p.X())*p.Nx()+(py-p.Y())*p.Ny()+(pz-p.Z())*p.Nz();
+		pt = (px-p.X())*p.Tx()+(py-p.Y())*p.Ty()+(pz-p.Z())*p.Tz();
+		ps = (px-p.X())*p.Sx()+(py-p.Y())*p.Sy()+(pz-p.Z())*p.Sz();
 		if((fabs(pt) < p.dt) && (fabs(ps) < p.ds)){
 			if( (pn <= 0.0) && (pn > -b->r[i])){
 				ct[Nct].type = 11;
@@ -346,30 +347,30 @@ void ContactDetection::ContactBodyPlan(Plan & p, Body *b, Contact *ct, int & Nct
 				ct[Nct].px = px;
 				ct[Nct].py = py;
 				ct[Nct].pz = pz;
-				ct[Nct].nx = -p.nx;
-				ct[Nct].ny = -p.ny;
-				ct[Nct].nz = -p.nz;
+				ct[Nct].nx = -p.Nx();
+				ct[Nct].ny = -p.Ny();
+				ct[Nct].nz = -p.Nz();
 				ct[Nct].pa = &p;
 				ct[Nct].ba = b;
 				ct[Nct].nba = i;
 				Nct++;
 			}
 			if(p.inAndOut == 1){
-				px = b->xg[i] + b->r[i]*p.nx;
-				py = b->yg[i] + b->r[i]*p.ny;
-				pz = b->zg[i] + b->r[i]*p.nz;
-				pn = (px-p.X())*(-p.nx)+(py-p.Y())*(-p.ny)+(pz-p.Z())*(-p.nz);
-				pt = (px-p.X())*p.tx+(py-p.Y())*p.ty+(pz-p.Z())*p.tz;
-				ps = (px-p.X())*p.sx+(py-p.Y())*p.sy+(pz-p.Z())*p.sz;
+				px = b->xg[i] + b->r[i]*p.Nx();
+				py = b->yg[i] + b->r[i]*p.Ny();
+				pz = b->zg[i] + b->r[i]*p.Nz();
+				pn = (px-p.X())*(-p.Nx())+(py-p.Y())*(-p.Ny())+(pz-p.Z())*(-p.Nz());
+				pt = (px-p.X())*p.Tx()+(py-p.Y())*p.Ty()+(pz-p.Z())*p.Tz();
+				ps = (px-p.X())*p.Sx()+(py-p.Y())*p.Sy()+(pz-p.Z())*p.Sz();
 				if( (pn <= 0.0) && (pn > -b->r[i])){
 					ct[Nct].type = 11;
 					ct[Nct].delta = pn;
 					ct[Nct].px = px;
 					ct[Nct].py = py;
 					ct[Nct].pz = pz;
-					ct[Nct].nx = p.nx;
-					ct[Nct].ny = p.ny;
-					ct[Nct].nz = p.nz;
+					ct[Nct].nx = p.Nx();
+					ct[Nct].ny = p.Ny();
+					ct[Nct].nz = p.Nz();
 					ct[Nct].pa = &p;
 					ct[Nct].ba = b;
 					ct[Nct].nba = i;
@@ -392,9 +393,9 @@ void ContactDetection::ContactBodyPlan(Plan & p, Body *b, Contact *ct, int & Nct
 				pt = pt/fabs(pt)*p.dt/2;
 			}
 			// Point du plan candidat au contact
-			px = p.X() + ps*p.sx + pt*p.tx;
-			py = p.Y() + ps*p.sy + pt*p.ty;
-			pz = p.Z() + ps*p.sz + pt*p.tz;
+			px = p.X() + ps*p.Sx() + pt*p.Tx();
+			py = p.Y() + ps*p.Sy() + pt*p.Ty();
+			pz = p.Z() + ps*p.Sz() + pt*p.Tz();
 			
 			nnx = px-b->X();
 			nny = py-b->Y();
@@ -421,12 +422,12 @@ void ContactDetection::ContactBodyPlan(Plan & p, Body *b, Contact *ct, int & Nct
 void ContactDetection::ContactSphPlan(Plan & p, Sphere *b, Contact *ct, int & Nct) noexcept {
 	if(b->Bodies() == -9){
 		double px,py,pz,pn,pt,ps,nn,nnx,nny,nnz;
-		px = b->X() - b->Radius()*p.nx;
-		py = b->Y() - b->Radius()*p.ny;
-		pz = b->Z() - b->Radius()*p.nz;
-		pn = (px-p.X())*p.nx+(py-p.Y())*p.ny+(pz-p.Z())*p.nz;
-		pt = (px-p.X())*p.tx+(py-p.Y())*p.ty+(pz-p.Z())*p.tz;
-		ps = (px-p.X())*p.sx+(py-p.Y())*p.sy+(pz-p.Z())*p.sz;
+		px = b->X() - b->Radius()*p.Nx();
+		py = b->Y() - b->Radius()*p.Ny();
+		pz = b->Z() - b->Radius()*p.Nz();
+		pn = (px-p.X())*p.Nx()+(py-p.Y())*p.Ny()+(pz-p.Z())*p.Nz();
+		pt = (px-p.X())*p.Tx()+(py-p.Y())*p.Ty()+(pz-p.Z())*p.Tz();
+		ps = (px-p.X())*p.Sx()+(py-p.Y())*p.Sy()+(pz-p.Z())*p.Sz();
 		if((fabs(pt) < p.dt/2) && (fabs(ps) < p.ds/2)){
 			if( (pn <= 0.0) && (pn > -b->Radius())){
 				ct[Nct].type = 1;
@@ -434,9 +435,9 @@ void ContactDetection::ContactSphPlan(Plan & p, Sphere *b, Contact *ct, int & Nc
 				ct[Nct].px = px;
 				ct[Nct].py = py;
 				ct[Nct].pz = pz;
-				ct[Nct].nx = -p.nx;
-				ct[Nct].ny = -p.ny;
-				ct[Nct].nz = -p.nz;
+				ct[Nct].nx = -p.Nx();
+				ct[Nct].ny = -p.Ny();
+				ct[Nct].nz = -p.Nz();
 				//printf("n = (%e,%e,%e)\n", ct[Nct].nx, ct[Nct].ny, ct[Nct].nz);
 				p.Normal(&ct[Nct],b);
 				//if(p.sigma != 0)
@@ -451,21 +452,21 @@ void ContactDetection::ContactSphPlan(Plan & p, Sphere *b, Contact *ct, int & Nc
 					b->Ct_pl(0);
 			}
 			if(p.inAndOut == 1){
-				px = b->X() + b->Radius()*p.nx;
-				py = b->Y() + b->Radius()*p.ny;
-				pz = b->Z() + b->Radius()*p.nz;
-				pn = (px-p.X())*(-p.nx)+(py-p.Y())*(-p.ny)+(pz-p.Z())*(-p.nz);
-				pt = (px-p.X())*p.tx+(py-p.Y())*p.ty+(pz-p.Z())*p.tz;
-				ps = (px-p.X())*p.sx+(py-p.Y())*p.sy+(pz-p.Z())*p.sz;
+				px = b->X() + b->Radius()*p.Nx();
+				py = b->Y() + b->Radius()*p.Ny();
+				pz = b->Z() + b->Radius()*p.Nz();
+				pn = (px-p.X())*(-p.Nx())+(py-p.Y())*(-p.Ny())+(pz-p.Z())*(-p.Nz());
+				pt = (px-p.X())*p.Tx()+(py-p.Y())*p.Ty()+(pz-p.Z())*p.Tz();
+				ps = (px-p.X())*p.Sx()+(py-p.Y())*p.Sy()+(pz-p.Z())*p.Sz();
 				if( (pn <= 0.0) && (pn > -b->Radius())){
 					ct[Nct].type = 1;
 					ct[Nct].delta = pn;
 					ct[Nct].px = px;
 					ct[Nct].py = py;
 					ct[Nct].pz = pz;
-					ct[Nct].nx = p.nx;
-					ct[Nct].ny = p.ny;
-					ct[Nct].nz = p.nz;
+					ct[Nct].nx = p.Nx();
+					ct[Nct].ny = p.Ny();
+					ct[Nct].nz = p.Nz();
 					p.Normal(&ct[Nct],b);
 					ct[Nct].pa = &p;
 					ct[Nct].sa = b;
@@ -492,9 +493,9 @@ void ContactDetection::ContactSphPlan(Plan & p, Sphere *b, Contact *ct, int & Nc
 				pt = pt/fabs(pt)*p.dt/2;
 			}
 			// Point du plan candidat au contact
-			px = p.X() + ps*p.sx + pt*p.tx;
-			py = p.Y() + ps*p.sy + pt*p.ty;
-			pz = p.Z() + ps*p.sz + pt*p.tz;
+			px = p.X() + ps*p.Sx() + pt*p.Tx();
+			py = p.Y() + ps*p.Sy() + pt*p.Ty();
+			pz = p.Z() + ps*p.Sz() + pt*p.Tz();
 			
 			nnx = px-b->X();
 			nny = py-b->Y();
@@ -524,16 +525,16 @@ void ContactDetection::ContactSphPlanPeriodic(Sphere *llist[], Plan & p, Plan & 
 	px = b->X();
 	py = b->Y();
 	pz = b->Z();
-	pn = (px-p.X())*p.nx+(py-p.Y())*p.ny+(pz-p.Z())*p.nz;
-	pt = (px-p.X())*p.tx+(py-p.Y())*p.ty+(pz-p.Z())*p.tz;
-	ps = (px-p.X())*p.sx+(py-p.Y())*p.sy+(pz-p.Z())*p.sz;
+	pn = (px-p.X())*p.Nx()+(py-p.Y())*p.Ny()+(pz-p.Z())*p.Nz();
+	pt = (px-p.X())*p.Tx()+(py-p.Y())*p.Ty()+(pz-p.Z())*p.Tz();
+	ps = (px-p.X())*p.Sx()+(py-p.Y())*p.Sy()+(pz-p.Z())*p.Sz();
 	if( (pn <= (b->Radius()+rmax)) && (pn > -2*b->Radius()) && (fabs(pt) < p.dt/2+b->Radius()) &&
 	   (fabs(ps) < p.ds/2+b->Radius()) ){
-		pt = (px-p2.X())*p2.tx+(py-p2.Y())*p2.ty+(pz-p2.Z())*p2.tz;
-		ps = (px-p2.X())*p2.sx+(py-p2.Y())*p2.sy+(pz-p2.Z())*p2.sz;
-		b->X2(p2.X() + (-pn)*p2.nx + pt*p2.tx + ps*p2.sx);
-		b->Y2(p2.Y() + (-pn)*p2.ny + pt*p2.ty + ps*p2.sy);
-		b->Z2(p2.Z() + (-pn)*p2.nz + pt*p2.tz + ps*p2.sz);
+		pt = (px-p2.X())*p2.Tx()+(py-p2.Y())*p2.Ty()+(pz-p2.Z())*p2.Tz();
+		ps = (px-p2.X())*p2.Sx()+(py-p2.Y())*p2.Sy()+(pz-p2.Z())*p2.Sz();
+		b->X2(p2.X() + (-pn)*p2.Nx() + pt*p2.Tx() + ps*p2.Sx());
+		b->Y2(p2.Y() + (-pn)*p2.Ny() + pt*p2.Ty() + ps*p2.Sy());
+		b->Z2(p2.Z() + (-pn)*p2.Nz() + pt*p2.Tz() + ps*p2.Sz());
 		llist[p.Nlist] = b;
 		p.list[p.Nlist] = b->Num();
 		p.Nlist++;
@@ -543,21 +544,21 @@ void ContactDetection::ContactSphPlanPeriodic(Sphere *llist[], Plan & p, Plan & 
 void ContactDetection::ContactBodyPlanR(PlanR & p, Body *b, Contact *ct, int & Nct) noexcept {
 	double px,py,pz,pn,pt,ps;
 	for(int i = 0 ; i < b->Ng ; i++){
-		px = b->xg[i] - b->r[i]*p.nx;
-		py = b->yg[i] - b->r[i]*p.ny;
-		pz = b->zg[i] - b->r[i]*p.nz;
-		pn = (px-p.X())*p.nx+(py-p.Y())*p.ny+(pz-p.Z())*p.nz;
-		pt = (px-p.X())*p.tx+(py-p.Y())*p.ty+(pz-p.Z())*p.tz;
-		ps = (px-p.X())*p.sx+(py-p.Y())*p.sy+(pz-p.Z())*p.sz;
+		px = b->xg[i] - b->r[i]*p.Nx();
+		py = b->yg[i] - b->r[i]*p.Ny();
+		pz = b->zg[i] - b->r[i]*p.Nz();
+		pn = (px-p.X())*p.Nx()+(py-p.Y())*p.Ny()+(pz-p.Z())*p.Nz();
+		pt = (px-p.X())*p.Tx()+(py-p.Y())*p.Ty()+(pz-p.Z())*p.Tz();
+		ps = (px-p.X())*p.Sx()+(py-p.Y())*p.Sy()+(pz-p.Z())*p.Sz();
 		if((pn >= -b->r[i]) && (pn < 0.0) && (sqrt(pt*pt+ps*ps) < p.r)){
 			ct[Nct].delta = pn;
 			ct[Nct].type = 12;
 			ct[Nct].px = px;
 			ct[Nct].py = py;
 			ct[Nct].pz = pz;
-			ct[Nct].nx = -p.nx;
-			ct[Nct].ny = -p.ny;
-			ct[Nct].nz = -p.nz;
+			ct[Nct].nx = -p.Nx();
+			ct[Nct].ny = -p.Ny();
+			ct[Nct].nz = -p.Nz();
 			ct[Nct].ba = b;
 			ct[Nct].nba = i;
 			ct[Nct].par = &p;
@@ -569,21 +570,21 @@ void ContactDetection::ContactBodyPlanR(PlanR & p, Body *b, Contact *ct, int & N
 void ContactDetection::ContactSphPlanR(PlanR & p, Sphere *b, Contact *ct, int & Nct) noexcept {
 	if(b->Bodies() == -9){
 		double px,py,pz,pn,pt,ps;
-		px = b->X() - b->Radius()*p.nx;
-		py = b->Y() - b->Radius()*p.ny;
-		pz = b->Z() - b->Radius()*p.nz;
-		pn = (px-p.X())*p.nx+(py-p.Y())*p.ny+(pz-p.Z())*p.nz;
-		pt = (px-p.X())*p.tx+(py-p.Y())*p.ty+(pz-p.Z())*p.tz;
-		ps = (px-p.X())*p.sx+(py-p.Y())*p.sy+(pz-p.Z())*p.sz;
+		px = b->X() - b->Radius()*p.Nx();
+		py = b->Y() - b->Radius()*p.Ny();
+		pz = b->Z() - b->Radius()*p.Nz();
+		pn = (px-p.X())*p.Nx()+(py-p.Y())*p.Ny()+(pz-p.Z())*p.Nz();
+		pt = (px-p.X())*p.Tx()+(py-p.Y())*p.Ty()+(pz-p.Z())*p.Tz();
+		ps = (px-p.X())*p.Sx()+(py-p.Y())*p.Sy()+(pz-p.Z())*p.Sz();
 		if((pn >= -b->Radius()) && (pn < 0.0) && (sqrt(pt*pt+ps*ps) < p.r)){
 			ct[Nct].delta = pn;
 			ct[Nct].type = 2;
 			ct[Nct].px = px;
 			ct[Nct].py = py;
 			ct[Nct].pz = pz;
-			ct[Nct].nx = -p.nx;
-			ct[Nct].ny = -p.ny;
-			ct[Nct].nz = -p.nz;
+			ct[Nct].nx = -p.Nx();
+			ct[Nct].ny = -p.Ny();
+			ct[Nct].nz = -p.Nz();
 			ct[Nct].sa = b;
 			ct[Nct].par = &p;
 			Nct++;
@@ -601,18 +602,18 @@ void ContactDetection::ContactBodyCone(Cone & p, Body *b, Contact *ct, int & Nct
 		px = b->xg[i];
 		py = b->yg[i];
 		pz = b->zg[i];
-		pn = (px-p.X())*p.nx+(py-p.Y())*p.ny+(pz-p.Z())*p.nz;
-		pt = (px-p.X())*p.tx+(py-p.Y())*p.ty+(pz-p.Z())*p.tz;
-		ps = (px-p.X())*p.sx+(py-p.Y())*p.sy+(pz-p.Z())*p.sz;
+		pn = (px-p.X())*p.Nx()+(py-p.Y())*p.Ny()+(pz-p.Z())*p.Nz();
+		pt = (px-p.X())*p.Tx()+(py-p.Y())*p.Ty()+(pz-p.Z())*p.Tz();
+		ps = (px-p.X())*p.Sx()+(py-p.Y())*p.Sy()+(pz-p.Z())*p.Sz();
 		
 		if(fabs(pn) <= p.h/2 + b->r[i]){
 			N = sqrt(pt*pt+ps*ps);
-			Tx = (pt*p.tx + ps*p.sx)/N;
-			Ty = (pt*p.ty + ps*p.sy)/N;
-			Tz = (pt*p.tz + ps*p.sz)/N;
-			Nx = p.nx;
-			Ny = p.ny;
-			Nz = p.nz;
+			Tx = (pt*p.Tx() + ps*p.Sx())/N;
+			Ty = (pt*p.Ty() + ps*p.Sy())/N;
+			Tz = (pt*p.Tz() + ps*p.Sz())/N;
+			Nx = p.Nx();
+			Ny = p.Ny();
+			Nz = p.Nz();
 			dr = p.r0 -  p.r1;
 			h = p.h;
 			if(dr == 0){
@@ -730,18 +731,18 @@ void ContactDetection::ContactSphCone(Cone & p, Sphere *b, Contact *ct, int & Nc
 		px = b->X();
 		py = b->Y();
 		pz = b->Z();
-		pn = (px-p.X())*p.nx+(py-p.Y())*p.ny+(pz-p.Z())*p.nz;
-		pt = (px-p.X())*p.tx+(py-p.Y())*p.ty+(pz-p.Z())*p.tz;
-		ps = (px-p.X())*p.sx+(py-p.Y())*p.sy+(pz-p.Z())*p.sz;
+		pn = (px-p.X())*p.Nx()+(py-p.Y())*p.Ny()+(pz-p.Z())*p.Nz();
+		pt = (px-p.X())*p.Tx()+(py-p.Y())*p.Ty()+(pz-p.Z())*p.Tz();
+		ps = (px-p.X())*p.Sx()+(py-p.Y())*p.Sy()+(pz-p.Z())*p.Sz();
 		
 		if(fabs(pn) <= p.h/2 + b->Radius()){
 			N = sqrt(pt*pt+ps*ps);
-			Tx = (pt*p.tx + ps*p.sx)/N;
-			Ty = (pt*p.ty + ps*p.sy)/N;
-			Tz = (pt*p.tz + ps*p.sz)/N;
-			Nx = p.nx;
-			Ny = p.ny;
-			Nz = p.nz;
+			Tx = (pt*p.Tx() + ps*p.Sx())/N;
+			Ty = (pt*p.Ty() + ps*p.Sy())/N;
+			Tz = (pt*p.Tz() + ps*p.Sz())/N;
+			Nx = p.Nx();
+			Ny = p.Ny();
+			Nz = p.Nz();
 			dr = p.r0 -  p.r1;
 			h = p.h;
 			
@@ -964,7 +965,7 @@ void ContactDetection::ContactSphElbow(Elbow & p, Sphere *b, Contact *ct, int & 
 		ContactBodyElbow(p,b->GetBody(),ct,Nct);
 }
 
-void ContactDetection::linkedCell(vector<Sphere> & sph, const int Nsph, const Data *dat, Sphere *cell[]) noexcept {
+void ContactDetection::linkedCell(std::vector<Sphere> & sph, const int Nsph, const Data *dat, Sphere *cell[]) noexcept {
 	int x,y,z;
 	// Initialisation du tableau tdl
 	for(int i = Nsph ; i--;)
@@ -990,7 +991,7 @@ void ContactDetection::linkedCell(vector<Sphere> & sph, const int Nsph, const Da
 	}
 }
 
-void ContactDetection::listCellForPlan(Data *dat, vector<Plan> & pl, int & Npl, Gravity& gt) noexcept {
+void ContactDetection::listCellForPlan(Data *dat, std::vector<Plan> & pl, int & Npl, Gravity& gt) noexcept {
 	int a,b;
 	int i,j,k;
 	int I,num;
@@ -1048,15 +1049,15 @@ void ContactDetection::listCellForPlan(Data *dat, vector<Plan> & pl, int & Npl, 
 				ox = pl[a].X();
 				oy = pl[a].Y();
 				oz = pl[a].Z();
-				nx = pl[a].nx;
-				ny = pl[a].ny;
-				nz = pl[a].nz;
-				tx = pl[a].tx;
-				ty = pl[a].ty;
-				tz = pl[a].tz;
-				sx = pl[a].sx;
-				sy = pl[a].sy;
-				sz = pl[a].sz;
+				nx = pl[a].Nx();
+				ny = pl[a].Ny();
+				nz = pl[a].Nz();
+				tx = pl[a].Tx();
+				ty = pl[a].Ty();
+				tz = pl[a].Tz();
+				sx = pl[a].Sx();
+				sy = pl[a].Sy();
+				sz = pl[a].Sz();
 				
 				//printf("at b = %d => t = %e => z = %e\n",b,b*dtime,oz);
 				dn = sqrt(dat->ax*dat->ax+dat->ay*dat->ay+dat->az*dat->az);
@@ -1112,7 +1113,7 @@ void ContactDetection::listCellForPlan(Data *dat, vector<Plan> & pl, int & Npl, 
 	free(localCell);
 }
 
-void ContactDetection::listCellForPlanR(Data *dat, vector<PlanR> & plr, int & Nplr, Gravity& gt) noexcept {
+void ContactDetection::listCellForPlanR(Data *dat, std::vector<PlanR> & plr, int & Nplr, Gravity& gt) noexcept {
 	int a,b;
 	int i,j,k;
 	int I,num;
@@ -1169,15 +1170,15 @@ void ContactDetection::listCellForPlanR(Data *dat, vector<PlanR> & plr, int & Np
 				ox = plr[a].X();
 				oy = plr[a].Y();
 				oz = plr[a].Z();
-				nx = plr[a].nx;
-				ny = plr[a].ny;
-				nz = plr[a].nz;
-				tx = plr[a].tx;
-				ty = plr[a].ty;
-				tz = plr[a].tz;
-				sx = plr[a].sx;
-				sy = plr[a].sy;
-				sz = plr[a].sz;
+				nx = plr[a].Nx();
+				ny = plr[a].Ny();
+				nz = plr[a].Nz();
+				tx = plr[a].Tx();
+				ty = plr[a].Ty();
+				tz = plr[a].Tz();
+				sx = plr[a].Sx();
+				sy = plr[a].Sy();
+				sz = plr[a].Sz();
 				dn = sqrt(dat->ax*dat->ax+dat->ay*dat->ay+dat->az*dat->az);
 				
 				for(i = 0 ; i < dat->Nx ; i++){
@@ -1231,7 +1232,7 @@ void ContactDetection::listCellForPlanR(Data *dat, vector<PlanR> & plr, int & Np
 	free(localCell);
 }
 
-void ContactDetection::listCellForCone(Data *dat, vector<Cone> & co, int & Nco, Gravity& gt) noexcept {
+void ContactDetection::listCellForCone(Data *dat, std::vector<Cone> & co, int & Nco, Gravity& gt) noexcept {
 	int numCone;
 	int i,j,k;
 	int I,num;
@@ -1290,15 +1291,15 @@ void ContactDetection::listCellForCone(Data *dat, vector<Cone> & co, int & Nco, 
 				ox = co[numCone].X();
 				oy = co[numCone].Y();
 				oz = co[numCone].Z();
-				nx = co[numCone].nx;
-				ny = co[numCone].ny;
-				nz = co[numCone].nz;
-				tx = co[numCone].tx;
-				ty = co[numCone].ty;
-				tz = co[numCone].tz;
-				sx = co[numCone].sx;
-				sy = co[numCone].sy;
-				sz = co[numCone].sz;
+				nx = co[numCone].Nx();
+				ny = co[numCone].Ny();
+				nz = co[numCone].Nz();
+				tx = co[numCone].Tx();
+				ty = co[numCone].Ty();
+				tz = co[numCone].Tz();
+				sx = co[numCone].Sx();
+				sy = co[numCone].Sy();
+				sz = co[numCone].Sz();
 				if(dat->Nx > 1)
 					dn = sqrt(dat->ax*dat->ax+dat->ay*dat->ay+dat->az*dat->az);
 				else{
@@ -1392,7 +1393,7 @@ void ContactDetection::listCellForCone(Data *dat, vector<Cone> & co, int & Nco, 
 	
 }
 
-void ContactDetection::listCellForElbow(Data *dat, vector<Elbow> & el, int & Nelb) noexcept {
+void ContactDetection::listCellForElbow(Data *dat, std::vector<Elbow> & el, int & Nelb) noexcept {
 	int numEl;
 	int i,j,k;
 	int I,num;
@@ -1545,7 +1546,7 @@ void ContactDetection::listCellForElbow(Data *dat, vector<Elbow> & el, int & Nel
 	free(localCell);
 }
 
-void ContactDetection::sphContactAll(const int & Nsph, vector<Sphere> & sph, Contact *ctl, int & Nctl) noexcept {
+void ContactDetection::sphContactAll(const int & Nsph, std::vector<Sphere> & sph, Contact *ctl, int & Nctl) noexcept {
 	int i,j;
 	for(i = 0 ; i < Nsph ; i++){
 		for(j = i+1 ; j < Nsph ; j++){
@@ -1722,7 +1723,7 @@ void ContactDetection::sphContact(const int Nx0, const int Nx1, const int Nx, co
 	}
 }
 
-void ContactDetection::sphPlanContact(const int &Nsph, const int &Npl, int & Nct, vector<Sphere> & sph, vector<Plan> & pl, Contact *ct, Sphere *cell[], const double rmax) noexcept {
+void ContactDetection::sphPlanContact(const int &Nsph, const int &Npl, int & Nct, std::vector<Sphere> & sph, std::vector<Plan> & pl, Contact *ct, Sphere *cell[], const double rmax) noexcept {
 	Sphere *anta;
 	int control[Npl];
 	
@@ -1777,7 +1778,7 @@ void ContactDetection::sphPlanContact(const int &Nsph, const int &Npl, int & Nct
 	}
 }
 
-void ContactDetection::sphPlanContactOMP(const int &Nsph, const int &Npl, int & Nct, int & Ncta, vector<Sphere> & sph, vector<Plan> & pl, Contact *ct, Contact *cta, Sphere *cell[], const double rmax) noexcept {
+void ContactDetection::sphPlanContactOMP(const int &Nsph, const int &Npl, int & Nct, int & Ncta, std::vector<Sphere> & sph, std::vector<Plan> & pl, Contact *ct, Contact *cta, Sphere *cell[], const double rmax) noexcept {
 	Sphere *anta;
 	int control[Npl];
 	
@@ -1880,7 +1881,7 @@ void ContactDetection::sphPlanContactOMP(const int &Nsph, const int &Npl, int & 
 	}
 }
 
-void ContactDetection::sphPlanRContact(const int &Nplr, int & Nct, vector<PlanR> & plr, Contact *ct, Sphere *cell[]) noexcept {
+void ContactDetection::sphPlanRContact(const int &Nplr, int & Nct, std::vector<PlanR> & plr, Contact *ct, Sphere *cell[]) noexcept {
 	Sphere *anta;
 	for(int i = 0 ; i < Nplr ; i++){
 		for(int j = 0 ; j < plr[i].NCell ; j++){
@@ -1893,7 +1894,7 @@ void ContactDetection::sphPlanRContact(const int &Nplr, int & Nct, vector<PlanR>
 	}
 }
 
-void ContactDetection::sphConeContact(const int &Nco, int & Nct, vector<Cone> & co, Contact *ct, Sphere *cell[])  noexcept {
+void ContactDetection::sphConeContact(const int &Nco, int & Nct, std::vector<Cone> & co, Contact *ct, Sphere *cell[])  noexcept {
 	Sphere *anta;
 	for(int i = 0 ; i < Nco ; i++){
 		for(int j = 0 ; j < co[i].NCell ; j++){
@@ -1906,7 +1907,7 @@ void ContactDetection::sphConeContact(const int &Nco, int & Nct, vector<Cone> & 
 	}
 }
 
-void ContactDetection::sphElbowContact(const int &Nelb, int & Nct, vector<Elbow> & elb, Contact *ct, Sphere *cell[])  noexcept {
+void ContactDetection::sphElbowContact(const int &Nelb, int & Nct, std::vector<Elbow> & elb, Contact *ct, Sphere *cell[])  noexcept {
 	Sphere *anta;
 	for(int i = 0 ; i < Nelb ; i++){
 		for(int j = 0 ; j < elb[i].NCell ; j++){
@@ -1920,14 +1921,14 @@ void ContactDetection::sphElbowContact(const int &Nelb, int & Nct, vector<Elbow>
 }
 
 
-void ContactDetection::sphHollowBallContact(const int &Nhb, int & Nct, vector<HollowBall> & hb, Contact *ct)  noexcept {
+void ContactDetection::sphHollowBallContact(const int &Nhb, int & Nct, std::vector<HollowBall> & hb, Contact *ct)  noexcept {
 	for(int i = 0 ; i < Nhb ; i++){
 		hb[i].ContactDetectionInHollowBall(ct,Nct);
 		hb[i].ContactDetectionWithHollowBall(ct,Nct);
 	}
 }
 
-void ContactDetection::sphContainer(const int & Nsph, const int & Npl, const int & Nplr, const int & Nco, const int & Nelb, const int & Nhb, vector<Sphere> & sph, vector<Plan> & pl, vector<PlanR> & plr, vector<Cone> & co, vector<Elbow> & elb, vector<HollowBall> & hb, int & Nct, Contact *ct, Sphere *cell[], const double rmax) noexcept {
+void ContactDetection::sphContainer(const int & Nsph, const int & Npl, const int & Nplr, const int & Nco, const int & Nelb, const int & Nhb, std::vector<Sphere> & sph, std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co, std::vector<Elbow> & elb, std::vector<HollowBall> & hb, int & Nct, Contact *ct, Sphere *cell[], const double rmax) noexcept {
 	sphPlanContact(Nsph,Npl, Nct, sph, pl, ct, cell,rmax);
 	sphPlanRContact(Nplr, Nct, plr, ct, cell);
 	sphConeContact(Nco, Nct, co, ct, cell);
@@ -1935,7 +1936,7 @@ void ContactDetection::sphContainer(const int & Nsph, const int & Npl, const int
 	sphHollowBallContact(Nhb, Nct, hb, ct);
 }
 
-void ContactDetection::sphContainerOMP(const int & Nsph, const int & Npl, const int & Nplr, const int & Nco, const int & Nelb, const int & Nhb, vector<Sphere> & sph, vector<Plan> & pl, vector<PlanR> & plr, vector<Cone> & co, vector<Elbow> & elb, vector<HollowBall> & hb, int & Nct, Contact *ct, int & Ncta, Contact *cta, Sphere *cell[], const double rmax)  noexcept {
+void ContactDetection::sphContainerOMP(const int & Nsph, const int & Npl, const int & Nplr, const int & Nco, const int & Nelb, const int & Nhb, std::vector<Sphere> & sph, std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co, std::vector<Elbow> & elb, std::vector<HollowBall> & hb, int & Nct, Contact *ct, int & Ncta, Contact *cta, Sphere *cell[], const double rmax)  noexcept {
 	sphPlanContactOMP(Nsph,Npl, Nct, Ncta, sph, pl, ct, cta, cell,rmax);
 	sphPlanRContact(Nplr, Nct, plr, ct, cell);
 	sphConeContact(Nco, Nct, co, ct, cell);

@@ -4,7 +4,7 @@
 #import "../Includes/Sphere.h"
 #import "../Includes/Body.h"
 
-void PeriodicityPL(const int & Nsph, const int & Nbd, const int &Npl, vector<Sphere> & sph, vector<Body> & bd, vector<Plan> & pl) noexcept {	
+void PeriodicityPL(const int & Nsph, const int & Nbd, const int &Npl, std::vector<Sphere> & sph, std::vector<Body> & bd, std::vector<Plan> & pl) noexcept {
 	int plp;
 	double px,py,pz,pn,pt,ps;
 	Sphere *b;
@@ -17,13 +17,13 @@ void PeriodicityPL(const int & Nsph, const int & Nbd, const int &Npl, vector<Sph
 					px = b->X();
 					py = b->Y();
 					pz = b->Z();
-					pn = (px-pl[i].X())*pl[i].nx+(py-pl[i].Y())*pl[i].ny+(pz-pl[i].Z())*pl[i].nz;
-					pt = (px-pl[plp].X())*pl[plp].tx+(py-pl[plp].Y())*pl[plp].ty+(pz-pl[plp].Z())*pl[plp].tz;
-					ps = (px-pl[plp].X())*pl[plp].sx+(py-pl[plp].Y())*pl[plp].sy+(pz-pl[plp].Z())*pl[plp].sz;
+					pn = (px-pl[i].X())*pl[i].Nx()+(py-pl[i].Y())*pl[i].Ny()+(pz-pl[i].Z())*pl[i].Nz();
+					pt = (px-pl[plp].X())*pl[plp].Tx()+(py-pl[plp].Y())*pl[plp].Ty()+(pz-pl[plp].Z())*pl[plp].Tz();
+					ps = (px-pl[plp].X())*pl[plp].Sx()+(py-pl[plp].Y())*pl[plp].Sy()+(pz-pl[plp].Z())*pl[plp].Sz();
 					if(pn < 0){
-						b->X(pl[plp].X() + (-pn)*pl[plp].nx + pt*pl[plp].tx + ps*pl[plp].sx);
-						b->Y(pl[plp].Y() + (-pn)*pl[plp].ny + pt*pl[plp].ty + ps*pl[plp].sy);
-						b->Z(pl[plp].Z() + (-pn)*pl[plp].nz + pt*pl[plp].tz + ps*pl[plp].sz);
+						b->X(pl[plp].X() + (-pn)*pl[plp].Nx() + pt*pl[plp].Tx() + ps*pl[plp].Sx());
+						b->Y(pl[plp].Y() + (-pn)*pl[plp].Ny() + pt*pl[plp].Ty() + ps*pl[plp].Sy());
+						b->Z(pl[plp].Z() + (-pn)*pl[plp].Nz() + pt*pl[plp].Tz() + ps*pl[plp].Sz());
 					}
 				}
 			} 
@@ -38,13 +38,13 @@ void PeriodicityPL(const int & Nsph, const int & Nbd, const int &Npl, vector<Sph
 					px = (b->GetBody())->X();
 					py = (b->GetBody())->Y();
 					pz = (b->GetBody())->Z();
-					pn = (px-pl[i].X())*pl[i].nx+(py-pl[i].Y())*pl[i].ny+(pz-pl[i].Z())*pl[i].nz;
-					pt = (px-pl[plp].X())*pl[plp].tx+(py-pl[plp].Y())*pl[plp].ty+(pz-pl[plp].Z())*pl[plp].tz;
-					ps = (px-pl[plp].X())*pl[plp].sx+(py-pl[plp].Y())*pl[plp].sy+(pz-pl[plp].Z())*pl[plp].sz;
+					pn = (px-pl[i].X())*pl[i].Nx()+(py-pl[i].Y())*pl[i].Ny()+(pz-pl[i].Z())*pl[i].Nz();
+					pt = (px-pl[plp].X())*pl[plp].Tx()+(py-pl[plp].Y())*pl[plp].Ty()+(pz-pl[plp].Z())*pl[plp].Tz();
+					ps = (px-pl[plp].X())*pl[plp].Sx()+(py-pl[plp].Y())*pl[plp].Sy()+(pz-pl[plp].Z())*pl[plp].Sz();
 					if(pn < 0){
-						(b->GetBody())->X(pl[plp].X() + (-pn)*pl[plp].nx + pt*pl[plp].tx + ps*pl[plp].sx);
-						(b->GetBody())->Y(pl[plp].Y() + (-pn)*pl[plp].ny + pt*pl[plp].ty + ps*pl[plp].sy);
-						(b->GetBody())->Z(pl[plp].Z() + (-pn)*pl[plp].nz + pt*pl[plp].tz + ps*pl[plp].sz);
+						(b->GetBody())->X(pl[plp].X() + (-pn)*pl[plp].Nx() + pt*pl[plp].Tx() + ps*pl[plp].Sx());
+						(b->GetBody())->Y(pl[plp].Y() + (-pn)*pl[plp].Ny() + pt*pl[plp].Ty() + ps*pl[plp].Sy());
+						(b->GetBody())->Z(pl[plp].Z() + (-pn)*pl[plp].Nz() + pt*pl[plp].Tz() + ps*pl[plp].Sz());
 						(b->GetBody())->UpDateLinkedSphere(sph);
 					}
 				}

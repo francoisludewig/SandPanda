@@ -2,15 +2,6 @@
 #include "../Includes/Sphere.h"
 
 Solid::Solid() noexcept {
-	nx = 1;
-	ny = 0;
-	nz = 0;
-	tx = 0;
-	ty = 1;
-	tz = 0;
-	sx = 0;
-	sy = 0;
-	sz = 1;
 	Fcx = 0;
 	Fcy = 0;
 	Fcz = 0;
@@ -57,18 +48,7 @@ void Solid::LoadFromFile(FILE *ft) noexcept {
 }
 
 void Solid::ComputeBase() noexcept {
-	nx = 1 - 2*q2*q2 - 2*q3*q3;
-	ny = 2*q1*q2 + 2*q3*q0;
-	nz = 2*q1*q3 - 2*q2*q0;
-	
-	tx = 2*q1*q2 - 2*q3*q0;
-	ty = 1 - 2*q1*q1 - 2*q3*q3;
-	tz = 2*q2*q3 + 2*q1*q0;
-	
-	sx = 2*q1*q3 + 2*q2*q0;
-	sy = 2*q2*q3 - 2*q1*q0;
-	sz = 1 - 2*q1*q1 - 2*q2*q2;
-	
+	QuaternionToBase();
 	// Elimination des erreurs
 	double max = fabs(nx);
 	if(max < fabs(ny))max = fabs(ny);
@@ -477,33 +457,6 @@ void Solid::SetWz(double newA0, double newA1, double newW, double newPhi) noexce
 	V.Set(Velocity::VelocityType::wz, newA0, newA1, newW, newPhi);
 }
 
-double Solid::ValueOfVx(double t) noexcept {
-	return(V.ValueOfVx(t));
-}
-
-double Solid::ValueOfVy(double t) noexcept {
-	return(V.ValueOfVy(t));
-}
-
-double Solid::ValueOfVz(double t) noexcept {
-	return(V.ValueOfVz(t));
-}
-
-double Solid::ValueOfWx(double t) noexcept {
-	return(V.ValueOfWx(t));
-}
-
-double Solid::ValueOfWy(double t) noexcept {
-	return(V.ValueOfWy(t));
-}
-
-double Solid::ValueOfWz(double t) noexcept {
-	return(V.ValueOfWz(t));
-}
-
-void Solid::SetMass(double m) noexcept {
-	Mass = m;
-}
 
 void Solid::TimeStepInitialization() noexcept {
 	Fx = 0.;

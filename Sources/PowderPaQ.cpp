@@ -16,7 +16,7 @@
 #include "../Includes/Evolution.h"
 #include "../Includes/Data.h"
 
-void PowderPaQ::PowderPaQsecousseUpward(vector<Plan> & pl,vector<PlanR> & plr,vector<Cone> & co,int Npl, int Nplr, int Nco, Data & dat, double PQheight, double PQVel) noexcept {
+void PowderPaQ::PowderPaQsecousseUpward(std::vector<Plan> & pl,std::vector<PlanR> & plr,std::vector<Cone> & co,int Npl, int Nplr, int Nco, Data & dat, double PQheight, double PQVel) noexcept {
 	int i;		
 	for(i = 0 ; i < Npl ; i++){
 		pl[i].SetVz(PQVel,0,0,0);
@@ -36,7 +36,7 @@ void PowderPaQ::PowderPaQsecousseUpward(vector<Plan> & pl,vector<PlanR> & plr,ve
 	//dat.dt = dat.Total/Ntsp;
 }
 
-void PowderPaQ::PowderPaQsecousseDownward(vector<Plan> & pl,vector<PlanR> & plr,vector<Cone> & co,int Npl, int Nplr, int Nco, Data & dat, double PQheight) noexcept {
+void PowderPaQ::PowderPaQsecousseDownward(std::vector<Plan> & pl,std::vector<PlanR> & plr,std::vector<Cone> & co,int Npl, int Nplr, int Nco, Data & dat, double PQheight) noexcept {
 	int i;	
 	double delay = sqrt(2*PQheight/9.81);
 	dat.Total += delay;	
@@ -60,7 +60,7 @@ void PowderPaQ::PowderPaQsecousseDownward(vector<Plan> & pl,vector<PlanR> & plr,
 	}	
 }
 
-void PowderPaQ::PowderPaQrelaxation(vector<Plan> & pl,vector<PlanR> & plr,vector<Cone> & co,int Npl, int Nplr, int Nco, Data & dat, double t, double PQheight, double PQVel) noexcept {
+void PowderPaQ::PowderPaQrelaxation(std::vector<Plan> & pl,std::vector<PlanR> & plr,std::vector<Cone> & co,int Npl, int Nplr, int Nco, Data & dat, double t, double PQheight, double PQVel) noexcept {
 	int i;
 	for(i = 0 ; i < Npl ; i++){
 		pl[i].SetVz(0,0,0,0);
@@ -81,7 +81,7 @@ void PowderPaQ::PowderPaQrelaxation(vector<Plan> & pl,vector<PlanR> & plr,vector
 }
 
 int PowderPaQ::PowderPaQRun(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,int & Nsph0,int & Nbd,int & Nhb,int & Nct,
-														vector<Plan> & pl,vector<PlanR> & plr,vector<Cone> & co,vector<Elbow> & elb,vector<Sphere> & sph,vector<Body> & bd,vector<HollowBall> & hb,Contact *ct,Data & dat,Gravity & gf,
+		std::vector<Plan> & pl,std::vector<PlanR> & plr,std::vector<Cone> & co,std::vector<Elbow> & elb,std::vector<Sphere> & sph,std::vector<Body> & bd,std::vector<HollowBall> & hb,Contact *ct,Data & dat,Gravity & gf,
 														Sphere *cell[], int & Ntp, char *name,bool record,int ntpi, int ntpf, int Nthreshold, double PQheight, double PQVel) noexcept {
 	record = 0;
 	for(int nt = ntpi  ; nt <= ntpf ; nt++){
@@ -119,7 +119,7 @@ int PowderPaQ::PowderPaQRun(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph
 }
 
 int PowderPaQ::PowderPaQOMP(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,int & Nsph0,int & Nbd,int & Nhb,int & Nct,int & Ncta,int & Nctb,int & Nctc,
-														vector<Plan> & pl,vector<PlanR> & plr,vector<Cone> & co,vector<Elbow> & elb,vector<Sphere> & sph,vector<Body> & bd,vector<HollowBall> & hb,Contact *ct,Contact *cta,Contact *ctb,Contact *ctc,Data & dat,Gravity & gf,
+		std::vector<Plan> & pl,std::vector<PlanR> & plr,std::vector<Cone> & co,std::vector<Elbow> & elb,std::vector<Sphere> & sph,std::vector<Body> & bd,std::vector<HollowBall> & hb,Contact *ct,Contact *cta,Contact *ctb,Contact *ctc,Data & dat,Gravity & gf,
 														Sphere *cell[], int & Ntp, char *name,bool record,int ntpi, int ntpf, int Nthreshold, double PQheight, double PQVel) noexcept {
 	record = 0;
 	for(int nt = ntpi  ; nt <= ntpf ; nt++){

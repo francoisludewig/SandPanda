@@ -27,10 +27,6 @@ void Sinusoid::Display() const noexcept {
 	printf("%e\t%e\t%e\t%e\n",a0,a1,w,phi);
 }
 
-double Sinusoid::Value(double t) const noexcept {
-  return (a0+a1*sin(w*t+phi));
-}
-
 double Sinusoid::Max() const noexcept {
 	 return (fabs(a0)+fabs(a1));
 }

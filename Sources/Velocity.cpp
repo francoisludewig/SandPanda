@@ -47,30 +47,6 @@ void Velocity::WriteToFileWithoutOrigin(FILE *ft, int mode) const noexcept {
 	wz.WriteToFile(ft,mode);		
 }
 
-double Velocity::ValueOfVx(double t) const noexcept {
-	return vx.Value(t);
-}
-
-double Velocity::ValueOfVy(double t) const noexcept {
-	return vy.Value(t);
-}
-
-double Velocity::ValueOfVz(double t) const noexcept {
-	return vz.Value(t);
-}
-
-double Velocity::ValueOfWx(double t) const noexcept {
-	return wx.Value(t);
-}
-
-double Velocity::ValueOfWy(double t) const noexcept {
-	return wy.Value(t);
-}
-
-double Velocity::ValueOfWz(double t) const noexcept {
-	return wz.Value(t);
-}
-
 double Velocity::VMax() const noexcept {
 	double v = vx.Max();
 	if(v < vy.Max())v = vy.Max();

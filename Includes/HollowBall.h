@@ -29,5 +29,5 @@ public:
     void ContactDetectionInHollowBall(Contact *ct, int & Nct) noexcept;
     void ContactDetectionWithHollowBall(Contact *ct, int & Nct) noexcept;
     void UpdateFromSph(double dt) noexcept;
-    void Makeavatar(vector<Sphere> & sph, int & Nsph, const int numero) noexcept;
+    void Makeavatar(std::vector<Sphere> & sph, int & Nsph, const int numero) noexcept;
 };

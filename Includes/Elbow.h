@@ -9,7 +9,7 @@ class Data;
 class Body;
 class Sphere;
 
-class Elbow{
+class Elbow {
 public:
 	Elbow() noexcept;
 	void ReadFromFile(FILE *ft) noexcept;

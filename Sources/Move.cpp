@@ -14,8 +14,9 @@
 #include "../Includes/ComputingForce.h"
 #include "../Includes/Data.h"
 #include "../Includes/Move.h"
+#include "../Includes/HollowBall.h"
 
-void Move::UpDateForceContainer(int & Nsph, vector<Sphere> & sph, int & Npl, int & Nplr, int & Nco, vector<Plan> & pl, vector<PlanR> & plr, vector<Cone> & co, double time, double dt, Gravity gt) noexcept {
+void Move::UpDateForceContainer(int & Nsph, std::vector<Sphere> & sph, int & Npl, int & Nplr, int & Nco, std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co, double time, double dt, Gravity gt) noexcept {
 	for(int i = 0 ; i < Npl ; i++){
 		pl[i].UpdateForceFromGB(Nsph,sph);
 	}
@@ -28,7 +29,7 @@ void Move::UpDateForceContainer(int & Nsph, vector<Sphere> & sph, int & Npl, int
 	}
 }
 
-void Move::upDateVelocityContainer(int & Npl, int & Nplr, int & Nco, int & Nelb, vector<Plan> & pl, vector<PlanR> & plr, vector<Cone> & co, vector<Elbow> & elb, double time, double dt, Gravity gt) noexcept {
+void Move::upDateVelocityContainer(int & Npl, int & Nplr, int & Nco, int & Nelb, std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co, std::vector<Elbow> & elb, double time, double dt, Gravity gt) noexcept {
 	for(int i = 0 ; i < Npl ; i++){
 		pl[i].UpDateVelocity(time,dt,gt);
 	}
@@ -42,7 +43,7 @@ void Move::upDateVelocityContainer(int & Npl, int & Nplr, int & Nco, int & Nelb,
 
 
 
-void Move::moveContainer(int & Npl, int & Nplr, int & Nco, int & Nelb, vector<Plan> & pl, vector<PlanR> & plr, vector<Cone> & co, vector<Elbow> & elb, double time, double dt, vector<Sphere> & sph, Gravity gt) noexcept {
+void Move::moveContainer(int & Npl, int & Nplr, int & Nco, int & Nelb, std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co, std::vector<Elbow> & elb, double time, double dt, std::vector<Sphere> & sph, Gravity gt) noexcept {
 	for(int i = 0 ; i < Npl ; i++){
 		pl[i].Move(dt);
 		pl[i].UpDateLinkedSphere(sph,time,gt);
@@ -61,7 +62,7 @@ void Move::moveContainer(int & Npl, int & Nplr, int & Nco, int & Nelb, vector<Pl
 	}
 }
 
-void Move::upDateVelocityLinkedSphereContainer(int & Npl, int & Nplr, int & Nco, int & Nelb, vector<Plan> & pl, vector<PlanR> & plr, vector<Cone> & co, vector<Elbow> & elb, double time, double dt, vector<Sphere> & sph) noexcept {
+void Move::upDateVelocityLinkedSphereContainer(int & Npl, int & Nplr, int & Nco, int & Nelb, std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co, std::vector<Elbow> & elb, double time, double dt, std::vector<Sphere> & sph) noexcept {
 	for(int i = 0 ; i < Npl ; i++){
 		pl[i].UpDateVelocityLinkedSphere(sph,time);
 	}
@@ -73,7 +74,7 @@ void Move::upDateVelocityLinkedSphereContainer(int & Npl, int & Nplr, int & Nco,
 	}
 }
 
-void Move::upDateVelocitySphere(int & Nsph, vector<Sphere> & sph, Gravity gt, double dt) noexcept {
+void Move::upDateVelocitySphere(int & Nsph, std::vector<Sphere> & sph, Gravity gt, double dt) noexcept {
 	Sphere *sphl = &sph[0];
 	// Frein viscqueux air
 	for(int i = 0 ; i < Nsph ; i++){
@@ -82,18 +83,18 @@ void Move::upDateVelocitySphere(int & Nsph, vector<Sphere> & sph, Gravity gt, do
 	}
 }
 
-void Move::upDateHollowBall(const int &Nhb, vector<HollowBall> & hb, double dt) noexcept {
+void Move::upDateHollowBall(const int &Nhb, std::vector<HollowBall> & hb, double dt) noexcept {
 	for(int i = 0 ; i < Nhb ; i++)
 		hb[i].UpdateFromSph(dt);
 		}
 
-void Move::MeltingSphere(int & Nsph, vector<Sphere> & sph, double vr, double delayVr, double dt) noexcept {
+void Move::MeltingSphere(int & Nsph, std::vector<Sphere> & sph, double vr, double delayVr, double dt) noexcept {
 	for(int i = 0 ; i < Nsph ; i++){
 		sph[i].Freeze(vr/delayVr, dt);
 	}
 }
 
-void Move::upDateVelocitySphereOMP(int & Nsph, vector<Sphere> & sph, Gravity gt, double dt, int Nprocess) noexcept {
+void Move::upDateVelocitySphereOMP(int & Nsph, std::vector<Sphere> & sph, Gravity gt, double dt, int Nprocess) noexcept {
 	if(Nprocess == 2){
 #pragma omp parallel 
 		{
@@ -137,7 +138,7 @@ void Move::upDateVelocitySphereOMP(int & Nsph, vector<Sphere> & sph, Gravity gt,
 	}
 }
 
-void Move::moveSphere(int & Nsph, vector<Sphere> & sph, double dt) noexcept {
+void Move::moveSphere(int & Nsph, std::vector<Sphere> & sph, double dt) noexcept {
 	Sphere *sphl = &sph[0];
 	for(int i = 0 ; i < Nsph ; i++){
 		sphl->move(dt);
@@ -145,7 +146,7 @@ void Move::moveSphere(int & Nsph, vector<Sphere> & sph, double dt) noexcept {
 	}
 }
 
-void Move::moveSphereOMP(int & Nsph, vector<Sphere> & sph, double dt, int Nprocess) noexcept {
+void Move::moveSphereOMP(int & Nsph, std::vector<Sphere> & sph, double dt, int Nprocess) noexcept {
 	if(Nprocess == 2){
 #pragma omp parallel 
 		{
@@ -192,14 +193,14 @@ void Move::moveSphereOMP(int & Nsph, vector<Sphere> & sph, double dt, int Nproce
 	}
 }
 
-void Move::moveBodies(int & Nbd, vector<Body> & bd, double dt, vector<Sphere> & sph) noexcept {
+void Move::moveBodies(int & Nbd, std::vector<Body> & bd, double dt, std::vector<Sphere> & sph) noexcept {
 	for(int i = 0 ; i < Nbd ; i++){
 		bd[i].Move(dt);
 		bd[i].UpDateLinkedSphere(sph);
 	}
 }
 
-void Move::moveBodiesOMP(int & Nbd, vector<Body> & bd, double dt, vector<Sphere> & sph, int Nprocess) noexcept {
+void Move::moveBodiesOMP(int & Nbd, std::vector<Body> & bd, double dt, std::vector<Sphere> & sph, int Nprocess) noexcept {
 	if(Nprocess == 2){
 #pragma omp parallel 
 		{
@@ -254,14 +255,14 @@ void Move::moveBodiesOMP(int & Nbd, vector<Body> & bd, double dt, vector<Sphere>
 }
 
 
-void Move::upDateVelocityBodies(int & Nbd, vector<Body> & bd, Gravity gt, double dt, vector<Sphere> & sph) noexcept {
+void Move::upDateVelocityBodies(int & Nbd, std::vector<Body> & bd, Gravity gt, double dt, std::vector<Sphere> & sph) noexcept {
 	for(int i = 0 ; i < Nbd ; i++){
 		bd[i].UpDateVelocity(dt,gt);
 		bd[i].UpDateLinkedSphere(sph);
 	}
 }
 
-void Move::upDateVelocityBodiesOMP(int & Nbd, vector<Body> & bd, Gravity gt, double dt, vector<Sphere> & sph, int Nprocess) noexcept {
+void Move::upDateVelocityBodiesOMP(int & Nbd, std::vector<Body> & bd, Gravity gt, double dt, std::vector<Sphere> & sph, int Nprocess) noexcept {
 	if(Nprocess == 2){
 #pragma omp parallel 
 		{

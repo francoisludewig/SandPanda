@@ -9,11 +9,19 @@ class Sphere;
 class Contact;
 class Fluid;
 
-class Solid : public MechanicalPoint {
+class Solid : public MechanicalPointWithBase {
 public:
 	Solid() noexcept;
 	~Solid() noexcept;
 	
+	double ValueOfVx(double t) noexcept { return(V.ValueOfVx(t)); }
+	double ValueOfVy(double t) noexcept { return(V.ValueOfVy(t)); }
+	double ValueOfVz(double t) noexcept { return(V.ValueOfVz(t));	}
+	double ValueOfWx(double t) noexcept { return(V.ValueOfWx(t)); }
+	double ValueOfWy(double t) noexcept { return(V.ValueOfWy(t)); }
+	double ValueOfWz(double t) noexcept { return(V.ValueOfWz(t)); }
+	void SetMass(double m) noexcept { Mass = m; }
+
 	class Cell** getVcell() noexcept;
 	void LoadFromFile(FILE *ft) noexcept;
 	void LoadAccelerationFromFile(FILE *ft) noexcept;
@@ -45,15 +53,8 @@ public:
 	void SetWy(double newA0, double newA1, double newW, double newPhi) noexcept;
 	void SetVz(double newA0, double newA1, double newW, double newPhi) noexcept;
 	void SetWz(double newA0, double newA1, double newW, double newPhi) noexcept;
-	double ValueOfVx(double t) noexcept;
-	double ValueOfVy(double t) noexcept;
-	double ValueOfVz(double t) noexcept;
-	double ValueOfWx(double t) noexcept;
-	double ValueOfWy(double t) noexcept;
-	double ValueOfWz(double t) noexcept;
 	void UpDateVelocityLinkedSphere(std::vector<Sphere> & sph, double time) noexcept;
 	void UpDateGravityVelocityLinkedSphere(std::vector<Sphere> & sph, double time, Gravity& gt) noexcept;
-	void SetMass(double m) noexcept;
 	void SetFcx(double fx) noexcept;
 	void SetFcy(double fy) noexcept;
 	void SetFcz(double fz) noexcept;
@@ -62,9 +63,6 @@ public:
 	
 	int numero;
 	// Base
-	double nx,ny,nz;
-	double tx,ty,tz;
-	double sx,sy,sz;
 	double Fcx,Fcy,Fcz;
 	double Mcx,Mcy,Mcz;
 	double Mass,In,It,Is;

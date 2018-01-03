@@ -45,3 +45,4 @@ public:
 	void Move(double h) noexcept;
 	void UpDateSolid() noexcept;
 };
+

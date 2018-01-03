@@ -76,7 +76,7 @@ void HollowBall::Makeavatar(vector<Sphere> & sph, int & Nsph, const int numero) 
     Navatar = Nsph-1;
 }
 
-void HollowBall::LinkInSph(vector<Sphere> & sph, int & Nsph, const int numero) noexcept {
+void HollowBall::LinkInSph(std::vector<Sphere> & sph, int & Nsph, const int numero) noexcept {
     avatar = &sph[Navatar];
     NinSph = 0;
     for(int i = 0 ; i < Nsph ; i++){

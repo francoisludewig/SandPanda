@@ -15,7 +15,7 @@
 #include "../Includes/Data.h"
 
 /* Fonction qui initialise tous les obejts avant chaque etape de calcul */
-void ComputeForce::InitForTimeStep(const int & Nsph, const int & Nbd , const int & Nct ,int & Npl, int & Nplr, int & Nco, int & Nelb, vector<Sphere> & sph, vector<Body> & bd, Contact *ct, vector<Plan> & pl, vector<PlanR> & plr, vector<Cone> & co, vector<Elbow> & elb) noexcept {
+void ComputeForce::InitForTimeStep(const int & Nsph, const int & Nbd , const int & Nct ,int & Npl, int & Nplr, int & Nco, int & Nelb, std::vector<Sphere> & sph, std::vector<Body> & bd, Contact *ct, std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co, std::vector<Elbow> & elb) noexcept {
 	Sphere *sphl = &sph[0];
 	for(int i = 0 ; i < Nsph ; i++){
 		sphl->initTimeStep();
@@ -34,7 +34,7 @@ void ComputeForce::InitForTimeStep(const int & Nsph, const int & Nbd , const int
 }
 
 /* Fonction qui initialise tous les obejts avant chaque etape de calcul en version parallel OMP */
-void ComputeForce::InitForTimeStepOMP(const int & Nsph, const int & Nbd , const int & Nct , const int & Ncta , const int & Nctb , const int & Nctc ,int & Npl, int & Nplr, int & Nco, int & Nelb, vector<Sphere> & sph, vector<Body> & bd, Contact *ct, Contact *cta, Contact *ctb, Contact *ctc, vector<Plan> & pl, vector<PlanR> & plr, vector<Cone> & co, vector<Elbow> & elb) noexcept {
+void ComputeForce::InitForTimeStepOMP(const int & Nsph, const int & Nbd , const int & Nct , const int & Ncta , const int & Nctb , const int & Nctc ,int & Npl, int & Nplr, int & Nco, int & Nelb, std::vector<Sphere> & sph, std::vector<Body> & bd, Contact *ct, Contact *cta, Contact *ctb, Contact *ctc, std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co, std::vector<Elbow> & elb) noexcept {
 	// Sphere
 	for(int i = 0 ; i < Nsph ; i++)
 		sph[i].initTimeStep();

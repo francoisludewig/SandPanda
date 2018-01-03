@@ -4,6 +4,11 @@
 #include <stdio.h>
 #include "../Includes/Body.h"
 #include "../Includes/Sphere.h"
+#include "../Includes/BodySpecie.h"
+#include "../Includes/Gravity.h"
+#include "../Includes/HollowBall.h"
+#include "../Includes/ComputingForce.h"
+#include "../Includes/ContactDetection.h"
 
 Body::Body() noexcept {
 	QuaternionToBase();
@@ -139,20 +144,6 @@ void Body::UpDateVelocity(double dt, Gravity & g) noexcept {
 		wy += (wn*ny+wt*ty+ws*sy);
 		wz += (wn*nz+wt*tz+ws*sz);
 	}
-}
-
-inline void Body::QuaternionToBase() noexcept {
-	nx = 1 - 2*q2*q2 - 2*q3*q3;
-	ny = 2*q1*q2 + 2*q3*q0;
-	nz = 2*q1*q3 - 2*q2*q0;
-	
-	tx = 2*q1*q2 - 2*q3*q0;
-	ty = 1 - 2*q1*q1 - 2*q3*q3;
-	tz = 2*q2*q3 + 2*q1*q0;
-	
-	sx = 2*q1*q3 + 2*q2*q0;
-	sy = 2*q2*q3 - 2*q1*q0;
-	sz = 1 - 2*q1*q1 - 2*q2*q2;
 }
 
 void Body::Move(double dt) noexcept {
@@ -314,18 +305,6 @@ Elongation Body::FoundIt(int n, int t,  int selfn, int nob) const noexcept {
 	Elongation e;
 	e.Reset();
 	return(e);
-}
-
-int Body::NumberOfSphere() const noexcept {
-	return Ng;
-}
-
-int Body::Num() const noexcept {
-	return numl;
-}
-
-double Body::GetRmax() const noexcept {
-	return Rmax;
 }
 
 void Body::SetActiveRotation(int na) noexcept {
