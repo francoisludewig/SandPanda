@@ -10,9 +10,9 @@ void PeriodicityPL(const int & Nsph, const int & Nbd, const int &Npl, std::vecto
 	Sphere *b;
 	
 	for(int i = 0 ; i < Npl ; i++){
-		if((plp = pl[i].periodic) != -9){
-			for(int j = 0 ; j < pl[i].Nlist ; j++){
-				b = &sph[pl[i].list[j]];
+		if((plp = pl[i].Periodic()) != -9){
+			for(int j = 0 ; j < pl[i].ListCount() ; j++){
+				b = &sph[pl[i].List(j)];
 				if((b->Bodies()) == -9){
 					px = b->X();
 					py = b->Y();
@@ -31,9 +31,9 @@ void PeriodicityPL(const int & Nsph, const int & Nbd, const int &Npl, std::vecto
 	}
 	
 	for(int i = 0 ; i < Npl ; i++){
-		if((plp = pl[i].periodic) != -9){
-			for(int j = 0 ; j < pl[i].Nlist ; j++){
-				b = &sph[pl[i].list[j]];	
+		if((plp = pl[i].Periodic()) != -9){
+			for(int j = 0 ; j < pl[i].ListCount() ; j++){
+				b = &sph[pl[i].List(j)];
 				if(b->Bodies() != -9){
 					px = (b->GetBody())->X();
 					py = (b->GetBody())->Y();

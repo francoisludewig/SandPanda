@@ -2,14 +2,9 @@
 #include "../Includes/Contact.h"
 #include "../Includes/Sphere.h"
 
-Plan::Plan() noexcept : Solid(){
-	dt = 0.5;
-	ds = 0.5;
-	dn = 0;
-	periodic = -9;
-	sigma = 0;
-	ra = 0;
-}
+Plan::Plan() noexcept : Solid(),
+	dt(0.5), ds(0.5), dn(0),
+	periodic(-9), sigma(0), ra(0) {}
 
 Plan::~Plan() noexcept {
 	delete [] list;
@@ -18,14 +13,6 @@ Plan::~Plan() noexcept {
 void Plan::InitList(int N) noexcept {
 	if(periodic != -9)
 		list = new int[N];
-}
-
-double Plan::Ds() const noexcept {
-	return ds;
-}
-
-double Plan::Dt() const noexcept {
-	return dt;
 }
 
 void Plan::SetAlpha(double a) noexcept {

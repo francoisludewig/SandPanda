@@ -340,7 +340,7 @@ void ContactDetection::ContactBodyPlan(Plan & p, Body *b, Contact *ct, int & Nct
 		pn = (px-p.X())*p.Nx()+(py-p.Y())*p.Ny()+(pz-p.Z())*p.Nz();
 		pt = (px-p.X())*p.Tx()+(py-p.Y())*p.Ty()+(pz-p.Z())*p.Tz();
 		ps = (px-p.X())*p.Sx()+(py-p.Y())*p.Sy()+(pz-p.Z())*p.Sz();
-		if((fabs(pt) < p.dt) && (fabs(ps) < p.ds)){
+		if((fabs(pt) < p.Dt()) && (fabs(ps) < p.Ds())){
 			if( (pn <= 0.0) && (pn > -b->r[i])){
 				ct[Nct].type = 11;
 				ct[Nct].delta = pn;
@@ -355,7 +355,7 @@ void ContactDetection::ContactBodyPlan(Plan & p, Body *b, Contact *ct, int & Nct
 				ct[Nct].nba = i;
 				Nct++;
 			}
-			if(p.inAndOut == 1){
+			if(p.InAndOut() == 1){
 				px = b->xg[i] + b->r[i]*p.Nx();
 				py = b->yg[i] + b->r[i]*p.Ny();
 				pz = b->zg[i] + b->r[i]*p.Nz();
@@ -380,17 +380,17 @@ void ContactDetection::ContactBodyPlan(Plan & p, Body *b, Contact *ct, int & Nct
 		}
 		else{
 			// pt ok seul
-			if((fabs(pt) < p.dt/2) && (fabs(ps) > p.ds/2)){
-				ps = ps/fabs(ps)*p.ds/2;
+			if((fabs(pt) < p.Dt()/2) && (fabs(ps) > p.Ds()/2)){
+				ps = ps/fabs(ps)*p.Ds()/2;
 			}
 			// ps ok seul
-			if((fabs(pt) > p.dt/2) && (fabs(ps) < p.ds/2)){
-				pt = pt/fabs(pt)*p.dt/2;
+			if((fabs(pt) > p.Dt()/2) && (fabs(ps) < p.Ds()/2)){
+				pt = pt/fabs(pt)*p.Dt()/2;
 			}
 			// aucun ok
-			if((fabs(pt) > p.dt/2) && (fabs(ps) > p.ds/2)){
-				ps = ps/fabs(ps)*p.ds/2;
-				pt = pt/fabs(pt)*p.dt/2;
+			if((fabs(pt) > p.Dt()/2) && (fabs(ps) > p.Ds()/2)){
+				ps = ps/fabs(ps)*p.Ds()/2;
+				pt = pt/fabs(pt)*p.Dt()/2;
 			}
 			// Point du plan candidat au contact
 			px = p.X() + ps*p.Sx() + pt*p.Tx();
@@ -428,7 +428,7 @@ void ContactDetection::ContactSphPlan(Plan & p, Sphere *b, Contact *ct, int & Nc
 		pn = (px-p.X())*p.Nx()+(py-p.Y())*p.Ny()+(pz-p.Z())*p.Nz();
 		pt = (px-p.X())*p.Tx()+(py-p.Y())*p.Ty()+(pz-p.Z())*p.Tz();
 		ps = (px-p.X())*p.Sx()+(py-p.Y())*p.Sy()+(pz-p.Z())*p.Sz();
-		if((fabs(pt) < p.dt/2) && (fabs(ps) < p.ds/2)){
+		if((fabs(pt) < p.Dt()/2) && (fabs(ps) < p.Ds()/2)){
 			if( (pn <= 0.0) && (pn > -b->Radius())){
 				ct[Nct].type = 1;
 				ct[Nct].delta = pn;
@@ -440,7 +440,7 @@ void ContactDetection::ContactSphPlan(Plan & p, Sphere *b, Contact *ct, int & Nc
 				ct[Nct].nz = -p.Nz();
 				//printf("n = (%e,%e,%e)\n", ct[Nct].nx, ct[Nct].ny, ct[Nct].nz);
 				p.Normal(&ct[Nct],b);
-				//if(p.sigma != 0)
+				//if(p.Sigma() != 0)
 				//	printf("n = (%e,%e,%e)\n\n", ct[Nct].nx, ct[Nct].ny, ct[Nct].nz);
 				
 				ct[Nct].pa = &p;
@@ -448,10 +448,10 @@ void ContactDetection::ContactSphPlan(Plan & p, Sphere *b, Contact *ct, int & Nc
 				Nct++;
 			}
 			else{
-				if(p.sigma != 0)
+				if(p.Sigma() != 0)
 					b->Ct_pl(0);
 			}
-			if(p.inAndOut == 1){
+			if(p.InAndOut() == 1){
 				px = b->X() + b->Radius()*p.Nx();
 				py = b->Y() + b->Radius()*p.Ny();
 				pz = b->Z() + b->Radius()*p.Nz();
@@ -473,24 +473,24 @@ void ContactDetection::ContactSphPlan(Plan & p, Sphere *b, Contact *ct, int & Nc
 					Nct++;
 				}
 				else{
-					if(p.sigma != 0)
+					if(p.Sigma() != 0)
 						b->Ct_pl(0);
 				}
 			}
 		}
 		else{
 			// pt ok seul
-			if((fabs(pt) < p.dt/2) && (fabs(ps) > p.ds/2)){
-				ps = ps/fabs(ps)*p.ds/2;
+			if((fabs(pt) < p.Dt()/2) && (fabs(ps) > p.Ds()/2)){
+				ps = ps/fabs(ps)*p.Ds()/2;
 			}
 			// ps ok seul
-			if((fabs(pt) > p.dt/2) && (fabs(ps) < p.ds/2)){
-				pt = pt/fabs(pt)*p.dt/2;
+			if((fabs(pt) > p.Dt()/2) && (fabs(ps) < p.Ds()/2)){
+				pt = pt/fabs(pt)*p.Dt()/2;
 			}
 			// aucun ok
-			if((fabs(pt) > p.dt/2) && (fabs(ps) > p.ds/2)){
-				ps = ps/fabs(ps)*p.ds/2;
-				pt = pt/fabs(pt)*p.dt/2;
+			if((fabs(pt) > p.Dt()/2) && (fabs(ps) > p.Ds()/2)){
+				ps = ps/fabs(ps)*p.Ds()/2;
+				pt = pt/fabs(pt)*p.Dt()/2;
 			}
 			// Point du plan candidat au contact
 			px = p.X() + ps*p.Sx() + pt*p.Tx();
@@ -528,16 +528,16 @@ void ContactDetection::ContactSphPlanPeriodic(Sphere *llist[], Plan & p, Plan & 
 	pn = (px-p.X())*p.Nx()+(py-p.Y())*p.Ny()+(pz-p.Z())*p.Nz();
 	pt = (px-p.X())*p.Tx()+(py-p.Y())*p.Ty()+(pz-p.Z())*p.Tz();
 	ps = (px-p.X())*p.Sx()+(py-p.Y())*p.Sy()+(pz-p.Z())*p.Sz();
-	if( (pn <= (b->Radius()+rmax)) && (pn > -2*b->Radius()) && (fabs(pt) < p.dt/2+b->Radius()) &&
-	   (fabs(ps) < p.ds/2+b->Radius()) ){
+	if( (pn <= (b->Radius()+rmax)) && (pn > -2*b->Radius()) && (fabs(pt) < p.Dt()/2+b->Radius()) &&
+	   (fabs(ps) < p.Ds()/2+b->Radius()) ){
 		pt = (px-p2.X())*p2.Tx()+(py-p2.Y())*p2.Ty()+(pz-p2.Z())*p2.Tz();
 		ps = (px-p2.X())*p2.Sx()+(py-p2.Y())*p2.Sy()+(pz-p2.Z())*p2.Sz();
 		b->X2(p2.X() + (-pn)*p2.Nx() + pt*p2.Tx() + ps*p2.Sx());
 		b->Y2(p2.Y() + (-pn)*p2.Ny() + pt*p2.Ty() + ps*p2.Sy());
 		b->Z2(p2.Z() + (-pn)*p2.Nz() + pt*p2.Tz() + ps*p2.Sz());
-		llist[p.Nlist] = b;
-		p.list[p.Nlist] = b->Num();
-		p.Nlist++;
+		llist[p.ListCount()] = b;
+		p.List(p.ListCount(), b->Num());
+		p.ListCount(p.ListCount() + 1);
 	}
 }
 
@@ -1013,8 +1013,8 @@ void ContactDetection::listCellForPlan(Data *dat, std::vector<Plan> & pl, int & 
 	for(a = 0 ; a < Npl ; a++){
 		if(pl[a].Force == 0){
 			Vmax = pl[a].Vmax();
-			if(Vmax < pl[a].Wmax()*pl[a].dt)Vmax = pl[a].Wmax()*pl[a].dt;
-			if(Vmax < pl[a].Wmax()*pl[a].ds)Vmax = pl[a].Wmax()*pl[a].ds;
+			if(Vmax < pl[a].Wmax()*pl[a].Dt())Vmax = pl[a].Wmax()*pl[a].Dt();
+			if(Vmax < pl[a].Wmax()*pl[a].Ds())Vmax = pl[a].Wmax()*pl[a].Ds();
 			
 			time = pl[a].Delay();
 			
@@ -1072,8 +1072,8 @@ void ContactDetection::listCellForPlan(Data *dat, std::vector<Plan> & pl, int & 
 							pn = (x-ox)*nx+(y-oy)*ny+(z-oz)*nz;
 							pt = (x-ox)*tx+(y-oy)*ty+(z-oz)*tz;
 							ps = (x-ox)*sx+(y-oy)*sy+(z-oz)*sz;
-							if( (fabs(pt) < (pl[a].dt/2+dt)) &&
-							   (fabs(ps) < (pl[a].ds/2+ds)) &&
+							if( (fabs(pt) < (pl[a].Dt()/2+dt)) &&
+							   (fabs(ps) < (pl[a].Ds()/2+ds)) &&
 							   (pn <= dn) && pn > -dn){
 								// Control de doublon
 								doublon = 0;
@@ -1728,14 +1728,14 @@ void ContactDetection::sphPlanContact(const int &Nsph, const int &Npl, int & Nct
 	int control[Npl];
 	
 	for(int i = 0 ; i < Npl ; i++){
-		if(pl[i].periodic == -9)
+		if(pl[i].Periodic() == -9)
 			control[i] = 1;
 		else
 			control[i] = 0;
 	}
 	
 	for(int i = 0 ; i < Npl ; i++){
-		if(pl[i].periodic == -9){
+		if(pl[i].Periodic() == -9){
 			for(int j = 0 ; j < pl[i].NCell ; j++){
 				if((anta = cell[pl[i].Cell[j]]) != NULL){
 					do{
@@ -1747,27 +1747,27 @@ void ContactDetection::sphPlanContact(const int &Nsph, const int &Npl, int & Nct
 		else{
 			if(control[i] == 0){
 				Sphere *llistI[Nsph];
-				pl[i].Nlist = 0;
+				pl[i].ListCount(0);
 				for(int j = 0 ; j < pl[i].NCell ; j++){
 					if((anta = cell[pl[i].Cell[j]]) != NULL){
 						do{
-							ContactSphPlanPeriodic(llistI, pl[i], pl[pl[i].periodic], anta, rmax);
+							ContactSphPlanPeriodic(llistI, pl[i], pl[pl[i].Periodic()], anta, rmax);
 						}while((anta = anta->TDL()) != NULL);
 					}
 				}
 				Sphere *llistK[Nsph];
-				int k = pl[i].periodic;
-				pl[k].Nlist = 0;
+				int k = pl[i].Periodic();
+				pl[k].ListCount(0);
 				for(int j = 0 ; j < pl[k].NCell ; j++){
 					if((anta = cell[pl[k].Cell[j]]) != NULL){
 						do{
-							ContactSphPlanPeriodic(llistK, pl[k], pl[pl[k].periodic], anta, rmax);
+							ContactSphPlanPeriodic(llistK, pl[k], pl[pl[k].Periodic()], anta, rmax);
 						}while((anta = anta->TDL()) != NULL);
 					}
 				}
 				
-				for(int j = 0 ; j < pl[i].Nlist ; j++){
-					for(int l = 0 ; l < pl[k].Nlist ; l++){
+				for(int j = 0 ; j < pl[i].ListCount() ; j++){
+					for(int l = 0 ; l < pl[k].ListCount() ; l++){
 						ContactSphSphPeriodic(llistI[j], llistK[l], ct, Nct);
 					}
 				}
@@ -1783,13 +1783,13 @@ void ContactDetection::sphPlanContactOMP(const int &Nsph, const int &Npl, int & 
 	int control[Npl];
 	
 	for(int i = 0 ; i < Npl ; i++){
-		if(pl[i].periodic == -9)
+		if(pl[i].Periodic() == -9)
 			control[i] = 1;
 		else
 			control[i] = 0;
 	}
 	for(int i = 0 ; i < Npl ; i++){
-		if(pl[i].periodic == -9 && pl[i].Ngb == 0){
+		if(pl[i].Periodic() == -9 && pl[i].Ngb == 0){
 #pragma omp parallel private(anta)
 			{
 #pragma omp sections
@@ -1819,7 +1819,7 @@ void ContactDetection::sphPlanContactOMP(const int &Nsph, const int &Npl, int & 
 		}
 		else{
 			if(control[i] == 0){
-				int k = pl[i].periodic;
+				int k = pl[i].Periodic();
 				Sphere *llistK[Nsph];
 				Sphere *llistI[Nsph];
 #pragma omp parallel private(anta)
@@ -1828,22 +1828,22 @@ void ContactDetection::sphPlanContactOMP(const int &Nsph, const int &Npl, int & 
 					{
 #pragma omp section
 						{
-							pl[i].Nlist = 0;
+							pl[i].ListCount(0);
 							for(int j = 0 ; j < pl[i].NCell ; j++){
 								if((anta = cell[pl[i].Cell[j]]) != NULL){
 									do{
-										ContactSphPlanPeriodic(llistI, pl[i],pl[pl[i].periodic], anta,rmax);
+										ContactSphPlanPeriodic(llistI, pl[i],pl[pl[i].Periodic()], anta,rmax);
 									}while((anta = anta->TDL()) != NULL);
 								}
 							}
 						}
 #pragma omp section
 						{
-							pl[k].Nlist = 0;
+							pl[k].ListCount(0);
 							for(int j = 0 ; j < pl[k].NCell ; j++){
 								if((anta = cell[pl[k].Cell[j]]) != NULL){
 									do{
-										ContactSphPlanPeriodic(llistK, pl[k],pl[pl[k].periodic], anta,rmax);
+										ContactSphPlanPeriodic(llistK, pl[k],pl[pl[k].Periodic()], anta,rmax);
 									}while((anta = anta->TDL()) != NULL);
 								}
 							}
@@ -1857,8 +1857,8 @@ void ContactDetection::sphPlanContactOMP(const int &Nsph, const int &Npl, int & 
 					{
 #pragma omp section
 						{
-							for(int j = 0 ; j < pl[i].Nlist/2 ; j++){
-								for(int l = 0 ; l < pl[k].Nlist ; l++){
+							for(int j = 0 ; j < pl[i].ListCount()/2 ; j++){
+								for(int l = 0 ; l < pl[k].ListCount() ; l++){
 									ContactSphSphPeriodic(llistI[j],llistK[l], ct, Nct);
 								}
 							}
@@ -1866,8 +1866,8 @@ void ContactDetection::sphPlanContactOMP(const int &Nsph, const int &Npl, int & 
 						
 #pragma omp section
 						{
-							for(int j = pl[i].Nlist/2 ; j < pl[i].Nlist ; j++){
-								for(int l = 0 ; l < pl[k].Nlist ; l++){
+							for(int j = pl[i].ListCount()/2 ; j < pl[i].ListCount() ; j++){
+								for(int l = 0 ; l < pl[k].ListCount() ; l++){
 									ContactSphSphPeriodic(llistI[j],llistK[l] , cta, Ncta);
 								}
 							}
