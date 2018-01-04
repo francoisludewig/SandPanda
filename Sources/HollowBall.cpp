@@ -213,23 +213,23 @@ void HollowBall::ContactDetectionWithHollowBall(Contact *ct, int & Nct) noexcept
                 // Test du contact entre la particule cand et la HollowBall
                 else{
                    
-                    for(int j = candb->Ng-1 ; j--;){
+                    for(int j = candb->SphereCount()-1 ; j--;){
                         // Test du contact entre la sphere cand et la HollowBall
-                        dx = x - (candb->xg[j]);
-                        dy = y - (candb->yg[j]);
-                        dz = z - (candb->zg[j]);
-                        if((D = sqrt(dx*dx+dy*dy+dz*dz)) > (r-candb->r[j])){
+                        dx = x - (candb->SphereX(j));
+                        dy = y - (candb->SphereY(j));
+                        dz = z - (candb->SphereZ(j));
+                        if((D = sqrt(dx*dx+dy*dy+dz*dz)) > (r-candb->SphereRadius(j))){
                            // printf("Contact HollowBall and Particle %d (Ng = %d)(d = %e)\n\n",candb->Num(),j,(r-candb->r[j])-D);
                            // printf("sph(%d) = (%e,%e,%e)\n",j,candb->xg[j],candb->yg[j],candb->zg[j]);
                            // exit(0);
                             ct[Nct].type = 6;
-                            ct[Nct].delta = (r-candb->r[j])-D;
+                            ct[Nct].delta = (r-candb->SphereRadius(j))-D;
                             ct[Nct].nx = dx/D;
                             ct[Nct].ny = dy/D;
                             ct[Nct].nz = dz/D;
-                            ct[Nct].px = candb->xg[j] - dx/D*candb->r[j];
-                            ct[Nct].py = candb->yg[j] - dy/D*candb->r[j];
-                            ct[Nct].pz = candb->zg[j] - dz/D*candb->r[j];
+                            ct[Nct].px = candb->SphereX(j) - dx/D*candb->SphereRadius(j);
+                            ct[Nct].py = candb->SphereY(j) - dy/D*candb->SphereRadius(j);
+                            ct[Nct].pz = candb->SphereZ(j) - dz/D*candb->SphereRadius(j);
                             ct[Nct].sa = avatar;
                             ct[Nct].bb = candb;
                             ct[Nct].nbb = j;

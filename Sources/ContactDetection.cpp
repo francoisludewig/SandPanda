@@ -30,20 +30,20 @@ int ContactDetection::ContactSphBody(Sphere *a, Body *b, Contact *ct, int &Nct) 
 	yc = a->Y() - Ny*a->Radius();
 	zc = a->Z() - Nz*a->Radius();
 	
-	double delta[b->Ng];
+	double delta[b->SphereCount()];
 	// Liste des sph de b
-	for(int i = b->Ng ; i--;){
-		delta[i] = (b->xg[i]-xc)*Nx+(b->yg[i]-yc)*Ny+(b->zg[i]-zc)*Nz;
+	for(int i = b->SphereCount() ; i--;){
+		delta[i] = (b->SphereX(i)-xc)*Nx+(b->SphereY(i)-yc)*Ny+(b->SphereZ(i)-zc)*Nz;
 	}
 	
 	// Test Contact potentiel
-	for(int i = b->Ng ; i--;){
-		if(delta[i] > -b->r[i]){
+	for(int i = b->SphereCount() ; i--;){
+		if(delta[i] > -b->SphereRadius(i)){
 			double px,py,pz,Q,P2;
-			px = a->X() - b->xg[i];
-			py = a->Y() - b->yg[i];
-			pz = a->Z() - b->zg[i];
-			Q = (a->Radius()+b->r[i]);
+			px = a->X() - b->SphereX(i);
+			py = a->Y() - b->SphereY(i);
+			pz = a->Z() - b->SphereZ(i);
+			Q = (a->Radius()+b->SphereRadius(i));
 			P2 = px*px+py*py+pz*pz;
 			if(P2 < Q*Q){
 				P2 = sqrt(P2);
@@ -54,9 +54,9 @@ int ContactDetection::ContactSphBody(Sphere *a, Body *b, Contact *ct, int &Nct) 
 				ct[Nct].ny = py/P2;
 				ct[Nct].nz = pz/P2;
 				
-				ct[Nct].px = b->xg[i] + px/2.;
-				ct[Nct].py = b->yg[i] + py/2.;
-				ct[Nct].pz = b->zg[i] + pz/2.;
+				ct[Nct].px = b->SphereX(i) + px/2.;
+				ct[Nct].py = b->SphereY(i) + py/2.;
+				ct[Nct].pz = b->SphereZ(i) + pz/2.;
 				
 				ct[Nct].sa = a;
 				ct[Nct].bb = b;
@@ -90,33 +90,33 @@ int ContactDetection::ContactSphBodyPeriodic(Sphere *a, Body *b, Contact *ct, in
 	yc = a->Y2() - Ny*a->Radius();
 	zc = a->Z2() - Nz*a->Radius();
 	
-	double delta[b->Ng];
+	double delta[b->SphereCount()];
 	// Liste des sph de b
-	for(int i = b->Ng ; i--;){
-		delta[i] = (b->xg[i]-xc)*Nx+(b->yg[i]-yc)*Ny+(b->zg[i]-zc)*Nz;
+	for(int i = b->SphereCount() ; i--;){
+		delta[i] = (b->SphereX(i)-xc)*Nx+(b->SphereY(i)-yc)*Ny+(b->SphereZ(i)-zc)*Nz;
 	}
 	
 	// Test Contact potentiel
-	for(int i = b->Ng ; i--;){
-		if(delta[i] > -b->r[i]){
+	for(int i = b->SphereCount() ; i--;){
+		if(delta[i] > -b->SphereRadius(i)){
 			double px,py,pz,Q,P2;
-			px = a->X2() - b->xg[i];
-			py = a->Y2() - b->yg[i];
-			pz = a->Z2() - b->zg[i];
-			Q = (a->Radius()+b->r[i]);
+			px = a->X2() - b->SphereX(i);
+			py = a->Y2() - b->SphereY(i);
+			pz = a->Z2() - b->SphereZ(i);
+			Q = (a->Radius()+b->SphereRadius(i));
 			P2 = px*px+py*py+pz*pz;
 			if(P2 < Q*Q){
 				P2 = sqrt(P2);
 				ct[Nct].type = 10;
-				ct[Nct].delta = P2-(a->Radius()+b->r[i]);
+				ct[Nct].delta = P2-(a->Radius()+b->SphereRadius(i));
 				
 				ct[Nct].nx = px/P2;
 				ct[Nct].ny = py/P2;
 				ct[Nct].nz = pz/P2;
 				
-				ct[Nct].px = b->xg[i] + px/2.;
-				ct[Nct].py = b->yg[i] + py/2.;
-				ct[Nct].pz = b->zg[i] + pz/2.;
+				ct[Nct].px = b->SphereX(i) + px/2.;
+				ct[Nct].py = b->SphereY(i) + py/2.;
+				ct[Nct].pz = b->SphereZ(i) + pz/2.;
 				
 				ct[Nct].sa = a;
 				ct[Nct].bb = b;
@@ -153,36 +153,35 @@ int ContactDetection::ContactBodyBody(Body *a, Body *b, Contact *ct, int &Nct, d
 	yc = (ra*a->Y()+rb*b->Y())/(ra+rb);
 	zc = (ra*a->Z()+rb*b->Z())/(ra+rb);
 	
-	double deltaA[a->Ng];
-	double deltaB[b->Ng];
+	double deltaA[a->SphereCount()];
+	double deltaB[b->SphereCount()];
 	double dminA = 10,dmaxB = -10;
-	double dmaxA = a->Rmax;
-	double dminB = -b->Rmax;
+	double dmaxA = a->MaximumRadius();
+	double dminB = -b->MaximumRadius();
 	int Na = 0,Nb = 0;
 	double Min,Max;
 	//int Nct0 = Nct;
 	double px,py,pz,Q,P2;
 	
 	// Liste des sph de a
-	for(int i = 0 ; i < a->Ng ; i++){
-		deltaA[i] = (a->xg[i]-xc)*Nx+(a->yg[i]-yc)*Ny+(a->zg[i]-zc)*Nz;
-		
-		if(deltaA[i]-a->r[i] < dminA)dminA = deltaA[i]-a->r[i];
+	for(int i = 0 ; i < a->SphereCount() ; i++){
+		deltaA[i] = (a->SphereX(i)-xc)*Nx+(a->SphereY(i)-yc)*Ny+(a->SphereZ(i)-zc)*Nz;
+		if(deltaA[i]-a->SphereRadius(i) < dminA)dminA = deltaA[i]-a->SphereRadius(i);
 		if(deltaA[i] < dmaxA)Na++;
 	}
 	// Liste des sph de b
-	for(int i = 0 ; i < b->Ng ; i++){
-		deltaB[i] = (b->xg[i]-xc)*Nx+(b->yg[i]-yc)*Ny+(b->zg[i]-zc)*Nz;
-		if(deltaB[i]+b->r[i] > dmaxB)dmaxB = deltaB[i]+b->r[i];
+	for(int i = 0 ; i < b->SphereCount() ; i++){
+		deltaB[i] = (b->SphereX(i)-xc)*Nx+(b->SphereY(i)-yc)*Ny+(b->SphereZ(i)-zc)*Nz;
+		if(deltaB[i]+b->SphereRadius(i) > dmaxB)dmaxB = deltaB[i]+b->SphereRadius(i);
 		if(deltaB[i] > dminB)Nb++;
 	}
 	
 	
 	// Tolerence de securite
-	dminA -= a->Rmax;
-	dminB -= b->Rmax;
-	dmaxA += a->Rmax;
-	dmaxB += b->Rmax;
+	dminA -= a->MaximumRadius();
+	dminB -= b->MaximumRadius();
+	dmaxA += a->MaximumRadius();
+	dmaxB += b->MaximumRadius();
 	
 	if(dmaxB > dmaxA)
 		Max = dmaxB;
@@ -197,30 +196,30 @@ int ContactDetection::ContactBodyBody(Body *a, Body *b, Contact *ct, int &Nct, d
 	int Ncontrol = 0;
 	int Ntest = 0;
 	
-	for(int i = 0 ; i < a->Ng ; i++){
-		for(int j = 0 ; j < b->Ng ; j++){
+	for(int i = 0 ; i < a->SphereCount() ; i++){
+		for(int j = 0 ; j < b->SphereCount() ; j++){
 			Ncontrol++;
 			if(deltaA[i] < Max && deltaB[j] < Max && deltaA[i] > Min && deltaB[j] > Min){
 				Ntest++;
 				//double px,py,pz,Q,P2;
-				px = a->xg[i] - b->xg[j];
-				py = a->yg[i] - b->yg[j];
-				pz = a->zg[i] - b->zg[j];
-				Q = (a->r[i]+b->r[j]);
+				px = a->SphereX(i) - b->SphereX(j);
+				py = a->SphereY(i) - b->SphereY(j);
+				pz = a->SphereZ(i) - b->SphereZ(j);
+				Q = (a->SphereRadius(i)+b->SphereRadius(j));
 				P2 = px*px+py*py+pz*pz;
 				if(P2 < Q*Q){
 					
 					P2 = sqrt(P2);
 					ct[Nct].type = 20;
-					ct[Nct].delta = P2-(a->r[i]+b->r[j]);
+					ct[Nct].delta = P2-Q;
 					
 					ct[Nct].nx = px/P2;
 					ct[Nct].ny = py/P2;
 					ct[Nct].nz = pz/P2;
 					
-					ct[Nct].px = b->xg[j] + px/2.;
-					ct[Nct].py = b->yg[j] + py/2.;
-					ct[Nct].pz = b->zg[j] + pz/2.;
+					ct[Nct].px = b->SphereX(j) + px/2.;
+					ct[Nct].py = b->SphereY(j) + py/2.;
+					ct[Nct].pz = b->SphereZ(j) + pz/2.;
 					
 					ct[Nct].ba = a;
 					ct[Nct].nba = i;
@@ -333,15 +332,15 @@ void ContactDetection::ContactSphSphPeriodic(Sphere *a, Sphere *b, Contact *ct, 
 
 void ContactDetection::ContactBodyPlan(Plan & p, Body *b, Contact *ct, int & Nct) noexcept {
 	double px,py,pz,pn,pt,ps,nn,nnx,nny,nnz;
-	for(int i = 0 ; i < b->Ng ; i++){
-		px = b->xg[i] - b->r[i]*p.Nx();
-		py = b->yg[i] - b->r[i]*p.Ny();
-		pz = b->zg[i] - b->r[i]*p.Nz();
+	for(int i = 0 ; i < b->SphereCount() ; i++){
+		px = b->SphereX(i) - b->SphereRadius(i)*p.Nx();
+		py = b->SphereY(i) - b->SphereRadius(i)*p.Ny();
+		pz = b->SphereZ(i) - b->SphereRadius(i)*p.Nz();
 		pn = (px-p.X())*p.Nx()+(py-p.Y())*p.Ny()+(pz-p.Z())*p.Nz();
 		pt = (px-p.X())*p.Tx()+(py-p.Y())*p.Ty()+(pz-p.Z())*p.Tz();
 		ps = (px-p.X())*p.Sx()+(py-p.Y())*p.Sy()+(pz-p.Z())*p.Sz();
 		if((fabs(pt) < p.Dt()) && (fabs(ps) < p.Ds())){
-			if( (pn <= 0.0) && (pn > -b->r[i])){
+			if( (pn <= 0.0) && (pn > -b->SphereRadius(i))){
 				ct[Nct].type = 11;
 				ct[Nct].delta = pn;
 				ct[Nct].px = px;
@@ -356,13 +355,13 @@ void ContactDetection::ContactBodyPlan(Plan & p, Body *b, Contact *ct, int & Nct
 				Nct++;
 			}
 			if(p.InAndOut() == 1){
-				px = b->xg[i] + b->r[i]*p.Nx();
-				py = b->yg[i] + b->r[i]*p.Ny();
-				pz = b->zg[i] + b->r[i]*p.Nz();
+				px = b->SphereX(i) + b->SphereRadius(i)*p.Nx();
+				py = b->SphereY(i) + b->SphereRadius(i)*p.Ny();
+				pz = b->SphereZ(i) + b->SphereRadius(i)*p.Nz();
 				pn = (px-p.X())*(-p.Nx())+(py-p.Y())*(-p.Ny())+(pz-p.Z())*(-p.Nz());
 				pt = (px-p.X())*p.Tx()+(py-p.Y())*p.Ty()+(pz-p.Z())*p.Tz();
 				ps = (px-p.X())*p.Sx()+(py-p.Y())*p.Sy()+(pz-p.Z())*p.Sz();
-				if( (pn <= 0.0) && (pn > -b->r[i])){
+				if( (pn <= 0.0) && (pn > -b->SphereRadius(i))){
 					ct[Nct].type = 11;
 					ct[Nct].delta = pn;
 					ct[Nct].px = px;
@@ -401,8 +400,8 @@ void ContactDetection::ContactBodyPlan(Plan & p, Body *b, Contact *ct, int & Nct
 			nny = py-b->Y();
 			nnz = pz-b->Z();
 			nn = sqrt(nnx*nnx+nny*nny+nnz*nnz);
-			if(nn <= b->r[i]){
-				ct[Nct].delta = nn - b->r[i];
+			if(nn <= b->SphereRadius(i)){
+				ct[Nct].delta = nn - b->SphereRadius(i);
 				ct[Nct].type = 11;
 				ct[Nct].px = px;
 				ct[Nct].py = py;
@@ -543,14 +542,14 @@ void ContactDetection::ContactSphPlanPeriodic(Sphere *llist[], Plan & p, Plan & 
 
 void ContactDetection::ContactBodyPlanR(PlanR & p, Body *b, Contact *ct, int & Nct) noexcept {
 	double px,py,pz,pn,pt,ps;
-	for(int i = 0 ; i < b->Ng ; i++){
-		px = b->xg[i] - b->r[i]*p.Nx();
-		py = b->yg[i] - b->r[i]*p.Ny();
-		pz = b->zg[i] - b->r[i]*p.Nz();
+	for(int i = 0 ; i < b->SphereCount() ; i++){
+		px = b->SphereX(i) - b->SphereRadius(i)*p.Nx();
+		py = b->SphereY(i) - b->SphereRadius(i)*p.Ny();
+		pz = b->SphereZ(i) - b->SphereRadius(i)*p.Nz();
 		pn = (px-p.X())*p.Nx()+(py-p.Y())*p.Ny()+(pz-p.Z())*p.Nz();
 		pt = (px-p.X())*p.Tx()+(py-p.Y())*p.Ty()+(pz-p.Z())*p.Tz();
 		ps = (px-p.X())*p.Sx()+(py-p.Y())*p.Sy()+(pz-p.Z())*p.Sz();
-		if((pn >= -b->r[i]) && (pn < 0.0) && (sqrt(pt*pt+ps*ps) < p.Radius())){
+		if((pn >= -b->SphereRadius(i)) && (pn < 0.0) && (sqrt(pt*pt+ps*ps) < p.Radius())){
 			ct[Nct].delta = pn;
 			ct[Nct].type = 12;
 			ct[Nct].px = px;
@@ -598,15 +597,15 @@ void ContactDetection::ContactBodyCone(Cone & p, Body *b, Contact *ct, int & Nct
 	double px,py,pz,pn,pt,ps,N,Tx,Ty,Tz,Nx,Ny,Nz,delta2,Qn,Qt,dr,h;
 	double nnx,nny,nnz,nn;
 	double a,bb,Y;
-	for(int i = 0 ; i < b->Ng ; i++){
-		px = b->xg[i];
-		py = b->yg[i];
-		pz = b->zg[i];
+	for(int i = 0 ; i < b->SphereCount() ; i++){
+		px = b->SphereX(i);
+		py = b->SphereY(i);
+		pz = b->SphereZ(i);
 		pn = (px-p.X())*p.Nx()+(py-p.Y())*p.Ny()+(pz-p.Z())*p.Nz();
 		pt = (px-p.X())*p.Tx()+(py-p.Y())*p.Ty()+(pz-p.Z())*p.Tz();
 		ps = (px-p.X())*p.Sx()+(py-p.Y())*p.Sy()+(pz-p.Z())*p.Sz();
 		
-		if(fabs(pn) <= p.Height()/2 + b->r[i]){
+		if(fabs(pn) <= p.Height()/2 + b->SphereRadius(i)){
 			N = sqrt(pt*pt+ps*ps);
 			Tx = (pt*p.Tx() + ps*p.Sx())/N;
 			Ty = (pt*p.Ty() + ps*p.Sy())/N;
@@ -618,11 +617,11 @@ void ContactDetection::ContactBodyCone(Cone & p, Body *b, Contact *ct, int & Nct
 			h = p.Height();
 			if(dr == 0){
 				if(fabs(pn) <= p.Height()/2){
-					if(fabs(N-p.BottomRadius()) <= b->r[i]){
+					if(fabs(N-p.BottomRadius()) <= b->SphereRadius(i)){
 						px = p.X() + pn*Nx + p.BottomRadius()*Tx;
 						py = p.Y() + pn*Ny + p.BottomRadius()*Ty;
 						pz = p.Z() + pn*Nz + p.BottomRadius()*Tz;
-						ct[Nct].delta = fabs(N-p.BottomRadius()) - b->r[i];
+						ct[Nct].delta = fabs(N-p.BottomRadius()) - b->SphereRadius(i);
 						ct[Nct].type = 13;
 						ct[Nct].px = px;
 						ct[Nct].py = py;
@@ -641,12 +640,12 @@ void ContactDetection::ContactBodyCone(Cone & p, Body *b, Contact *ct, int & Nct
 					px = p.X() + pn*Nx + p.BottomRadius()*Tx;
 					py = p.Y() + pn*Ny + p.BottomRadius()*Ty;
 					pz = p.Z() + pn*Nz + p.BottomRadius()*Tz;
-					nnx = px-b->xg[i];
-					nny = py-b->yg[i];
-					nnz = pz-b->zg[i];
+					nnx = px-b->SphereX(i);
+					nny = py-b->SphereY(i);
+					nnz = pz-b->SphereZ(i);
 					nn = sqrt(nnx*nnx+nny*nny+nnz*nnz);
-					if(nn < b->r[i]){
-						ct[Nct].delta = nn - b->r[i];
+					if(nn < b->SphereRadius(i)){
+						ct[Nct].delta = nn - b->SphereRadius(i);
 						ct[Nct].type = 13;
 						ct[Nct].px = px;
 						ct[Nct].py = py;
@@ -666,21 +665,21 @@ void ContactDetection::ContactBodyCone(Cone & p, Body *b, Contact *ct, int & Nct
 				bb = h*(p.BottomRadius()/dr-0.5);
 				Y = sqrt(dr*dr+h*h);
 				delta2 = -(N - pn/a + bb/a)*h/Y;
-				if(fabs(delta2) <= b->r[i]){
+				if(fabs(delta2) <= b->SphereRadius(i)){
 					Qn = pn + delta2*dr/Y;
 					Qt = N + delta2*h/Y;
 					px = p.X() + Qn*Nx + Qt*Tx;
 					py = p.Y() + Qn*Ny + Qt*Ty;
 					pz = p.Z() + Qn*Nz + Qt*Tz;
 					if(Qn < h/2. && Qn > -h/2.){
-						ct[Nct].delta = fabs(delta2) - b->r[i];
+						ct[Nct].delta = fabs(delta2) - b->SphereRadius(i);
 						ct[Nct].type = 13;
 						ct[Nct].px = px;
 						ct[Nct].py = py;
 						ct[Nct].pz = pz;
-						ct[Nct].nx = (px-b->xg[i])/fabs(delta2);
-						ct[Nct].ny = (py-b->yg[i])/fabs(delta2);
-						ct[Nct].nz = (pz-b->zg[i])/fabs(delta2);
+						ct[Nct].nx = (px-b->SphereX(i))/fabs(delta2);
+						ct[Nct].ny = (py-b->SphereY(i))/fabs(delta2);
+						ct[Nct].nz = (pz-b->SphereZ(i))/fabs(delta2);
 						ct[Nct].ba = b;
 						ct[Nct].nba = i;
 						ct[Nct].cn = &p;
@@ -698,12 +697,12 @@ void ContactDetection::ContactBodyCone(Cone & p, Body *b, Contact *ct, int & Nct
 						px = p.X() + Qn*Nx + Qt*Tx;
 						py = p.Y() + Qn*Ny + Qt*Ty;
 						pz = p.Z() + Qn*Nz + Qt*Tz;
-						nnx = px-b->xg[i];
-						nny = py-b->yg[i];
-						nnz = pz-b->zg[i];
+						nnx = px-b->SphereX(i);
+						nny = py-b->SphereY(i);
+						nnz = pz-b->SphereZ(i);
 						nn = sqrt(nnx*nnx+nny*nny+nnz*nnz);
-						if(nn <= b->r[i]){
-							ct[Nct].delta = nn - b->r[i];
+						if(nn <= b->SphereRadius(i)){
+							ct[Nct].delta = nn - b->SphereRadius(i);
 							ct[Nct].type = 13;
 							ct[Nct].px = px;
 							ct[Nct].py = py;
@@ -866,10 +865,10 @@ void ContactDetection::ContactSphCone(Cone & p, Sphere *b, Contact *ct, int & Nc
 void ContactDetection::ContactBodyElbow(Elbow & p, Body *b, Contact *ct, int & Nct) noexcept {
 	double rl,D,pn,pt,ps,alphal;
 	double cx,cy,cz,nx,ny,nz;
-	for(int i = 0 ; i < b->Ng ; i++){
-		pn = (b->xg[i]-p.x)*p.nx + (b->yg[i]-p.y)*p.ny + (b->zg[i]-p.z)*p.nz;
-		pt = (b->xg[i]-p.x)*p.tx + (b->yg[i]-p.y)*p.ty + (b->zg[i]-p.z)*p.tz;
-		ps = (b->xg[i]-p.x)*p.sx + (b->yg[i]-p.y)*p.sy + (b->zg[i]-p.z)*p.sz;
+	for(int i = 0 ; i < b->SphereCount() ; i++){
+		pn = (b->SphereX(i)-p.x)*p.nx + (b->SphereY(i)-p.y)*p.ny + (b->SphereZ(i)-p.z)*p.nz;
+		pt = (b->SphereX(i)-p.x)*p.tx + (b->SphereY(i)-p.y)*p.ty + (b->SphereZ(i)-p.z)*p.tz;
+		ps = (b->SphereX(i)-p.x)*p.sx + (b->SphereY(i)-p.y)*p.sy + (b->SphereZ(i)-p.z)*p.sz;
 		rl = sqrt(pn*pn+pt*pt);
 		
 		if(rl >= p.R-p.r && rl <= p.R+p.r && fabs(ps) <= p.r){
@@ -890,19 +889,19 @@ void ContactDetection::ContactBodyElbow(Elbow & p, Body *b, Contact *ct, int & N
 				cy = p.y + (pn*p.ny + pt*p.ty)/rl*p.R;
 				cz = p.z + (pn*p.nz + pt*p.tz)/rl*p.R;
 				D = sqrt(pow(b->X()-cx,2)+pow(b->Y()-cy,2)+pow(b->Z()-cz,2));
-				if(p.r-(D+b->r[i]) < 0){
-					ct[Nct].delta =  p.r-(D+b->r[i]);
+				if(p.r-(D+b->SphereRadius(i)) < 0){
+					ct[Nct].delta =  p.r-(D+b->SphereRadius(i));
 					ct[Nct].type = 14;
-					nx = -(cx - b->xg[i]);
-					ny = -(cy - b->yg[i]);
-					nz = -(cz - b->zg[i]);
+					nx = -(cx - b->SphereX(i));
+					ny = -(cy - b->SphereY(i));
+					nz = -(cz - b->SphereZ(i));
 					D = sqrt(nx*nx+ny*ny+nz*nz);
 					ct[Nct].nx = nx/D;
 					ct[Nct].ny = ny/D;
 					ct[Nct].nz = nz/D;
-					ct[Nct].px = b->xg[i] + b->r[i]*ct[Nct].nx;
-					ct[Nct].py = b->yg[i] + b->r[i]*ct[Nct].ny;
-					ct[Nct].pz = b->zg[i] + b->r[i]*ct[Nct].nz;
+					ct[Nct].px = b->SphereX(i) + b->SphereRadius(i)*ct[Nct].nx;
+					ct[Nct].py = b->SphereY(i) + b->SphereRadius(i)*ct[Nct].ny;
+					ct[Nct].pz = b->SphereZ(i) + b->SphereRadius(i)*ct[Nct].nz;
 					ct[Nct].ba = b;
 					ct[Nct].nba = i;
 					ct[Nct].ew = &p;

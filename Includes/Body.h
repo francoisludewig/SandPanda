@@ -4,6 +4,7 @@
 #include "Elongation.h"
 #include <vector>
 #include <array>
+#include <tuple>
 
 class Sphere;
 class Contact;
@@ -42,7 +43,22 @@ public:
 	Elongation FoundIt(int n, int t, int selfn, int nob) const noexcept;
 	void SetActiveRotation(int na) noexcept;
 	
-public:
+	int SphereCount() const noexcept { return Ng; }
+	double SphereX(int i) const noexcept { return xg[i]; }
+	double SphereY(int i) const noexcept { return yg[i]; }
+	double SphereZ(int i) const noexcept { return zg[i]; }
+	double SphereRadius(int i) const noexcept { return r[i]; }
+	double Mass() const noexcept { return m; }
+    double MaximumRadius() const noexcept { return Rmax; }
+
+	std::tuple<double, double, double> Lever(const double& cnx, const double& cny, const double& cnz, const int& na) const noexcept {
+		return std::make_tuple( r[na]*cnx + (xg[na] - x),
+						    	r[na]*cny + (yg[na] - y),
+						    	r[na]*cnz + (zg[na] - z));
+	}
+
+
+private:
 	int sp;
 	int Ng;
 	int numl;
