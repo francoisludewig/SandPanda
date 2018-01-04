@@ -25,14 +25,14 @@ void Cone::readFromFile(FILE *ft) noexcept{
 void Cone::LimitLink(std::vector<PlanR> & plr) noexcept {
     if(numTop != -9){
         top = &plr[numTop];
-        top->Force = 1;
+        top->SetForce(1);
         lxTop = top->X() - x;
         lyTop = top->Y() - y;
         lzTop = top->Z() - z;
     }
     if(numBottom != -9){
         bottom = &plr[numBottom];
-        bottom->Force = 1;
+        bottom->SetForce(1);
         lxBottom = bottom->X() - x;
         lyBottom = bottom->Y() - y;
         lzBottom = bottom->Z() - z;

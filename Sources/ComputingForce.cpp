@@ -266,16 +266,16 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				a->PointVelocity(Vax, Vay, Vaz, lax, lay, laz);
 
 				
-				lbx = ctl->px - p->V.ox;
-				lby = ctl->py - p->V.oy;
-				lbz = ctl->pz - p->V.oz;
+				lbx = ctl->px - p->GetV().ox;
+				lby = ctl->py - p->GetV().oy;
+				lbz = ctl->pz - p->GetV().oz;
                 
-				wbx = p->V.ValueOfWx(TIME);
-				wby = p->V.ValueOfWy(TIME);
-				wbz = p->V.ValueOfWz(TIME);						
-				Vbx = p->V.ValueOfVx(TIME) + wby*lbz-wbz*lby;
-				Vby = p->V.ValueOfVy(TIME) + wbz*lbx-wbx*lbz;
-				Vbz = p->V.ValueOfVz(TIME) + wbx*lby-wby*lbx;
+				wbx = p->GetV().ValueOfWx(TIME);
+				wby = p->GetV().ValueOfWy(TIME);
+				wbz = p->GetV().ValueOfWz(TIME);
+				Vbx = p->GetV().ValueOfVx(TIME) + wby*lbz-wbz*lby;
+				Vby = p->GetV().ValueOfVy(TIME) + wbz*lbx-wbx*lbz;
+				Vbz = p->GetV().ValueOfVz(TIME) + wbx*lby-wby*lbx;
 
 				// Calcul des vitesses local du contact
 				computeVelocity(Vbx, Vby, Vbz, Vax, Vay, Vaz, ctl, Vn, Vt, Vtx, Vty, Vtz);
@@ -294,9 +294,9 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 					}
 					// Statique
 					else{
-						xsi = a->FoundIt(p->numero,1,-9);		
+						xsi = a->FoundIt(p->Numero(),1,-9);
 						computeContactForceStatic(ctl, xsi, N, T, tx, ty, tz, Vn, Vt, Vtx, Vty, Vtz, h, k, g0, dat.muS,dat.muD);			
-						a->AddXsi(xsi,p->numero,1,-9);
+						a->AddXsi(xsi,p->Numero(),1,-9);
 					}
 				}
 				ComputeContactForce(ctl, tx, ty, tz, T, N, Fx, Fy, Fz);				
@@ -336,15 +336,15 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				laz = ba->SphereRadius(na)*ctl->nz + (ba->SphereZ(na) - ba->Z());
 			    ba->PointVelocity(Vax, Vay, Vaz, lax, lay, laz);
 				
-				lbx = ctl->px - p->V.ox;
-				lby = ctl->py - p->V.oy;
-				lbz = ctl->pz - p->V.oz;				
-				wbx = p->V.ValueOfWx(TIME);
-				wby = p->V.ValueOfWy(TIME);
-				wbz = p->V.ValueOfWz(TIME);						
-				Vbx = p->V.ValueOfVx(TIME) + wby*lbz-wbz*lby;
-				Vby = p->V.ValueOfVy(TIME) + wbz*lbx-wbx*lbz;
-				Vbz = p->V.ValueOfVz(TIME) + wbx*lby-wby*lbx;
+				lbx = ctl->px - p->GetV().ox;
+				lby = ctl->py - p->GetV().oy;
+				lbz = ctl->pz - p->GetV().oz;
+				wbx = p->GetV().ValueOfWx(TIME);
+				wby = p->GetV().ValueOfWy(TIME);
+				wbz = p->GetV().ValueOfWz(TIME);
+				Vbx = p->GetV().ValueOfVx(TIME) + wby*lbz-wbz*lby;
+				Vby = p->GetV().ValueOfVy(TIME) + wbz*lbx-wbx*lbz;
+				Vbz = p->GetV().ValueOfVz(TIME) + wbx*lby-wby*lbx;
 				
 				// Calcul des vitesses local du contact
 				computeVelocity(Vbx, Vby, Vbz, Vax, Vay, Vaz, ctl, Vn, Vt, Vtx, Vty, Vtz);
@@ -361,9 +361,9 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 					}
 					// Statique
 					else{
-						xsi = ba->FoundIt(p->numero,11,na,-9);	
+						xsi = ba->FoundIt(p->Numero(),11,na,-9);
 						computeContactForceStatic(ctl, xsi, N, T, tx, ty, tz, Vn, Vt, Vtx, Vty, Vtz, h, k, g0, dat.muS,dat.muD);		
-						ba->AddXsi(xsi,p->numero,11,na,-9);
+						ba->AddXsi(xsi,p->Numero(),11,na,-9);
 					}
 				}
 								
@@ -389,15 +389,15 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				laz = a->Radius()*ctl->nz;
 				a->PointVelocity(Vax, Vay, Vaz, lax, lay, laz);
 				
-				lbx = ctl->px - pr->V.ox;
-				lby = ctl->py - pr->V.oy;
-				lbz = ctl->pz - pr->V.oz;				
-				wbx = pr->V.ValueOfWx(TIME);
-				wby = pr->V.ValueOfWy(TIME);
-				wbz = pr->V.ValueOfWz(TIME);						
-				Vbx = pr->V.ValueOfVx(TIME) + wby*lbz-wbz*lby;
-				Vby = pr->V.ValueOfVy(TIME) + wbz*lbx-wbx*lbz;
-				Vbz = pr->V.ValueOfVz(TIME) + wbx*lby-wby*lbx;
+				lbx = ctl->px - pr->GetV().ox;
+				lby = ctl->py - pr->GetV().oy;
+				lbz = ctl->pz - pr->GetV().oz;
+				wbx = pr->GetV().ValueOfWx(TIME);
+				wby = pr->GetV().ValueOfWy(TIME);
+				wbz = pr->GetV().ValueOfWz(TIME);
+				Vbx = pr->GetV().ValueOfVx(TIME) + wby*lbz-wbz*lby;
+				Vby = pr->GetV().ValueOfVy(TIME) + wbz*lbx-wbx*lbz;
+				Vbz = pr->GetV().ValueOfVz(TIME) + wbx*lby-wby*lbx;
 				
 				// Calcul des vitesses local du contact
 				computeVelocity(Vbx, Vby, Vbz, Vax, Vay, Vaz, ctl, Vn, Vt, Vtx, Vty, Vtz);
@@ -415,9 +415,9 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 					}
 					// Statique
 					else{
-						xsi = a->FoundIt(pr->numero,2,-9);	
+						xsi = a->FoundIt(pr->Numero(),2,-9);
 						computeContactForceStatic(ctl, xsi, N, T, tx, ty, tz, Vn, Vt, Vtx, Vty, Vtz, h, k, g0, dat.muS,dat.muD);			
-						a->AddXsi(xsi,pr->numero,2,-9);
+						a->AddXsi(xsi,pr->Numero(),2,-9);
 					}					
 				}
 				ComputeContactForce(ctl, tx, ty, tz, T, N, Fx, Fy, Fz);
@@ -450,15 +450,15 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				laz = ba->SphereRadius(na)*ctl->nz + (ba->SphereZ(na) - ba->Z());
 				ba->PointVelocity(Vax, Vay, Vaz, lax, lay, laz);
 								
-				lbx = ctl->px - pr->V.ox;
-				lby = ctl->py - pr->V.oy;
-				lbz = ctl->pz - pr->V.oz;				
-				wbx = pr->V.ValueOfWx(TIME);
-				wby = pr->V.ValueOfWy(TIME);
-				wbz = pr->V.ValueOfWz(TIME);						
-				Vbx = pr->V.ValueOfVx(TIME) + wby*lbz-wbz*lby;
-				Vby = pr->V.ValueOfVy(TIME) + wbz*lbx-wbx*lbz;
-				Vbz = pr->V.ValueOfVz(TIME) + wbx*lby-wby*lbx;
+				lbx = ctl->px - pr->GetV().ox;
+				lby = ctl->py - pr->GetV().oy;
+				lbz = ctl->pz - pr->GetV().oz;
+				wbx = pr->GetV().ValueOfWx(TIME);
+				wby = pr->GetV().ValueOfWy(TIME);
+				wbz = pr->GetV().ValueOfWz(TIME);
+				Vbx = pr->GetV().ValueOfVx(TIME) + wby*lbz-wbz*lby;
+				Vby = pr->GetV().ValueOfVy(TIME) + wbz*lbx-wbx*lbz;
+				Vbz = pr->GetV().ValueOfVz(TIME) + wbx*lby-wby*lbx;
 				
 				// Calcul des vitesses local du contact
 				computeVelocity(Vbx, Vby, Vbz, Vax, Vay, Vaz, ctl, Vn, Vt, Vtx, Vty, Vtz);
@@ -476,9 +476,9 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 					}
 					// Statique
 					else{
-						xsi = ba->FoundIt(pr->numero,12,na,-9);	
+						xsi = ba->FoundIt(pr->Numero(),12,na,-9);
 						computeContactForceStatic(ctl, xsi, N, T, tx, ty, tz, Vn, Vt, Vtx, Vty, Vtz, h, k, g0, dat.muS,dat.muD);
-						ba->AddXsi(xsi,pr->numero,12,na,-9);
+						ba->AddXsi(xsi,pr->Numero(),12,na,-9);
 					}					
 				}
 				
@@ -504,15 +504,15 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				laz = a->Radius()*ctl->nz;
 				a->PointVelocity(Vax, Vay, Vaz, lax, lay, laz);
 				
-				lbx = ctl->px - cne->V.ox;
-				lby = ctl->py - cne->V.oy;
-				lbz = ctl->pz - cne->V.oz;				
-				wbx = cne->V.ValueOfWx(TIME);
-				wby = cne->V.ValueOfWy(TIME);
-				wbz = cne->V.ValueOfWz(TIME);						
-				Vbx = cne->V.ValueOfVx(TIME) + wby*lbz-wbz*lby;
-				Vby = cne->V.ValueOfVy(TIME) + wbz*lbx-wbx*lbz;
-				Vbz = cne->V.ValueOfVz(TIME) + wbx*lby-wby*lbx;
+				lbx = ctl->px - cne->GetV().ox;
+				lby = ctl->py - cne->GetV().oy;
+				lbz = ctl->pz - cne->GetV().oz;
+				wbx = cne->GetV().ValueOfWx(TIME);
+				wby = cne->GetV().ValueOfWy(TIME);
+				wbz = cne->GetV().ValueOfWz(TIME);
+				Vbx = cne->GetV().ValueOfVx(TIME) + wby*lbz-wbz*lby;
+				Vby = cne->GetV().ValueOfVy(TIME) + wbz*lbx-wbx*lbz;
+				Vbz = cne->GetV().ValueOfVz(TIME) + wbx*lby-wby*lbx;
 				
 				// Calcul des vitesses local du contact
 				computeVelocity(Vbx, Vby, Vbz, Vax, Vay, Vaz, ctl, Vn, Vt, Vtx, Vty, Vtz);
@@ -530,9 +530,9 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				else{
 					N = k*(-ctl->delta)-g0*Vn;
 					if(N < 0) N = 0;
-					xsi = a->FoundIt(cne->numero,3,-9);					
+					xsi = a->FoundIt(cne->Numero(),3,-9);
 					computeContactForceStatic(ctl, xsi, N, T, tx, ty, tz, Vn, Vt, Vtx, Vty, Vtz, h, k, g0, dat.muS,dat.muD);
-					a->AddXsi(xsi,cne->numero,3,-9);
+					a->AddXsi(xsi,cne->Numero(),3,-9);
 				}			
 							
 				ComputeContactForce(ctl, tx, ty, tz, T, N, Fx, Fy, Fz);
@@ -564,15 +564,15 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				laz = ba->SphereRadius(na)*ctl->nz + (ba->SphereZ(na) - ba->Z());
 				a->PointVelocity(Vax, Vay, Vaz, lax, lay, laz);
 				
-				lbx = ctl->px - cne->V.ox;
-				lby = ctl->py - cne->V.oy;
-				lbz = ctl->pz - cne->V.oz;				
-				wbx = cne->V.ValueOfWx(TIME);
-				wby = cne->V.ValueOfWy(TIME);
-				wbz = cne->V.ValueOfWz(TIME);						
-				Vbx = cne->V.ValueOfVx(TIME) + wby*lbz-wbz*lby;
-				Vby = cne->V.ValueOfVy(TIME) + wbz*lbx-wbx*lbz;
-				Vbz = cne->V.ValueOfVz(TIME) + wbx*lby-wby*lbx;
+				lbx = ctl->px - cne->GetV().ox;
+				lby = ctl->py - cne->GetV().oy;
+				lbz = ctl->pz - cne->GetV().oz;
+				wbx = cne->GetV().ValueOfWx(TIME);
+				wby = cne->GetV().ValueOfWy(TIME);
+				wbz = cne->GetV().ValueOfWz(TIME);
+				Vbx = cne->GetV().ValueOfVx(TIME) + wby*lbz-wbz*lby;
+				Vby = cne->GetV().ValueOfVy(TIME) + wbz*lbx-wbx*lbz;
+				Vbz = cne->GetV().ValueOfVz(TIME) + wbx*lby-wby*lbx;
 				
 				// Calcul des vitesses local du contact
 				computeVelocity(Vbx, Vby, Vbz, Vax, Vay, Vaz, ctl, Vn, Vt, Vtx, Vty, Vtz);
@@ -593,9 +593,9 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 					N = k*(-ctl->delta)-g0*Vn;
 					if(N < 0) N = 0;
 
-					xsi = ba->FoundIt(cne->numero,13,na,-9);					
+					xsi = ba->FoundIt(cne->Numero(),13,na,-9);
 					computeContactForceStatic(ctl, xsi, N, T, tx, ty, tz, Vn, Vt, Vtx, Vty, Vtz, h, k, g0, dat.muS,dat.muD);
-					ba->AddXsi(xsi,cne->numero,13,na,-9);
+					ba->AddXsi(xsi,cne->Numero(),13,na,-9);
 				}
 				
 				ComputeContactForce(ctl, tx, ty, tz, T, N, Fx, Fy, Fz);

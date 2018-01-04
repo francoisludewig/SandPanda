@@ -40,7 +40,7 @@ void Contact::inFile(FILE *ft) noexcept {
 			break;
 		case 1:
 			if(sa) fprintf(ft,"Sph : %d\n",sa->Num());
-			if(pa) fprintf(ft,"Plan : %d\n",pa->numero);
+			if(pa) fprintf(ft,"Plan : %d\n",pa->Numero());
 			break;
 		default:
 			break;
@@ -57,7 +57,7 @@ void Contact::Display() const noexcept {
 			break;
 		case 1:	
 			if(sa) printf("Sph : %d\n",sa->Num());
-			if(pa) printf("Plan : %d\n",pa->numero);
+			if(pa) printf("Plan : %d\n",pa->Numero());
 			break;
 		default:
 			break;
@@ -82,22 +82,22 @@ void Contact::WriteOutFileDetails(FILE *ft,double time) const noexcept {
 	 fprintf(ft,"%d\t%d\t%d\t%e\t%e\t%e\t%e\t%d\t%e\t%e\t%e\t%e\t%e\t%e\t%e\t%e\t%e\n",type,ba->Num(),bb->Num(),px,py,pz,delta,Stick,nx,ny,nz,tx,ty,tz,Fx,Fy,Fz);
 	 break;
 		case 1:
-	 fprintf(ft,"%d\t%d\t%d\t%e\t%e\t%e\t%e\t%d\t%e\t%e\t%e\t%e\t%e\t%e\t%e\t%e\t%e\n",type,sa->Num(),pa->numero,px,py,pz,delta,Stick,nx,ny,nz,tx,ty,tz,Fx,Fy,Fz);
+	 fprintf(ft,"%d\t%d\t%d\t%e\t%e\t%e\t%e\t%d\t%e\t%e\t%e\t%e\t%e\t%e\t%e\t%e\t%e\n",type,sa->Num(),pa->Numero(),px,py,pz,delta,Stick,nx,ny,nz,tx,ty,tz,Fx,Fy,Fz);
 	 break;
 		case 11:
-	 fprintf(ft,"%d\t%d\t%d\t%e\t%e\t%e\t%e\t%d\t%e\t%e\t%e\t%e\t%e\t%e\t%e\t%e\t%e\n",type,ba->Num(),pa->numero,px,py,pz,delta,Stick,nx,ny,nz,tx,ty,tz,Fx,Fy,Fz);
+	 fprintf(ft,"%d\t%d\t%d\t%e\t%e\t%e\t%e\t%d\t%e\t%e\t%e\t%e\t%e\t%e\t%e\t%e\t%e\n",type,ba->Num(),pa->Numero(),px,py,pz,delta,Stick,nx,ny,nz,tx,ty,tz,Fx,Fy,Fz);
 	 break;
 		case 2:
-	 fprintf(ft,"%d\t%d\t%d\t%e\t%e\t%e\t%e\t%d\t%e\t%e\t%e\t%e\t%e\t%e\t%e\t%e\t%e\n",type,sa->Num(),par->numero,px,py,pz,delta,Stick,nx,ny,nz,tx,ty,tz,Fx,Fy,Fz);
+	 fprintf(ft,"%d\t%d\t%d\t%e\t%e\t%e\t%e\t%d\t%e\t%e\t%e\t%e\t%e\t%e\t%e\t%e\t%e\n",type,sa->Num(),par->Numero(),px,py,pz,delta,Stick,nx,ny,nz,tx,ty,tz,Fx,Fy,Fz);
 	 break;
 		case 12:
-	 fprintf(ft,"%d\t%d\t%d\t%e\t%e\t%e\t%e\t%d\t%e\t%e\t%e\t%e\t%e\t%e\t%e\t%e\t%e\n",type,ba->Num(),par->numero,px,py,pz,delta,Stick,nx,ny,nz,tx,ty,tz,Fx,Fy,Fz);
+	 fprintf(ft,"%d\t%d\t%d\t%e\t%e\t%e\t%e\t%d\t%e\t%e\t%e\t%e\t%e\t%e\t%e\t%e\t%e\n",type,ba->Num(),par->Numero(),px,py,pz,delta,Stick,nx,ny,nz,tx,ty,tz,Fx,Fy,Fz);
 	 break;
 		case 3:
-	 fprintf(ft,"%d\t%d\t%d\t%e\t%e\t%e\t%e\t%d\t%e\t%e\t%e\t%e\t%e\t%e\t%e\t%e\t%e\n",type,sa->Num(),cn->numero,px,py,pz,delta,Stick,nx,ny,nz,tx,ty,tz,Fx,Fy,Fz);
+	 fprintf(ft,"%d\t%d\t%d\t%e\t%e\t%e\t%e\t%d\t%e\t%e\t%e\t%e\t%e\t%e\t%e\t%e\t%e\n",type,sa->Num(),cn->Numero(),px,py,pz,delta,Stick,nx,ny,nz,tx,ty,tz,Fx,Fy,Fz);
 	 break;
 		case 13:
-	 fprintf(ft,"%d\t%d\t%d\t%e\t%e\t%e\t%e\t%d\t%e\t%e\t%e\t%e\t%e\t%e\t%e\t%e\t%e\n",type,ba->Num(),cn->numero,px,py,pz,delta,Stick,nx,ny,nz,tx,ty,tz,Fx,Fy,Fz);
+	 fprintf(ft,"%d\t%d\t%d\t%e\t%e\t%e\t%e\t%d\t%e\t%e\t%e\t%e\t%e\t%e\t%e\t%e\t%e\n",type,ba->Num(),cn->Numero(),px,py,pz,delta,Stick,nx,ny,nz,tx,ty,tz,Fx,Fy,Fz);
 	 break;
 		case 4:
 	 fprintf(ft,"%d\t%d\t%d\t%e\t%e\t%e\t%e\t%d\t%e\t%e\t%e\t%e\t%e\t%e\t%e\t%e\t%e\n",type,sa->Num(),ew->numero,px,py,pz,delta,Stick,nx,ny,nz,tx,ty,tz,Fx,Fy,Fz);

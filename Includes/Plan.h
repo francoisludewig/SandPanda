@@ -37,6 +37,6 @@ private:
 	int *list;
 	int Nlist;
 	int inAndOut;
-	double sigma,ra;	
+	double sigma;
 };
 

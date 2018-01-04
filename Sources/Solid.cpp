@@ -22,9 +22,6 @@ Solid::Solid() noexcept {
 	Force = 0;
 	NCell = 0;
 	Cell = NULL;
-	NCell2 = 0;
-	Cell2 = NULL;
-	vcell = NULL;
 }
 
 Solid::~Solid() noexcept {

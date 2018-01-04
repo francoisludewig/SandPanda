@@ -75,7 +75,7 @@ void ReadWrite::readOutContainer(char *directory, int & Npl, int & Nplr, int & N
 	printf("push_back\n");
 	for(int i = 0 ; i < Npl ; i++){
 		pl[i].LoadFromFile(ft);
-		pl[i].numero = i;
+		pl[i].Numero(i);
 	}
 	// Upload PlanR
 	for(int i = 0 ; i < Nplr ; i++){
@@ -85,7 +85,7 @@ void ReadWrite::readOutContainer(char *directory, int & Npl, int & Nplr, int & N
 	}
 	for(int i = 0 ; i < Nplr ; i++){
 		plr[i].readFromFile(ft);
-		plr[i].numero = i;
+		plr[i].Numero(i);
 	}
 	// Upload Cone
 	for(int i = 0 ; i < Nco ; i++){
@@ -95,7 +95,7 @@ void ReadWrite::readOutContainer(char *directory, int & Npl, int & Nplr, int & N
 	}
 	for(int i = 0 ; i < Nco ; i++){
 		co[i].readFromFile(ft);
-		co[i].numero = i;
+		co[i].Numero(i);
 	}
 	// Upload Elbow
 	for(int i = 0 ; i < Nelb ; i++){
@@ -147,7 +147,7 @@ void ReadWrite::readStart_stopContainer(char *directory, int & Npl, int & Nplr, 
 	
 	for(int i = 0 ; i < Npl ; i++){
 		pl[i].LoadFromFile(ft);
-		pl[i].numero = i;
+		pl[i].Numero(i);
 	}
 	// Upload PlanR
 	for(int i = 0 ; i < Nplr ; i++){
@@ -157,7 +157,7 @@ void ReadWrite::readStart_stopContainer(char *directory, int & Npl, int & Nplr, 
 	}
 	for(int i = 0 ; i < Nplr ; i++){
 		plr[i].readFromFile(ft);
-		plr[i].numero = i;
+		plr[i].Numero(i);
 	}
 	// Upload Cone
 	for(int i = 0 ; i < Nco ; i++){
@@ -167,7 +167,7 @@ void ReadWrite::readStart_stopContainer(char *directory, int & Npl, int & Nplr, 
 	}
 	for(int i = 0 ; i < Nco ; i++){
 		co[i].readFromFile(ft);
-		co[i].numero = i;
+		co[i].Numero(i);
 	}
 	// Upload Elbow
 	for(int i = 0 ; i < Nelb ; i++){

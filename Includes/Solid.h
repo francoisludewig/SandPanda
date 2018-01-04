@@ -61,6 +61,25 @@ public:
 	double GetFcy() noexcept;
 	void SetControlGB(int v,std::vector<Sphere> & sph) noexcept;
 	
+
+	double GetMass() const noexcept { return Mass; }
+	double GetFcx() const noexcept { return Fcx; }
+	double GetFcy() const noexcept { return Fcy; }
+	double GetFcz() const noexcept { return Fcz; }
+
+	const Velocity& GetV() const noexcept { return V; }
+	int Numero() const noexcept { return numero; }
+	void Numero(int rhs) noexcept { numero = rhs; }
+
+	int GetForce() const noexcept { return Force; }
+	void SetForce(int rhs) noexcept { Force = rhs; }
+
+	int GetNgb() const noexcept { return Ngb; }
+
+	// Linked cell
+	int *Cell,NCell;
+
+protected:
 	int numero;
 	// Base
 	double Fcx,Fcy,Fcz;
@@ -68,9 +87,6 @@ public:
 	double Mass,In,It,Is;
 	int Force,activeGravity;
 	Velocity V;
-	// Linked cell
-	int *Cell,NCell;
-	int *Cell2,NCell2;
 	// List of grain boder
 	int *num;
 	double *GBx,*GBy,*GBz;

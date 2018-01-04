@@ -1010,7 +1010,7 @@ void ContactDetection::listCellForPlan(Data *dat, std::vector<Plan> & pl, int & 
 	localCell =(int*)malloc(dat->Nx*dat->Ny*dat->Nz*sizeof(int));
 	
 	for(a = 0 ; a < Npl ; a++){
-		if(pl[a].Force == 0){
+		if(pl[a].GetForce() == 0){
 			Vmax = pl[a].Vmax();
 			if(Vmax < pl[a].Wmax()*pl[a].Dt())Vmax = pl[a].Wmax()*pl[a].Dt();
 			if(Vmax < pl[a].Wmax()*pl[a].Ds())Vmax = pl[a].Wmax()*pl[a].Ds();
@@ -1134,7 +1134,7 @@ void ContactDetection::listCellForPlanR(Data *dat, std::vector<PlanR> & plr, int
 	
 	for(a = 0 ;  a < Nplr ; a++){
 		
-		if(plr[a].Force == 0){
+		if(plr[a].GetForce() == 0){
 			
 			Vmax = plr[a].Vmax();
 			
@@ -1253,7 +1253,7 @@ void ContactDetection::listCellForCone(Data *dat, std::vector<Cone> & co, int & 
 	localCell =(int*)malloc(dat->Nx*dat->Ny*dat->Nz*sizeof(int));
 	
 	for(numCone = 0 ;  numCone < Nco ; numCone++){
-		if(co[numCone].Force == 0){
+		if(co[numCone].GetForce() == 0){
 			Vmax = co[numCone].Vmax();
 			if(Vmax < co[numCone].Wmax()*co[numCone].Height()/2.)Vmax = co[numCone].Wmax()*co[numCone].Height()/2.;
 			time = co[numCone].Delay();
@@ -1788,7 +1788,7 @@ void ContactDetection::sphPlanContactOMP(const int &Nsph, const int &Npl, int & 
 			control[i] = 0;
 	}
 	for(int i = 0 ; i < Npl ; i++){
-		if(pl[i].Periodic() == -9 && pl[i].Ngb == 0){
+		if(pl[i].Periodic() == -9 && pl[i].GetNgb() == 0){
 #pragma omp parallel private(anta)
 			{
 #pragma omp sections

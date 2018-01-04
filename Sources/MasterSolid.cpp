@@ -54,37 +54,37 @@ void MasterSolid::initCone(int a) noexcept {
 
 void MasterSolid::addPlan(std::vector<Plan> & pl2, int n, int m) noexcept {
 	pl[m] = &pl2[n];
-	Mass += pl2[n].Mass;
-	x += pl2[n].X()*pl2[n].Mass;
-	y += pl2[n].Y()*pl2[n].Mass;
-	z += pl2[n].Z()*pl2[n].Mass;
-	Fcx += pl2[n].Fcx;
-	Fcy += pl2[n].Fcy;
-	Fcz += pl2[n].Fcz;
+	Mass += pl2[n].GetMass();
+	x += pl2[n].X()*pl2[n].GetMass();
+	y += pl2[n].Y()*pl2[n].GetMass();
+	z += pl2[n].Z()*pl2[n].GetMass();
+	Fcx += pl2[n].GetFcx();
+	Fcy += pl2[n].GetFcy();
+	Fcz += pl2[n].GetFcz();
 	printf("MasterSolid : add Plan %d\n",m);
 }
 
 void MasterSolid::addPlanR(std::vector<PlanR> & plr2, int n, int m) noexcept {
 	plr[m] = &plr2[n];
-	Mass += plr2[n].Mass;
-	x += plr2[n].X()*plr2[n].Mass;
-	y += plr2[n].Y()*plr2[n].Mass;
-	z += plr2[n].Z()*plr2[n].Mass;
-	Fcx += plr2[n].Fcx;
-	Fcy += plr2[n].Fcy;
-	Fcz += plr2[n].Fcz;
+	Mass += plr2[n].GetMass();
+	x += plr2[n].X()*plr2[n].GetMass();
+	y += plr2[n].Y()*plr2[n].GetMass();
+	z += plr2[n].Z()*plr2[n].GetMass();
+	Fcx += plr2[n].GetFcx();
+	Fcy += plr2[n].GetFcy();
+	Fcz += plr2[n].GetFcz();
 	printf("MasterSolid : add PlanR %d\n",m);
 }
 
 void MasterSolid::addCone(std::vector<Cone> & co2, int n, int m) noexcept {
 	co[m] = &co2[n];
-	Mass += co2[n].Mass;
-	x += co2[n].X()*co2[n].Mass;
-	y += co2[n].Y()*co2[n].Mass;
-	z += co2[n].Z()*co2[n].Mass;
-	Fcx += co2[n].Fcx;
-	Fcy += co2[n].Fcy;
-	Fcz += co2[n].Fcz;
+	Mass += co2[n].GetMass();
+	x += co2[n].X()*co2[n].GetMass();
+	y += co2[n].Y()*co2[n].GetMass();
+	z += co2[n].Z()*co2[n].GetMass();
+	Fcx += co2[n].GetFcx();
+	Fcy += co2[n].GetFcy();
+	Fcz += co2[n].GetFcz();
 	printf("MasterSolid : add Cone %d\n",m);
 }
 

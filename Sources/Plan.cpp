@@ -4,7 +4,7 @@
 
 Plan::Plan() noexcept : Solid(),
 	dt(0.5), ds(0.5), dn(0),
-	periodic(-9), sigma(0), ra(0) {}
+	periodic(-9), sigma(0) {}
 
 Plan::~Plan() noexcept {
 	delete [] list;
