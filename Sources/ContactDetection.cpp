@@ -606,7 +606,7 @@ void ContactDetection::ContactBodyCone(Cone & p, Body *b, Contact *ct, int & Nct
 		pt = (px-p.X())*p.Tx()+(py-p.Y())*p.Ty()+(pz-p.Z())*p.Tz();
 		ps = (px-p.X())*p.Sx()+(py-p.Y())*p.Sy()+(pz-p.Z())*p.Sz();
 		
-		if(fabs(pn) <= p.h/2 + b->r[i]){
+		if(fabs(pn) <= p.Height()/2 + b->r[i]){
 			N = sqrt(pt*pt+ps*ps);
 			Tx = (pt*p.Tx() + ps*p.Sx())/N;
 			Ty = (pt*p.Ty() + ps*p.Sy())/N;
@@ -614,15 +614,15 @@ void ContactDetection::ContactBodyCone(Cone & p, Body *b, Contact *ct, int & Nct
 			Nx = p.Nx();
 			Ny = p.Ny();
 			Nz = p.Nz();
-			dr = p.r0 -  p.r1;
-			h = p.h;
+			dr = p.BottomRadius() -  p.TopRadius();
+			h = p.Height();
 			if(dr == 0){
-				if(fabs(pn) <= p.h/2){
-					if(fabs(N-p.r0) <= b->r[i]){
-						px = p.X() + pn*Nx + p.r0*Tx;
-						py = p.Y() + pn*Ny + p.r0*Ty;
-						pz = p.Z() + pn*Nz + p.r0*Tz;
-						ct[Nct].delta = fabs(N-p.r0) - b->r[i];
+				if(fabs(pn) <= p.Height()/2){
+					if(fabs(N-p.BottomRadius()) <= b->r[i]){
+						px = p.X() + pn*Nx + p.BottomRadius()*Tx;
+						py = p.Y() + pn*Ny + p.BottomRadius()*Ty;
+						pz = p.Z() + pn*Nz + p.BottomRadius()*Tz;
+						ct[Nct].delta = fabs(N-p.BottomRadius()) - b->r[i];
 						ct[Nct].type = 13;
 						ct[Nct].px = px;
 						ct[Nct].py = py;
@@ -637,10 +637,10 @@ void ContactDetection::ContactBodyCone(Cone & p, Body *b, Contact *ct, int & Nct
 					}
 				}
 				else{
-					pn = pn/fabs(pn)*p.h/2.;
-					px = p.X() + pn*Nx + p.r0*Tx;
-					py = p.Y() + pn*Ny + p.r0*Ty;
-					pz = p.Z() + pn*Nz + p.r0*Tz;
+					pn = pn/fabs(pn)*p.Height()/2.;
+					px = p.X() + pn*Nx + p.BottomRadius()*Tx;
+					py = p.Y() + pn*Ny + p.BottomRadius()*Ty;
+					pz = p.Z() + pn*Nz + p.BottomRadius()*Tz;
 					nnx = px-b->xg[i];
 					nny = py-b->yg[i];
 					nnz = pz-b->zg[i];
@@ -663,7 +663,7 @@ void ContactDetection::ContactBodyCone(Cone & p, Body *b, Contact *ct, int & Nct
 			}
 			else{
 				a = -h/dr;
-				bb = h*(p.r0/dr-0.5);
+				bb = h*(p.BottomRadius()/dr-0.5);
 				Y = sqrt(dr*dr+h*h);
 				delta2 = -(N - pn/a + bb/a)*h/Y;
 				if(fabs(delta2) <= b->r[i]){
@@ -689,11 +689,11 @@ void ContactDetection::ContactBodyCone(Cone & p, Body *b, Contact *ct, int & Nct
 					else{
 						if(Qn >= h/2.){
 							Qn = h/2.;
-							Qt = p.r1;
+							Qt = p.TopRadius();
 						}
 						else{
 							Qn = -h/2.;
-							Qt = p.r0;
+							Qt = p.BottomRadius();
 						}
 						px = p.X() + Qn*Nx + Qt*Tx;
 						py = p.Y() + Qn*Ny + Qt*Ty;
@@ -735,7 +735,7 @@ void ContactDetection::ContactSphCone(Cone & p, Sphere *b, Contact *ct, int & Nc
 		pt = (px-p.X())*p.Tx()+(py-p.Y())*p.Ty()+(pz-p.Z())*p.Tz();
 		ps = (px-p.X())*p.Sx()+(py-p.Y())*p.Sy()+(pz-p.Z())*p.Sz();
 		
-		if(fabs(pn) <= p.h/2 + b->Radius()){
+		if(fabs(pn) <= p.Height()/2 + b->Radius()){
 			N = sqrt(pt*pt+ps*ps);
 			Tx = (pt*p.Tx() + ps*p.Sx())/N;
 			Ty = (pt*p.Ty() + ps*p.Sy())/N;
@@ -743,21 +743,21 @@ void ContactDetection::ContactSphCone(Cone & p, Sphere *b, Contact *ct, int & Nc
 			Nx = p.Nx();
 			Ny = p.Ny();
 			Nz = p.Nz();
-			dr = p.r0 -  p.r1;
-			h = p.h;
+			dr = p.BottomRadius() -  p.TopRadius();
+			h = p.Height();
 			
 			if(dr == 0){
-				if(fabs(pn) <= p.h/2){
-					if(fabs(N-p.r0) <= b->Radius()){
-						px = p.X() + pn*Nx + p.r0*Tx;
-						py = p.Y() + pn*Ny + p.r0*Ty;
-						pz = p.Z() + pn*Nz + p.r0*Tz;
-						ct[Nct].delta = fabs(N-p.r0) - b->Radius();
+				if(fabs(pn) <= p.Height()/2){
+					if(fabs(N-p.BottomRadius()) <= b->Radius()){
+						px = p.X() + pn*Nx + p.BottomRadius()*Tx;
+						py = p.Y() + pn*Ny + p.BottomRadius()*Ty;
+						pz = p.Z() + pn*Nz + p.BottomRadius()*Tz;
+						ct[Nct].delta = fabs(N-p.BottomRadius()) - b->Radius();
 						ct[Nct].type = 3;
 						ct[Nct].px = px;
 						ct[Nct].py = py;
 						ct[Nct].pz = pz;
-						if(p.in == 0){
+						if(p.In() == 0){
 							ct[Nct].nx = Tx;
 							ct[Nct].ny = Ty;
 							ct[Nct].nz = Tz;
@@ -773,10 +773,10 @@ void ContactDetection::ContactSphCone(Cone & p, Sphere *b, Contact *ct, int & Nc
 					}
 				}
 				else{
-					pn = pn/fabs(pn)*p.h/2.;
-					px = p.X() + pn*Nx + p.r0*Tx;
-					py = p.Y() + pn*Ny + p.r0*Ty;
-					pz = p.Z() + pn*Nz + p.r0*Tz;
+					pn = pn/fabs(pn)*p.Height()/2.;
+					px = p.X() + pn*Nx + p.BottomRadius()*Tx;
+					py = p.Y() + pn*Ny + p.BottomRadius()*Ty;
+					pz = p.Z() + pn*Nz + p.BottomRadius()*Tz;
 					nnx = px-b->X();
 					nny = py-b->Y();
 					nnz = pz-b->Z();
@@ -799,7 +799,7 @@ void ContactDetection::ContactSphCone(Cone & p, Sphere *b, Contact *ct, int & Nc
 			else{
 				
 				a = -h/dr;
-				bb = h*(p.r0/dr-0.5);
+				bb = h*(p.BottomRadius()/dr-0.5);
 				Y = sqrt(dr*dr+h*h);
 				delta2 = -(N - pn/a + bb/a)*h/Y;
 				
@@ -828,11 +828,11 @@ void ContactDetection::ContactSphCone(Cone & p, Sphere *b, Contact *ct, int & Nc
 					else{
 						if(Qn >= h/2.){
 							Qn = h/2.;
-							Qt = p.r1;
+							Qt = p.TopRadius();
 						}
 						else{
 							Qn = -h/2.;
-							Qt = p.r0;
+							Qt = p.BottomRadius();
 						}
 						px = p.X() + Qn*Nx + Qt*Tx;
 						py = p.Y() + Qn*Ny + Qt*Ty;
@@ -1256,7 +1256,7 @@ void ContactDetection::listCellForCone(Data *dat, std::vector<Cone> & co, int & 
 	for(numCone = 0 ;  numCone < Nco ; numCone++){
 		if(co[numCone].Force == 0){
 			Vmax = co[numCone].Vmax();
-			if(Vmax < co[numCone].Wmax()*co[numCone].h/2.)Vmax = co[numCone].Wmax()*co[numCone].h/2.;
+			if(Vmax < co[numCone].Wmax()*co[numCone].Height()/2.)Vmax = co[numCone].Wmax()*co[numCone].Height()/2.;
 			time = co[numCone].Delay();
 			
 			dist = dat->ax/2;
@@ -1316,7 +1316,7 @@ void ContactDetection::listCellForCone(Data *dat, std::vector<Cone> & co, int & 
 							pt = (px-ox)*tx+(py-oy)*ty+(pz-oz)*tz;
 							ps = (px-ox)*sx+(py-oy)*sy+(pz-oz)*sz;
 							
-							if(fabs(pn) <= co[numCone].h/2+dn){
+							if(fabs(pn) <= co[numCone].Height()/2+dn){
 								N = sqrt(pt*pt+ps*ps);
 								if(ps >= 0)
 									beta = acos(pt/N);
@@ -1324,10 +1324,10 @@ void ContactDetection::listCellForCone(Data *dat, std::vector<Cone> & co, int & 
 									beta = 2*M_PI-acos(pt/N);
 								
 								// 3D -> 2D
-								dr = co[numCone].r0 -  co[numCone].r1;
-								h = co[numCone].h;
+								dr = co[numCone].BottomRadius() -  co[numCone].TopRadius();
+								h = co[numCone].Height();
 								if(dr == 0){
-									if(fabs(N-co[numCone].r0) <= dn*2){
+									if(fabs(N-co[numCone].BottomRadius()) <= dn*2){
 										//Cellule validee
 										// Control de doublon
 										doublon = 0;
@@ -1345,7 +1345,7 @@ void ContactDetection::listCellForCone(Data *dat, std::vector<Cone> & co, int & 
 								}
 								else{
 									a = -h/dr;
-									b = h*(co[numCone].r0/dr-0.5);
+									b = h*(co[numCone].BottomRadius()/dr-0.5);
 									Y = sqrt(dr*dr+h*h);
 									delta2 = (N - pn/a + b/a) / (dr/a/Y-h/Y);
 									if(fabs(delta2) <= 2*dn){

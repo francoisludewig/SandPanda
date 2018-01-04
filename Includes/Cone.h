@@ -10,13 +10,6 @@ class PlanR;
 
 class Cone:public Solid{
 public:
-	double r0,r1,h,dr;
-	int periodic,in;
-    int numTop,numBottom;
-    double lxTop,lyTop,lzTop;
-    double lxBottom,lyBottom,lzBottom;
-    PlanR *top,*bottom;
-public:
 	Cone() noexcept;
 	void readFromFile(FILE *ft) noexcept;
 	void writeToFile(FILE *ft) const noexcept;
@@ -24,4 +17,18 @@ public:
 	void LimitLink(std::vector<PlanR> & plr) noexcept;
 	void LimitForce() noexcept;
 	void LimitUpdate() noexcept;
+
+	double BottomRadius() const noexcept { return r0; }
+	double TopRadius() const noexcept { return r1; }
+	double Height() const noexcept { return r1; }
+	int In() const noexcept { return in; }
+
+private:
+	double r0,r1,h,dr;
+	int periodic,in;
+    int numTop,numBottom;
+    double lxTop,lyTop,lzTop;
+    double lxBottom,lyBottom,lzBottom;
+    PlanR *top,*bottom;
+
 };
