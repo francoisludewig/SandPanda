@@ -235,20 +235,20 @@ void Body::RandomVelocity(double V, double W) noexcept {
 }
 
 void Body::UploadSpecies(int Nbdsp, vector<BodySpecie> bdsp,vector<Sphere> & sph, int & Nsph, int numero) noexcept {
-	Ng = bdsp[sp].Ng;
+	Ng = bdsp[sp].SphereCount();
 	
 	for(int j = 0 ; j < Ng ; j++){
-		xl.push_back(bdsp[sp].xl[j]);
-		yl.push_back(bdsp[sp].yl[j]);
-		zl.push_back(bdsp[sp].zl[j]);
-		r.push_back(bdsp[sp].rl[j]);
+		xl.push_back(bdsp[sp].SphereX(j));
+		yl.push_back(bdsp[sp].SphereY(j));
+		zl.push_back(bdsp[sp].SphereZ(j));
+		r.push_back(bdsp[sp].SphereRadius(j));
 		if(Rmax < r[j])Rmax = r[j];
-			xg.push_back(x + nx*bdsp[sp].xl[j] + tx*bdsp[sp].yl[j] + sx*bdsp[sp].zl[j]);
-			yg.push_back(y + ny*bdsp[sp].xl[j] + ty*bdsp[sp].yl[j] + sy*bdsp[sp].zl[j]);
-			zg.push_back(z + nz*bdsp[sp].xl[j] + tz*bdsp[sp].yl[j] + sz*bdsp[sp].zl[j]);
+			xg.push_back(x + nx*bdsp[sp].SphereX(j) + tx*bdsp[sp].SphereY(j) + sx*bdsp[sp].SphereZ(j));
+			yg.push_back(y + ny*bdsp[sp].SphereX(j) + ty*bdsp[sp].SphereY(j) + sy*bdsp[sp].SphereZ(j));
+			zg.push_back(z + nz*bdsp[sp].SphereX(j) + tz*bdsp[sp].SphereY(j) + sz*bdsp[sp].SphereZ(j));
 			}
 	
-	Sphere *sphl = new Sphere(numero, NhollowBall, bdsp[sp].FeretMax/2.);
+	Sphere *sphl = new Sphere(numero, NhollowBall, bdsp[sp].GetFeretMax()/2.);
 	sphl->X(x);
 	sphl->Y(y);
 	sphl->Z(z);
@@ -260,10 +260,10 @@ void Body::UploadSpecies(int Nbdsp, vector<BodySpecie> bdsp,vector<Sphere> & sph
 	
 	//Correction de la densite 7700 -> 1000
 	//printf("m = %e\n",bdsp[sp].m);
-	m = bdsp[sp].m;
+	m = bdsp[sp].Mass();
 	for(int i = 0 ; i < 3 ; i++){
 		for(int j = 0 ; j < 3 ; j++){
-			Ine_1[i][j] = bdsp[sp].Ine_1[i][j];
+			Ine_1[i][j] = bdsp[sp].Intertie(i,j);
 		}
 	}
 }
