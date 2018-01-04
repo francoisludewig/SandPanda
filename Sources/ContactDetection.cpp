@@ -550,7 +550,7 @@ void ContactDetection::ContactBodyPlanR(PlanR & p, Body *b, Contact *ct, int & N
 		pn = (px-p.X())*p.Nx()+(py-p.Y())*p.Ny()+(pz-p.Z())*p.Nz();
 		pt = (px-p.X())*p.Tx()+(py-p.Y())*p.Ty()+(pz-p.Z())*p.Tz();
 		ps = (px-p.X())*p.Sx()+(py-p.Y())*p.Sy()+(pz-p.Z())*p.Sz();
-		if((pn >= -b->r[i]) && (pn < 0.0) && (sqrt(pt*pt+ps*ps) < p.r)){
+		if((pn >= -b->r[i]) && (pn < 0.0) && (sqrt(pt*pt+ps*ps) < p.Radius())){
 			ct[Nct].delta = pn;
 			ct[Nct].type = 12;
 			ct[Nct].px = px;
@@ -576,7 +576,7 @@ void ContactDetection::ContactSphPlanR(PlanR & p, Sphere *b, Contact *ct, int & 
 		pn = (px-p.X())*p.Nx()+(py-p.Y())*p.Ny()+(pz-p.Z())*p.Nz();
 		pt = (px-p.X())*p.Tx()+(py-p.Y())*p.Ty()+(pz-p.Z())*p.Tz();
 		ps = (px-p.X())*p.Sx()+(py-p.Y())*p.Sy()+(pz-p.Z())*p.Sz();
-		if((pn >= -b->Radius()) && (pn < 0.0) && (sqrt(pt*pt+ps*ps) < p.r)){
+		if((pn >= -b->Radius()) && (pn < 0.0) && (sqrt(pt*pt+ps*ps) < p.Radius())){
 			ct[Nct].delta = pn;
 			ct[Nct].type = 2;
 			ct[Nct].px = px;
@@ -1139,7 +1139,7 @@ void ContactDetection::listCellForPlanR(Data *dat, std::vector<PlanR> & plr, int
 			
 			Vmax = plr[a].Vmax();
 			
-			if(Vmax < plr[a].Wmax()*plr[a].r)Vmax = plr[a].Wmax()*plr[a].r;
+			if(Vmax < plr[a].Wmax()*plr[a].Radius())Vmax = plr[a].Wmax()*plr[a].Radius();
 			time = plr[a].Delay();
 			
 			dist = dat->ax/2;
@@ -1190,7 +1190,7 @@ void ContactDetection::listCellForPlanR(Data *dat, std::vector<PlanR> & plr, int
 							pn = (x-ox)*nx+(y-oy)*ny+(z-oz)*nz;
 							pt = (x-ox)*tx+(y-oy)*ty+(z-oz)*tz;
 							ps = (x-ox)*sx+(y-oy)*sy+(z-oz)*sz;
-							if( (sqrt(pt*pt+ps*ps) < plr[a].r+2*dn) &&
+							if( (sqrt(pt*pt+ps*ps) < plr[a].Radius()+2*dn) &&
 							   (pn >= -dn) && (pn < 2*dn)){
 								// Control de doublon
 								doublon = 0;
