@@ -9,6 +9,18 @@ class Sphere;
 class Contact;
 
 class HollowBall{
+public:
+    HollowBall() noexcept;
+    ~HollowBall() noexcept;
+    void loadFromFile(FILE *ft) noexcept;
+    void writeToFile(FILE *ft) const noexcept;
+    void LinkInSph(vector<Sphere> & sph, int & Nsph, const int numero) noexcept;
+    void ContactDetectionInHollowBall(Contact *ct, int & Nct) noexcept;
+    void ContactDetectionWithHollowBall(Contact *ct, int & Nct) noexcept;
+    void UpdateFromSph(double dt) noexcept;
+    void Makeavatar(std::vector<Sphere> & sph, int & Nsph, const int numero) noexcept;
+
+private:
     Sphere **inSph,**cell,*avatar;
     int Navatar;
     int NinSph;
@@ -20,14 +32,5 @@ class HollowBall{
     double xmin,ymin,zmin;
     double a,rmax;
     int N,*list,Nlist;
-public:
-    HollowBall() noexcept;
-    ~HollowBall() noexcept;
-    void loadFromFile(FILE *ft) noexcept;
-    void writeToFile(FILE *ft) const noexcept;
-    void LinkInSph(vector<Sphere> & sph, int & Nsph, const int numero) noexcept;
-    void ContactDetectionInHollowBall(Contact *ct, int & Nct) noexcept;
-    void ContactDetectionWithHollowBall(Contact *ct, int & Nct) noexcept;
-    void UpdateFromSph(double dt) noexcept;
-    void Makeavatar(std::vector<Sphere> & sph, int & Nsph, const int numero) noexcept;
+
 };
