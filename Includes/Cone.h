@@ -20,7 +20,7 @@ public:
 
 	double BottomRadius() const noexcept { return r0; }
 	double TopRadius() const noexcept { return r1; }
-	double Height() const noexcept { return r1; }
+	double Height() const noexcept { return h; }
 	int In() const noexcept { return in; }
 
 private:
