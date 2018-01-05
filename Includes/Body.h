@@ -53,10 +53,9 @@ public:
 
 	std::tuple<double, double, double> Lever(const double& cnx, const double& cny, const double& cnz, const int& na) const noexcept {
 		return std::make_tuple( r[na]*cnx + (xg[na] - x),
-						    	r[na]*cny + (yg[na] - y),
-						    	r[na]*cnz + (zg[na] - z));
+													  r[na]*cny + (yg[na] - y),
+													  r[na]*cnz + (zg[na] - z));
 	}
-
 
 private:
 	int sp;

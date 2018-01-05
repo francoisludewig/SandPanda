@@ -7,7 +7,7 @@ Plan::Plan() noexcept : Solid(),
 	periodic(-9), sigma(0) {}
 
 Plan::~Plan() noexcept {
-	delete [] list;
+	//delete [] list;
 }
 
 void Plan::InitList(int N) noexcept {

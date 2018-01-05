@@ -19,7 +19,7 @@ void Cone::readFromFile(FILE *ft) noexcept{
 	Solid::LoadFromFile(ft);
 	fscanf(ft,"%lf\t%lf\t%lf\t%lf\n",&h,&r0,&r1,&dr);
 	fscanf(ft,"%d\t%d\t%d\n",&in,&numTop,&numBottom);
-    Solid::LoadAccelerationFromFile(ft);
+	Solid::LoadAccelerationFromFile(ft);
 }
 
 void Cone::LimitLink(std::vector<PlanR> & plr) noexcept {

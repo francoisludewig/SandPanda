@@ -219,14 +219,14 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 								
 				/* Calcul des leviers et des vitesses des points d'impacte de chaque corps */
 				std::tie(lax, lay, laz) = ba->Lever(-ctl->nx, -ctl->ny, -ctl->nz, na);
-				std::tie(lbx, lby, lbz) = ba->Lever( ctl->nx,  ctl->ny,  ctl->nz, nb);
-
+				ba->PointVelocity(Vax, Vay, Vaz, lax, lay, laz);
+				
+				std::tie(lbx, lby, lbz) = bb->Lever( ctl->nx,  ctl->ny,  ctl->nz, nb);
 				bb->PointVelocity(Vbx, Vby, Vbz, lbx, lby, lbz);
 				
 				// Calcul des vitesses local du contact
 				computeVelocity(Vax, Vay, Vaz, Vbx, Vby, Vbz, ctl, Vn, Vt, Vtx, Vty, Vtz);
-
-								
+				
 				/* Cas du contact physique */
 				if(ctl->delta <= 0){
 					meff = ba->Mass()*bb->Mass()/(ba->Mass()+bb->Mass());
@@ -249,7 +249,7 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				ComputeContactForce(ctl, tx, ty, tz, T, N, Fx, Fy, Fz);
 				
 				ba->AddForce(Fx, Fy, Fz);
-			    ba->AddMomemtum((lay*Fz-laz*Fy), (laz*Fx-lax*Fz), (lax*Fy-lay*Fx));
+				ba->AddMomemtum((lay*Fz-laz*Fy), (laz*Fx-lax*Fz), (lax*Fy-lay*Fx));
 
 				bb->AddForce(-Fx, -Fy, -Fz);
 				bb->AddMomemtum(-(lby*Fz-lbz*Fy), -(lbz*Fx-lbx*Fz), -(lbx*Fy-lby*Fx));
@@ -264,7 +264,6 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				lay = a->Radius()*ctl->ny;
 				laz = a->Radius()*ctl->nz;
 				a->PointVelocity(Vax, Vay, Vaz, lax, lay, laz);
-
 				
 				lbx = ctl->px - p->GetV().ox;
 				lby = ctl->py - p->GetV().oy;
@@ -334,7 +333,7 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				lax = ba->SphereRadius(na)*ctl->nx + (ba->SphereX(na) - ba->X());
 				lay = ba->SphereRadius(na)*ctl->ny + (ba->SphereY(na) - ba->Y());
 				laz = ba->SphereRadius(na)*ctl->nz + (ba->SphereZ(na) - ba->Z());
-			    ba->PointVelocity(Vax, Vay, Vaz, lax, lay, laz);
+				ba->PointVelocity(Vax, Vay, Vaz, lax, lay, laz);
 				
 				lbx = ctl->px - p->GetV().ox;
 				lby = ctl->py - p->GetV().oy;
@@ -371,8 +370,8 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 
 				// Ajout de la force et du moment
 
-				a->AddForce(-Fx, -Fy, -Fz);
-				a->AddMomemtum(-(lay*Fz-laz*Fy), -(laz*Fx-lax*Fz), -(lax*Fy-lay*Fx));
+				ba->AddForce(-Fx, -Fy, -Fz);
+				ba->AddMomemtum(-(lay*Fz-laz*Fy), -(laz*Fx-lax*Fz), -(lax*Fy-lay*Fx));
 
 				p->AddForce(Fx, Fy, Fz);
 				p->AddMomemtum((lby*Fz-lbz*Fy), (lbz*Fx-lbx*Fz), (lbx*Fy-lby*Fx));

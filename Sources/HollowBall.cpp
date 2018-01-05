@@ -92,13 +92,7 @@ void HollowBall::LinkInSph(std::vector<Sphere> & sph, int & Nsph, const int nume
             NinSph++;
         }
     }
-    
-    /*
-    for(int i = 0 ; i < NinSph ; i++){
-        cout << i << "\t" << inSph[i] << endl;
-    }
-    */
-    
+
     if(NinSph != 0){
         // Determination des cellules liees de la HollowBall
         rmax = inSph[0]->Radius();
@@ -146,11 +140,6 @@ void HollowBall::LinkInSph(std::vector<Sphere> & sph, int & Nsph, const int nume
             }
         }
     }
-    /*
-     for(int i = 0 ; i < Nlist ; i++){
-     printf("L(%d) = %d\n",i,list[i]);
-     }
-     */
 }
 
 void HollowBall::ContactDetectionInHollowBall(Contact *ct, int & Nct) noexcept {
