@@ -68,9 +68,10 @@ void ReadWrite::readOutContainer(char *directory, int & Npl, int & Nplr, int & N
 	// Upload Plan
 	
 	for(int i = 0 ; i < Npl ; i++){
-		Plan *pll = new  Plan();
-		pl.push_back(*pll);
-		delete pll;
+		//Plan *pll = new  Plan();
+		//pl.push_back(*pll);
+		//delete pll;
+		pl.push_back(Plan());
 	}
 	printf("push_back\n");
 	for(int i = 0 ; i < Npl ; i++){
@@ -79,9 +80,10 @@ void ReadWrite::readOutContainer(char *directory, int & Npl, int & Nplr, int & N
 	}
 	// Upload PlanR
 	for(int i = 0 ; i < Nplr ; i++){
-		PlanR *plrl = new PlanR();
-		plr.push_back(*plrl);
-		delete plrl;
+		//PlanR *plrl = new PlanR();
+		//plr.push_back(*plrl);
+		//delete plrl;
+		plr.push_back(PlanR());
 	}
 	for(int i = 0 ; i < Nplr ; i++){
 		plr[i].readFromFile(ft);
@@ -89,9 +91,10 @@ void ReadWrite::readOutContainer(char *directory, int & Npl, int & Nplr, int & N
 	}
 	// Upload Cone
 	for(int i = 0 ; i < Nco ; i++){
-		Cone *col = new Cone();
-		co.push_back(*col);
-		delete col;
+		//Cone *col = new Cone();
+		//co.push_back(*col);
+		//delete col;
+		co.push_back(Cone());
 	}
 	for(int i = 0 ; i < Nco ; i++){
 		co[i].readFromFile(ft);
@@ -99,9 +102,10 @@ void ReadWrite::readOutContainer(char *directory, int & Npl, int & Nplr, int & N
 	}
 	// Upload Elbow
 	for(int i = 0 ; i < Nelb ; i++){
-		Elbow *elbl = new Elbow();
-		elb.push_back(*elbl);
-		delete elbl;
+		//Elbow *elbl = new Elbow();
+		//elb.push_back(*elbl);
+		//delete elbl;
+		elb.push_back(Elbow());
 	}
 	for(int i = 0 ; i < Nelb ; i++){
 		elb[i].ReadFromFile(ft);

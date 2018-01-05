@@ -168,7 +168,7 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				laz = -a->Radius()*ctl->nz;
 				a->PointVelocity(Vax, Vay, Vaz, lax, lay, laz);
 
-				std::tie(lbx, lby, lbz) = ba->Lever(ctl->nx, ctl->ny, ctl->nz, nb);
+				std::tie(lbx, lby, lbz) = bb->Lever(ctl->nx, ctl->ny, ctl->nz, nb);
 				bb->PointVelocity(Vbx, Vby, Vbz, lbx, lby, lbz);
 				
 				// Calcul des vitesses local du contact
