@@ -167,7 +167,6 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				lay = -a->Radius()*ctl->ny;
 				laz = -a->Radius()*ctl->nz;
 				a->PointVelocity(Vax, Vay, Vaz, lax, lay, laz);
-
 				std::tie(lbx, lby, lbz) = bb->Lever(ctl->nx, ctl->ny, ctl->nz, nb);
 				bb->PointVelocity(Vbx, Vby, Vbz, lbx, lby, lbz);
 				
@@ -561,7 +560,7 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				lax = ba->SphereRadius(na)*ctl->nx + (ba->SphereX(na) - ba->X());
 				lay = ba->SphereRadius(na)*ctl->ny + (ba->SphereY(na) - ba->Y());
 				laz = ba->SphereRadius(na)*ctl->nz + (ba->SphereZ(na) - ba->Z());
-				a->PointVelocity(Vax, Vay, Vaz, lax, lay, laz);
+				ba->PointVelocity(Vax, Vay, Vaz, lax, lay, laz);
 				
 				lbx = ctl->px - cne->GetV().ox;
 				lby = ctl->py - cne->GetV().oy;
