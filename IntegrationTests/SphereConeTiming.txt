@@ -1,0 +1,20 @@
+2c2
+< Directory : /Users/ludewigfrancois/Documents/LuGaProjects/Test//Sphere/Cone/New/
+---
+> Directory : /Users/ludewigfrancois/Documents/LuGaProjects/Test//Sphere/Cone/Original/
+6c6
+< FileName : /Users/ludewigfrancois/Documents/LuGaProjects/Test//Sphere/Cone/New/Export/container.txt
+---
+> FileName : /Users/ludewigfrancois/Documents/LuGaProjects/Test//Sphere/Cone/Original/Export/container.txt
+62,63c62,63
+< Le programme a alloue 891.536000 ko
+< Le programme a alloue 0.891536 Mo
+---
+> Le programme a alloue 892.792000 ko
+> Le programme a alloue 0.892792 Mo
+68,69c68,69
+< Time: 1m43s595956677ns ns
+< Time: 103595956677 ns
+---
+> Time: 1m46s511016773ns ns
+> Time: 106511016773 ns

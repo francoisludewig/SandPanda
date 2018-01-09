@@ -1,0 +1,20 @@
+2c2
+< Directory : /Users/ludewigfrancois/Documents/LuGaProjects/Test//Body/Cone/New/
+---
+> Directory : /Users/ludewigfrancois/Documents/LuGaProjects/Test//Body/Cone/Original/
+6c6
+< FileName : /Users/ludewigfrancois/Documents/LuGaProjects/Test//Body/Cone/New/Export/container.txt
+---
+> FileName : /Users/ludewigfrancois/Documents/LuGaProjects/Test//Body/Cone/Original/Export/container.txt
+62,63c62,63
+< Le programme a alloue 5645.152000 ko
+< Le programme a alloue 5.645152 Mo
+---
+> Le programme a alloue 4430.728000 ko
+> Le programme a alloue 4.430728 Mo
+68,69c68,69
+< Time: 5m41s614390654ns ns
+< Time: 341614390654 ns
+---
+> Time: 5m51s580615539ns ns
+> Time: 351580615539 ns

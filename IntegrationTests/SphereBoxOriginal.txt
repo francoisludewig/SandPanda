@@ -1,0 +1,76 @@
+
+Directory : /Users/ludewigfrancois/Documents/LuGaProjects/Test//Sphere/Box/Original/
+Uploading Container File
+------------------------
+
+FileName : /Users/ludewigfrancois/Documents/LuGaProjects/Test//Sphere/Box/Original/Export/container.txt
+Number of Plan = 5
+Number of Disk = 0
+Number of Cone = 0
+Number of Elbow = 0
+
+push_back
+Loading Container Finished
+Uploading Sphere File
+---------------------
+
+Number of Sphere = 150
+
+Uploading Body File
+-------------------
+
+Number of Body = 0
+
+Uploading ParticleSpecies File
+------------------------
+
+Nbdsp = 0
+Gravity
+-------
+
+g = (0.000000e+00,0.000000e+00,-9.810000e+00)
+
+
+-7.250000e-02 < x < 7.250000e-02
+-7.250000e-02 < y < 7.250000e-02
+-2.600000e-01 < z < 2.600000e-01
+N = (7,7,25)
+a = (2.071429e-02,2.071429e-02,2.080000e-02)
+
+Uploading HollowBall File
+-------------------------
+
+MasterSolid : 0 Plan
+MasterSolid : 0 PlanR
+MasterSolid : 0 Cone
+MasterSolid : cm = (nan,nan,nan)
+MasterSolid : Fc = (0.000000e+00,0.000000e+00,0.000000e+00)
+MasterSolid : mass = 0.000000e+00
+Nsph0 = 150 & Nsph = 150
+NctMax = 2700
+Ncell = 1225
+List of Linking Cell for Solid
+------------------------------
+
+Nts(0) = 0
+Ncell(0 pl) = 350
+Nts(1) = 0
+Ncell(1 pl) = 350
+Nts(2) = 0
+Ncell(2 pl) = 350
+Nts(3) = 0
+Ncell(3 pl) = 350
+Nts(4) = 0
+Ncell(4 pl) = 98
+
+Etat de la memoire
+------------------
+
+Le programme a alloue 783.328000 ko
+Le programme a alloue 0.783328 Mo
+Time Path = 6.433366e-06
+
+Evolution
+Save File 1		time = 9.999960e-01Save File 2		time = 1.999998e+00Save File 3		time = 2.999994e+00Save File 4		time = 3.999997e+00Save File 5		time = 4.999999e+00
+Time: 1m15s563610582ns ns
+Time: 75563610582 ns

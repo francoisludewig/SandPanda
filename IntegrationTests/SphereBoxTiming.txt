@@ -1,0 +1,20 @@
+2c2
+< Directory : /Users/ludewigfrancois/Documents/LuGaProjects/Test//Sphere/Box/New/
+---
+> Directory : /Users/ludewigfrancois/Documents/LuGaProjects/Test//Sphere/Box/Original/
+6c6
+< FileName : /Users/ludewigfrancois/Documents/LuGaProjects/Test//Sphere/Box/New/Export/container.txt
+---
+> FileName : /Users/ludewigfrancois/Documents/LuGaProjects/Test//Sphere/Box/Original/Export/container.txt
+69,70c69,70
+< Le programme a alloue 781.968000 ko
+< Le programme a alloue 0.781968 Mo
+---
+> Le programme a alloue 783.328000 ko
+> Le programme a alloue 0.783328 Mo
+75,76c75,76
+< Time: 1m8s813201554ns ns
+< Time: 68813201554 ns
+---
+> Time: 1m15s563610582ns ns
+> Time: 75563610582 ns

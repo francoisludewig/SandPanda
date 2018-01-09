@@ -23,8 +23,31 @@
 //#include <omp.h>
 #include "../Includes/AffinityCache.h"
 #include <sys/stat.h>
+#include <chrono>
 
 using namespace std;
+
+class TimeDurationMeasure {
+public:
+    const uint64_t nanoInMinute = 60L*1000000000L;
+    const uint64_t nanoInSecond = 1000000000L;
+	TimeDurationMeasure() {}
+	~TimeDurationMeasure() = default;
+
+	void Start() { t1 = std::chrono::high_resolution_clock::now(); }
+	void Stop() {
+		std::chrono::high_resolution_clock::time_point  t2 = std::chrono::high_resolution_clock::now();
+		delay = std::chrono::duration_cast<std::chrono::nanoseconds>( t2 - t1 ).count();
+	}
+
+    std::string Nanosecond() { return std::to_string(delay); }
+    std::string Minutes() { return std::to_string(delay/nanoInMinute) + "m" + std::to_string((delay%nanoInMinute)/nanoInSecond) + "s" + std::to_string(delay%nanoInSecond) + "ns"; }
+
+private:
+
+	  std::chrono::high_resolution_clock::time_point t1;
+	  uint64_t delay {0};
+};
 
 void CancelVelocity(vector<Sphere> & sph, int & Nsph, vector<Body> & bd, int Nbd){
 	for(int i = 0 ;  i < Nsph ; i++){
@@ -57,6 +80,8 @@ void deborde(){
 }
 
 int main(int argc,char **argv){
+	TimeDurationMeasure tm;
+	tm.Start();
 	int Ntp;
 	int Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nct = 0,Ncta = 0,Nctb = 0,Nctc = 0,Nbdsp,Nhb;
 	double dila = 0;
@@ -336,5 +361,11 @@ int main(int argc,char **argv){
 		system(commande);
 	}
 	
+	tm.Stop();
+
+
+   printf("Time: %s ns\n", tm.Minutes().c_str());
+   printf("Time: %s ns\n", tm.Nanosecond().c_str());
+
 	return 0;
 }

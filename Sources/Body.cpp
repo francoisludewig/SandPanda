@@ -220,6 +220,7 @@ void Body::RandomVelocity(double V, double W) noexcept {
 	vy=sin(beta)*sin(alpha);
 	beta=2*M_PI*(double)(rand()%RAND_MAX)/RAND_MAX;
 	rdm=(double)(rand()%RAND_MAX)/RAND_MAX;
+	//TODO cos(aplha) = 1-2*rdm & sin(aplha) = sqrt(1-(1-2*rdm)^2)
 	alpha=acos(1-2*rdm);
 	wz=cos(alpha);
 	wx=cos(beta)*sin(alpha);
