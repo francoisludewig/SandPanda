@@ -76,7 +76,8 @@ int main(int argc,char **argv){
 		"../SphereBox",
 		"../BodyCone",
 		"../MixCone",
-		"../SphereCone"};
+		"../SphereCone",
+		"../MasterSolid"};
 	Report::MakeReport(nameFile);
 	
 	return 0;

@@ -3,49 +3,11 @@
 MasterSolid::MasterSolid() noexcept :
 	x(0), y(0), z(0), vx(0), vy(0), vz(0),
 	Fx(0), Fy(0), Fz(0), Fcx(0), Fcy(0), Fcz(0),
-	Mass(0), Npl(0),Nplr(0),Nco(0),
-	dxpl(nullptr),dypl(nullptr),dzpl(nullptr),
-	pl(nullptr),
-	dxplr(nullptr),dyplr(nullptr),dzplr(nullptr),
-	plr(nullptr),
-	dxco(nullptr),dyco(nullptr),dzco(nullptr),
-	co(nullptr) {}
-
-void MasterSolid::initPlan(int a) noexcept {
-	Npl = a;
-	if(a != 0){
-		pl = new Plan*[a];
-		dxpl = new double[a];
-		dypl = new double[a];
-		dzpl = new double[a];
-	}
-	printf("MasterSolid : %d Plan\n",a);
-}
-
-void MasterSolid::initPlanR(int a) noexcept {
-	Nplr = a;
-	if(a != 0){
-		plr = new PlanR*[a];
-		dxplr = new double[a];
-		dyplr = new double[a];
-		dzplr = new double[a];
-	}
-	printf("MasterSolid : %d PlanR\n",a);
-}
-
-void MasterSolid::initCone(int a) noexcept {
-	Nco = a;
-	if(a != 0){
-		co = new Cone *[a];
-		dxco = new double[a];
-		dyco = new double[a];
-		dzco = new double[a];
-	}
-	printf("MasterSolid : %d Cone\n",a);
-}
+	Mass(0), Npl(0),Nplr(0),Nco(0) {}
 
 void MasterSolid::addPlan(std::vector<Plan> & pl2, int n, int m) noexcept {
-	pl[m] = &pl2[n];
+	pl.push_back(&pl2[n]);
+	//pl[m] = &pl2[n];
 	Mass += pl2[n].GetMass();
 	x += pl2[n].X()*pl2[n].GetMass();
 	y += pl2[n].Y()*pl2[n].GetMass();
@@ -57,7 +19,8 @@ void MasterSolid::addPlan(std::vector<Plan> & pl2, int n, int m) noexcept {
 }
 
 void MasterSolid::addPlanR(std::vector<PlanR> & plr2, int n, int m) noexcept {
-	plr[m] = &plr2[n];
+	plr.push_back(&plr2[n]);
+	//plr[m] = &plr2[n];
 	Mass += plr2[n].GetMass();
 	x += plr2[n].X()*plr2[n].GetMass();
 	y += plr2[n].Y()*plr2[n].GetMass();
@@ -69,7 +32,8 @@ void MasterSolid::addPlanR(std::vector<PlanR> & plr2, int n, int m) noexcept {
 }
 
 void MasterSolid::addCone(std::vector<Cone> & co2, int n, int m) noexcept {
-	co[m] = &co2[n];
+	co.push_back(&co2[n]);
+	//co[m] = &co2[n];
 	Mass += co2[n].GetMass();
 	x += co2[n].X()*co2[n].GetMass();
 	y += co2[n].Y()*co2[n].GetMass();

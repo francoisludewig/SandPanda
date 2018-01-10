@@ -23,23 +23,23 @@ class MasterSolid{
 	double Mass;
 	
 	int Npl,Nplr,Nco;
-	// TODO Use std::vector<double>
-	double *dxpl,*dypl,*dzpl;
-	// TODO Use std::vector<Plan*>
-	Plan **pl;
-	// TODO Use std::vector<double>
-	double *dxplr,*dyplr,*dzplr;
-	// TODO Use std::vector<PlanR*>
-	PlanR **plr;
-	// TODO Use std::vector<double>
-	double *dxco,*dyco,*dzco;
-	// TODO Use std::vector<Cone*>
-	Cone **co;
+
+	std::vector<double> dxpl;
+	std::vector<double> dypl;
+	std::vector<double> dzpl;
+	std::vector<Plan*> pl;
+
+	std::vector<double> dxplr;
+	std::vector<double> dyplr;
+	std::vector<double> dzplr;
+	std::vector<PlanR*> plr;
+
+	std::vector<double> dxco;
+	std::vector<double> dyco;
+	std::vector<double> dzco;
+	std::vector<Cone*> co;
 public:
 	MasterSolid() noexcept;
-	void initPlan(int a) noexcept;
-	void initPlanR(int a) noexcept;
-	void initCone(int a) noexcept;
 	
 	void addPlan(std::vector<Plan> & pl2, int n, int m) noexcept;
 	void addPlanR(std::vector<PlanR> & plr2, int n, int m) noexcept;

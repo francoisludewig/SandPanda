@@ -5,9 +5,9 @@ echo exe : $1
 # Absolute path to the test directory (data source)
 echo directory : $2
 
-rm SphereBoxNew.txt SphereConeNew.txt BodyBoxNew.txt BodyConeNew.txt MixBoxNew.txt MixConeNew.txt
-rm SphereBoxDiff.txt SphereConeDiff.txt BodyBoxDiff.txt BodyConeDiff.txt MixBoxDiff.txt MixConeDiff.txt
-rm SphereBoxTiming.txt SphereConeTiming.txt BodyBoxTiming.txt BodyConeTiming.txt MixBoxTiming.txt MixConeTiming.txt
+rm SphereBoxNew.txt SphereConeNew.txt BodyBoxNew.txt BodyConeNew.txt MixBoxNew.txt MixConeNew.txt MasterSolidNew.txt
+rm SphereBoxDiff.txt SphereConeDiff.txt BodyBoxDiff.txt BodyConeDiff.txt MixBoxDiff.txt MixConeDiff.txt MasterSolidDiff.txt
+rm SphereBoxTiming.txt SphereConeTiming.txt BodyBoxTiming.txt BodyConeTiming.txt MixBoxTiming.txt MixConeTiming.txt MasterSolidTiming.txt
 
 $1 -d $2/Sphere/Box/New/ > SphereBoxNew.txt
 diff -ENwbur $2/Sphere/Box/Original/Start_stop/ $2/Sphere/Box/New/Start_stop/ > SphereBoxDiff.txt
@@ -33,6 +33,12 @@ $1 -d $2/Mix/Cone/New/ > MixConeNew.txt
 diff -ENwbur $2/Mix/Cone/Original/Start_stop/ $2/Mix/Cone/New/Start_stop/ > MixConeDiff.txt
 diff MixConeNew.txt MixConeOriginal.txt > MixConeTiming.txt
 echo MixConeNew finished
-
+
+$1 -d $2/MasterSolid/New/ -fusion 0 0 1 0 > MasterSolidNew.txt
+diff -ENwbur $2/MasterSolid/Original/Start_stop/ $2/MasterSolid/New/Start_stop/ > MasterSolidDiff.txt
+diff MasterSolidNew.txt MasterSolidOriginal.txt > MasterSolidTiming.txt
+echo MasterSolidNew finished
+
+
 cd Analyse/
 ./MakeReport

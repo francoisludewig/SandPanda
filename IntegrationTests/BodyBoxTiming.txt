@@ -6,15 +6,19 @@
 < FileName : /Users/ludewigfrancois/Documents/LuGaProjects/Test//Body/Box/New/Export/container.txt
 ---
 > FileName : /Users/ludewigfrancois/Documents/LuGaProjects/Test//Body/Box/Original/Export/container.txt
-69,70c69,70
-< Le programme a alloue 5629.080000 ko
-< Le programme a alloue 5.629080 Mo
+42a43,45
+> MasterSolid : 0 Plan
+> MasterSolid : 0 PlanR
+> MasterSolid : 0 Cone
+66,67c69,70
+< Le programme a alloue 5625.480000 ko
+< Le programme a alloue 5.625480 Mo
 ---
 > Le programme a alloue 4414.760000 ko
 > Le programme a alloue 4.414760 Mo
-75,76c75,76
-< Time: 4m5s303311790ns ns
-< Time: 245303311790 ns
+72,73c75,76
+< Time: 4m22s59743789ns ns
+< Time: 262059743789 ns
 ---
 > Time: 4m2s594566943ns ns
 > Time: 242594566943 ns

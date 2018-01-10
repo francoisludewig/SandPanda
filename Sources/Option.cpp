@@ -433,17 +433,14 @@ void Option::InData(Data & dat, Gravity & gf, std::vector<Plan> & pl, std::vecto
 	// Fabrication du MasterSolid memorise dans dat
 	dat.mas = new MasterSolid();
 	// Plan
-	dat.mas->initPlan(Nlpl);
 	for(int m = 0 ; m < Nlpl ; m++){
 		dat.mas->addPlan(pl,m,listplan[m]);
 	}
 	// PlanR
-	dat.mas->initPlanR(Nlplr);
 	for(int m = 0 ; m < Nlplr ; m++){
 		dat.mas->addPlanR(plr,m,listplanR[m]);
 	}
 	// Cone
-	dat.mas->initCone(Nlco);
 	for(int m = 0 ; m < Nlco ; m++){
 		dat.mas->addCone(co,m,listcone[m]);
 	}

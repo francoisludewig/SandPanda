@@ -6,15 +6,19 @@
 < FileName : /Users/ludewigfrancois/Documents/LuGaProjects/Test//Mix/Cone/New/Export/container.txt
 ---
 > FileName : /Users/ludewigfrancois/Documents/LuGaProjects/Test//Mix/Cone/Original/Export/container.txt
-62,63c62,63
-< Le programme a alloue 3219.352000 ko
-< Le programme a alloue 3.219352 Mo
+42a43,45
+> MasterSolid : 0 Plan
+> MasterSolid : 0 PlanR
+> MasterSolid : 0 Cone
+59,60c62,63
+< Le programme a alloue 3217.552000 ko
+< Le programme a alloue 3.217552 Mo
 ---
 > Le programme a alloue 2612.728000 ko
 > Le programme a alloue 2.612728 Mo
-68,69c68,69
-< Time: 2m40s609850480ns ns
-< Time: 160609850480 ns
+65,66c68,69
+< Time: 2m48s626317920ns ns
+< Time: 168626317920 ns
 ---
 > Time: 2m47s637118867ns ns
 > Time: 167637118867 ns

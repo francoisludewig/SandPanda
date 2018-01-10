@@ -40,9 +40,6 @@ a = (4.142857e-03,4.142857e-03,4.153846e-03)
 Uploading HollowBall File
 -------------------------
 
-MasterSolid : 0 Plan
-MasterSolid : 0 PlanR
-MasterSolid : 0 Cone
 MasterSolid : cm = (nan,nan,nan)
 MasterSolid : Fc = (0.000000e+00,0.000000e+00,0.000000e+00)
 MasterSolid : mass = 0.000000e+00
@@ -66,11 +63,11 @@ Ncell(4 pl) = 98
 Etat de la memoire
 ------------------
 
-Le programme a alloue 5629.080000 ko
-Le programme a alloue 5.629080 Mo
+Le programme a alloue 5625.480000 ko
+Le programme a alloue 5.625480 Mo
 Time Path = 1.012853e-06
 
 Evolution
 Save File 1		time = 9.999999e-02Save File 2		time = 2.000000e-01Save File 3		time = 3.000000e-01Save File 4		time = 4.000000e-01Save File 5		time = 4.999999e-01
-Time: 4m5s303311790ns ns
-Time: 245303311790 ns
+Time: 4m22s59743789ns ns
+Time: 262059743789 ns

@@ -1,0 +1,24 @@
+2c2
+< Directory : /Users/ludewigfrancois/Documents/LuGaProjects/Test//MasterSolid/New/
+---
+> Directory : /Users/ludewigfrancois/Documents/LuGaProjects/Test/MasterSolid/Original/
+6c6
+< FileName : /Users/ludewigfrancois/Documents/LuGaProjects/Test//MasterSolid/New/Export/container.txt
+---
+> FileName : /Users/ludewigfrancois/Documents/LuGaProjects/Test/MasterSolid/Original/Export/container.txt
+42a43,45
+> MasterSolid : 0 Plan
+> MasterSolid : 0 PlanR
+> MasterSolid : 1 Cone
+70,71c73,74
+< Le programme a alloue 3112.216000 ko
+< Le programme a alloue 3.112216 Mo
+---
+> Le programme a alloue 3117.264000 ko
+> Le programme a alloue 3.117264 Mo
+76,77c79,80
+< Time: 3m55s303784354ns ns
+< Time: 235303784354 ns
+---
+> Time: 3m47s688688310ns ns
+> Time: 227688688310 ns
