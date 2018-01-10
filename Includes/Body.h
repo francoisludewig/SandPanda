@@ -5,6 +5,7 @@
 #include <vector>
 #include <array>
 #include <tuple>
+#include <cstdio>
 
 class Sphere;
 class Contact;
@@ -64,7 +65,6 @@ private:
 	double Rmax;
 	double m;
 	double Ine_1[3][3];
-	double cx,cy,cz;
 	int NhollowBall;
 	std::vector<double> xl;
 	std::vector<double> yl;

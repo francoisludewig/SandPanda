@@ -18,8 +18,8 @@ Sphere::Sphere() noexcept {
 	NhollowBall = -9;
 	autoIntegrate = true;
     isHollowBall = false;
-	b = NULL;
-	tdl = NULL;
+	b = nullptr;
+	tdl = nullptr;
 	num = -9;
 	ct_pl = 0;
 	// Elongation
@@ -59,8 +59,8 @@ Sphere::Sphere(double radius, double mass, double inertia) noexcept : Sphere() {
 }
 
 Sphere::~Sphere() noexcept {
-	b = NULL;
-	tdl = NULL;
+	b = nullptr;
+	tdl = nullptr;
 }
 
 void Sphere::SphDealloc() noexcept {

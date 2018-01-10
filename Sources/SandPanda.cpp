@@ -5,7 +5,7 @@
 #import "Cone.h"
 #import "Elbow.h"
 #import "Sphere.h"
-#import "Bodies.h"
+#import "Body.h"
 #import "Contact.h"
 #import "ReadWrite.h"
 #import "ContactDetection.h"
@@ -73,7 +73,7 @@ int main(int argc,char **argv){
 	vector<HollowBall> hb;
 	Option opt;
 
-	Contact *ct = NULL,*cta = NULL,*ctb = NULL,*ctc = NULL;
+	Contact *ct = nullptr,*cta = nullptr,*ctb = nullptr,*ctc = nullptr;
 	Data dat;
 	Gravity gf;
     
@@ -164,17 +164,17 @@ int main(int argc,char **argv){
 	switch(opt.parallel){
 			case 0:
 			ct  = new Contact[18*Nsph+75*Nbd];
-			cta = NULL;
-			ctb = NULL;
-			ctc = NULL;
+			cta = nullptr;
+			ctb = nullptr;
+			ctc = nullptr;
 			break;
 			case 1:
 			switch(opt.Nprocess){
 					case 2:
 					ct  = new Contact[18*Nsph];
 					cta = new Contact[9*Nsph];
-					ctb = NULL;
-					ctc = NULL;
+					ctb = nullptr;
+					ctc = nullptr;
 					break;
 					case 4:
 					ct  = new Contact[20*Nsph];
@@ -187,8 +187,8 @@ int main(int argc,char **argv){
 					printf("Nprocess must be 2 or 4\nThe value used in this simulation will be 2\n");
 					ct  = new Contact[18*Nsph];
 					cta = new Contact[9*Nsph];
-					ctb = NULL;
-					ctc = NULL;
+					ctb = nullptr;
+					ctc = nullptr;
 					opt.Nprocess = 2;
 					break;
 			}

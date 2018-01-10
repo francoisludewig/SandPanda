@@ -11,8 +11,8 @@
 #include <cmath>
 
 Contact::Contact() noexcept :
-type(-9), px(0), py(0),	pz(0), delta(0),	sa(NULL),	sb(NULL),	ba(NULL),bb(NULL), nba(-9), nbb(-9), pa(NULL),
-par(NULL), cn(NULL), ew(NULL) {}
+type(-9), px(0), py(0),	pz(0), delta(0),	sa(nullptr),	sb(nullptr),	ba(nullptr),bb(nullptr), nba(-9), nbb(-9), pa(nullptr),
+par(nullptr), cn(nullptr), ew(nullptr) {}
 
 Contact::~Contact() noexcept {}
 
@@ -22,12 +22,12 @@ void Contact::TimeStepInitialization() noexcept {
 	py = 0;
 	pz = 0;
 	delta = 0;
-	sa = NULL;
-	sb = NULL;
-	pa = NULL;
-	par = NULL;
-	cn = NULL;
-	ew = NULL;	
+	sa = nullptr;
+	sb = nullptr;
+	pa = nullptr;
+	par = nullptr;
+	cn = nullptr;
+	ew = nullptr;
 	xsil.Reset();
 }
 

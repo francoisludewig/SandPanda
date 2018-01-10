@@ -6,40 +6,24 @@
 
 #include <cmath>
 
-HollowBall::HollowBall() noexcept {
-    x = 0;
-    y = 0;
-    z = 0;
-    vx = 0;
-    vy = 0;
-    vz = 0;
-    wx = 0;
-    wy = 0;
-    wz = 0;
-    q0 = 1;
-    q1 = 0;
-    q2 = 0;
-    q3 = 0;
-    mass = 1;
-    Inertia = 10;
-    r = 2;
-    cell = NULL;
-    list = NULL;
-    inSph = NULL;
-    lockVx = false;
-    lockVy = false;
-    lockVz = false;
-    lockWx = false;
-    lockWy = false;
-    lockWz = false;
-}
+
+
+
+HollowBall::HollowBall() noexcept :
+inSph(nullptr), cell(nullptr), avatar(nullptr),
+Navatar(0), NinSph(0), x(0), y(0), z(0),
+q0(1), q1(0), q2(0), q3(0), vx(0), vy(0), vz(0),
+wx(0), wy(0), wz(0), lockVx(false), lockVy(false),
+lockVz(false), lockWx(false), lockWy(false), lockWz(false),
+mass(1), Inertia(10), r(2), xmin(0), ymin(0), zmin(0),
+a(0),rmax(0), N(0), list(nullptr), Nlist(0) {}
 
 HollowBall::~HollowBall() noexcept {
-    if(inSph != NULL)
+    if(inSph != nullptr)
         delete[] inSph;
-    if(cell != NULL)
+    if(cell != nullptr)
        delete[] cell;
-    if(list != NULL)
+    if(list != nullptr)
         delete[] list;
 }
 
@@ -152,10 +136,10 @@ void HollowBall::ContactDetectionInHollowBall(Contact *ct, int & Nct) noexcept {
 
     
     for(int i = 0 ; i < NinSph ; i++)
-        (*inSph[i]).TDL(NULL);
+        (*inSph[i]).TDL(nullptr);
      
     for(int i = 0 ; i < N*N*N ; i++)
-        cell[i] = NULL;
+        cell[i] = nullptr;
     
     // Classification des spheres dans les cellules
     for(int i = 0 ; i < NinSph ; i++){
@@ -178,9 +162,9 @@ void HollowBall::ContactDetectionWithHollowBall(Contact *ct, int & Nct) noexcept
 
     for(int i = 0 ; i < Nlist ; i++){
         cand = cell[list[i]];
-        if(cand != NULL){
+        if(cand != nullptr){
             do{
-                if((candb = cand->GetBody()) == NULL){
+                if((candb = cand->GetBody()) == nullptr){
                     // Test du contact entre la sphere cand et la HollowBall
                     dx = x - (cand->X());
                     dy = y - (cand->Y());
@@ -226,7 +210,7 @@ void HollowBall::ContactDetectionWithHollowBall(Contact *ct, int & Nct) noexcept
                         }
                     }
                 }
-            }while((cand = cand->TDL()) != NULL);
+            }while((cand = cand->TDL()) != nullptr);
         }
     }
 }

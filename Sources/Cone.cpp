@@ -2,18 +2,10 @@
 #include "../Includes/PlanR.h"
 #include <vector>
 
-Cone::Cone() noexcept :Solid(){
-	r0 = 0.25;
-	r1 = 0.25;
-	dr = 0;
-	h = 0.5;
-	in = 0;
-	periodic = -9;
-    numTop = -9;
-    numBottom = -9;
-    top = NULL;
-    bottom = NULL;
-}
+Cone::Cone() noexcept :Solid(),
+	r0(0.25), r1(0.25), h(0.5), dr(0), periodic(-9), in(0),
+    numTop(-9), numBottom(-9), lxTop(0), lyTop(0), lzTop(0),
+    lxBottom(0),lyBottom(0),lzBottom(0), top(nullptr), bottom(nullptr) {}
 
 void Cone::readFromFile(FILE *ft) noexcept{
 	Solid::LoadFromFile(ft);
@@ -41,12 +33,12 @@ void Cone::LimitLink(std::vector<PlanR> & plr) noexcept {
 
 
 void Cone::LimitForce() noexcept {
-    if(top != NULL){
+    if(top != nullptr){
         Fx += top->GetFx();
         Fy += top->GetFy();
         Fz += top->GetFz();
     }
-    if(bottom != NULL){
+    if(bottom != nullptr){
         Fx += bottom->GetFx();
         Fy += bottom->GetFy();
         Fz += bottom->GetFz();
@@ -54,7 +46,7 @@ void Cone::LimitForce() noexcept {
 }
 
 void Cone::LimitUpdate() noexcept {
-    if(top != NULL){
+    if(top != nullptr){
         top->X(x + lxTop);
         top->Y(y + lyTop);
         top->Z(z + lzTop);
@@ -62,7 +54,7 @@ void Cone::LimitUpdate() noexcept {
         top->Vy(vy);
         top->Vz(vz);
     }
-    if(bottom != NULL){
+    if(bottom != nullptr){
         bottom->X(x + lxBottom);
         bottom->Y(y + lyBottom);
         bottom->Z(z + lzBottom);

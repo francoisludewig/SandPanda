@@ -22,7 +22,6 @@ public:
 	double Intertie(int i, int j) const noexcept { return Ine_1[i][j]; }
 
 private:
-	int sp;
 	int Ng;
 	std::vector<int> num;
 	std::vector<double> xl;

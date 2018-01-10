@@ -1,10 +1,7 @@
 #include "../Includes/PlanR.h"
 
-PlanR::PlanR() noexcept : Solid() {
-	r = 0.5;
-	dn = 0;
-	periodic = -9;
-}
+PlanR::PlanR() noexcept : Solid(),
+	r(0.5), dn(0), periodic(-9) {}
 
 void PlanR::readFromFile(FILE *ft) noexcept {
 	Solid::LoadFromFile(ft);	

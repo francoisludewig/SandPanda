@@ -1,37 +1,12 @@
 #include "../Includes/Elbow.h"
 
-Elbow::Elbow() noexcept {
-	x = 0;
-	y = 0;
-	z = 0;
-	nx = 1;
-	ny = 0;
-	nz = 0;
-	tx = 0;
-	ty = 1;
-	tz = 0;
-	sx = 0;
-	sy = 0;
-	sz = 1;
-	vx = 0;
-	vy = 0;
-	vz = 0;
-	wx = 0;
-	wy = 0;
-	wz = 0;
-	NCell = 0;	
-	NCell2 = 0;
-	r = 0.1;
-	xi = -0.25;
-	yi = 0;
-	zi = 0;
-	xf = 0;
-	yf = 0;
-	zf = 0.25;
-	cx = 0;
-	cy = 0;
-	cz = 1;
-}
+Elbow::Elbow() noexcept :
+numero(0), x(0), y(0), z(0), nx(1), ny(0), nz(0),
+tx(0), ty(1), tz(0), sx(0), sy(0), sz(1),
+vx(0), vy(0), vz(0), wx(0), wy(0), wz(0), V(),
+Cell(nullptr), NCell(0), Cell2(nullptr), NCell2(0),
+r(0.1), R(0), alpha(0), cx(0), cy(0), cz(1),
+xi(-0.25), yi(0), zi(0), xf(0), yf(0), zf(0.25) {}
 
 void Elbow::ReadFromFile(FILE *ft) noexcept {
 	fscanf(ft,"%lf\t%lf\t%lf\n",&xi,&yi,&zi);

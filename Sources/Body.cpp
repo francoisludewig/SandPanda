@@ -10,11 +10,10 @@
 #include "../Includes/ComputingForce.h"
 #include "../Includes/ContactDetection.h"
 
-Body::Body() noexcept {
+Body::Body() noexcept :
+sp(0), Ng(0), numl(0), Rmax(0), m(0), NhollowBall(0),
+Nneighbour(0), Nneighbour2(50), ActiveRotation(0) {
 	QuaternionToBase();
-	Ng = 0;
-	Rmax = 0;
-	m = 0;
 	Ine_1[0][0] = 0;
 	Ine_1[0][1] = 0;
 	Ine_1[0][2] = 0;
@@ -24,13 +23,6 @@ Body::Body() noexcept {
 	Ine_1[2][0] = 0;
 	Ine_1[2][1] = 0;
 	Ine_1[2][2] = 0;
-	
-	cx = 0;
-	cy = 0;
-	cz = 0;
-	
-	sp = 0;
-	ActiveRotation = 0;
 	for(int i = 0 ; i < 250 ; i++){
 		NumNeighbour[i] = -9;
 		type[i] = -1;
@@ -38,8 +30,6 @@ Body::Body() noexcept {
 		NumFromBody[i] = -9;
 		SelfNumFromBody[i] = -9;
 	}
-	Nneighbour = 0;
-	Nneighbour2 = 50;
 }
 
 Body::~Body() noexcept {}

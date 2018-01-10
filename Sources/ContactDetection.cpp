@@ -968,11 +968,11 @@ void ContactDetection::linkedCell(std::vector<Sphere> & sph, const int Nsph, con
 	int x,y,z;
 	// Initialisation du tableau tdl
 	for(int i = Nsph ; i--;)
-		sph[i].TDL(NULL);
+		sph[i].TDL(nullptr);
 	
 	// Initialisation du tableau Cell
 	for(int i = dat->Ncellmax ; i--;)
-		cell[i] = NULL;
+		cell[i] = nullptr;
 	
 	// Classement des grains dans les cellules
 	for(int i = Nsph ; i--;){
@@ -1568,12 +1568,12 @@ void ContactDetection::sphContact(const int Nx0, const int Nx1, const int Nx, co
 				
 				//printf("(%d,%d,%d) => %d\n",i,j,k,num);
 				
-				if((cand[Ncand] = cell[num]) != NULL){
+				if((cand[Ncand] = cell[num]) != nullptr){
 					//printf("(%d,%d,%d) => %d\n",i,j,k,num);
 					do{
 						//cand[Ncand]->affiche();
 						Ncand++;
-					}while((cand[Ncand] = cand[Ncand-1]->TDL()) != NULL);
+					}while((cand[Ncand] = cand[Ncand-1]->TDL()) != nullptr);
 					
 					// test dans le meme boite
 					for(l = 0 ; l < Ncand ; l++){
@@ -1584,136 +1584,136 @@ void ContactDetection::sphContact(const int Nx0, const int Nx1, const int Nx, co
 					// Solo
 					if(i+1 < Nx){
 						//(i+1)*Ny*Nz+j*Nz+k = num+Ny*Nz
-						if((anta = cell[num+Ny*Nz]) != NULL){
+						if((anta = cell[num+Ny*Nz]) != nullptr){
 							do{
 								for(l = 0 ; l < Ncand ; l++){
 									ContactSphSph(cand[l],anta,ctl,Nctl);
 								}
-							}while((anta = anta->TDL()) != NULL);
+							}while((anta = anta->TDL()) != nullptr);
 						}
 					}
 					if(j+1 < Ny){
 						//i*Ny*Nz+(j+1)*Nz+k = num+Nz
-						if((anta = cell[num+Nz]) != NULL){
+						if((anta = cell[num+Nz]) != nullptr){
 							do{
 								for(l = 0 ; l < Ncand ; l++){
 									ContactSphSph(cand[l],anta,ctl,Nctl);
 								}
-							}while((anta = anta->TDL()) != NULL);
+							}while((anta = anta->TDL()) != nullptr);
 						}
 					}
 					if(k+1 < Nz){
 						//i*Ny*Nz+j*Nz+k+1 = num+1
-						if((anta = cell[num+1]) != NULL){
+						if((anta = cell[num+1]) != nullptr){
 							do{
 								for(l = 0 ; l < Ncand ; l++){
 									ContactSphSph(cand[l],anta,ctl,Nctl);
 								}
-							}while((anta = anta->TDL()) != NULL);
+							}while((anta = anta->TDL()) != nullptr);
 						}
 					}
 					// plan XY
 					if(i+1 < Nx && j+1 < Ny){
 						//(i+1)*Ny*Nz+(j+1)*Nz+k = num + Ny*Nz + Nz = num + Nz*(Ny+1)
-						if((anta = cell[num+Nz*(Ny+1)]) != NULL){
+						if((anta = cell[num+Nz*(Ny+1)]) != nullptr){
 							do{
 								for(l = 0 ; l < Ncand ; l++){
 									ContactSphSph(cand[l],anta,ctl,Nctl);
 								}
-							}while((anta = anta->TDL()) != NULL);
+							}while((anta = anta->TDL()) != nullptr);
 						}
 					}
 					if(i+1 < Nx && j-1 >= 0){
 						//(i+1)*Ny*Nz+(j-1)*Nz+k = num + Ny*Nz - Nz = num + Nz*(Ny-1)
-						if((anta = cell[num+Nz*(Ny-1)]) != NULL){
+						if((anta = cell[num+Nz*(Ny-1)]) != nullptr){
 							do{
 								for(l = 0 ; l < Ncand ; l++){
 									ContactSphSph(cand[l],anta,ctl,Nctl);
 								}
-							}while((anta = anta->TDL()) != NULL);
+							}while((anta = anta->TDL()) != nullptr);
 						}
 					}
 					// plan XZ
 					if(i+1 < Nx && k+1 < Nz){
 						//(i+1)*Ny*Nz+j*Nz+k+1 = num + Ny*Nz + 1
-						if((anta = cell[num+Ny*Nz+1]) != NULL){
+						if((anta = cell[num+Ny*Nz+1]) != nullptr){
 							do{
 								for(l = 0 ; l < Ncand ; l++){
 									ContactSphSph(cand[l],anta,ctl,Nctl);
 								}
-							}while((anta = anta->TDL()) != NULL);
+							}while((anta = anta->TDL()) != nullptr);
 						}
 					}
 					if(i+1 < Nx && k-1 >= 0){
 						//(i+1)*Ny*Nz+j*Nz+k-1 = num + Ny*Nz - 1
-						if((anta = cell[num+Ny*Nz-1]) != NULL){
+						if((anta = cell[num+Ny*Nz-1]) != nullptr){
 							do{
 								for(l = 0 ; l < Ncand ; l++){
 									ContactSphSph(cand[l],anta,ctl,Nctl);
 								}
-							}while((anta = anta->TDL()) != NULL);
+							}while((anta = anta->TDL()) != nullptr);
 						}
 					}
 					// plan YZ
 					if(j+1 < Ny && k+1 < Nz){
 						//i*Ny*Nz+(j+1)*Nz+k+1 = num + Nz + 1
-						if((anta = cell[num+Nz+1]) != NULL){
+						if((anta = cell[num+Nz+1]) != nullptr){
 							do{
 								for(l = 0 ; l < Ncand ; l++){
 									ContactSphSph(cand[l],anta,ctl,Nctl);
 								}
-							}while((anta = anta->TDL()) != NULL);
+							}while((anta = anta->TDL()) != nullptr);
 						}
 					}
 					if(j+1 < Ny && k-1 >= 0){
 						//i*Ny*Nz+(j+1)*Nz+k-1 = num + Nz - 1
-						if((anta = cell[num+Nz-1]) != NULL){
+						if((anta = cell[num+Nz-1]) != nullptr){
 							do{
 								for(l = 0 ; l < Ncand ; l++){
 									ContactSphSph(cand[l],anta,ctl,Nctl);
 								}
-							}while((anta = anta->TDL()) != NULL);
+							}while((anta = anta->TDL()) != nullptr);
 						}
 					}
 					// tripple
 					if(i+1 < Nx && j+1 < Ny && k+1 < Nz){
 						//(i+1)*Ny*Nz+(j+1)*Nz+k+1 = num + Nz*(Ny + 1) + 1
-						if((anta = cell[num+Nz*(Ny+1)+1]) != NULL){
+						if((anta = cell[num+Nz*(Ny+1)+1]) != nullptr){
 							do{
 								for(l = 0 ; l < Ncand ; l++){
 									ContactSphSph(cand[l],anta,ctl,Nctl);
 								}
-							}while((anta = anta->TDL()) != NULL);
+							}while((anta = anta->TDL()) != nullptr);
 						}
 					}
 					if(i+1 < Nx && j+1 < Ny && k-1 >= 0){
 						//(i+1)*Ny*Nz+(j+1)*Nz+k-1 = num + Nz*(Ny + 1) - 1
-						if((anta = cell[num+Nz*(Ny+1)-1]) != NULL){
+						if((anta = cell[num+Nz*(Ny+1)-1]) != nullptr){
 							do{
 								for(l = 0 ; l < Ncand ; l++){
 									ContactSphSph(cand[l],anta,ctl,Nctl);
 								}
-							}while((anta = anta->TDL()) != NULL);
+							}while((anta = anta->TDL()) != nullptr);
 						}
 					}
 					if(i+1 < Nx && j-1 >= 0 && k+1 < Nz){
 						//(i+1)*Ny*Nz+(j-1)*Nz+k+1 = num + Nz*(Ny - 1) + 1
-						if((anta = cell[num+Nz*(Ny-1)+1]) != NULL){
+						if((anta = cell[num+Nz*(Ny-1)+1]) != nullptr){
 							do{
 								for(l = 0 ; l < Ncand ; l++){
 									ContactSphSph(cand[l],anta,ctl,Nctl);
 								}
-							}while((anta = anta->TDL()) != NULL);
+							}while((anta = anta->TDL()) != nullptr);
 						}
 					}
 					if(i-1 >= 0 && j+1 < Ny && k+1 < Nz){
 						//(i-1)*Ny*Nz+(j+1)*Nz+k+1 = num + Nz*(1-Ny)+1
-						if((anta = cell[num+Nz*(1-Ny)+1]) != NULL){
+						if((anta = cell[num+Nz*(1-Ny)+1]) != nullptr){
 							do{
 								for(l = 0 ; l < Ncand ; l++){
 									ContactSphSph(cand[l],anta,ctl,Nctl);
 								}
-							}while((anta = anta->TDL()) != NULL);
+							}while((anta = anta->TDL()) != nullptr);
 						}
 					}
 				}
@@ -1736,10 +1736,10 @@ void ContactDetection::sphPlanContact(const int &Nsph, const int &Npl, int & Nct
 	for(int i = 0 ; i < Npl ; i++){
 		if(pl[i].Periodic() == -9){
 			for(int j = 0 ; j < pl[i].NCell ; j++){
-				if((anta = cell[pl[i].Cell[j]]) != NULL){
+				if((anta = cell[pl[i].Cell[j]]) != nullptr){
 					do{
 						ContactSphPlan(pl[i], anta, ct, Nct);
-					}while((anta = anta->TDL()) != NULL);
+					}while((anta = anta->TDL()) != nullptr);
 				}
 			}
 		}
@@ -1748,20 +1748,20 @@ void ContactDetection::sphPlanContact(const int &Nsph, const int &Npl, int & Nct
 				Sphere *llistI[Nsph];
 				pl[i].ListCount(0);
 				for(int j = 0 ; j < pl[i].NCell ; j++){
-					if((anta = cell[pl[i].Cell[j]]) != NULL){
+					if((anta = cell[pl[i].Cell[j]]) != nullptr){
 						do{
 							ContactSphPlanPeriodic(llistI, pl[i], pl[pl[i].Periodic()], anta, rmax);
-						}while((anta = anta->TDL()) != NULL);
+						}while((anta = anta->TDL()) != nullptr);
 					}
 				}
 				Sphere *llistK[Nsph];
 				int k = pl[i].Periodic();
 				pl[k].ListCount(0);
 				for(int j = 0 ; j < pl[k].NCell ; j++){
-					if((anta = cell[pl[k].Cell[j]]) != NULL){
+					if((anta = cell[pl[k].Cell[j]]) != nullptr){
 						do{
 							ContactSphPlanPeriodic(llistK, pl[k], pl[pl[k].Periodic()], anta, rmax);
-						}while((anta = anta->TDL()) != NULL);
+						}while((anta = anta->TDL()) != nullptr);
 					}
 				}
 				
@@ -1796,20 +1796,20 @@ void ContactDetection::sphPlanContactOMP(const int &Nsph, const int &Npl, int & 
 #pragma omp section
 					{
 						for(int j = 0 ; j < pl[i].NCell/2 ; j++){
-							if((anta = cell[pl[i].Cell[j]]) != NULL){
+							if((anta = cell[pl[i].Cell[j]]) != nullptr){
 								do{
 									ContactSphPlan(pl[i], anta, ct, Nct);
-								}while((anta = anta->TDL()) != NULL);
+								}while((anta = anta->TDL()) != nullptr);
 							}
 						}
 					}
 #pragma omp section
 					{
 						for(int j = pl[i].NCell/2 ; j < pl[i].NCell ; j++){
-							if((anta = cell[pl[i].Cell[j]]) != NULL){
+							if((anta = cell[pl[i].Cell[j]]) != nullptr){
 								do{
 									ContactSphPlan(pl[i], anta, cta, Ncta);
-								}while((anta = anta->TDL()) != NULL);
+								}while((anta = anta->TDL()) != nullptr);
 							}
 						}
 					}
@@ -1829,10 +1829,10 @@ void ContactDetection::sphPlanContactOMP(const int &Nsph, const int &Npl, int & 
 						{
 							pl[i].ListCount(0);
 							for(int j = 0 ; j < pl[i].NCell ; j++){
-								if((anta = cell[pl[i].Cell[j]]) != NULL){
+								if((anta = cell[pl[i].Cell[j]]) != nullptr){
 									do{
 										ContactSphPlanPeriodic(llistI, pl[i],pl[pl[i].Periodic()], anta,rmax);
-									}while((anta = anta->TDL()) != NULL);
+									}while((anta = anta->TDL()) != nullptr);
 								}
 							}
 						}
@@ -1840,10 +1840,10 @@ void ContactDetection::sphPlanContactOMP(const int &Nsph, const int &Npl, int & 
 						{
 							pl[k].ListCount(0);
 							for(int j = 0 ; j < pl[k].NCell ; j++){
-								if((anta = cell[pl[k].Cell[j]]) != NULL){
+								if((anta = cell[pl[k].Cell[j]]) != nullptr){
 									do{
 										ContactSphPlanPeriodic(llistK, pl[k],pl[pl[k].Periodic()], anta,rmax);
-									}while((anta = anta->TDL()) != NULL);
+									}while((anta = anta->TDL()) != nullptr);
 								}
 							}
 						}
@@ -1884,10 +1884,10 @@ void ContactDetection::sphPlanRContact(const int &Nplr, int & Nct, std::vector<P
 	Sphere *anta;
 	for(int i = 0 ; i < Nplr ; i++){
 		for(int j = 0 ; j < plr[i].NCell ; j++){
-			if((anta = cell[plr[i].Cell[j]]) != NULL){
+			if((anta = cell[plr[i].Cell[j]]) != nullptr){
 				do{
 					ContactSphPlanR(plr[i], anta, ct, Nct);
-				}while((anta = anta->TDL()) != NULL);
+				}while((anta = anta->TDL()) != nullptr);
 			}
 		}
 	}
@@ -1897,10 +1897,10 @@ void ContactDetection::sphConeContact(const int &Nco, int & Nct, std::vector<Con
 	Sphere *anta;
 	for(int i = 0 ; i < Nco ; i++){
 		for(int j = 0 ; j < co[i].NCell ; j++){
-			if((anta = cell[co[i].Cell[j]]) != NULL){
+			if((anta = cell[co[i].Cell[j]]) != nullptr){
 				do{
 					ContactSphCone(co[i], anta, ct, Nct);
-				}while((anta = anta->TDL()) != NULL);
+				}while((anta = anta->TDL()) != nullptr);
 			}
 		}
 	}
@@ -1910,10 +1910,10 @@ void ContactDetection::sphElbowContact(const int &Nelb, int & Nct, std::vector<E
 	Sphere *anta;
 	for(int i = 0 ; i < Nelb ; i++){
 		for(int j = 0 ; j < elb[i].NCell ; j++){
-			if((anta = cell[elb[i].Cell[j]]) != NULL){
+			if((anta = cell[elb[i].Cell[j]]) != nullptr){
 				do{
 					ContactSphElbow(elb[i], anta, ct, Nct);
-				}while((anta = anta->TDL()) != NULL);
+				}while((anta = anta->TDL()) != nullptr);
 			}
 		}
 	}

@@ -23,12 +23,17 @@ class MasterSolid{
 	double Mass;
 	
 	int Npl,Nplr,Nco;
-	
+	// TODO Use std::vector<double>
 	double *dxpl,*dypl,*dzpl;
+	// TODO Use std::vector<Plan*>
 	Plan **pl;
+	// TODO Use std::vector<double>
 	double *dxplr,*dyplr,*dzplr;
+	// TODO Use std::vector<PlanR*>
 	PlanR **plr;
+	// TODO Use std::vector<double>
 	double *dxco,*dyco,*dzco;
+	// TODO Use std::vector<Cone*>
 	Cone **co;
 public:
 	MasterSolid() noexcept;

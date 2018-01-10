@@ -1,23 +1,15 @@
 #include "../Includes/MasterSolid.h"
 
-MasterSolid::MasterSolid() noexcept {
-	x = 0;
-	y = 0;
-	z = 0;
-	vx = 0;
-	vy = 0;
-	vz = 0;
-	Fx = 0;
-	Fy = 0;
-	Fz = 0;
-	Fcx = 0;
-	Fcy = 0;
-	Fcz = 0;
-	pl = NULL;
-	plr = NULL;
-	co = NULL;
-	Mass = 0;
-}
+MasterSolid::MasterSolid() noexcept :
+	x(0), y(0), z(0), vx(0), vy(0), vz(0),
+	Fx(0), Fy(0), Fz(0), Fcx(0), Fcy(0), Fcz(0),
+	Mass(0), Npl(0),Nplr(0),Nco(0),
+	dxpl(nullptr),dypl(nullptr),dzpl(nullptr),
+	pl(nullptr),
+	dxplr(nullptr),dyplr(nullptr),dzplr(nullptr),
+	plr(nullptr),
+	dxco(nullptr),dyco(nullptr),dzco(nullptr),
+	co(nullptr) {}
 
 void MasterSolid::initPlan(int a) noexcept {
 	Npl = a;

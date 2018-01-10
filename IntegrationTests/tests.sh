@@ -34,4 +34,5 @@ diff -ENwbur $2/Mix/Cone/Original/Start_stop/ $2/Mix/Cone/New/Start_stop/ > MixC
 diff MixConeNew.txt MixConeOriginal.txt > MixConeTiming.txt
 echo MixConeNew finished
 
-./Analyse/MakeReport
+cd Analyse/
+./MakeReport

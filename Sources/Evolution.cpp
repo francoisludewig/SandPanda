@@ -108,7 +108,7 @@ int Evolution::EvolveOMP(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,in
 												 vector<Plan> & pl,vector<PlanR> & plr,vector<Cone> & co,vector<Elbow> & elb,vector<Sphere> & sph,vector<Body> & bd,vector<HollowBall> & hb,Contact *ct,Contact *cta,Contact *ctb,Contact *ctc,Data & dat,Gravity & gf,
 												 Sphere *cell[], int & Ntp, char *name,bool record, int Nthreshold) noexcept {
 	int Nprocess = 2;
-	if(ctb != NULL)
+	if(ctb != nullptr)
 		Nprocess = 4;
 		// OMP Version
 		do{
@@ -337,7 +337,7 @@ int Evolution::EvolveMeltOMP(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsp
 	int Nprocess = 2;
 	double dtl;
 	double r0,r1;
-	if(ctb != NULL)
+	if(ctb != nullptr)
 		Nprocess = 4;
 		// OMP Version
 		do{
