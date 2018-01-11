@@ -2,10 +2,6 @@
 
 #include <iostream>
 #include <vector>
-#include "Plan.h"
-#include "PlanR.h"
-#include "Cone.h"
-#include "Elbow.h"
 
 class Plan;
 class PlanR;

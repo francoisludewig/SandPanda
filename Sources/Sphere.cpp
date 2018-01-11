@@ -2,6 +2,8 @@
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <vector>
+
 #include "../Includes/Sphere.h"
 #include "../Includes/Gravity.h"
 #include "../Includes/Elongation.h"
@@ -305,7 +307,6 @@ void Sphere::AddXsi(Elongation& e, int n , int t, int nob) noexcept {
 }
 
 Elongation Sphere::FoundIt(int n, int t, int nob) const noexcept {
-	static Elongation e;
 	for(int i = 0 ; i < Nneighbour ; i++){
 		if(NumNeighbour[i] == n && type[i] == t){
 			if(type[i] != 10){
@@ -317,7 +318,7 @@ Elongation Sphere::FoundIt(int n, int t, int nob) const noexcept {
 			}
         }
 	}
-	return(e);
+	return Elongation::Empty();
 }
 
 void Sphere::ComputeCTD(double R, double w, double t) noexcept {

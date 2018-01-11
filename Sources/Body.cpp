@@ -293,9 +293,7 @@ Elongation Body::FoundIt(int n, int t,  int selfn, int nob) const noexcept {
 		if(NumNeighbour[i] == n && type[i] == t && SelfNumFromBody[i] == selfn && NumFromBody[i] == nob)
 			return xsi[i];
 	}
-	Elongation e;
-	e.Reset();
-	return(e);
+	return Elongation::Empty();
 }
 
 void Body::SetActiveRotation(int na) noexcept {

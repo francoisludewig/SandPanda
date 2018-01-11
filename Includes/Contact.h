@@ -10,7 +10,26 @@ class Cone;
 class Elbow;
 
 class Contact{
+
 public:
+
+	enum class Type{
+	 SphereSphere,
+	 SphereBody,
+	 BodyBody,
+	 SpherePlan,
+	 SpherePlanR,
+	 SphereCone,
+	 SphereElbow,
+	 SphereHollowBall,
+	 BodyPlan,
+	 BodyPlanR,
+	 BodyCone,
+	 BodyElbow,
+	 BodyHollowBall,
+	 None
+	};
+
 	Contact() noexcept;
 	~Contact() noexcept;
 	
@@ -20,7 +39,7 @@ public:
 	void Display() const noexcept;
 	void inFile(FILE *ft) noexcept;
 	
-	int type;
+	Type type;
 	int Stick;
 	double px,py,pz;
 	double delta;

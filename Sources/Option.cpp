@@ -1,9 +1,12 @@
 #include "../Includes/Option.h"
+
+#include "../Includes/Plan.h"
+#include "../Includes/PlanR.h"
+
 #include <cstring>
 #include <iostream>
 #include <cmath>
 #include <sys/stat.h>
-
 
 Option::Option() noexcept {
 	NoRotation = 0;

@@ -1,5 +1,10 @@
 #include "../Includes/MasterSolid.h"
 
+#include "../Includes/Plan.h"
+#include "../Includes/PlanR.h"
+#include "../Includes/Cone.h"
+#include "../Includes/Elbow.h"
+
 MasterSolid::MasterSolid() noexcept :
 	x(0), y(0), z(0), vx(0), vy(0), vz(0),
 	Fx(0), Fy(0), Fz(0), Fcx(0), Fcy(0), Fcz(0),

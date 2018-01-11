@@ -21,6 +21,7 @@ private:
 	Sphere *tdl;
 	Body *b;
 
+
 	Elongation *xsi,*xsi2;
 	int *NumNeighbour,*NumNeighbour2;
 	int Nneighbour,Nneighbour2;

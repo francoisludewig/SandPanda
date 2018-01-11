@@ -95,7 +95,7 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 		N = 0;
 		T = 0;
 		switch(ctl->type){
-			case 0:
+			case Contact::Type::SphereSphere: //0
 				// Cas du contact entre deux spheres
 				a = ctl->sa;
 				b = ctl->sb;
@@ -156,7 +156,7 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				ctl->zf = b->Z();
 				break;
 				
-			case 10:
+			case Contact::Type::SphereBody: //10
 				// Cas du contact entre une sphere et une particules
 				a = ctl->sa;
 				bb = ctl->bb;
@@ -209,7 +209,7 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				bb->AddMomemtum(-(lby*Fz-lbz*Fy), -(lbz*Fx-lbx*Fz), -(lbx*Fy-lby*Fx));
 				break;
 				
-			case 20:
+			case Contact::Type::BodyBody: //20
 				// Cas du contact entre deux particules
 				ba = ctl->ba;
 				bb = ctl->bb;
@@ -253,7 +253,7 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				bb->AddForce(-Fx, -Fy, -Fz);
 				bb->AddMomemtum(-(lby*Fz-lbz*Fy), -(lbz*Fx-lbx*Fz), -(lbx*Fy-lby*Fx));
 				break;								
-			case 1:			
+			case Contact::Type::SpherePlan: //1
 				// Cas du contact entre une sphere et un plan
 				a = ctl->sa;
 				p = ctl->pa;
@@ -322,7 +322,7 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				ctl->zf = a->Z() + laz;
 
 				break;
-			case 11:
+			case Contact::Type::BodyPlan: //11
 				// Cas du contact entre une particule et un plan
 				ba = ctl->ba;
 				na = ctl->nba;
@@ -376,7 +376,7 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				p->AddMomemtum((lby*Fz-lbz*Fy), (lbz*Fx-lbx*Fz), (lbx*Fy-lby*Fx));
 
 				break;
-			case 2:
+			case Contact::Type::SpherePlanR: //2
 				// Cas du contact entre une sphere et un disque
 				a = ctl->sa;
 				pr = ctl->par;
@@ -436,7 +436,7 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 
 				break;
 	
-			case 12:
+			case Contact::Type::BodyPlanR: //12
 				// Cas du contact entre une particule et un disque
 				ba = ctl->ba;
 				na = ctl->nba;
@@ -491,7 +491,7 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				
 				break;				
 
-			case 3:
+			case Contact::Type::SphereCone: //3
 				// Cas du contact entre une sphere et un cone
 				a = ctl->sa;
 				cne = ctl->cn;
@@ -550,7 +550,7 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				ctl->zf = a->Z() + laz;
 
 				break;
-			case 13:
+			case Contact::Type::BodyCone: //13
 				// Cas du contact entre une particule et un cone
 				ba = ctl->ba;
 				na = ctl->nba;
@@ -607,7 +607,7 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				cne->AddMomemtum((lby*Fz-lbz*Fy), (lbz*Fx-lbx*Fz), (lbx*Fy-lby*Fx));
 
 				break;
-			case 4:
+			case Contact::Type::SphereElbow: //4
 				// Cas du contact entre une sphere et un coude
 				a = ctl->sa;
 				elw = ctl->ew;
@@ -655,7 +655,7 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 
 
 				break;
-			case 14 :
+			case Contact::Type::BodyElbow: //14
 				// Cas du contact entre une particule et un coude
 				ba = ctl->ba;
 				na = ctl->nba;
@@ -703,7 +703,7 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				ba->AddMomemtum(-(lay*Fz-laz*Fy), -(laz*Fx-lax*Fz), -(lax*Fy-lay*Fx));
 
 				break;
-            case 5:
+            case Contact::Type::SphereHollowBall:
                 // Cas du contact entre deux spheres
 				a = ctl->sa;
 				b = ctl->sb;
@@ -757,7 +757,7 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				b->AddMomemtum(-(lby*Fz-lbz*Fy), -(lbz*Fx-lbx*Fz), -(lbx*Fy-lby*Fx));
 
 				break;
-            case 6:
+            case Contact::Type::BodyHollowBall: //6
                 // Cas du contact entre une sphere et une particules
 				a = ctl->sa;
 				bb = ctl->bb;

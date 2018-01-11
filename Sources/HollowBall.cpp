@@ -170,7 +170,7 @@ void HollowBall::ContactDetectionWithHollowBall(Contact *ct, int & Nct) noexcept
                     dy = y - (cand->Y());
                     dz = z - (cand->Z());
                     if((D = sqrt(dx*dx+dy*dy+dz*dz)) > (r-cand->Radius())){
-                        ct[Nct].type = 5;
+                        ct[Nct].type = Contact::Type::SphereHollowBall; //5
                         ct[Nct].delta = (r-cand->Radius())-D;
                         ct[Nct].nx = dx/D;
                         ct[Nct].ny = dy/D;
@@ -195,7 +195,7 @@ void HollowBall::ContactDetectionWithHollowBall(Contact *ct, int & Nct) noexcept
                            // printf("Contact HollowBall and Particle %d (Ng = %d)(d = %e)\n\n",candb->Num(),j,(r-candb->r[j])-D);
                            // printf("sph(%d) = (%e,%e,%e)\n",j,candb->xg[j],candb->yg[j],candb->zg[j]);
                            // exit(0);
-                            ct[Nct].type = 6;
+                            ct[Nct].type = Contact::Type::BodyHollowBall; //6
                             ct[Nct].delta = (r-candb->SphereRadius(j))-D;
                             ct[Nct].nx = dx/D;
                             ct[Nct].ny = dy/D;
