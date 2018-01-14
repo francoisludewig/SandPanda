@@ -256,8 +256,8 @@ void HollowBall::UpdateFromSph(double dt) noexcept {
     
     a = sqrt(wx*wx+wy*wy+wz*wz)*dt;
     if(a != 0){
-        sa = sin(a/2);
         ca = cos(a/2);
+        sa = sin(a/2);
         p0 = ca;
         p1 = dt*wx/a*sa;
         p2 = dt*wy/a*sa;

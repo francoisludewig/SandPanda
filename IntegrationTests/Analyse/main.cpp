@@ -28,12 +28,14 @@ class Efficiency {
 public:
 	Efficiency(std::vector<std::string>& nameFile) {
 		for(const auto& name : nameFile) {
+		  std::cout << name << "New.txt" << std::endl; 
 			std::ifstream dataFile(name+"New.txt");
 			std::string data = getLastLine(dataFile);
 			current[name] = std::stol(data.substr(6, data.size()-3-6));
 		}
 		for(const auto& name : nameFile) {
-			std::ifstream dataFile(name+"Original.txt");
+		  std::cout << name <<  "Original.txt" << std::endl;
+ 			std::ifstream dataFile(name+"Original.txt");
 			std::string data = getLastLine(dataFile);
 			ref[name] = std::stol(data.substr(6, data.size()-3-6));
 		}

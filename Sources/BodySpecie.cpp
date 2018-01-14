@@ -5,16 +5,6 @@
 #include "../Includes/BodySpecie.h"
 
 
-	int sp;
-	int Ng;
-	std::vector<int> num;
-	std::vector<double> xl;
-	std::vector<double> yl;
-	std::vector<double> zl;
-	std::vector<double> rl;
-	double m,FeretMax;
-	double Ine_1[3][3];
-
 BodySpecie::BodySpecie() noexcept :
 Ng(0), m(0), FeretMax(0) {
 	Ine_1[0][0] = (0);

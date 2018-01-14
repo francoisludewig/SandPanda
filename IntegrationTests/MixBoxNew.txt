@@ -69,5 +69,5 @@ Time Path = 1.012853e-06
 
 Evolution
 Save File 1		time = 9.999999e-02Save File 2		time = 2.000000e-01Save File 3		time = 3.000000e-01Save File 4		time = 4.000000e-01Save File 5		time = 4.999999e-01
-Time: 1m39s443462267ns ns
-Time: 99443462267 ns
+Time: 1m39s261440381ns ns
+Time: 99261440381 ns

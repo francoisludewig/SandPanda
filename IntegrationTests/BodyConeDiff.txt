@@ -1,6 +1,6 @@
 diff -ENwbur /Users/ludewigfrancois/Documents/LuGaProjects/Test//Body/Cone/Original/Start_stop/particle.txt /Users/ludewigfrancois/Documents/LuGaProjects/Test//Body/Cone/New/Start_stop/particle.txt
 --- /Users/ludewigfrancois/Documents/LuGaProjects/Test//Body/Cone/Original/Start_stop/particle.txt	2018-01-14 19:23:17.000000000 +0100
-+++ /Users/ludewigfrancois/Documents/LuGaProjects/Test//Body/Cone/New/Start_stop/particle.txt	2018-01-14 19:45:56.000000000 +0100
++++ /Users/ludewigfrancois/Documents/LuGaProjects/Test//Body/Cone/New/Start_stop/particle.txt	2018-01-14 21:43:54.000000000 +0100
 @@ -1,1197 +1,1156 @@
  150
 -0	-9	-0.001669805370497	0.008557486728857	-0.020062062031860	-4.647689e-02	-3.907662e-01	-3.830326e-01	-8.357199e-01	3.332461e-06	-3.416089e-06	-4.909907e-06	1.558922e-02	9.053355e-04	-1.208798e-02

@@ -137,9 +137,10 @@ public:
 		read.swap(write);
 		write->Reset();
 	}
-
+	// TODO use write->
 	void WriteToFileForSphere(FILE *ft) const { read->WriteToFileForSphere(ft); }
-    void WriteToFileForBody(FILE *ft) const { read->WriteToFileForBody(ft); }
+	// TODO use write->
+	void WriteToFileForBody(FILE *ft) const { read->WriteToFileForBody(ft); }
 
     void ReadFromFileForSphere(FILE *ft) { read->ReadFromFileForSphere(ft); }
     void ReadFromFileForBody(FILE *ft) { read->ReadFromFileForBody(ft); }
