@@ -1,6 +1,7 @@
 #pragma once
 
 #include "MechanicalPoint.h"
+#include "ElongationManager.h"
 #include <vector>
 
 class Contact;
@@ -21,12 +22,8 @@ private:
 	Sphere *tdl;
 	Body *b;
 
+	ElongationManager elongationManager;
 
-	Elongation *xsi,*xsi2;
-	int *NumNeighbour,*NumNeighbour2;
-	int Nneighbour,Nneighbour2;
-	int *type,*type2;
-	int *NumFromBody,*NumFromBody2;
 	double r0;
 
 	bool isHollowBall;
@@ -42,6 +39,13 @@ public:
 	Sphere(double radius, double mass, double inertia) noexcept;
 	~Sphere() noexcept;
 	
+	Sphere(const Sphere& other) = delete;
+	Sphere(Sphere&& other) noexcept = default;
+	Sphere& operator=(const Sphere& other) = delete;
+	Sphere& operator=(Sphere&& other) noexcept = default;
+
+
+
 	int Num() const noexcept { return num; }
 	void Num(int rhs) noexcept { this->num = rhs; }
 
@@ -96,9 +100,6 @@ public:
 	
 	void move(double dt) noexcept;
 	
-	void InitXsi() noexcept;
-	void AddXsi(Elongation& e, int n, int t, int nob) noexcept;
-	Elongation FoundIt(int n, int t, int nob) const noexcept;
 	int NoBodies() const noexcept;
 	int NoAvatar() const noexcept;
 	void CancelVelocity() noexcept;
@@ -109,5 +110,7 @@ public:
 	void ComputeRD(double R, double w, double t) noexcept;
 	int count() const noexcept;
 	
+	ElongationManager& GetElongationManager() { return elongationManager; }
+
 	static void sphereLinking(int & Nsph , std::vector<Sphere> & sph,  std::vector<Body> & bd) noexcept;
 };

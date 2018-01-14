@@ -25,26 +25,7 @@ Sphere::Sphere() noexcept {
 	num = -9;
 	ct_pl = 0;
 	// Elongation
-	xsi = new Elongation[maxContact];
-	NumNeighbour = new int[maxContact];
-	type = new int[maxContact];
-	NumFromBody = new int[maxContact];
-	
-	xsi2 = new Elongation[maxContact];
-	NumNeighbour2 = new int[maxContact];
-	type2 = new int[maxContact];
-	NumFromBody2 = new int[maxContact];
-	
-	for(int i = 0 ; i < maxContact ; i++){
-		NumNeighbour[i] = -9;
-		type[i] = -1;
-		xsi[i].Reset();
-		NumNeighbour2[i] = -9;
-		type2[i] = -1;
-		xsi2[i].Reset();
-	}
-	Nneighbour = 0;
-	Nneighbour2 = 0;
+	elongationManager = ElongationManager(maxContact);
 }
 
 Sphere::Sphere(int bodies, int nHollowBall, double radius) noexcept : Sphere() {
@@ -65,16 +46,7 @@ Sphere::~Sphere() noexcept {
 	tdl = nullptr;
 }
 
-void Sphere::SphDealloc() noexcept {
-	delete [] xsi;
-	delete [] NumNeighbour;
-	delete [] type;
-	delete [] NumFromBody;
-	delete [] xsi2;
-	delete [] NumNeighbour2;
-	delete [] type2;
-	delete [] NumFromBody2;
-}
+void Sphere::SphDealloc() noexcept {}
 
 int Sphere::count() const noexcept {
     if(bodies == -9 && !isHollowBall){
@@ -103,9 +75,7 @@ void Sphere::writeToFile(FILE *ft) const noexcept {
 		fprintf(ft,"%e\t%e\t%e\n",vx,vy,vz);
 		fprintf(ft,"%e\t%e\t%e\n",wx,wy,wz);
 		fprintf(ft,"%e\t%e\t%e\t%d\t%d\n",r,m,I,sp,NhollowBall);
-		fprintf(ft,"%d\n",Nneighbour);
-		for(int i = 0 ; i < Nneighbour ; i++)
-			fprintf(ft,"%d\t%d\t%e\t%e\t%e\n",NumNeighbour[i],type[i],xsi[i].x,xsi[i].y,xsi[i].z);
+		elongationManager.WriteToFileForSphere(ft);
 	}
 }
 
@@ -119,10 +89,7 @@ void Sphere::readStartStop(FILE *ft) noexcept {
 		rho = m/(4./3.*M_PI*r*r*r);
 	}
 	
-	fscanf(ft,"%d\n",&Nneighbour2);
-	Nneighbour2+=maxContact;
-	for(int i = maxContact ; i < Nneighbour2 ; i++)
-		fscanf(ft,"%d\t%d\t%lf\t%lf\t%lf\n",&NumNeighbour[i],&type[i],&xsi[i].x,&xsi[i].y,&xsi[i].z);
+	elongationManager.ReadFromFileForSphere(ft);
     r0 = r;
 }
 
@@ -271,54 +238,6 @@ void Sphere::sphereLinking(int & Nsph , std::vector<Sphere> & sph,  std::vector<
 			sph[i].autoIntegrate = 0;
 		}
 	}
-}
-
-// TODO Implement swapable container with RAII
-void Sphere::InitXsi() noexcept {
-	Elongation *tpe;
-	int *tpi;
-	
-	tpe = xsi;
-	xsi = xsi2;
-	xsi2 = tpe;
-	
-	tpi = NumNeighbour;
-	NumNeighbour = NumNeighbour2;
-	NumNeighbour2 = tpi;
-	
-	tpi = type;
-	type = type2;
-	type2 = tpi;
-	
-	tpi = NumFromBody;
-	NumFromBody = NumFromBody2;
-	NumFromBody2 = tpi;
-	
-	Nneighbour = Nneighbour2;
-	Nneighbour2 = 0;
-}
-
-void Sphere::AddXsi(Elongation& e, int n , int t, int nob) noexcept {
-	xsi2[Nneighbour2] = e;
-	NumNeighbour2[Nneighbour2] = n;
-	type2[Nneighbour2] = t;
-	NumFromBody2[Nneighbour2] = nob;
-	Nneighbour2++;
-}
-
-Elongation Sphere::FoundIt(int n, int t, int nob) const noexcept {
-	for(int i = 0 ; i < Nneighbour ; i++){
-		if(NumNeighbour[i] == n && type[i] == t){
-			if(type[i] != 10){
-				return xsi[i];
-			}
-			else{
-				if(nob == NumFromBody[i])
-					return xsi[i];
-			}
-        }
-	}
-	return Elongation::Empty();
 }
 
 void Sphere::ComputeCTD(double R, double w, double t) noexcept {

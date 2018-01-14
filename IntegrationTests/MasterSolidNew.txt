@@ -67,11 +67,11 @@ Ncell(0 plr) = 4225
 Etat de la memoire
 ------------------
 
-Le programme a alloue 3112.216000 ko
-Le programme a alloue 3.112216 Mo
+Le programme a alloue 3088.216000 ko
+Le programme a alloue 3.088216 Mo
 Time Path = 5.000000e-06
 
 Evolution
 Save File 1		time = 5.000000e-01Save File 2		time = 1.000000e+00Save File 3		time = 1.500000e+00Save File 4		time = 2.000000e+00Save File 5		time = 2.500000e+00
-Time: 4m24s205942776ns ns
-Time: 264205942776 ns
+Time: 3m38s636936006ns ns
+Time: 218636936006 ns

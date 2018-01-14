@@ -19,7 +19,6 @@ public:
 	void Display() const noexcept;
 	void Rotate(double nx, double ny, double nz) noexcept;
 	
-public:
 	double x,y,z;
 	int status;
 };

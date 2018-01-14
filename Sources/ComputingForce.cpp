@@ -95,6 +95,8 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 		N = 0;
 		T = 0;
 		switch(ctl->type){
+			case Contact::Type::None:
+				break;
 			case Contact::Type::SphereSphere: //0
 				// Cas du contact entre deux spheres
 				a = ctl->sa;
@@ -129,12 +131,16 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 					// Statique
 					else{
 						// Recherche de l'ancien xsi
-						xsi = a->FoundIt(b->Num(),0,-9);
+						xsi = a->GetElongationManager().GetElongation(b->Num(),Contact::Type::SphereSphere,-9);
+
 						// Calcul de N, T et Xsi 
 						computeContactForceStatic(ctl, xsi, N, T, tx, ty, tz, Vn, Vt, Vtx, Vty, Vtz, h, k, g0, dat.muS,dat.muD);
 						// Enregistrement du nouveau Xsi
-						a->AddXsi(xsi,b->Num(),0,-9);
-						b->AddXsi(xsi,a->Num(),0,-9);
+
+
+						//printf("Add Xsi = %e\t%e\t%e\n\n", xsi.x, xsi.y, xsi.z);
+						a->GetElongationManager().AddElongation(xsi,b->Num(),Contact::Type::SphereSphere,-9);
+						b->GetElongationManager().AddElongation(xsi,a->Num(),Contact::Type::SphereSphere,-9);
 					}
 				}
 			       
@@ -189,12 +195,12 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 					// Statique
 					else{
 						// Recherche de l'ancien xsi
-						xsi = bb->FoundIt(a->Num(),10,nb,-9);
+						xsi = bb->GetElongationManager().GetElongation(a->Num(),Contact::Type::SphereBody,nb,-9);
 						// Calcul de N, T et Xsi 
 						computeContactForceStatic(ctl, xsi, N, T, tx, ty, tz, Vn, Vt, Vtx, Vty, Vtz, h, k, g0, dat.muS,dat.muD);
 						// Enregistrement du nouveau Xsi
-						a->AddXsi(xsi,bb->Num(),10,nb);
-						bb->AddXsi(xsi,a->Num(),10,nb,-9);
+						a->GetElongationManager().AddElongation(xsi,bb->Num(),Contact::Type::SphereBody,nb);
+						bb->GetElongationManager().AddElongation(xsi,a->Num(),Contact::Type::SphereBody,nb,-9);
 					}
 				}
 				
@@ -238,10 +244,10 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 					}
 					// Statique
 					else{
-						xsi = ba->FoundIt(bb->Num(),20,na,nb);
+						xsi = ba->GetElongationManager().GetElongation(bb->Num(),Contact::Type::BodyBody,na,nb);
 						computeContactForceStatic(ctl, xsi, N, T, tx, ty, tz, Vn, Vt, Vtx, Vty, Vtz, h, k, g0, dat.muS,dat.muD);
-						ba->AddXsi(xsi,bb->Num(),20,na,nb);
-						bb->AddXsi(xsi,ba->Num(),20,nb,na);
+						ba->GetElongationManager().AddElongation(xsi,bb->Num(),Contact::Type::BodyBody,na,nb);
+						bb->GetElongationManager().AddElongation(xsi,ba->Num(),Contact::Type::BodyBody,nb,na);
 					}
 				}
 				
@@ -292,9 +298,9 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 					}
 					// Statique
 					else{
-						xsi = a->FoundIt(p->Numero(),1,-9);
+						xsi = a->GetElongationManager().GetElongation(p->Numero(),Contact::Type::SpherePlan,-9);
 						computeContactForceStatic(ctl, xsi, N, T, tx, ty, tz, Vn, Vt, Vtx, Vty, Vtz, h, k, g0, dat.muS,dat.muD);			
-						a->AddXsi(xsi,p->Numero(),1,-9);
+						a->GetElongationManager().AddElongation(xsi,p->Numero(),Contact::Type::SpherePlan,-9);
 					}
 				}
 				ComputeContactForce(ctl, tx, ty, tz, T, N, Fx, Fy, Fz);				
@@ -359,9 +365,9 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 					}
 					// Statique
 					else{
-						xsi = ba->FoundIt(p->Numero(),11,na,-9);
+						xsi = ba->GetElongationManager().GetElongation(p->Numero(),Contact::Type::BodyPlan,na,-9);
 						computeContactForceStatic(ctl, xsi, N, T, tx, ty, tz, Vn, Vt, Vtx, Vty, Vtz, h, k, g0, dat.muS,dat.muD);		
-						ba->AddXsi(xsi,p->Numero(),11,na,-9);
+						ba->GetElongationManager().AddElongation(xsi,p->Numero(),Contact::Type::BodyPlan,na,-9);
 					}
 				}
 								
@@ -413,9 +419,9 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 					}
 					// Statique
 					else{
-						xsi = a->FoundIt(pr->Numero(),2,-9);
+						xsi = a->GetElongationManager().GetElongation(pr->Numero(),Contact::Type::SpherePlanR,-9);
 						computeContactForceStatic(ctl, xsi, N, T, tx, ty, tz, Vn, Vt, Vtx, Vty, Vtz, h, k, g0, dat.muS,dat.muD);			
-						a->AddXsi(xsi,pr->Numero(),2,-9);
+						a->GetElongationManager().AddElongation(xsi,pr->Numero(),Contact::Type::SpherePlanR,-9);
 					}					
 				}
 				ComputeContactForce(ctl, tx, ty, tz, T, N, Fx, Fy, Fz);
@@ -474,9 +480,9 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 					}
 					// Statique
 					else{
-						xsi = ba->FoundIt(pr->Numero(),12,na,-9);
+						xsi = ba->GetElongationManager().GetElongation(pr->Numero(),Contact::Type::BodyPlanR,na,-9);
 						computeContactForceStatic(ctl, xsi, N, T, tx, ty, tz, Vn, Vt, Vtx, Vty, Vtz, h, k, g0, dat.muS,dat.muD);
-						ba->AddXsi(xsi,pr->Numero(),12,na,-9);
+						ba->GetElongationManager().AddElongation(xsi,pr->Numero(),Contact::Type::BodyPlanR,na,-9);
 					}					
 				}
 				
@@ -528,9 +534,9 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				else{
 					N = k*(-ctl->delta)-g0*Vn;
 					if(N < 0) N = 0;
-					xsi = a->FoundIt(cne->Numero(),3,-9);
+					xsi = a->GetElongationManager().GetElongation(cne->Numero(),Contact::Type::SphereCone,-9);
 					computeContactForceStatic(ctl, xsi, N, T, tx, ty, tz, Vn, Vt, Vtx, Vty, Vtz, h, k, g0, dat.muS,dat.muD);
-					a->AddXsi(xsi,cne->Numero(),3,-9);
+					a->GetElongationManager().AddElongation(xsi,cne->Numero(),Contact::Type::SphereCone,-9);
 				}			
 							
 				ComputeContactForce(ctl, tx, ty, tz, T, N, Fx, Fy, Fz);
@@ -591,9 +597,9 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 					N = k*(-ctl->delta)-g0*Vn;
 					if(N < 0) N = 0;
 
-					xsi = ba->FoundIt(cne->Numero(),13,na,-9);
+					xsi = ba->GetElongationManager().GetElongation(cne->Numero(),Contact::Type::BodyCone,na,-9);
 					computeContactForceStatic(ctl, xsi, N, T, tx, ty, tz, Vn, Vt, Vtx, Vty, Vtz, h, k, g0, dat.muS,dat.muD);
-					ba->AddXsi(xsi,cne->Numero(),13,na,-9);
+					ba->GetElongationManager().AddElongation(xsi,cne->Numero(),Contact::Type::BodyCone,na,-9);
 				}
 				
 				ComputeContactForce(ctl, tx, ty, tz, T, N, Fx, Fy, Fz);
@@ -642,9 +648,9 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				}
 				// Statique
 				else{
-					xsi = a->FoundIt(elw->numero,4,-9);
+					xsi = a->GetElongationManager().GetElongation(elw->numero,Contact::Type::SphereElbow,-9);
 					computeContactForceStatic(ctl, xsi, N, T, tx, ty, tz, Vn, Vt, Vtx, Vty, Vtz, h, k, g0, dat.muS,dat.muD);
-					a->AddXsi(xsi,elw->numero,4,-9);
+					a->GetElongationManager().AddElongation(xsi,elw->numero,Contact::Type::SphereElbow,-9);
 				}		
 				
 				ComputeContactForce(ctl, tx, ty, tz, T, N, Fx, Fy, Fz);
@@ -691,9 +697,9 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				}
 				// Statique
 				else{
-					xsi = ba->FoundIt(elw->numero,14,na,-9);
+					xsi = ba->GetElongationManager().GetElongation(elw->numero,Contact::Type::BodyElbow,na,-9);
 					computeContactForceStatic(ctl, xsi, N, T, tx, ty, tz, Vn, Vt, Vtx, Vty, Vtz, h, k, g0, dat.muS,dat.muD);
-					ba->AddXsi(xsi,elw->numero,4,na,-9);
+					ba->GetElongationManager().AddElongation(xsi,elw->numero,Contact::Type::BodyElbow,na,-9);
 				}					
 				
 				ComputeContactForce(ctl, tx, ty, tz, T, N, Fx, Fy, Fz);
@@ -738,12 +744,12 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 					// Statique
 					else{
 						// Recherche de l'ancien xsi
-						xsi = a->FoundIt(b->Num(),0,-9);
+						xsi = a->GetElongationManager().GetElongation(b->Num(),Contact::Type::SphereHollowBall,-9);
 						// Calcul de N, T et Xsi
 						computeContactForceStatic(ctl, xsi, N, T, tx, ty, tz, Vn, Vt, Vtx, Vty, Vtz, h, k, g0, dat.muS,dat.muD);
 						// Enregistrement du nouveau Xsi
-						a->AddXsi(xsi,b->Num(),0,-9);
-						b->AddXsi(xsi,a->Num(),0,-9);
+						a->GetElongationManager().AddElongation(xsi,b->Num(),Contact::Type::SphereHollowBall,-9);
+						b->GetElongationManager().AddElongation(xsi,a->Num(),Contact::Type::SphereHollowBall,-9);
 					}
 				}
 				// Calcul de la force de contact
@@ -793,12 +799,12 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 					// Statique
 					else{
 						// Recherche de l'ancien xsi
-						xsi = bb->FoundIt(a->Num(),10,nb,-9);
+						xsi = bb->GetElongationManager().GetElongation(a->Num(),Contact::Type::BodyHollowBall,nb,-9);
 						// Calcul de N, T et Xsi
 						computeContactForceStatic(ctl, xsi, N, T, tx, ty, tz, Vn, Vt, Vtx, Vty, Vtz, h, k, g0, dat.muS,dat.muD);
 						// Enregistrement du nouveau Xsi
-						a->AddXsi(xsi,bb->Num(),10,nb);
-						bb->AddXsi(xsi,a->Num(),10,nb,-9);
+						a->GetElongationManager().AddElongation(xsi,bb->Num(),Contact::Type::BodyHollowBall,nb);
+						bb->GetElongationManager().AddElongation(xsi,a->Num(),Contact::Type::BodyHollowBall,nb,-9);
 					}
 				}
 				

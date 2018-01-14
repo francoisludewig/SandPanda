@@ -289,10 +289,9 @@ void ReadWrite::readOutSphere(char *directory, int & Nsph, vector<Sphere> & sph,
 		}
 	printf("Number of Sphere = %d\n\n",Nsph);
 	for(int i = 0 ; i < Nsph ; i++){
-		Sphere *sphl = new Sphere();
-		sphl->readFromFile(ft);
-		sph.push_back(*sphl);
-		delete sphl;
+		Sphere sphl;
+		sphl.readFromFile(ft);
+		sph.push_back(std::move(sphl));
 	}
 	fclose(ft);
 	fflush(ft);
@@ -320,10 +319,9 @@ void ReadWrite::readStart_stopSphere(char *directory, int & Nsph, vector<Sphere>
 	
 	printf("Number of Sphere = %d\n\n",Nsph);
 	for(int i = 0 ; i < Nsph ; i++){
-		Sphere *sphl = new Sphere();
-		sphl->readStartStop(ft);
-		sph.push_back(*sphl);
-		delete sphl;
+		Sphere sphl;
+		sphl.readStartStop(ft);
+		sph.push_back(std::move(sphl));
 	}
 	fclose(ft);
 	fflush(ft);

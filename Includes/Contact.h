@@ -14,20 +14,20 @@ class Contact{
 public:
 
 	enum class Type{
-	 SphereSphere,
-	 SphereBody,
-	 BodyBody,
-	 SpherePlan,
-	 SpherePlanR,
-	 SphereCone,
-	 SphereElbow,
-	 SphereHollowBall,
-	 BodyPlan,
-	 BodyPlanR,
-	 BodyCone,
-	 BodyElbow,
-	 BodyHollowBall,
-	 None
+	 SphereSphere = 0,
+	 SphereBody = 10,
+	 BodyBody = 20,
+	 SpherePlan = 1,
+	 SpherePlanR = 2,
+	 SphereCone = 3,
+	 SphereElbow = 4,
+	 SphereHollowBall = 5,
+	 BodyPlan = 11,
+	 BodyPlanR = 12,
+	 BodyCone = 13,
+	 BodyElbow = 14,
+	 BodyHollowBall = 6,
+	 None = 100
 	};
 
 	Contact() noexcept;

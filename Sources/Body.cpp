@@ -11,8 +11,7 @@
 #include "../Includes/ContactDetection.h"
 
 Body::Body() noexcept :
-sp(0), Ng(0), numl(0), Rmax(0), m(0), NhollowBall(0),
-Nneighbour(0), Nneighbour2(50), ActiveRotation(0) {
+sp(0), Ng(0), numl(0), Rmax(0), m(0), NhollowBall(0),ActiveRotation(0) {
 	QuaternionToBase();
 	Ine_1[0][0] = 0;
 	Ine_1[0][1] = 0;
@@ -23,13 +22,7 @@ Nneighbour(0), Nneighbour2(50), ActiveRotation(0) {
 	Ine_1[2][0] = 0;
 	Ine_1[2][1] = 0;
 	Ine_1[2][2] = 0;
-	for(int i = 0 ; i < 250 ; i++){
-		NumNeighbour[i] = -9;
-		type[i] = -1;
-		xsi[i].Reset();
-		NumFromBody[i] = -9;
-		SelfNumFromBody[i] = -9;
-	}
+	elongationManager = ElongationManager(250);
 }
 
 Body::~Body() noexcept {}
@@ -51,13 +44,10 @@ void Body::ReadStartStopFile(FILE *ft) noexcept {
 	fscanf(ft,"%lf\t%lf\t%lf\t%lf\t",&q0,&q1,&q2,&q3);
 	fscanf(ft,"%lf\t%lf\t%lf\t",&vx,&vy,&vz);
 	fscanf(ft,"%lf\t%lf\t%lf\n",&wx,&wy,&wz);
-	fscanf(ft,"%d\n",&Nneighbour2);
-	Nneighbour2+=50;
-	for(int i = 50 ; i < Nneighbour2 ; i++)
-		fscanf(ft,"%d\t%d\t%d\t%d\t%lf\t%lf\t%lf\n",&NumNeighbour[i],&type[i],&SelfNumFromBody[i],&NumFromBody[i],&xsi[i].x,&xsi[i].y,&xsi[i].z);
+	elongationManager.ReadFromFileForBody(ft);
 		//q Ecriture de la base locale via le quaternion
 		QuaternionToBase();
-		}
+}
 
 void Body::WriteToFile(FILE *ft,vector<Sphere> & sph) const noexcept {
 	fprintf(ft,"%d\t%d\t",sp,NhollowBall);
@@ -65,10 +55,8 @@ void Body::WriteToFile(FILE *ft,vector<Sphere> & sph) const noexcept {
 	fprintf(ft,"%e\t%e\t%e\t%e\t",q0,q1,q2,q3);
 	fprintf(ft,"%e\t%e\t%e\t",vx,vy,vz);
 	fprintf(ft,"%e\t%e\t%e\n",wx,wy,wz);
-	fprintf(ft,"%d\n",Nneighbour);
-	for(int i = 0 ; i < Nneighbour ; i++)
-		fprintf(ft,"%d\t%d\t%d\t%d\t%e\t%e\t%e\n",NumNeighbour[i],type[i],SelfNumFromBody[i],NumFromBody[i],xsi[i].x,xsi[i].y,xsi[i].z);
-		}
+	elongationManager.WriteToFileForBody(ft);
+}
 
 void Body::WriteOutFile(FILE *ft, int mode) const noexcept {
 	if(mode == 0){
@@ -239,15 +227,14 @@ void Body::UploadSpecies(int Nbdsp, vector<BodySpecie> bdsp,vector<Sphere> & sph
 			zg.push_back(z + nz*bdsp[sp].SphereX(j) + tz*bdsp[sp].SphereY(j) + sz*bdsp[sp].SphereZ(j));
 			}
 	
-	Sphere *sphl = new Sphere(numero, NhollowBall, bdsp[sp].GetFeretMax()/2.);
-	sphl->X(x);
-	sphl->Y(y);
-	sphl->Z(z);
-	sphl->Num(Nsph);
+	Sphere sphl(numero, NhollowBall, bdsp[sp].GetFeretMax()/2.);
+	sphl.X(x);
+	sphl.Y(y);
+	sphl.Z(z);
+	sphl.Num(Nsph);
 	numl = Nsph;
-	sph.push_back(*sphl);
+	sph.push_back(std::move(sphl));
 	Nsph++;
-	delete sphl;
 	
 	//Correction de la densite 7700 -> 1000
 	//printf("m = %e\n",bdsp[sp].m);
@@ -257,43 +244,6 @@ void Body::UploadSpecies(int Nbdsp, vector<BodySpecie> bdsp,vector<Sphere> & sph
 			Ine_1[i][j] = bdsp[sp].Intertie(i,j);
 		}
 	}
-}
-
-void Body::InitXsi() noexcept {
-	for(int i = 50 ; i < Nneighbour2 ; i++){
-		xsi[i-50] = xsi[i];
-		NumNeighbour[i-50] = NumNeighbour[i];
-		type[i-50] = type[i];
-		NumFromBody[i-50] = NumFromBody[i];
-		SelfNumFromBody[i-50] = SelfNumFromBody[i];
-		xsi[i].Reset();
-		NumNeighbour[i] = -9;
-		type[i] = -1;
-		NumFromBody[i] = -9;
-		SelfNumFromBody[i] = -9;
-	}
-	Nneighbour = Nneighbour2-50;
-	Nneighbour2 = 50;
-}
-
-void Body::AddXsi(Elongation e, int n , int t, int selfn, int nob) noexcept {
-	xsi[Nneighbour2] = e;
-	NumNeighbour[Nneighbour2] = n;
-	type[Nneighbour2] = t;
-	NumFromBody[Nneighbour2] = nob;
-	SelfNumFromBody[Nneighbour2] = selfn;
-	Nneighbour2++;
-	if(Nneighbour2 > 250){
-		printf("Alert number of contact per particle is over 250\n");
-	}
-}
-
-Elongation Body::FoundIt(int n, int t,  int selfn, int nob) const noexcept {
-	for(int i = 0 ; i < Nneighbour ; i++){
-		if(NumNeighbour[i] == n && type[i] == t && SelfNumFromBody[i] == selfn && NumFromBody[i] == nob)
-			return xsi[i];
-	}
-	return Elongation::Empty();
 }
 
 void Body::SetActiveRotation(int na) noexcept {

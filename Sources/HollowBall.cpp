@@ -43,19 +43,18 @@ void HollowBall::writeToFile(FILE *ft) const noexcept {
 }
 
 void HollowBall::Makeavatar(vector<Sphere> & sph, int & Nsph, const int numero) noexcept {
-    Sphere *sphl = new Sphere(r, mass, Inertia);
-	sphl->X(x);
-	sphl->Y(y);
-	sphl->Z(z);
-	sphl->Q0(q0);
-	sphl->Q1(q1);
-	sphl->Q2(q2);
-	sphl->Q3(q3);    
-	sphl->Num(Nsph);
-    sphl->IsHollowBall();
+    Sphere sphl(r, mass, Inertia);
+	sphl.X(x);
+	sphl.Y(y);
+	sphl.Z(z);
+	sphl.Q0(q0);
+	sphl.Q1(q1);
+	sphl.Q2(q2);
+	sphl.Q3(q3);
+	sphl.Num(Nsph);
+    sphl.IsHollowBall();
 	//sphl->NhollowBall = numero;
-	sph.push_back(*sphl);
-	delete sphl;
+	sph.push_back(std::move(sphl));
 	Nsph++;
     Navatar = Nsph-1;
 }

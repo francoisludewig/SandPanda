@@ -2,6 +2,7 @@
 
 #include "MechanicalPoint.h"
 #include "Elongation.h"
+#include "ElongationManager.h"
 #include <vector>
 #include <array>
 #include <tuple>
@@ -39,9 +40,6 @@ public:
 	void UploadSpecies(int Nbdsp, std::vector<BodySpecie> bdsp, std::vector<Sphere> & sph, int & Nsph, int numero) noexcept;
 	void CancelVelocity() noexcept;
 	void RandomVelocity(double V, double W) noexcept;
-	void InitXsi() noexcept;
-	void AddXsi(Elongation e, int n, int t, int selfn, int nob) noexcept;
-	Elongation FoundIt(int n, int t, int selfn, int nob) const noexcept;
 	void SetActiveRotation(int na) noexcept;
 	
 	int SphereCount() const noexcept { return Ng; }
@@ -51,6 +49,8 @@ public:
 	double SphereRadius(int i) const noexcept { return r[i]; }
 	double Mass() const noexcept { return m; }
     double MaximumRadius() const noexcept { return Rmax; }
+
+	ElongationManager& GetElongationManager() { return elongationManager; }
 
 	std::tuple<double, double, double> Lever(const double& cnx, const double& cny, const double& cnz, const int& na) const noexcept {
 		return std::make_tuple( r[na]*cnx + (xg[na] - x),
@@ -73,12 +73,8 @@ private:
 	std::vector<double> xg;
 	std::vector<double> yg;
 	std::vector<double> zg;
-	std::array<Elongation, 250> xsi;
-	std::array<int, 250> NumNeighbour;
-	std::array<int, 250> type;
-	std::array<int, 250> NumFromBody;
-	std::array<int, 250> SelfNumFromBody;
-	int Nneighbour,Nneighbour2;
+	ElongationManager elongationManager;
+
 	int ActiveRotation;
 };
 

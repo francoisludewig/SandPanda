@@ -47,10 +47,12 @@ int Evolution::Evolve(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,int &
 		ContactDetection::sphContainer(Nsph,Npl, Nplr, Nco, Nelb, Nhb, sph, pl, plr, co, elb, hb, Nct, ct, cell,dat.Rmax);
 		
 		if(dat.modelTg == 1){
-			for(int i = 0 ; i < Nsph ; i++)
-				sph[i].InitXsi();
+			for(int i = 0 ; i < Nsph ; i++) {
+				sph[i].GetElongationManager().InitXsi();
+			}
+
 				for(int i = 0 ; i < Nbd ; i++)
-					bd[i].InitXsi();
+					bd[i].GetElongationManager().InitXsi();
 					}
 		
 		// Computing Force
@@ -170,11 +172,12 @@ int Evolution::EvolveOMP(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,in
 			
 			
 			if(dat.modelTg == 1){
-				for(int i = 0 ; i < Nsph ; i++)
-					sph[i].InitXsi();
+				for(int i = 0 ; i < Nsph ; i++) {
+					sph[i].GetElongationManager().InitXsi();
+				}
 					for(int i = 0 ; i < Nbd ; i++)
-						bd[i].InitXsi();
-						}
+						bd[i].GetElongationManager().InitXsi();
+			}
 			
 			
 			
@@ -281,9 +284,10 @@ int Evolution::EvolveMelt(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,i
 		ContactDetection::sphContainer(Nsph,Npl, Nplr, Nco, Nelb, Nhb, sph, pl, plr, co, elb, hb, Nct, ct, cell,dat.Rmax);
 		
 		if(dat.modelTg == 1){
-			for(int i = 0 ; i < Nsph ; i++)
-				sph[i].InitXsi();
+			for(int i = 0 ; i < Nsph ; i++) {
+				sph[i].GetElongationManager().InitXsi();
 				}
+		}
 		//printf("Nct = %d\n",Nct);
 		
 		// Computing Force
@@ -417,9 +421,10 @@ int Evolution::EvolveMeltOMP(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsp
 			ContactDetection::sphContainer(Nsph,Npl, Nplr, Nco, Nelb, Nhb, sph, pl, plr, co, elb, hb, Nct, ct, cell,dat.Rmax);
 			
 			if(dat.modelTg == 1){
-				for(int i = 0 ; i < Nsph ; i++)
-					sph[i].InitXsi();
-					}
+				for(int i = 0 ; i < Nsph ; i++) {
+					sph[i].GetElongationManager().InitXsi();
+				}
+			}
 			// Calcul des forces
 			ComputeForce::Compute(ct,Nct,dat);
 			
