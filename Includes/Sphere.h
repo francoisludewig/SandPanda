@@ -86,7 +86,6 @@ public:
     int Ct_pl_nz() const noexcept { return ct_pl_nz; }
     void Ct_pl_nz(int rhs) noexcept { ct_pl_nz = rhs; }
 
-	void SphDealloc() noexcept;
 	void affiche() const noexcept;
 	void readFromFile(FILE *ft) noexcept;
 	void writeToFile(FILE *ft) const noexcept;

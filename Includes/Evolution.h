@@ -13,6 +13,7 @@ class Contact;
 class Data;
 class Gravity;
 
+
 class Evolution{
 public:
 	static int Evolve(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,int & Nsph0,int & Nbd,int & Nhb,int & Nct,

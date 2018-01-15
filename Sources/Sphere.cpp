@@ -46,8 +46,6 @@ Sphere::~Sphere() noexcept {
 	tdl = nullptr;
 }
 
-void Sphere::SphDealloc() noexcept {}
-
 int Sphere::count() const noexcept {
     if(bodies == -9 && !isHollowBall){
         return 0;

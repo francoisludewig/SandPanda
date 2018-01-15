@@ -79,6 +79,7 @@ void deborde(){
 	exit(-1);
 }
 
+
 int main(int argc,char **argv){
 	TimeDurationMeasure tm;
 	tm.Start();
@@ -97,7 +98,7 @@ int main(int argc,char **argv){
 	vector<Body> bd;
 	vector<HollowBall> hb;
 	Option opt;
-	
+
 	Contact *ct = nullptr,*cta = nullptr,*ctb = nullptr,*ctc = nullptr;
 	Data dat;
 	Gravity gf;
@@ -328,11 +329,6 @@ int main(int argc,char **argv){
 			delete [] ctb;
 			delete [] ctc;
 		}
-	}
-	
-	// Liberation manuelle de tableau
-	for(int i = 0 ; i < Nsph ; i++){
-		sph[i].SphDealloc();
 	}
 	
 	
