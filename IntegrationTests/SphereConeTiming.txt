@@ -17,8 +17,8 @@
 > Le programme a alloue 892.792000 ko
 > Le programme a alloue 0.892792 Mo
 65,66c68,69
-< Time: 1m46s606349978ns ns
-< Time: 106606349978 ns
+< Time: 1m45s221902823ns ns
+< Time: 105221902823 ns
 ---
-> Time: 2m19s904576389ns ns
-> Time: 139904576389 ns
+> Time: 1m46s861712157ns ns
+> Time: 106861712157 ns
