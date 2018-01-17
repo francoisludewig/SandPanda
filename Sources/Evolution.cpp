@@ -44,7 +44,7 @@ int Evolution::Evolve(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,int &
 		Nct = 0;
 		// Verison sequentiel normale
 		ContactDetection::sphContact(0, dat.Nx,dat.Nx,0, dat.Ny, dat.Ny, dat.Nz, ct, Nct, cell);
-		ContactDetection::sphContainer(Nsph,Npl, Nplr, Nco, Nelb, Nhb, sph, pl, plr, co, elb, hb, Nct, ct, cell,dat.Rmax);
+		ContactDetection::sphContainer(sph, pl, plr, co, elb, hb, Nct, ct, cell,dat.Rmax);
 		
 		if(dat.modelTg == 1){
 			for(int i = 0 ; i < Nsph ; i++) {
@@ -281,7 +281,7 @@ int Evolution::EvolveMelt(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,i
 		// Contact Detection
 		Nct = 0;
 		ContactDetection::sphContact(0, dat.Nx,dat.Nx,0, dat.Ny, dat.Ny, dat.Nz, ct, Nct, cell);
-		ContactDetection::sphContainer(Nsph,Npl, Nplr, Nco, Nelb, Nhb, sph, pl, plr, co, elb, hb, Nct, ct, cell,dat.Rmax);
+		ContactDetection::sphContainer(sph, pl, plr, co, elb, hb, Nct, ct, cell,dat.Rmax);
 		
 		if(dat.modelTg == 1){
 			for(int i = 0 ; i < Nsph ; i++) {
@@ -418,7 +418,7 @@ int Evolution::EvolveMeltOMP(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsp
 			}
 			
 			// Detection des contacts grain-container
-			ContactDetection::sphContainer(Nsph,Npl, Nplr, Nco, Nelb, Nhb, sph, pl, plr, co, elb, hb, Nct, ct, cell,dat.Rmax);
+			ContactDetection::sphContainer(sph, pl, plr, co, elb, hb, Nct, ct, cell,dat.Rmax);
 			
 			if(dat.modelTg == 1){
 				for(auto& sphere : sph)
