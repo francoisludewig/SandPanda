@@ -14,11 +14,11 @@ public:
     ~HollowBall() noexcept;
     void loadFromFile(FILE *ft) noexcept;
     void writeToFile(FILE *ft) const noexcept;
-    void LinkInSph(vector<Sphere> & sph, int & Nsph, const int numero) noexcept;
+    void LinkInSph(vector<Sphere> & sph, const int numero) noexcept;
     void ContactDetectionInHollowBall(Contact *ct, int & Nct) noexcept;
     void ContactDetectionWithHollowBall(Contact *ct, int & Nct) noexcept;
     void UpdateFromSph(double dt) noexcept;
-    void Makeavatar(std::vector<Sphere> & sph, int & Nsph, const int numero) noexcept;
+    void Makeavatar(std::vector<Sphere> & sph, const int numero) noexcept;
 
 private:
     Sphere **inSph,**cell,*avatar;

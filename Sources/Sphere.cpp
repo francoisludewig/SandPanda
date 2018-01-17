@@ -228,11 +228,11 @@ void Sphere::affiche() const noexcept {
 	printf("\tw = (%e,%e,%e) & |w| = %e\n\n",wx,wy,wz,sqrt(wx*wx+wy*wy+wz*wz));
 }
 
-void Sphere::sphereLinking(int & Nsph , std::vector<Sphere> & sph,  std::vector<Body> & bd) noexcept {
-	for(int i = 0 ; i < Nsph ; i++){
+void Sphere::sphereLinking(std::vector<Sphere> & sph,  std::vector<Body> & bd) noexcept {
+	for(int i = 0 ; i < sph.size() ; ++i){
 		sph[i].Num(i);
-		if(sph[i].bodies != -9){
-			sph[i].SetBody(&bd[sph[i].bodies]);
+		if(sph[i].Bodies() != -9){
+			sph[i].SetBody(&bd[sph[i].Bodies()]);
 			sph[i].autoIntegrate = 0;
 		}
 	}

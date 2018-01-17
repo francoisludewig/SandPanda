@@ -44,8 +44,6 @@ public:
 	Sphere& operator=(const Sphere& other) = delete;
 	Sphere& operator=(Sphere&& other) noexcept = default;
 
-
-
 	int Num() const noexcept { return num; }
 	void Num(int rhs) noexcept { this->num = rhs; }
 
@@ -72,6 +70,7 @@ public:
 
 	void EnableIntegration() noexcept { this->autoIntegrate = true; }
 	void DisableIntegration() noexcept { this->autoIntegrate = false; }
+	bool IsIntergationDisabled() const noexcept { return !this->autoIntegrate; }
     void IsHollowBall() noexcept { this->isHollowBall = true; }
 
     int Ct_pl() const noexcept { return ct_pl; }
@@ -111,5 +110,5 @@ public:
 	
 	ElongationManager& GetElongationManager() { return elongationManager; }
 
-	static void sphereLinking(int & Nsph , std::vector<Sphere> & sph,  std::vector<Body> & bd) noexcept;
+	static void sphereLinking(std::vector<Sphere> & sph,  std::vector<Body> & bd) noexcept;
 };

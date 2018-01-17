@@ -57,12 +57,8 @@ public:
 	static void sphContainer(std::vector<Sphere> & sph, std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co, std::vector<Elbow> & elb, std::vector<HollowBall> & hb, int & Nct, Contact *ct, Sphere *cell[], const double rmax) noexcept;
 	
 	static void linkedCell(std::vector<Sphere> & sph, const Data *dat, Sphere *cell[]) noexcept;
-	static void listCellForPlan(Data *dat, std::vector<Plan> & pl, int & Npl, double dila, Gravity& gt) noexcept;
-	static void listCellForPlan(Data *dat, std::vector<Plan> & pl, int & Npl, Gravity& gt) noexcept;
-	static void listCellForPlanR(Data *dat, std::vector<PlanR> & plr, int & Nplr, double dila, Gravity& gt) noexcept;
-	static void listCellForPlanR(Data *dat, std::vector<PlanR> & plr, int & Nplr, Gravity& gt) noexcept;
-	static void listCellForCone(Data *dat, std::vector<Cone> & co, int & Nco, double dila, Gravity& gt) noexcept;
-	static void listCellForCone(Data *dat, std::vector<Cone> & co, int & Nco, Gravity& gt) noexcept;
-	static void listCellForElbow(Data *dat, std::vector<Elbow> & elb, int & Nelb, double dila) noexcept;
-	static void listCellForElbow(Data *dat, std::vector<Elbow> & elb, int & Nelb) noexcept;
+	static void listCellForPlan(Data *dat, std::vector<Plan> & pl, Gravity& gt) noexcept;
+	static void listCellForPlanR(Data *dat, std::vector<PlanR> & plr, Gravity& gt) noexcept;
+	static void listCellForCone(Data *dat, std::vector<Cone> & co, Gravity& gt) noexcept;
+	static void listCellForElbow(Data *dat, std::vector<Elbow> & elb) noexcept;
 };

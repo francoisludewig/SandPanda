@@ -20,7 +20,7 @@ public:
 	void WriteToFile(FILE *ft) const noexcept;
 	double DilatationCoefficient() const noexcept;
 	void LoadFluid(FILE *ft) noexcept;
-	void ComputeRmax(std::vector<Sphere> & sph, int Nsph) noexcept;
+	void ComputeRmax(std::vector<Sphere> & sph) noexcept;
 	void ComputeLinkedCell() noexcept;
 	
 	double dt,TIME,Total;

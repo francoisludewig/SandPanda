@@ -213,7 +213,7 @@ void Body::RandomVelocity(double V, double W) noexcept {
 	wz = wz/Norme*W;
 }
 
-void Body::UploadSpecies(int Nbdsp, vector<BodySpecie> bdsp,vector<Sphere> & sph, int & Nsph, int numero) noexcept {
+void Body::UploadSpecies(vector<BodySpecie> bdsp,vector<Sphere> & sph, int numero) noexcept {
 	Ng = bdsp[sp].SphereCount();
 	
 	for(int j = 0 ; j < Ng ; j++){
@@ -231,10 +231,9 @@ void Body::UploadSpecies(int Nbdsp, vector<BodySpecie> bdsp,vector<Sphere> & sph
 	sphl.X(x);
 	sphl.Y(y);
 	sphl.Z(z);
-	sphl.Num(Nsph);
-	numl = Nsph;
+	sphl.Num(sph.size());
+	numl = sph.size();
 	sph.push_back(std::move(sphl));
-	Nsph++;
 	
 	//Correction de la densite 7700 -> 1000
 	//printf("m = %e\n",bdsp[sp].m);

@@ -45,10 +45,10 @@ void Data::WriteToFile(FILE *ft) const noexcept{
 	fprintf(ft,"%d\t%d\t%d\n",Nx,Ny,Nz);
 }
 
-void Data::ComputeRmax(std::vector<Sphere> & sph, int Nsph) noexcept{
+void Data::ComputeRmax(std::vector<Sphere> & sph) noexcept{
 	Rmax = sph[0].Radius();
-	for(int i = 1 ; i < Nsph ; i++){
-		if(Rmax < sph[i].Radius())Rmax = sph[i].Radius();
+	for(const auto& sphere : sph){
+		if(Rmax < sphere.Radius())Rmax = sphere.Radius();
 	}
 }
 

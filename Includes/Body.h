@@ -37,7 +37,7 @@ public:
 	void Move(double dt) noexcept;
 	void UpDateLinkedSphere(std::vector<Sphere> & sph) noexcept;
 	void UpDateLinkedSphereTp() noexcept;
-	void UploadSpecies(int Nbdsp, std::vector<BodySpecie> bdsp, std::vector<Sphere> & sph, int & Nsph, int numero) noexcept;
+	void UploadSpecies(std::vector<BodySpecie> bdsp, std::vector<Sphere> & sph, int numero) noexcept;
 	void CancelVelocity() noexcept;
 	void RandomVelocity(double V, double W) noexcept;
 	void SetActiveRotation(int na) noexcept;

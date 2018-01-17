@@ -18,9 +18,9 @@
 #include "../Includes/Move.h"
 #include "../Includes/HollowBall.h"
 
-int Evolution::Evolve(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,int & Nsph0,int & Nbd,int & Nhb,int & Nct,
-											vector<Plan> & pl,vector<PlanR> & plr,vector<Cone> & co,vector<Elbow> & elb,vector<Sphere> & sph,vector<Body> & bd,vector<HollowBall> & hb,Contact *ct,Data & dat,Gravity & gf,
+int Evolution::Evolve(int & Nct, vector<Plan> & pl,vector<PlanR> & plr,vector<Cone> & co,vector<Elbow> & elb,vector<Sphere> & sph,vector<Body> & bd,vector<HollowBall> & hb,Contact *ct,Data & dat,Gravity & gf,
 											Sphere *cell[], int & Ntp, char *name,bool record, int Nthreshold) noexcept {
+	std::vector<Contact> ctl(18*sph.size()+75*bd.size(),{});
 	// Sequential Version
 	printf("Evolution\n");
 	do{
@@ -45,16 +45,15 @@ int Evolution::Evolve(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,int &
 		// Verison sequentiel normale
 		ContactDetection::sphContact(0, dat.Nx,dat.Nx,0, dat.Ny, dat.Ny, dat.Nz, ct, Nct, cell);
 		ContactDetection::sphContainer(sph, pl, plr, co, elb, hb, Nct, ct, cell,dat.Rmax);
-		
-		if(dat.modelTg == 1){
-			for(int i = 0 ; i < Nsph ; i++) {
-				sph[i].GetElongationManager().InitXsi();
-			}
 
-				for(int i = 0 ; i < Nbd ; i++)
-					bd[i].GetElongationManager().InitXsi();
-					}
-		
+		if(dat.modelTg == 1){
+			for(auto& sphere : sph)
+				sphere.GetElongationManager().InitXsi();
+
+			for(auto& body : bd)
+				body.GetElongationManager().InitXsi();
+		}
+
 		// Computing Force
 		ComputeForce::Compute(ct, Nct,dat);
 		
@@ -79,16 +78,16 @@ int Evolution::Evolve(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,int &
 		// Record data
 		if(record){
 			if(fabs((dat.TIME-dat.t0)-Ntp*(dat.dts)) < dat.dt*0.99  && (dat.TIME-dat.t0 > 0.)){
-				ReadWrite::writeStartStopContainer(name,Npl,Nplr,Nco,Nelb,pl,plr,co,elb);
-				ReadWrite::writeStartStopSphere(name,Nsph,sph);
-				ReadWrite::writeStartStopBodies(name,Nbd,bd,sph);
+				ReadWrite::writeStartStopContainer(name,pl,plr,co,elb);
+				ReadWrite::writeStartStopSphere(name,sph);
+				ReadWrite::writeStartStopBodies(name,bd,sph);
 				ReadWrite::writeStartStopData(name, &gf, &dat);
-				ReadWrite::writeStartStopHollowBall(name, Nhb, hb);
+				ReadWrite::writeStartStopHollowBall(name, hb);
 				
-				ReadWrite::writeOutContainer(name,Ntp,Npl,Nplr,Nco,Nelb,pl,plr,co,elb,dat.outMode);
-				ReadWrite::writeOutSphere(name,Ntp,Nsph0,sph,dat.outMode);
-				ReadWrite::writeOutBodies(name,Ntp,Nbd,bd,dat.outMode);
-				ReadWrite::writeOutHollowBall(name, Ntp, Nhb, hb);
+				ReadWrite::writeOutContainer(name,Ntp,pl,plr,co,elb,dat.outMode);
+				ReadWrite::writeOutSphere(name,Ntp,sph,dat.outMode);
+				ReadWrite::writeOutBodies(name,Ntp,bd,dat.outMode);
+				ReadWrite::writeOutHollowBall(name, Ntp, hb);
 				//writeOutData(name, Ntp, &gf, &dat);
 				if(dat.outContact == 1 || dat.outContact > 2)
 					ReadWrite::writeOutContact(name,Ntp,Nct,ct,dat);
@@ -161,16 +160,16 @@ int Evolution::EvolveMelt(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,i
 		// Record data
 		if(record){
 			if(fabs((dat.TIME-dat.t0)-Ntp*(dat.dts)) < dat.dt  && (dat.TIME-dat.t0 > 0.)){
-				ReadWrite::writeStartStopContainer(name,Npl,Nplr,Nco,Nelb,pl,plr,co,elb);
-				ReadWrite::writeStartStopSphere(name,Nsph,sph);
-				ReadWrite::writeStartStopBodies(name,Nbd,bd,sph);
+				ReadWrite::writeStartStopContainer(name,pl,plr,co,elb);
+				ReadWrite::writeStartStopSphere(name,sph);
+				ReadWrite::writeStartStopBodies(name,bd,sph);
 				ReadWrite::writeStartStopData(name, &gf, &dat);
-				ReadWrite::writeStartStopHollowBall(name, Nhb, hb);
+				ReadWrite::writeStartStopHollowBall(name, hb);
 				
-				ReadWrite::writeOutContainer(name,Ntp,Npl,Nplr,Nco,Nelb,pl,plr,co,elb,dat.outMode);
-				ReadWrite::writeOutSphere(name,Ntp,Nsph0,sph,dat.outMode);
-				ReadWrite::writeOutBodies(name,Ntp,Nbd,bd,dat.outMode);
-				ReadWrite::writeOutHollowBall(name, Ntp, Nhb, hb);
+				ReadWrite::writeOutContainer(name,Ntp,pl,plr,co,elb,dat.outMode);
+				ReadWrite::writeOutSphere(name,Ntp,sph,dat.outMode);
+				ReadWrite::writeOutBodies(name,Ntp,bd,dat.outMode);
+				ReadWrite::writeOutHollowBall(name, Ntp, hb);
 				if(dat.outContact == 1)
 					ReadWrite::writeOutContact(name,Ntp,Nct,ct,dat);
 					if(dat.outContact == 2)

@@ -995,7 +995,7 @@ void ContactDetection::linkedCell(std::vector<Sphere> & sph, const Data *dat, Sp
 	}
 }
 
-void ContactDetection::listCellForPlan(Data *dat, std::vector<Plan> & pl, int & Npl, Gravity& gt) noexcept {
+void ContactDetection::listCellForPlan(Data *dat, std::vector<Plan> & pl, Gravity& gt) noexcept {
 	int a,b;
 	int i,j,k;
 	int I,num;
@@ -1014,7 +1014,7 @@ void ContactDetection::listCellForPlan(Data *dat, std::vector<Plan> & pl, int & 
 	int Nts;
 	localCell =(int*)malloc(dat->Nx*dat->Ny*dat->Nz*sizeof(int));
 	
-	for(a = 0 ; a < Npl ; a++){
+	for(a = 0 ; a < pl.size() ; a++){
 		if(pl[a].GetForce() == 0){
 			Vmax = pl[a].Vmax();
 			if(Vmax < pl[a].Wmax()*pl[a].Dt())Vmax = pl[a].Wmax()*pl[a].Dt();
@@ -1117,7 +1117,7 @@ void ContactDetection::listCellForPlan(Data *dat, std::vector<Plan> & pl, int & 
 	free(localCell);
 }
 
-void ContactDetection::listCellForPlanR(Data *dat, std::vector<PlanR> & plr, int & Nplr, Gravity& gt) noexcept {
+void ContactDetection::listCellForPlanR(Data *dat, std::vector<PlanR> & plr, Gravity& gt) noexcept {
 	int a,b;
 	int i,j,k;
 	int I,num;
@@ -1137,7 +1137,7 @@ void ContactDetection::listCellForPlanR(Data *dat, std::vector<PlanR> & plr, int
 	
 	localCell =(int*)malloc(dat->Nx*dat->Ny*dat->Nz*sizeof(int));
 	
-	for(a = 0 ;  a < Nplr ; a++){
+	for(a = 0 ;  a < plr.size() ; a++){
 		
 		if(plr[a].GetForce() == 0){
 			
@@ -1236,7 +1236,7 @@ void ContactDetection::listCellForPlanR(Data *dat, std::vector<PlanR> & plr, int
 	free(localCell);
 }
 
-void ContactDetection::listCellForCone(Data *dat, std::vector<Cone> & co, int & Nco, Gravity& gt) noexcept {
+void ContactDetection::listCellForCone(Data *dat, std::vector<Cone> & co, Gravity& gt) noexcept {
 	int numCone;
 	int i,j,k;
 	int I,num;
@@ -1257,7 +1257,7 @@ void ContactDetection::listCellForCone(Data *dat, std::vector<Cone> & co, int & 
 	
 	localCell =(int*)malloc(dat->Nx*dat->Ny*dat->Nz*sizeof(int));
 	
-	for(numCone = 0 ;  numCone < Nco ; numCone++){
+	for(numCone = 0 ;  numCone < co.size() ; numCone++){
 		if(co[numCone].GetForce() == 0){
 			Vmax = co[numCone].Vmax();
 			if(Vmax < co[numCone].Wmax()*co[numCone].Height()/2.)Vmax = co[numCone].Wmax()*co[numCone].Height()/2.;
@@ -1397,7 +1397,7 @@ void ContactDetection::listCellForCone(Data *dat, std::vector<Cone> & co, int & 
 	
 }
 
-void ContactDetection::listCellForElbow(Data *dat, std::vector<Elbow> & el, int & Nelb) noexcept {
+void ContactDetection::listCellForElbow(Data *dat, std::vector<Elbow> & el) noexcept {
 	int numEl;
 	int i,j,k;
 	int I,num;
@@ -1423,7 +1423,7 @@ void ContactDetection::listCellForElbow(Data *dat, std::vector<Elbow> & el, int 
 	
 	localCell =(int*)malloc(dat->Nx*dat->Ny*dat->Nz*sizeof(int));
 	
-	for(numEl = 0 ;  numEl < Nelb ; numEl++){
+	for(numEl = 0 ;  numEl < el.size() ; numEl++){
 		Vmax = el[numEl].Vmax();
 		if(Vmax < el[numEl].Wmax()*(el[numEl].r+el[numEl].R))Vmax = el[numEl].Wmax()*(el[numEl].r+el[numEl].R);
 		time = el[numEl].Delay();

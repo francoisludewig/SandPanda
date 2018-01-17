@@ -42,7 +42,7 @@ void HollowBall::writeToFile(FILE *ft) const noexcept {
     fprintf(ft,"%e\t%e\t%e\t%e\t%e\t%e\t%e\t%e\t%e\t%e\t%e\t%e\t%e\t%d\t%d\t%d\t%d\t%d\t%d\t%e\t%e\t%e\n",x,y,z,q0,q1,q2,q3,vx,vy,vz,wx,wy,wz,lockVx,lockVy,lockVz,lockWx,lockWy,lockWz,r,mass,Inertia);
 }
 
-void HollowBall::Makeavatar(vector<Sphere> & sph, int & Nsph, const int numero) noexcept {
+void HollowBall::Makeavatar(vector<Sphere> & sph, const int numero) noexcept {
     Sphere sphl(r, mass, Inertia);
 	sphl.X(x);
 	sphl.Y(y);
@@ -51,25 +51,24 @@ void HollowBall::Makeavatar(vector<Sphere> & sph, int & Nsph, const int numero) 
 	sphl.Q1(q1);
 	sphl.Q2(q2);
 	sphl.Q3(q3);
-	sphl.Num(Nsph);
+	sphl.Num(sph.size());
     sphl.IsHollowBall();
 	//sphl->NhollowBall = numero;
 	sph.push_back(std::move(sphl));
-	Nsph++;
-    Navatar = Nsph-1;
+    Navatar = sph.size()-1;
 }
 
-void HollowBall::LinkInSph(std::vector<Sphere> & sph, int & Nsph, const int numero) noexcept {
+void HollowBall::LinkInSph(std::vector<Sphere> & sph, const int numero) noexcept {
     avatar = &sph[Navatar];
     NinSph = 0;
-    for(int i = 0 ; i < Nsph ; i++){
+    for(int i = 0 ; i < sph.size() ; i++){
         if(sph[i].HollowballNum() == numero)
             NinSph++;
     }
     inSph = new Sphere*[NinSph];
     
     NinSph = 0;
-    for(int i = 0 ; i < Nsph ; i++){
+    for(int i = 0 ; i < sph.size() ; i++){
         if(sph[i].HollowballNum() == numero){
             inSph[NinSph] = &sph[i];
             NinSph++;

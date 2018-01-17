@@ -14,13 +14,14 @@
 #include "../Includes/Data.h"
 #include "../Includes/HollowBall.h"
 
-void ReadWrite::readOutBodySpecie(char *directory, int & Nbdsp,vector<BodySpecie> & bdsp) noexcept {
+void ReadWrite::readOutBodySpecie(char *directory,vector<BodySpecie> & bdsp) noexcept {
 	char fileName[1024];
+	int Nbdsp = 0;
 	FILE *ft;
 	sprintf(fileName,"%sExport/particleSpecies.txt",directory);
 	printf("Uploading ParticleSpecies File\n");
 	printf("------------------------\n\n");
-	
+
 	//printf("FileName : %s\n",fileName);
 	// Open File
 	ft = fopen(fileName,"r");
@@ -43,7 +44,7 @@ void ReadWrite::readOutBodySpecie(char *directory, int & Nbdsp,vector<BodySpecie
 }
 
 
-void ReadWrite::readOutContainer(char *directory, int & Npl, int & Nplr, int & Nco, int & Nelb, vector<Plan> & pl, vector<PlanR> & plr, vector<Cone> & co, vector<Elbow> & elb) noexcept {
+void ReadWrite::readOutContainer(char *directory, vector<Plan> & pl, vector<PlanR> & plr, vector<Cone> & co, vector<Elbow> & elb) noexcept {
 	// Procedure which read the container file in Export directory at the begenning of the program
 	char fileName[1024];
 	FILE *ft;
@@ -52,8 +53,11 @@ void ReadWrite::readOutContainer(char *directory, int & Npl, int & Nplr, int & N
 	sprintf(fileName,"%sExport/container.txt",directory);
 	printf("Uploading Container File\n");
 	printf("------------------------\n\n");
-	
+
 	printf("FileName : %s\n",fileName);
+
+	int Npl = 0, Nplr = 0, Nco = 0, Nelb = 0;
+
 	// Open File
 	ft = fopen(fileName,"r");
 	// Read Data
@@ -66,11 +70,8 @@ void ReadWrite::readOutContainer(char *directory, int & Npl, int & Nplr, int & N
 	printf("Number of Cone = %d\n",Nco);
 	printf("Number of Elbow = %d\n\n",Nelb);
 	// Upload Plan
-	
+
 	for(int i = 0 ; i < Npl ; i++){
-		//Plan *pll = new  Plan();
-		//pl.push_back(*pll);
-		//delete pll;
 		pl.push_back(Plan());
 	}
 	printf("push_back\n");
@@ -80,9 +81,6 @@ void ReadWrite::readOutContainer(char *directory, int & Npl, int & Nplr, int & N
 	}
 	// Upload PlanR
 	for(int i = 0 ; i < Nplr ; i++){
-		//PlanR *plrl = new PlanR();
-		//plr.push_back(*plrl);
-		//delete plrl;
 		plr.push_back(PlanR());
 	}
 	for(int i = 0 ; i < Nplr ; i++){
@@ -91,9 +89,6 @@ void ReadWrite::readOutContainer(char *directory, int & Npl, int & Nplr, int & N
 	}
 	// Upload Cone
 	for(int i = 0 ; i < Nco ; i++){
-		//Cone *col = new Cone();
-		//co.push_back(*col);
-		//delete col;
 		co.push_back(Cone());
 	}
 	for(int i = 0 ; i < Nco ; i++){
@@ -102,9 +97,6 @@ void ReadWrite::readOutContainer(char *directory, int & Npl, int & Nplr, int & N
 	}
 	// Upload Elbow
 	for(int i = 0 ; i < Nelb ; i++){
-		//Elbow *elbl = new Elbow();
-		//elb.push_back(*elbl);
-		//delete elbl;
 		elb.push_back(Elbow());
 	}
 	for(int i = 0 ; i < Nelb ; i++){
@@ -115,20 +107,24 @@ void ReadWrite::readOutContainer(char *directory, int & Npl, int & Nplr, int & N
 	fclose(ft);
 	fflush(ft);
 	printf("Loading Container Finished\n");
-	
+
 	//printf("End readOutContainer\n");
 }
 
-void ReadWrite::readStart_stopContainer(char *directory, int & Npl, int & Nplr, int & Nco, int & Nelb, vector<Plan> & pl, vector<PlanR> & plr, vector<Cone> & co, vector<Elbow> & elb) noexcept {
+void ReadWrite::readStart_stopContainer(char *directory, vector<Plan> & pl, vector<PlanR> & plr, vector<Cone> & co, vector<Elbow> & elb) noexcept {
 	// Procedure which read the container file in Export directory at the begenning of the program
 	char fileName[1024];
+	int Npl = 0;
+	int Nplr = 0;
+	int Nco = 0;
+	int Nelb = 0;
 	FILE *ft;
 	// Making FileName
 	//printf("Directory : %s\n",directory);
 	sprintf(fileName,"%sStart_stop/container.txt",directory);
 	printf("Uploading Container File\n");
 	printf("------------------------\n\n");
-	
+
 	printf("FileName : %s\n",fileName);
 	// Open File
 	ft = fopen(fileName,"r");
@@ -141,45 +137,28 @@ void ReadWrite::readStart_stopContainer(char *directory, int & Npl, int & Nplr, 
 	printf("Number of Disk = %d\n",Nplr);
 	printf("Number of Cone = %d\n",Nco);
 	printf("Number of Elbow = %d\n\n",Nelb);
-	
+
 	// Upload Plan
-	for(int i = 0 ; i < Npl ; i++){
-		Plan *pll = new  Plan();
-		pl.push_back(*pll);
-		delete pll;
-	}
-	
-	for(int i = 0 ; i < Npl ; i++){
+	pl.resize(Npl);
+	for(int i = 0 ; i < pl.size() ; i++) {
 		pl[i].LoadFromFile(ft);
 		pl[i].Numero(i);
 	}
 	// Upload PlanR
-	for(int i = 0 ; i < Nplr ; i++){
-		PlanR *plrl = new PlanR();
-		plr.push_back(*plrl);
-		delete plrl;
-	}
-	for(int i = 0 ; i < Nplr ; i++){
+	plr.resize(Nplr);
+	for(int i = 0 ; i < plr.size() ; i++) {
 		plr[i].readFromFile(ft);
 		plr[i].Numero(i);
 	}
 	// Upload Cone
-	for(int i = 0 ; i < Nco ; i++){
-		Cone *col = new Cone();
-		co.push_back(*col);
-		delete col;
-	}
-	for(int i = 0 ; i < Nco ; i++){
+	co.resize(Nco);
+	for(int i = 0 ; i < co.size() ; i++){
 		co[i].readFromFile(ft);
 		co[i].Numero(i);
 	}
 	// Upload Elbow
-	for(int i = 0 ; i < Nelb ; i++){
-		Elbow *elbl = new Elbow();
-		elb.push_back(*elbl);
-		delete elbl;
-	}
-	for(int i = 0 ; i < Nelb ; i++){
+	elb.resize(Nelb);
+	for(int i = 0 ; i < elb.size() ; i++){
 		elb[i].ReadFromFile(ft);
 		elb[i].numero = i;
 	}
@@ -190,7 +169,7 @@ void ReadWrite::readStart_stopContainer(char *directory, int & Npl, int & Nplr, 
 }
 
 
-void ReadWrite::writeStartStopContainer(char *directory, int & Npl, int & Nplr, int & Nco, int & Nelb, vector<Plan> & pl, vector<PlanR> & plr, vector<Cone> & co, vector<Elbow> & elb) noexcept {
+void ReadWrite::writeStartStopContainer(char *directory, vector<Plan> & pl, vector<PlanR> & plr, vector<Cone> & co, vector<Elbow> & elb) noexcept {
 	// Procedure which write in Start_stop directory the container file for eventually a restart of the progam
 	char fileName[1024];
 	FILE *ft;
@@ -201,29 +180,29 @@ void ReadWrite::writeStartStopContainer(char *directory, int & Npl, int & Nplr, 
 	// Open File
 	ft = fopen(fileName,"w");
 	// Write Data
-	fprintf(ft,"%d\n",Npl);
-	fprintf(ft,"%d\n",Nplr);
-	fprintf(ft,"%d\n",Nco);
-	fprintf(ft,"%d\n",Nelb);
-	
-	for(int i = 0 ; i < Npl ; i++){
-		pl[i].WriteToFile(ft);
-	}
-	for(int i = 0 ; i < Nplr ; i++){
-		plr[i].writeToFile(ft);
-	}
-	for(int i = 0 ; i < Nco ; i++){
-		co[i].writeToFile(ft);
-	}
-	for(int i = 0 ; i < Nelb ; i++){
-		elb[i].WriteToFile(ft);
-	}
+	fprintf(ft,"%d\n",static_cast<int>(pl.size()));
+	fprintf(ft,"%d\n",static_cast<int>(plr.size()));
+	fprintf(ft,"%d\n",static_cast<int>(co.size()));
+	fprintf(ft,"%d\n",static_cast<int>(elb.size()));
+
+	for(const auto& plan : pl)
+		plan.WriteToFile(ft);
+
+	for(const auto& disk : plr)
+		disk.writeToFile(ft);
+
+	for(const auto& cone : co)
+		cone.writeToFile(ft);
+
+	for(const auto& elbow : elb)
+		elbow.WriteToFile(ft);
+
 	// Close File
 	fclose(ft);
 	fflush(ft);
 }
 
-void ReadWrite::writeOutContainer(char *directory, int n,int & Npl, int & Nplr, int & Nco, int & Nelb, vector<Plan> & pl, vector<PlanR> & plr, vector<Cone> & co, vector<Elbow> & elb, int mode) noexcept {
+void ReadWrite::writeOutContainer(char *directory, int n, vector<Plan> & pl, vector<PlanR> & plr, vector<Cone> & co, vector<Elbow> & elb, int mode) noexcept {
 	// Procedure which write in Out directory the container file for saving data
 	char fileName[1024];
 	FILE *ft;
@@ -234,42 +213,34 @@ void ReadWrite::writeOutContainer(char *directory, int n,int & Npl, int & Nplr, 
 	if(mode == 0){
 		sprintf(fileName,"%sOut/container_%d.txt",directory,n);
 		ft = fopen(fileName,"w");
-		
-		fprintf(ft,"%d\n",Npl);
-		fprintf(ft,"%d\n",Nplr);
-		fprintf(ft,"%d\n",Nco);
-		fprintf(ft,"%d\n",Nelb);
+
+		fprintf(ft,"%d\n",static_cast<int>(pl.size()));
+		fprintf(ft,"%d\n",static_cast<int>(plr.size()));
+		fprintf(ft,"%d\n",static_cast<int>(co.size()));
+		fprintf(ft,"%d\n",static_cast<int>(elb.size()));
 	}
-	else{
-		sprintf(fileName,"%sOut/container_%d.bin",directory,n);
-		ft = fopen(fileName,"wb");
-		
-		fwrite(&Npl,sizeof(int),1,ft);
-		fwrite(&Nplr,sizeof(int),1,ft);
-		fwrite(&Nco,sizeof(int),1,ft);
-		fwrite(&Nelb,sizeof(int),1,ft);
-	}
-	
+
 	// Write Data
-	for(int i = 0 ; i < Npl ; i++){
-		pl[i].WriteOutFile(ft,mode);
+	for(const auto& plan : pl)
+		plan.WriteOutFile(ft,mode);
+
+	for(const auto& disk : plr)
+		disk.writeOutFile(ft,mode);
+
+	for(const auto& cone : co){
+		cone.writeOutFile(ft,mode);
 	}
-	for(int i = 0 ; i < Nplr ; i++){
-		plr[i].writeOutFile(ft,mode);
-	}
-	for(int i = 0 ; i < Nco ; i++){
-		co[i].writeOutFile(ft,mode);
-	}
-	for(int i = 0 ; i < Nelb ; i++){
-		elb[i].WriteOutFile(ft,mode);
-	}
+	for(const auto& elbow : elb)
+		elbow.WriteOutFile(ft,mode);
+
 	// Close File
 	fclose(ft);
 	fflush(ft);
 }
 
-void ReadWrite::readOutSphere(char *directory, int & Nsph, vector<Sphere> & sph, int limite) noexcept {
+void ReadWrite::readOutSphere(char *directory, vector<Sphere> & sph, int limite) noexcept {
 	char fileName[1024];
+	int Nsph = 0;
 	FILE *ft;
 	int b;
 	// Making FileName
@@ -277,16 +248,16 @@ void ReadWrite::readOutSphere(char *directory, int & Nsph, vector<Sphere> & sph,
 	sprintf(fileName,"%sExport/grain.txt",directory);
 	printf("Uploading Sphere File\n");
 	printf("---------------------\n\n");
-	
+
 	//printf("FileName : %s\n",fileName);
 	// Open File
 	ft = fopen(fileName,"r");
 	if(limite == -9)
 		fscanf(ft,"%d",&Nsph);
-		else{
-			fscanf(ft,"%d",&b);
-			Nsph = limite;
-		}
+	else{
+		fscanf(ft,"%d",&b);
+		Nsph = limite;
+	}
 	printf("Number of Sphere = %d\n\n",Nsph);
 	for(int i = 0 ; i < Nsph ; i++){
 		Sphere sphl;
@@ -297,66 +268,67 @@ void ReadWrite::readOutSphere(char *directory, int & Nsph, vector<Sphere> & sph,
 	fflush(ft);
 }
 
-void ReadWrite::readStart_stopSphere(char *directory, int & Nsph, vector<Sphere> & sph, int limite) noexcept {
+void ReadWrite::readStart_stopSphere(char *directory, vector<Sphere> & sph, int limite) noexcept {
 	char fileName[1024];
 	int b;
+	int Nsph = 0;
 	FILE *ft;
 	// Making FileName
 	//printf("Directory : %s\n",directory);
 	sprintf(fileName,"%sStart_stop/grain.txt",directory);
 	printf("Uploading Sphere File\n");
 	printf("---------------------\n\n");
-	
+
 	//printf("FileName : %s\n",fileName);
 	// Open File
 	ft = fopen(fileName,"r");
 	if(limite == -9)
 		fscanf(ft,"%d",&Nsph);
-		else{
-			fscanf(ft,"%d",&b);
-			Nsph = limite;
-		}
-	
-	printf("Number of Sphere = %d\n\n",Nsph);
-	for(int i = 0 ; i < Nsph ; i++){
-		Sphere sphl;
-		sphl.readStartStop(ft);
-		sph.push_back(std::move(sphl));
+	else{
+		fscanf(ft,"%d",&b);
+		Nsph = limite;
 	}
+
+	printf("Number of Sphere = %d\n\n",Nsph);
+	sph.resize(Nsph);
+	for(int i = 0 ; i < sph.size() ; i++)
+		sph[i].readStartStop(ft);
+
 	fclose(ft);
 	fflush(ft);
 }
 
 
-void ReadWrite::writeStartStopSphere(char *directory, int & Nsph, vector<Sphere> & sph) noexcept {
+void ReadWrite::writeStartStopSphere(char *directory, vector<Sphere> & sph) noexcept {
 	char fileName[1024];
 	FILE *ft;
-	int NsphNoBodies = Nsph;
-	for(int i = 0 ; i < Nsph ; i++){
+	int NsphNoBodies = static_cast<int>(sph.size());
+	for(int i = 0 ; i < sph.size() ; i++){
 		NsphNoBodies -= sph[i].count();
 	}
-	
+
 	// Making FileName
 	sprintf(fileName,"%sStart_stop/grain.txt",directory);
 	ft = fopen(fileName,"w");
 	fprintf(ft,"%d\n",NsphNoBodies);
-	for(int i = 0 ; i < Nsph ; i++){
+	for(int i = 0 ; i < sph.size() ; i++){
 		sph[i].writeToFile(ft);
 	}
 	fclose(ft);
 	fflush(ft);
 }
 
-void ReadWrite::writeOutSphere(char *directory, int n, int & Nsph, vector<Sphere> & sph, int mode) noexcept {
-	int Nl = Nsph;
-	if(Nsph != 0){
+void ReadWrite::writeOutSphere(char *directory, int n, vector<Sphere> & sph, int mode) noexcept {
+	int Nl = sph.size();
+	if(!sph.empty()){
 		char fileName[1024];
 		FILE *ft;
-		
-		for(int i = 0 ; i < Nsph ; i++){
-			Nl -= sph[i].count();
+
+		for(int i = 0 ; i < sph.size() ; i++){
+			if(sph[i].IsIntergationDisabled())
+				Nl -= sph[i].count();
 		}
-		
+
 		if(mode == 0){
 			// Making FileName
 			sprintf(fileName,"%sOut/grain_%d.txt",directory,n);
@@ -371,28 +343,30 @@ void ReadWrite::writeOutSphere(char *directory, int n, int & Nsph, vector<Sphere
 			ft = fopen(fileName,"wb");
 			fwrite(&Nl, sizeof(int), 1, ft);
 		}
-		for(int i = 0 ; i < Nsph ; i++){
-			sph[i].writeOutFile(ft,i,mode);
+		for(int i = 0 ; i < sph.size() ; i++){
+			if(!sph[i].IsIntergationDisabled())
+				sph[i].writeOutFile(ft,i,mode);
 		}
 		fclose(ft);
 		fflush(ft);
 	}
 }
 
-void ReadWrite::readOutHollowBall(char *directory, int & Nhbl, vector<HollowBall> & hbl) noexcept {
+void ReadWrite::readOutHollowBall(char *directory, vector<HollowBall> & hbl) noexcept {
 	char fileName[1024];
+	int Nhbl = 0;
 	FILE *ft;
 	// Making FileName
 	//printf("Directory : %s\n",directory);
 	sprintf(fileName,"%sExport/hollowBall.txt",directory);
 	printf("Uploading HollowBall File\n");
 	printf("-------------------------\n\n");
-	
+
 	//printf("FileName : %s\n",fileName);
 	// Open File
 	ft = fopen(fileName,"r");
 	fscanf(ft,"%d",&Nhbl);
-	
+
 	for(int i = 0 ; i < Nhbl ; i++){
 		HollowBall *sphl = new HollowBall();
 		sphl->loadFromFile(ft);
@@ -401,52 +375,53 @@ void ReadWrite::readOutHollowBall(char *directory, int & Nhbl, vector<HollowBall
 	}
 	fclose(ft);
 	fflush(ft);
-	
+
 }
 
-void ReadWrite::writeStartStopHollowBall(char *directory, int & Nhbl, vector<HollowBall> & hbl) noexcept {
+void ReadWrite::writeStartStopHollowBall(char *directory, vector<HollowBall> & hbl) noexcept {
 	char fileName[1024];
 	FILE *ft;
 	sprintf(fileName,"%sStart_stop/hollowBall.txt",directory);
 	ft = fopen(fileName,"w");
-	fprintf(ft,"%d\n",Nhbl);
-	for(int i = 0 ; i < Nhbl ; i++)
+	fprintf(ft,"%d\n",static_cast<int>(hbl.size()));
+	for(int i = 0 ; i < hbl.size() ; i++)
 		hbl[i].writeToFile(ft);
-		fclose(ft);
-		fflush(ft);
-		
-		}
+	fclose(ft);
+	fflush(ft);
 
-void ReadWrite::writeOutHollowBall(char *directory, int n, int & Nhbl, vector<HollowBall> & hbl) noexcept {
-	if(Nhbl != 0){
+}
+
+void ReadWrite::writeOutHollowBall(char *directory, int n, vector<HollowBall> & hbl) noexcept {
+	if(!hbl.empty()){
 		char fileName[1024];
 		FILE *ft;
 		sprintf(fileName,"%sOut/hollowBall_%d.txt",directory,n);
 		ft = fopen(fileName,"w");
-		fprintf(ft,"%d\n",Nhbl);
-		for(int i = 0 ; i < Nhbl ; i++)
-			hbl[i].writeToFile(ft);
-			fclose(ft);
-			fflush(ft);
-			}
+		fprintf(ft,"%d\n",static_cast<int>(hbl.size()));
+		for(const auto& hollowBall : hbl)
+			hollowBall.writeToFile(ft);
+		fclose(ft);
+		fflush(ft);
+	}
 }
 
-void ReadWrite::readStart_stopHollowBall(char *directory, int & Nhbl, vector<HollowBall> & hbl) noexcept {
+void ReadWrite::readStart_stopHollowBall(char *directory, vector<HollowBall> & hbl) noexcept {
 	char fileName[1024];
+	int Nhbl = 0;
 	FILE *ft;
 	// Making FileName
 	//printf("Directory : %s\n",directory);
 	sprintf(fileName,"%sStart_stop/hollowBall.txt",directory);
 	printf("Uploading HollowBall File\n");
 	printf("-------------------------\n\n");
-	
+
 	//printf("FileName : %s\n",fileName);
 	// Open File
 	ft = fopen(fileName,"r");
 	fscanf(ft,"%d",&Nhbl);
-	
+
 	printf("Nhbl = %d\n",Nhbl);
-	
+
 	for(int i = 0 ; i < Nhbl ; i++){
 		HollowBall *sphl = new HollowBall();
 		sphl->loadFromFile(ft);
@@ -457,9 +432,10 @@ void ReadWrite::readStart_stopHollowBall(char *directory, int & Nhbl, vector<Hol
 }
 
 
-void ReadWrite::readOutBodies(char *directory, int & Nbd, vector<Body> & bd, int limite) noexcept {
+void ReadWrite::readOutBodies(char *directory, vector<Body> & bd, int limite) noexcept {
 	char fileName[1024];
 	int b;
+	int Nbd = 0;
 	FILE *ft;
 	// Making FileName
 	//printf("Directory : %s\n",directory);
@@ -468,14 +444,14 @@ void ReadWrite::readOutBodies(char *directory, int & Nbd, vector<Body> & bd, int
 	// Open File
 	printf("Uploading Body File\n");
 	printf("-------------------\n\n");
-	
+
 	ft = fopen(fileName,"r");
 	if(limite == -9)
 		fscanf(ft,"%d",&Nbd);
-		else{
-			fscanf(ft,"%d",&b);
-			Nbd = limite;
-		}
+	else{
+		fscanf(ft,"%d",&b);
+		Nbd = limite;
+	}
 	printf("Number of Body = %d\n\n",Nbd);
 	for(int i = 0 ; i < Nbd ; i++){
 		Body *bdl = new Body();
@@ -487,9 +463,10 @@ void ReadWrite::readOutBodies(char *directory, int & Nbd, vector<Body> & bd, int
 	fflush(ft);
 }
 
-void ReadWrite::readStart_stopBodies(char *directory, int & Nbd, vector<Body> & bd, int limite) noexcept {
+void ReadWrite::readStart_stopBodies(char *directory, vector<Body> & bd, int limite) noexcept {
 	char fileName[1024];
 	int b;
+	int Nbd = 0;
 	FILE *ft;
 	// Making FileName
 	//printf("Directory : %s\n",directory);
@@ -498,28 +475,26 @@ void ReadWrite::readStart_stopBodies(char *directory, int & Nbd, vector<Body> & 
 	// Open File
 	printf("Uploading Body File\n");
 	printf("-------------------\n\n");
-	
+
 	ft = fopen(fileName,"r");
 	if(limite == -9)
 		fscanf(ft,"%d",&Nbd);
-		else{
-			fscanf(ft,"%d",&b);
-			Nbd = limite;
-		}
-	printf("Number of Body = %d\n\n",Nbd);
-	for(int i = 0 ; i < Nbd ; i++){
-		Body *bdl = new Body();
-		bdl->ReadStartStopFile(ft);
-		bd.push_back(*bdl);
-		delete bdl;
+	else{
+		fscanf(ft,"%d",&b);
+		Nbd = limite;
 	}
+	printf("Number of Body = %d\n\n",Nbd);
+	bd.resize(Nbd);
+	for(int i = 0 ; i < bd.size() ; i++)
+		bd[i].ReadStartStopFile(ft);
+
 	fclose(ft);
 	fflush(ft);
 }
 
 
 
-void ReadWrite::writeStartStopBodies(char *directory, int & Nbd, vector<Body> & bd,vector<Sphere> & sph) noexcept {
+void ReadWrite::writeStartStopBodies(char *directory, vector<Body> & bd,vector<Sphere> & sph) noexcept {
 	char fileName[1024];
 	FILE *ft;
 	// Making FileName
@@ -527,16 +502,16 @@ void ReadWrite::writeStartStopBodies(char *directory, int & Nbd, vector<Body> & 
 	sprintf(fileName,"%sStart_stop/particle.txt",directory);
 	//printf("FileName : %s\n",fileName);
 	ft = fopen(fileName,"w");
-	fprintf(ft,"%d\n",Nbd);
-	for(int i = 0 ; i < Nbd ; i++){
+	fprintf(ft,"%d\n",static_cast<int>(bd.size()));
+	for(int i = 0 ; i < bd.size() ; i++){
 		bd[i].WriteToFile(ft,sph);
 	}
 	fclose(ft);
 	fflush(ft);
 }
 
-void ReadWrite::writeOutBodies(char *directory, int n, int & Nbd, vector<Body> & bd, int mode) noexcept {
-	if(Nbd != 0){
+void ReadWrite::writeOutBodies(char *directory, int n, vector<Body> & bd, int mode) noexcept {
+	if(!bd.empty()){
 		char fileName[1024];
 		FILE *ft;
 		if(mode == 0){
@@ -544,17 +519,11 @@ void ReadWrite::writeOutBodies(char *directory, int n, int & Nbd, vector<Body> &
 			sprintf(fileName,"%sOut/particle_%d.txt",directory,n);
 			// Open File
 			ft = fopen(fileName,"w");
-			fprintf(ft,"%d\n",Nbd);
+			fprintf(ft,"%d\n",static_cast<int>(bd.size()));
 		}
-		else{
-			// Making FileName
-			sprintf(fileName,"%sOut/particle_%d.bin",directory,n);
-			// Open File
-			ft = fopen(fileName,"wb");
-			fwrite(&Nbd, sizeof(int), 1, ft);
-		}
-		for(int i = 0 ; i < Nbd ; i++){
-			bd[i].WriteOutFile(ft,mode);
+
+		for(const auto& body : bd){
+			body.WriteOutFile(ft,mode);
 		}
 		fclose(ft);
 		fflush(ft);
