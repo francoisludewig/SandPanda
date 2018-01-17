@@ -84,7 +84,7 @@ int main(int argc,char **argv){
 	TimeDurationMeasure tm;
 	tm.Start();
 	int Ntp;
-	int Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nct = 0,Ncta = 0,Nctb = 0,Nctc = 0,Nbdsp,Nhb;
+	int Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nct = 0,Nbdsp,Nhb;
 	double dila = 0;
 	bool record = 1;
 	int Nthreshold = 0;
@@ -99,7 +99,7 @@ int main(int argc,char **argv){
 	vector<HollowBall> hb;
 	Option opt;
 
-	Contact *ct = nullptr,*cta = nullptr,*ctb = nullptr,*ctc = nullptr;
+	Contact *ct = nullptr;
 	Data dat;
 	Gravity gf;
 	
@@ -189,40 +189,8 @@ int main(int argc,char **argv){
 	
 	printf("NctMax = %d\n",18*Nsph+75*Nbd);
 	// Dynamical allocation
-	switch(opt.parallel){
-		case 0:
-			ct  = new Contact[18*Nsph+75*Nbd];
-			cta = nullptr;
-			ctb = nullptr;
-			ctc = nullptr;
-			break;
-		case 1:
-			switch(opt.Nprocess){
-				case 2:
-					ct  = new Contact[18*Nsph];
-					cta = new Contact[9*Nsph];
-					ctb = nullptr;
-					ctc = nullptr;
-					break;
-				case 4:
-					ct  = new Contact[20*Nsph];
-					cta = new Contact[5*Nsph];
-					ctb = new Contact[5*Nsph];
-					ctc = new Contact[5*Nsph];
-					break;
-				default:
-					opt.Nprocess = 2;
-					printf("Nprocess must be 2 or 4\nThe value used in this simulation will be 2\n");
-					ct  = new Contact[18*Nsph];
-					cta = new Contact[9*Nsph];
-					ctb = nullptr;
-					ctc = nullptr;
-					opt.Nprocess = 2;
-					break;
-			}
-			break;
-	}
-	
+	ct  = new Contact[18*Nsph+75*Nbd];
+
 	int Ncell = dat.Nx*dat.Ny*dat.Nz;
 	dat.Ncellmax = Ncell;
 	printf("Ncell = %d\n",Ncell);
@@ -309,40 +277,20 @@ int main(int argc,char **argv){
 	
 	switch(opt.mode){
 		case 0:
-			if(opt.parallel == 1)
-				Ntp = Evolution::EvolveOMP(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,Ncta,Nctb,Nctc,pl,plr,co,elb,sph,bd,hb,ct,cta,ctb,ctc,dat,gf,cell,Ntp, opt.directory,record,Nthreshold);
-			else
-				Ntp = Evolution::Evolve(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,               pl,plr,co,elb,sph,bd,hb,ct,            dat,gf,cell,Ntp, opt.directory,record,Nthreshold);
+			Ntp = Evolution::Evolve(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,               pl,plr,co,elb,sph,bd,hb,ct,            dat,gf,cell,Ntp, opt.directory,record,Nthreshold);
 			break;
 		case 1:
 			dat.Total = 0;
-			if(opt.parallel == 0)
-				Ntp = Compaction::Run(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct               ,pl,plr,co,elb,sph,bd,hb,ct            ,dat,gf,cell,Ntp, opt.directory,record,opt.NtapMin,opt.NtapMax,opt.Gamma,opt.Freq,Nthreshold);
-			else
-				Ntp = Compaction::RunOMP(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,Ncta,Nctb,Nctc,pl,plr,co,elb,sph,bd,hb,ct,cta,ctb,ctc,dat,gf,cell,Ntp, opt.directory,record,opt.NtapMin,opt.NtapMax,opt.Gamma,opt.Freq,Nthreshold);
-			
+			Ntp = Compaction::Run(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct               ,pl,plr,co,elb,sph,bd,hb,ct            ,dat,gf,cell,Ntp, opt.directory,record,opt.NtapMin,opt.NtapMax,opt.Gamma,opt.Freq,Nthreshold);
 			break;
 		case 2:
 			dat.Total = 0.0;
-			if(opt.parallel == 0)
-				Ntp = PowderPaQ::PowderPaQRun(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct               ,pl,plr,co,elb,sph,bd,hb,ct            ,dat,gf,cell,Ntp, opt.directory,record,opt.NtapMin,opt.NtapMax,Nthreshold,opt.PQheight,opt.PQVel);
-			else
-				Ntp = PowderPaQ::PowderPaQOMP(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,Ncta,Nctb,Nctc,pl,plr,co,elb,sph,bd,hb,ct,cta,ctb,ctc,dat,gf,cell,Ntp, opt.directory,record,opt.NtapMin,opt.NtapMax,Nthreshold,opt.PQheight,opt.PQVel);
+			Ntp = PowderPaQ::PowderPaQRun(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct               ,pl,plr,co,elb,sph,bd,hb,ct            ,dat,gf,cell,Ntp, opt.directory,record,opt.NtapMin,opt.NtapMax,Nthreshold,opt.PQheight,opt.PQVel);
 			break;
 	}
 	
 	// Free of dynamical table
 	delete [] ct;
-	// OMP Vestion
-	if(opt.parallel == 1){
-		if(opt.Nprocess == 2)
-			delete [] cta;
-		else{
-			delete [] ctb;
-			delete [] ctc;
-		}
-	}
-	
 	
 	for(int i = 0 ; i < Nbdsp ; i++){
 		bdsp[i].FreeMemory();
