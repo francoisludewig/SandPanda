@@ -86,7 +86,7 @@ public:
 															std::vector<HollowBall> & hb, int & Nct, Contact *ct, int & Ncta, Contact *cta,
 															Sphere *cell[], const double rmax) noexcept;
 	
-	static void linkedCell(std::vector<Sphere> & sph, const int Nsph, const Data *dat, Sphere *cell[]) noexcept;
+	static void linkedCell(std::vector<Sphere> & sph, const Data *dat, Sphere *cell[]) noexcept;
 	static void listCellForPlan(Data *dat, std::vector<Plan> & pl, int & Npl, double dila, Gravity& gt) noexcept;
 	static void listCellForPlan(Data *dat, std::vector<Plan> & pl, int & Npl, Gravity& gt) noexcept;
 	static void listCellForPlanR(Data *dat, std::vector<PlanR> & plr, int & Nplr, double dila, Gravity& gt) noexcept;

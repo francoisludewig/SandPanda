@@ -15,22 +15,20 @@
 #include "../Includes/Data.h"
 
 /* Fonction qui initialise tous les obejts avant chaque etape de calcul */
-void ComputeForce::InitForTimeStep(const int & Nsph, const int & Nbd , const int & Nct ,int & Npl, int & Nplr, int & Nco, int & Nelb, std::vector<Sphere> & sph, std::vector<Body> & bd, Contact *ct, std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co, std::vector<Elbow> & elb) noexcept {
-	Sphere *sphl = &sph[0];
-	for(int i = 0 ; i < Nsph ; i++){
-		sphl->initTimeStep();
-		sphl++;
-	}
-	for(int i = 0 ; i < Nbd ; i++)
-		bd[i].TimeStepInitialization();
-	for(int i = 0 ; i < Nct ; i++)
-		ct[i].TimeStepInitialization();	
-	for(int i = 0 ; i < Npl ; i++)
-		pl[i].TimeStepInitialization();
-	for(int i = 0 ; i < Nplr ; i++)
-		plr[i].TimeStepInitialization();
-	for(int i = 0 ; i < Nco ; i++)
-		co[i].TimeStepInitialization();
+void ComputeForce::InitForTimeStep(const int & Nct, std::vector<Sphere> & sph, std::vector<Body> & bd, Contact *ct, std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co, std::vector<Elbow> & elb) noexcept {
+	for(auto& sphere : sph)
+		sphere.initTimeStep();
+	for(auto& body : bd)
+		body.TimeStepInitialization();
+	for(auto& plan : pl)
+		plan.TimeStepInitialization();
+	for(auto& disk : plr)
+		disk.TimeStepInitialization();
+	for(auto& cone : co)
+		cone.TimeStepInitialization();
+
+	for(int i = 0 ; i < Nct ; ++i)
+		ct[i].TimeStepInitialization();
 }
 
 /* Fonction qui initialise tous les obejts avant chaque etape de calcul en version parallel OMP */

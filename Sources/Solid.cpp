@@ -203,7 +203,7 @@ void Solid::UpDateVelocity(double time, double dt, Gravity& gt) noexcept {
 							}
 
 
-void Solid::UpdateForceFromGB(int & Nsph, std::vector<Sphere> & sph) noexcept {
+void Solid::UpdateForceFromGB(std::vector<Sphere> & sph) noexcept {
 	if(Ngb != 0){
 		Fx = 0;
 		Fy = 0;

@@ -15,7 +15,7 @@ class Data;
 
 class ComputeForce {
 public:
-	static void InitForTimeStep(const int & Nsph, const int & Nbd , const int & Nct ,int & Npl, int & Nplr, int & Nco, int & Nelb, std::vector<Sphere> & sph, std::vector<Body> & bd, Contact *ct, std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co, std::vector<Elbow> & elb) noexcept;
+	static void InitForTimeStep(const int & Nct, std::vector<Sphere> & sph, std::vector<Body> & bd, Contact *ct, std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co, std::vector<Elbow> & elb) noexcept;
 
 	static void InitForTimeStepOMP(const int & Nsph, const int & Nbd , const int & Nct , const int & Ncta , const int & Nctb , const int & Nctc ,int & Npl, int & Nplr, int & Nco, int & Nelb, std::vector<Sphere> & sph, std::vector<Body> & bd, Contact *ct, Contact *cta, Contact *ctb, Contact *ctc, std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co, std::vector<Elbow> & elb) noexcept;
 

@@ -4,20 +4,21 @@
 #import "../Includes/Sphere.h"
 #import "../Includes/Body.h"
 
-void PeriodicityPL(const int & Nsph, const int & Nbd, const int &Npl, std::vector<Sphere> & sph, std::vector<Body> & bd, std::vector<Plan> & pl) noexcept {
+void PeriodicityPL(std::vector<Sphere> & sph, std::vector<Plan> & pl) noexcept {
 	int plp;
 	double px,py,pz,pn,pt,ps;
 	Sphere *b;
 	
-	for(int i = 0 ; i < Npl ; i++){
-		if((plp = pl[i].Periodic()) != -9){
-			for(int j = 0 ; j < pl[i].ListCount() ; j++){
-				b = &sph[pl[i].List(j)];
+
+	for(auto& plan : pl){
+		if((plp = plan.Periodic()) != -9){
+			for(int j = 0 ; j < plan.ListCount() ; j++){
+				b = &sph[plan.List(j)];
 				if((b->Bodies()) == -9){
 					px = b->X();
 					py = b->Y();
 					pz = b->Z();
-					pn = (px-pl[i].X())*pl[i].Nx()+(py-pl[i].Y())*pl[i].Ny()+(pz-pl[i].Z())*pl[i].Nz();
+					pn = (px-plan.X())*plan.Nx()+(py-plan.Y())*plan.Ny()+(pz-plan.Z())*plan.Nz();
 					pt = (px-pl[plp].X())*pl[plp].Tx()+(py-pl[plp].Y())*pl[plp].Ty()+(pz-pl[plp].Z())*pl[plp].Tz();
 					ps = (px-pl[plp].X())*pl[plp].Sx()+(py-pl[plp].Y())*pl[plp].Sy()+(pz-pl[plp].Z())*pl[plp].Sz();
 					if(pn < 0){
@@ -30,15 +31,15 @@ void PeriodicityPL(const int & Nsph, const int & Nbd, const int &Npl, std::vecto
 		}
 	}
 	
-	for(int i = 0 ; i < Npl ; i++){
-		if((plp = pl[i].Periodic()) != -9){
-			for(int j = 0 ; j < pl[i].ListCount() ; j++){
-				b = &sph[pl[i].List(j)];
+	for(auto& plan : pl){
+		if((plp = plan.Periodic()) != -9){
+			for(int j = 0 ; j < plan.ListCount() ; j++){
+				b = &sph[plan.List(j)];
 				if(b->Bodies() != -9){
 					px = (b->GetBody())->X();
 					py = (b->GetBody())->Y();
 					pz = (b->GetBody())->Z();
-					pn = (px-pl[i].X())*pl[i].Nx()+(py-pl[i].Y())*pl[i].Ny()+(pz-pl[i].Z())*pl[i].Nz();
+					pn = (px-plan.X())*plan.Nx()+(py-plan.Y())*plan.Ny()+(pz-plan.Z())*plan.Nz();
 					pt = (px-pl[plp].X())*pl[plp].Tx()+(py-pl[plp].Y())*pl[plp].Ty()+(pz-pl[plp].Z())*pl[plp].Tz();
 					ps = (px-pl[plp].X())*pl[plp].Sx()+(py-pl[plp].Y())*pl[plp].Sy()+(pz-pl[plp].Z())*pl[plp].Sz();
 					if(pn < 0){

@@ -26,20 +26,20 @@ int Evolution::Evolve(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,int &
 	do{
 		dat.TIME += dat.dt;
 		// Position anticipation
-		Move::moveContainer(Npl, Nplr, Nco, Nelb, pl, plr, co, elb, dat.TIME, dat.dt/2, sph,gf);
+		Move::moveContainer(pl, plr, co, elb, dat.TIME, dat.dt/2, sph,gf);
 		dat.mas->Move(dat.dt/2);
-		Move::moveSphere(Nsph, sph, dat.dt/2);
-		Move::upDateHollowBall(Nhb,hb,dat.dt);
+		Move::moveSphere(sph, dat.dt/2);
+		Move::upDateHollowBall(hb,dat.dt);
 		
 		gf.Move(dat.TIME,dat.dt/2);
 		//Doublon pour test
-		Move::moveBodies(Nbd, bd, dat.dt/2, sph);
-		PeriodicityPL(Nsph, Nbd, Npl, sph, bd, pl);
+		Move::moveBodies(bd, dat.dt/2, sph);
+		PeriodicityPL(sph, pl);
 		
 		// Linked Cells
-		ContactDetection::linkedCell(sph,Nsph,&dat,cell);
+		ContactDetection::linkedCell(sph,&dat,cell);
 		// Initialization for the time step
-		ComputeForce::InitForTimeStep(Nsph, Nbd, Nct,Npl,Nplr,Nco,Nelb, sph, bd, ct,pl,plr,co,elb);
+		ComputeForce::InitForTimeStep(Nct, sph, bd, ct,pl,plr,co,elb);
 		// Contact Detection
 		Nct = 0;
 		// Verison sequentiel normale
@@ -58,23 +58,23 @@ int Evolution::Evolve(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,int &
 		// Computing Force
 		ComputeForce::Compute(ct, Nct,dat);
 		
-		Move::UpDateForceContainer(Nsph,sph,Npl,Nplr,Nco,pl,plr,co,dat.TIME,dat.dt,gf);
+		Move::UpDateForceContainer(sph,pl,plr,co,dat.TIME,dat.dt,gf);
 		dat.mas->getForces();
 		
 		// Update Velocities
-		Move::upDateVelocitySphere(Nsph, sph, gf, dat.dt);
-		Move::upDateVelocityBodies(Nbd, bd, gf, dat.dt, sph);
-		Move::upDateVelocityContainer(Npl, Nplr, Nco, Nelb, pl, plr, co, elb, dat.TIME, dat.dt, gf);
+		Move::upDateVelocitySphere(sph, gf, dat.dt);
+		Move::upDateVelocityBodies(bd, gf, dat.dt, sph);
+		Move::upDateVelocityContainer(pl, plr, co, elb, dat.TIME, dat.dt, gf);
 		dat.mas->UpDateVelocity(dat.dt);
 		
 		// Move
-		Move::moveContainer(Npl, Nplr, Nco, Nelb, pl, plr, co, elb, dat.TIME, dat.dt/2, sph,gf);
+		Move::moveContainer(pl, plr, co, elb, dat.TIME, dat.dt/2, sph,gf);
 		dat.mas->Move(dat.dt/2);
-		Move::moveSphere(Nsph, sph, dat.dt/2);
-		Move::moveBodies(Nbd, bd, dat.dt/2, sph);
-		Move::upDateHollowBall(Nhb,hb,dat.dt);
+		Move::moveSphere(sph, dat.dt/2);
+		Move::moveBodies(bd, dat.dt/2, sph);
+		Move::upDateHollowBall(hb,dat.dt);
 		gf.Move(dat.TIME,dat.dt/2);
-		PeriodicityPL(Nsph, Nbd, Npl, sph, bd, pl);
+		PeriodicityPL(sph, pl);
 		
 		// Record data
 		if(record){
@@ -116,17 +116,17 @@ int Evolution::EvolveOMP(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,in
 		do{
 			dat.TIME += dat.dt;
 			// Position anticipation
-			Move::moveContainer(Npl, Nplr, Nco, Nelb, pl, plr, co, elb, dat.TIME, dat.dt/2, sph,gf);
+			Move::moveContainer(pl, plr, co, elb, dat.TIME, dat.dt/2, sph,gf);
 			
 			Move::moveSphereOMP(Nsph, sph, dat.dt/2,Nprocess);
 			Move::moveBodiesOMP(Nbd, bd, dat.dt/2, sph,Nprocess);
-			Move::upDateHollowBall(Nhb,hb,dat.dt);
+			Move::upDateHollowBall(hb,dat.dt);
 			gf.Move(dat.TIME,dat.dt/2);
-			PeriodicityPL(Nsph, Nbd, Npl, sph, bd, pl);
+			PeriodicityPL(sph, pl);
 			
 			// Linked Cells
 			//linkedCell(sph, Nsph, &dat, tdl, cell);
-			ContactDetection::linkedCell(sph,Nsph,&dat,cell);
+			ContactDetection::linkedCell(sph,&dat,cell);
 			
 			// Initialization for the time step
 			ComputeForce::InitForTimeStepOMP(Nsph, Nbd, Nct,Ncta,Nctb,Nctc,Npl,Nplr,Nco,Nelb, sph, bd, ct, cta, ctb, ctc,pl,plr,co,elb);
@@ -208,21 +208,21 @@ int Evolution::EvolveOMP(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,in
 				ComputeForce::Compute(ctc, Nctc,dat);
 			}
 			
-			Move::UpDateForceContainer(Nsph,sph,Npl,Nplr,Nco,pl,plr,co,dat.TIME,dat.dt,gf);
+			Move::UpDateForceContainer(sph,pl,plr,co,dat.TIME,dat.dt,gf);
 			
 			// Update Velocities
 			Move::upDateVelocitySphereOMP(Nsph, sph, gf, dat.dt,Nprocess);
 			Move::upDateVelocityBodiesOMP(Nbd, bd, gf, dat.dt, sph,Nprocess);
-			Move::upDateVelocityContainer(Npl, Nplr, Nco, Nelb, pl, plr, co, elb, dat.TIME, dat.dt, gf);
+			Move::upDateVelocityContainer(pl, plr, co, elb, dat.TIME, dat.dt, gf);
 			
 			// Move
-			Move::moveContainer(Npl, Nplr, Nco, Nelb, pl, plr, co, elb, dat.TIME, dat.dt/2, sph,gf);
+			Move::moveContainer(pl, plr, co, elb, dat.TIME, dat.dt/2, sph,gf);
 			Move::moveSphereOMP(Nsph, sph, dat.dt/2,Nprocess);
-			Move::upDateHollowBall(Nhb,hb,dat.dt);
+			Move::upDateHollowBall(hb,dat.dt);
 			
 			Move::moveBodiesOMP(Nbd, bd, dat.dt/2, sph,Nprocess);
 			gf.Move(dat.TIME,dat.dt/2);
-			PeriodicityPL(Nsph, Nbd, Npl, sph, bd, pl);
+			PeriodicityPL(sph, pl);
 			
 			
 			if(record){
@@ -264,19 +264,19 @@ int Evolution::EvolveMelt(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,i
 		dtl = dat.dt;
 		r0 = sph[0].Radius();
 		// Position anticipation
-		Move::moveContainer(Npl, Nplr, Nco, Nelb, pl, plr, co, elb, dat.TIME, dat.dt/2, sph,gf);
-		Move::moveSphere(Nsph, sph, dat.dt/2);
-		Move::upDateHollowBall(Nhb,hb,dat.dt);
-		Move::MeltingSphere(Nsph, sph, vr, delayVr, dat.dt/2);
+		Move::moveContainer(pl, plr, co, elb, dat.TIME, dat.dt/2, sph,gf);
+		Move::moveSphere(sph, dat.dt/2);
+		Move::upDateHollowBall(hb,dat.dt);
+		Move::MeltingSphere(sph, vr, delayVr, dat.dt/2);
 		gf.Move(dat.TIME,dat.dt/2);
 		//Doublon pour test
-		Move::moveBodies(Nbd, bd, dat.dt/2, sph);
-		PeriodicityPL(Nsph, Nbd, Npl, sph, bd, pl);
+		Move::moveBodies(bd, dat.dt/2, sph);
+		PeriodicityPL(sph, pl);
 		
 		// Linked Cells
-		ContactDetection::linkedCell(sph,Nsph,&dat,cell);
+		ContactDetection::linkedCell(sph,&dat,cell);
 		// Initialization for the time step
-		ComputeForce::InitForTimeStep(Nsph, Nbd, Nct,Npl,Nplr,Nco,Nelb, sph, bd, ct,pl,plr,co,elb);
+		ComputeForce::InitForTimeStep(Nct, sph, bd, ct,pl,plr,co,elb);
 		
 		// Contact Detection
 		Nct = 0;
@@ -294,16 +294,16 @@ int Evolution::EvolveMelt(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,i
 		ComputeForce::Compute(ct, Nct,dat);
 		
 		// Update Velocities
-		Move::upDateVelocitySphere(Nsph, sph, gf, dat.dt);
-		Move::upDateVelocityBodies(Nbd, bd, gf, dat.dt, sph);
+		Move::upDateVelocitySphere(sph, gf, dat.dt);
+		Move::upDateVelocityBodies(bd, gf, dat.dt, sph);
 		// Move
-		Move::moveContainer(Npl, Nplr, Nco, Nelb, pl, plr, co, elb, dat.TIME, dat.dt/2, sph,gf);
-		Move::moveSphere(Nsph, sph, dat.dt/2);
-		Move::moveBodies(Nbd, bd, dat.dt/2, sph);
-		Move::upDateHollowBall(Nhb,hb,dat.dt);
-		Move::MeltingSphere(Nsph, sph, vr, delayVr, dat.dt/2);
+		Move::moveContainer(pl, plr, co, elb, dat.TIME, dat.dt/2, sph,gf);
+		Move::moveSphere(sph, dat.dt/2);
+		Move::moveBodies(bd, dat.dt/2, sph);
+		Move::upDateHollowBall(hb,dat.dt);
+		Move::MeltingSphere(sph, vr, delayVr, dat.dt/2);
 		gf.Move(dat.TIME,dat.dt/2);
-		PeriodicityPL(Nsph, Nbd, Npl, sph, bd, pl);
+		PeriodicityPL(sph, pl);
 		
 		// Record data
 		if(record){
@@ -350,22 +350,22 @@ int Evolution::EvolveMeltOMP(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsp
 			r0 = sph[0].Radius();
 			
 			// Position anticipation
-			Move::moveContainer(Npl, Nplr, Nco, Nelb, pl, plr, co, elb, dat.TIME, dat.dt/2, sph,gf);
+			Move::moveContainer(pl, plr, co, elb, dat.TIME, dat.dt/2, sph,gf);
 			Move::moveSphereOMP(Nsph, sph, dat.dt/2,Nprocess);
 			Move::moveBodiesOMP(Nbd, bd, dat.dt/2, sph,Nprocess);
-			Move::upDateHollowBall(Nhb,hb,dat.dt);
+			Move::upDateHollowBall(hb,dat.dt);
 			
-			Move::MeltingSphere(Nsph, sph, vr, delayVr, dat.dt/2);
+			Move::MeltingSphere(sph, vr, delayVr, dat.dt/2);
 			
 			gf.Move(dat.TIME,dat.dt/2);
-			PeriodicityPL(Nsph, Nbd, Npl, sph, bd, pl);
+			PeriodicityPL(sph, pl);
 			
 			// Linked Cells
 			//linkedCell(sph, Nsph, &dat, tdl, cell);
-			ContactDetection::linkedCell(sph,Nsph,&dat,cell);
+			ContactDetection::linkedCell(sph,&dat,cell);
 			
 			// Initialization for the time step
-			ComputeForce::InitForTimeStep(Nsph, Nbd, Nct,Npl,Nplr,Nco,Nelb, sph, bd, ct,pl,plr,co,elb);
+			ComputeForce::InitForTimeStep(Nct, sph, bd, ct,pl,plr,co,elb);
 			
 			// Contact Detection
 			Nct = 0;
@@ -421,9 +421,8 @@ int Evolution::EvolveMeltOMP(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsp
 			ContactDetection::sphContainer(Nsph,Npl, Nplr, Nco, Nelb, Nhb, sph, pl, plr, co, elb, hb, Nct, ct, cell,dat.Rmax);
 			
 			if(dat.modelTg == 1){
-				for(int i = 0 ; i < Nsph ; i++) {
-					sph[i].GetElongationManager().InitXsi();
-				}
+				for(auto& sphere : sph)
+					sphere.GetElongationManager().InitXsi();
 			}
 			// Calcul des forces
 			ComputeForce::Compute(ct,Nct,dat);
@@ -434,14 +433,14 @@ int Evolution::EvolveMeltOMP(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsp
 			
 			
 			// Move
-			Move::moveContainer(Npl, Nplr, Nco, Nelb, pl, plr, co, elb, dat.TIME, dat.dt/2, sph,gf);
+			Move::moveContainer(pl, plr, co, elb, dat.TIME, dat.dt/2, sph,gf);
 			Move::moveSphereOMP(Nsph, sph, dat.dt/2,Nprocess);
 			Move::moveBodiesOMP(Nbd, bd, dat.dt/2, sph,Nprocess);
-			Move::upDateHollowBall(Nhb,hb,dat.dt);
+			Move::upDateHollowBall(hb,dat.dt);
 			
-			Move::MeltingSphere(Nsph, sph, vr, delayVr, dat.dt/2);
+			Move::MeltingSphere(sph, vr, delayVr, dat.dt/2);
 			gf.Move(dat.TIME,dat.dt/2);
-			PeriodicityPL(Nsph, Nbd, Npl, sph, bd, pl);
+			PeriodicityPL(sph, pl);
 			
 			if(record){
 				if(fabs((dat.TIME-dat.t0)-Ntp*(dat.dts)) < dat.dt  && dat.TIME-dat.t0 > 0.){

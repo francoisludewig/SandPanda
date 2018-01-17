@@ -7,4 +7,4 @@ class Sphere;
 class Body;
 class Plan;
 
-void PeriodicityPL(const int & Nsph, const int & Nbd, const int &Npl, std::vector<Sphere> & sph, std::vector<Body> & bd, std::vector<Plan> & pl) noexcept;
+void PeriodicityPL(std::vector<Sphere> & sph, std::vector<Plan> & pl) noexcept;

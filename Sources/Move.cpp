@@ -16,82 +16,73 @@
 #include "../Includes/Move.h"
 #include "../Includes/HollowBall.h"
 
-void Move::UpDateForceContainer(int & Nsph, std::vector<Sphere> & sph, int & Npl, int & Nplr, int & Nco, std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co, double time, double dt, Gravity gt) noexcept {
-	for(int i = 0 ; i < Npl ; i++){
-		pl[i].UpdateForceFromGB(Nsph,sph);
-	}
-	for(int i = 0 ; i < Nplr ; i++){
-		plr[i].UpdateForceFromGB(Nsph,sph);
-	}
-	for(int i = 0 ; i < Nco ; i++){
-		co[i].UpdateForceFromGB(Nsph,sph);
-		co[i].LimitForce();
+void Move::UpDateForceContainer(std::vector<Sphere> & sph, std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co, double time, double dt, Gravity gt) noexcept {
+	for(auto& plan : pl)
+		plan.UpdateForceFromGB(sph);
+
+	for(auto& disk : plr)
+		disk.UpdateForceFromGB(sph);
+
+	for(auto& cone : co) {
+		cone.UpdateForceFromGB(sph);
+		cone.LimitForce();
 	}
 }
 
-void Move::upDateVelocityContainer(int & Npl, int & Nplr, int & Nco, int & Nelb, std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co, std::vector<Elbow> & elb, double time, double dt, Gravity gt) noexcept {
-	for(int i = 0 ; i < Npl ; i++){
-		pl[i].UpDateVelocity(time,dt,gt);
-	}
-	for(int i = 0 ; i < Nplr ; i++){
-		plr[i].UpDateVelocity(time,dt,gt);
-	}
-	for(int i = 0 ; i < Nco ; i++){
-		co[i].UpDateVelocity(time,dt,gt);
-	}
+void Move::upDateVelocityContainer(std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co, std::vector<Elbow> & elb, double time, double dt, Gravity gt) noexcept {
+	for(auto& plan : pl)
+		plan.UpDateVelocity(time,dt,gt);
+
+	for(auto& disk : plr)
+		disk.UpDateVelocity(time,dt,gt);
+
+	for(auto& cone : co)
+		cone.UpDateVelocity(time,dt,gt);
 }
 
 
-
-void Move::moveContainer(int & Npl, int & Nplr, int & Nco, int & Nelb, std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co, std::vector<Elbow> & elb, double time, double dt, std::vector<Sphere> & sph, Gravity gt) noexcept {
-	for(int i = 0 ; i < Npl ; i++){
-		pl[i].Move(dt);
-		pl[i].UpDateLinkedSphere(sph,time,gt);
+void Move::moveContainer(std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co, std::vector<Elbow> & elb, double time, double dt, std::vector<Sphere> & sph, Gravity gt) noexcept {
+	for(auto& plan : pl) {
+		plan.Move(dt);
+		plan.UpDateLinkedSphere(sph,time,gt);
 	}
-	for(int i = 0 ; i < Nplr ; i++){
-		plr[i].Move(dt);
-		plr[i].UpDateLinkedSphere(sph,time,gt);
+	for(auto& disk : plr){
+		disk.Move(dt);
+		disk.UpDateLinkedSphere(sph,time,gt);
 	}
-	for(int i = 0 ; i < Nco ; i++){
-		co[i].Move(dt);
-		co[i].UpDateLinkedSphere(sph,time,gt);
-		co[i].LimitUpdate();
+	for(auto& cone : co){
+		cone.Move(dt);
+		cone.UpDateLinkedSphere(sph,time,gt);
+		cone.LimitUpdate();
 	}
-	for(int i = 0 ; i < Nelb ; i++){
-		elb[i].Move(time,dt);
-	}
+	for(auto& elbow : elb)
+		elbow.Move(time,dt);
 }
 
-void Move::upDateVelocityLinkedSphereContainer(int & Npl, int & Nplr, int & Nco, int & Nelb, std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co, std::vector<Elbow> & elb, double time, double dt, std::vector<Sphere> & sph) noexcept {
-	for(int i = 0 ; i < Npl ; i++){
-		pl[i].UpDateVelocityLinkedSphere(sph,time);
-	}
-	for(int i = 0 ; i < Nplr ; i++){
-		plr[i].UpDateVelocityLinkedSphere(sph,time);
-	}
-	for(int i = 0 ; i < Nco ; i++){
-		co[i].UpDateVelocityLinkedSphere(sph,time);
-	}
+void Move::upDateVelocityLinkedSphereContainer(std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co, double time, double dt, std::vector<Sphere> & sph) noexcept {
+	for(auto& plan : pl)
+		plan.UpDateVelocityLinkedSphere(sph,time);
+
+	for(auto& disk : plr)
+		disk.UpDateVelocityLinkedSphere(sph,time);
+
+	for(auto& cone : co)
+		cone.UpDateVelocityLinkedSphere(sph,time);
 }
 
-void Move::upDateVelocitySphere(int & Nsph, std::vector<Sphere> & sph, Gravity gt, double dt) noexcept {
-	Sphere *sphl = &sph[0];
-	// Frein viscqueux air
-	for(int i = 0 ; i < Nsph ; i++){
-		sphl->upDateVelocity(dt,gt,0.0);
-		sphl++;
-	}
+void Move::upDateVelocitySphere(std::vector<Sphere> & sph, Gravity gt, double dt) noexcept {
+	for(auto& sphere : sph)
+		sphere.upDateVelocity(dt,gt,0.0);
 }
 
-void Move::upDateHollowBall(const int &Nhb, std::vector<HollowBall> & hb, double dt) noexcept {
-	for(int i = 0 ; i < Nhb ; i++)
-		hb[i].UpdateFromSph(dt);
-		}
+void Move::upDateHollowBall(std::vector<HollowBall> & hb, double dt) noexcept {
+	for(auto& hollowBall : hb)
+		hollowBall.UpdateFromSph(dt);
+}
 
-void Move::MeltingSphere(int & Nsph, std::vector<Sphere> & sph, double vr, double delayVr, double dt) noexcept {
-	for(int i = 0 ; i < Nsph ; i++){
-		sph[i].Freeze(vr/delayVr, dt);
-	}
+void Move::MeltingSphere(std::vector<Sphere> & sph, double vr, double delayVr, double dt) noexcept {
+	for(auto& sphere : sph)
+		sphere.Freeze(vr/delayVr, dt);
 }
 
 void Move::upDateVelocitySphereOMP(int & Nsph, std::vector<Sphere> & sph, Gravity gt, double dt, int Nprocess) noexcept {
@@ -138,12 +129,9 @@ void Move::upDateVelocitySphereOMP(int & Nsph, std::vector<Sphere> & sph, Gravit
 	}
 }
 
-void Move::moveSphere(int & Nsph, std::vector<Sphere> & sph, double dt) noexcept {
-	Sphere *sphl = &sph[0];
-	for(int i = 0 ; i < Nsph ; i++){
-		sphl->move(dt);
-		sphl++;
-	}
+void Move::moveSphere(std::vector<Sphere> & sph, double dt) noexcept {
+	for(auto& sphere : sph)
+		sphere.move(dt);
 }
 
 void Move::moveSphereOMP(int & Nsph, std::vector<Sphere> & sph, double dt, int Nprocess) noexcept {
@@ -193,10 +181,10 @@ void Move::moveSphereOMP(int & Nsph, std::vector<Sphere> & sph, double dt, int N
 	}
 }
 
-void Move::moveBodies(int & Nbd, std::vector<Body> & bd, double dt, std::vector<Sphere> & sph) noexcept {
-	for(int i = 0 ; i < Nbd ; i++){
-		bd[i].Move(dt);
-		bd[i].UpDateLinkedSphere(sph);
+void Move::moveBodies(std::vector<Body> & bd, double dt, std::vector<Sphere> & sph) noexcept {
+	for(auto& body : bd){
+		body.Move(dt);
+		body.UpDateLinkedSphere(sph);
 	}
 }
 
@@ -255,10 +243,10 @@ void Move::moveBodiesOMP(int & Nbd, std::vector<Body> & bd, double dt, std::vect
 }
 
 
-void Move::upDateVelocityBodies(int & Nbd, std::vector<Body> & bd, Gravity gt, double dt, std::vector<Sphere> & sph) noexcept {
-	for(int i = 0 ; i < Nbd ; i++){
-		bd[i].UpDateVelocity(dt,gt);
-		bd[i].UpDateLinkedSphere(sph);
+void Move::upDateVelocityBodies(std::vector<Body> & bd, Gravity gt, double dt, std::vector<Sphere> & sph) noexcept {
+	for(auto& body : bd){
+		body.UpDateVelocity(dt,gt);
+		body.UpDateLinkedSphere(sph);
 	}
 }
 

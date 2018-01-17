@@ -63,8 +63,6 @@ public:
 	    			fscanf(ft,"%d\t%d\t%d\t%d\t%lf\t%lf\t%lf\n",&neighbourNumber[i],&type[i],&selfBodyNumber[i],&bodyNumber[i],&elongations[i].x,&elongations[i].y,&elongations[i].z);
 	    }
 
-
-
 		std::vector<Elongation>  elongations;
 	    std::vector<int>  neighbourNumber;
 		int neighbourCount {0};

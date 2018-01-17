@@ -964,27 +964,32 @@ void ContactDetection::ContactSphElbow(Elbow & p, Sphere *b, Contact *ct, int & 
 		ContactBodyElbow(p,b->GetBody(),ct,Nct);
 }
 
-void ContactDetection::linkedCell(std::vector<Sphere> & sph, const int Nsph, const Data *dat, Sphere *cell[]) noexcept {
+void ContactDetection::linkedCell(std::vector<Sphere> & sph, const Data *dat, Sphere *cell[]) noexcept {
 	int x,y,z;
 	// Initialisation du tableau tdl
-	for(int i = Nsph ; i--;)
-		sph[i].TDL(nullptr);
+	for(auto& sphere : sph)
+		sphere.TDL(nullptr);
 	
 	// Initialisation du tableau Cell
 	for(int i = dat->Ncellmax ; i--;)
 		cell[i] = nullptr;
 	
 	// Classement des grains dans les cellules
-	for(int i = Nsph ; i--;){
-		if(sph[i].HollowballNum() == -9){
-			x = (int)((sph[i].X() - dat->xmin)/dat->ax);
-			y = (int)((sph[i].Y() - dat->ymin)/dat->ay);
-			z = (int)((sph[i].Z() - dat->zmin)/dat->az);
+
+	// TODO use classic loop for
+	// Actually, if change order of the loop, the results change due to double precision
+	for(int i = sph.size() ; i--;){
+		auto& sphere = sph[i];
+
+		if(sphere.HollowballNum() == -9){
+			x = (int)((sphere.X() - dat->xmin)/dat->ax);
+			y = (int)((sphere.Y() - dat->ymin)/dat->ay);
+			z = (int)((sphere.Z() - dat->zmin)/dat->az);
 			if(x < dat->Nx && y < dat->Ny && z < dat->Nz && x >= 0 && y >= 0 && z >= 0){
 				//printf("Found it\n");
 				//printf("%d in %d\n",i,x*dat->Ny*dat->Nz+y*dat->Nz+z);
-				sph[i].TDL(cell[x*dat->Ny*dat->Nz+y*dat->Nz+z]);
-				cell[x*dat->Ny*dat->Nz+y*dat->Nz+z] = &sph[i];
+				sphere.TDL(cell[x*dat->Ny*dat->Nz+y*dat->Nz+z]);
+				cell[x*dat->Ny*dat->Nz+y*dat->Nz+z] = &sphere;
 			}
 		}
 	}

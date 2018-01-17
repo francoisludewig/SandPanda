@@ -141,6 +141,7 @@ int main(int argc,char **argv){
 		ReadWrite::readStart_stopHollowBall(opt.directory, Nhb, hb);
 	}
 	
+
 	opt.InData(dat, gf, pl, plr, co);
 	
 	// Calcul du rayon maximum dans Data
@@ -168,6 +169,7 @@ int main(int argc,char **argv){
 	// Lien entre les spheres et les solides
 	Sphere::sphereLinking(Nsph, sph,  bd);
 	
+
 	for(int i = 0 ; i < Nco ; i++){
 		co[i].LimitLink(plr);
 	}
@@ -234,7 +236,17 @@ int main(int argc,char **argv){
 	ContactDetection::listCellForCone(&dat, co, Nco, gf);
 	ContactDetection::listCellForElbow(&dat, elb, Nelb);
 	printf("\n");
-	
+	/*
+	sph.shrink_to_fit();
+	pl.shrink_to_fit();
+	plr.shrink_to_fit();
+	co.shrink_to_fit();
+	elb.shrink_to_fit();
+	sph.shrink_to_fit();
+	bdsp.shrink_to_fit();
+	bd.shrink_to_fit();
+	hb.shrink_to_fit();
+*/
 	// Control taille de la memoire demandee
 	printf("Etat de la memoire\n");
 	printf("------------------\n\n");

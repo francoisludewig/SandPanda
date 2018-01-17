@@ -17,22 +17,20 @@
 #include "../Includes/Data.h"
 #include "../Includes/HollowBall.h"
 
-void Compaction::Secousse(vector<Plan> & pl,vector<PlanR> & plr,vector<Cone> & co,int Npl, int Nplr, int Nco, double Gamma, double f, Data & dat) noexcept {
-	int i;
+void Compaction::Secousse(vector<Plan> & pl,vector<PlanR> & plr,vector<Cone> & co, double Gamma, double f, Data & dat) noexcept {
 	double w = 2*M_PI*f;
 	double A = Gamma*9.81/w/w;
 	
 	printf("A = %e, w = %e , Aw = %e\n",A,w,A*w);
 	
-	for(i = 0 ; i < Npl ; i++)
-		pl[i].SetVz(0,A*w,-w,M_PI);
+	for(auto& plan : pl)
+		plan.SetVz(0,A*w,-w,M_PI);
 	
-	for(i = 0 ; i < Nplr ; i++)
-		plr[i].SetVz(0,A*w,-w,M_PI);
+	for(auto& disk : plr)
+		disk.SetVz(0,A*w,-w,M_PI);
 	
-	for(i = 0 ; i < Nco ; i++)
-		co[i].SetVz(0,A*w,-w,M_PI);
-	
+	for(auto& cone : co)
+		cone.SetVz(0,A*w,-w,M_PI);
 	
 	dat.Total += 1./f;
 	int Ntsp = (1./f)/(dat.dt) + 1;
@@ -41,16 +39,15 @@ void Compaction::Secousse(vector<Plan> & pl,vector<PlanR> & plr,vector<Cone> & c
 	
 }
 
-void Compaction::Relaxation(vector<Plan> & pl,vector<PlanR> & plr,vector<Cone> & co,int Npl, int Nplr, int Nco, double Gamma, double f, Data & dat) noexcept {
-	int i;
-	for(i = 0 ; i < Npl ; i++)
-		pl[i].SetVz(0,0,0,0);
-	
-	for(i = 0 ; i < Nplr ; i++)
-		plr[i].SetVz(0,0,0,0);
-	
-	for(i = 0 ; i < Nco ; i++)
-		co[i].SetVz(0,0,0,0);
+void Compaction::Relaxation(vector<Plan> & pl,vector<PlanR> & plr,vector<Cone> & co, Data & dat) noexcept {
+	for(auto& plan : pl)
+			plan.SetVz(0,0,0,0);
+
+		for(auto& disk : plr)
+			disk.SetVz(0,0,0,0);
+
+		for(auto& cone : co)
+			cone.SetVz(0,0,0,0);
 	
 	dat.Total += 0.5;
 }
@@ -62,11 +59,11 @@ int Compaction::Run(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,int & N
 	record = 0;
 	for(int nt = ntpi  ; nt <= ntpf ; nt++){
 		//Secousse
-		Secousse(pl,plr,co,Npl,Nplr,Nco,Gamma,f,dat);
+		Secousse(pl,plr,co,Gamma,f,dat);
 		printf("Total = %e\n",dat.Total);
 		Ntp = Evolution::Evolve(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,pl,plr,co,elb,sph,bd,hb,ct,dat,gf,cell,Ntp, name,record,Nthreshold);
 		// Relaxation
-		Relaxation(pl,plr,co,Npl,Nplr,Nco,0,0,dat);
+		Relaxation(pl,plr,co,dat);
 		printf("Total = %e\n",dat.Total);
 		Ntp = Evolution::Evolve(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,pl,plr,co,elb,sph,bd,hb,ct,dat,gf,cell,Ntp, name,record,Nthreshold);
 		
@@ -97,11 +94,11 @@ int Compaction::RunOMP(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,int 
 	record = 0;
 	for(int nt = ntpi  ; nt <= ntpf ; nt++){
 		//Secousse
-		Secousse(pl,plr,co,Npl,Nplr,Nco,Gamma,f,dat);
+		Secousse(pl,plr,co,Gamma,f,dat);
 		printf("Total = %e\n",dat.Total);
 		Ntp = Evolution::EvolveOMP(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,Ncta,Nctb,Nctc,pl,plr,co,elb,sph,bd,hb,ct,cta,ctb,ctc,dat,gf,cell,Ntp, name,record,Nthreshold);
 		// Relaxation
-		Relaxation(pl,plr,co,Npl,Nplr,Nco,0,0,dat);
+		Relaxation(pl,plr,co,dat);
 		printf("Total = %e\n",dat.Total);
 		Ntp = Evolution::EvolveOMP(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,Ncta,Nctb,Nctc,pl,plr,co,elb,sph,bd,hb,ct,cta,ctb,ctc,dat,gf,cell,Ntp, name,record,Nthreshold);
 		if(record == 0){

@@ -9,8 +9,8 @@ class Cone;
 class Elbow;
 class Body;
 class HollowBall;
-class Contact;
 class Data;
+class Contact;
 class Gravity;
 
 

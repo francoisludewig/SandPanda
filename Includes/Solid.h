@@ -45,7 +45,7 @@ public:
 	void SetVelocityToZero() noexcept;
 	void SetMemoryPosition() noexcept;
 	void GetMemoryPosition() noexcept;
-	void UpdateForceFromGB(int & Nsph,std::vector<Sphere> & sph) noexcept;
+	void UpdateForceFromGB(std::vector<Sphere> & sph) noexcept;
 	void UpdateGravityForceFromGB(int & Nsph,std::vector<Sphere> & sph, Gravity gt) noexcept;
 	void SetVx(double newA0, double newA1, double newW, double newPhi) noexcept;
 	void SetWx(double newA0, double newA1, double newW, double newPhi) noexcept;
