@@ -597,7 +597,7 @@ void ReadWrite::writeStartStopData(char *directory, Gravity *gf, Data *dat) noex
 }
 
 
-void ReadWrite::writeOutContact(char *directory, int n, int & Nct, Contact *ct, Data & dat) noexcept {
+void ReadWrite::writeOutContact(char *directory, int n, int Nct, Contact *ct, Data & dat) noexcept {
 	char fileName[1024];
 	FILE *ft;
 	// Making FileName

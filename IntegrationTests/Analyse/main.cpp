@@ -28,13 +28,13 @@ class Efficiency {
 public:
 	Efficiency(std::vector<std::string>& nameFile) {
 		for(const auto& name : nameFile) {
-		  std::cout << name << "New.txt" << std::endl; 
+		  //std::cout << name << "New.txt" << std::endl;
 			std::ifstream dataFile(name+"New.txt");
 			std::string data = getLastLine(dataFile);
 			current[name] = std::stol(data.substr(6, data.size()-3-6));
 		}
 		for(const auto& name : nameFile) {
-		  std::cout << name <<  "Original.txt" << std::endl;
+		  //std::cout << name <<  "Original.txt" << std::endl;
  			std::ifstream dataFile(name+"Original.txt");
 			std::string data = getLastLine(dataFile);
 			ref[name] = std::stol(data.substr(6, data.size()-3-6));
@@ -67,6 +67,10 @@ public:
 			report << name.substr(3, name.size()-3) << std::endl;
 			report << "Consistency test : " << (coherent.IsCoherent(name) ? "Succeed" : "Failed") << std::endl;
 			report << "Efficiency test : " << efficiency.GetRelativePercentage(name) << "%" << std::endl;
+			std::cout << "------------------------------------" << std::endl;
+			std::cout << name.substr(3, name.size()-3) << std::endl;
+			std::cout << "Consistency test : " << (coherent.IsCoherent(name) ? "Succeed" : "Failed") << std::endl;
+			std::cout << "Efficiency test : " << efficiency.GetRelativePercentage(name) << "%" << std::endl;
 		}
 	}
 };

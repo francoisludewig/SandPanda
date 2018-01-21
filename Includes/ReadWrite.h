@@ -43,7 +43,7 @@ public:
 	static void readStartStopData(char *directory, Gravity *gf, Data *dat) noexcept;
 	
 	//void readOutType(char *directory, Data & dat);
-	static void writeOutContact(char *directory, int n, int & Nct, Contact *ct, Data & dat) noexcept;
+	static void writeOutContact(char *directory, int n, int Nct, Contact *ct, Data & dat) noexcept;
 	static void writeOutContactDetails(char *directory, int n, int & Nct, Contact *ct, Data & dat) noexcept;
 	static void readOutBodySpecie(char *directory,std::vector<BodySpecie> & bdsp) noexcept;
 	//void readExportLink(char *directory, std::vector<Link> &lk, double k);

@@ -82,7 +82,7 @@ int main(int argc,char **argv){
 	TimeDurationMeasure tm;
 	tm.Start();
 	int Ntp;
-	int Nct = 0, Nsph0 = 0;
+	int Nsph0 = 0;
 	double dila = 0;
 	bool record = 1;
 	int Nthreshold = 0;
@@ -97,7 +97,6 @@ int main(int argc,char **argv){
 	vector<HollowBall> hb;
 	Option opt;
 
-	Contact *ct = nullptr;
 	Data dat;
 	Gravity gf;
 
@@ -183,8 +182,6 @@ int main(int argc,char **argv){
 	printf("Nsph0 = %d & Nsph = %d\n",Nsph0,static_cast<int>(sph.size()));
 
 	printf("NctMax = %d\n",18*static_cast<int>(sph.size())+75*static_cast<int>(bd.size()));
-	// Dynamical allocation
-	ct  = new Contact[18*sph.size()+75*bd.size()];
 
 	int Ncell = dat.Nx*dat.Ny*dat.Nz;
 	dat.Ncellmax = Ncell;
@@ -199,26 +196,6 @@ int main(int argc,char **argv){
 	ContactDetection::listCellForCone(&dat, co, gf);
 	ContactDetection::listCellForElbow(&dat, elb);
 	printf("\n");
-
-	// Control taille de la memoire demandee
-	printf("Etat de la memoire\n");
-	printf("------------------\n\n");
-	int All = 0;
-	All += sph.size()*sizeof(Sphere);
-	All += bdsp.size()*sizeof(BodySpecie);
-	All += bd.size()*sizeof(Body);
-	All += pl.size()*sizeof(Plan);
-	All += plr.size()*sizeof(PlanR);
-	All += co.size()*sizeof(Cone);
-	All += elb.size()*sizeof(Elbow);
-	All += hb.size()*sizeof(HollowBall);
-	All += (18*sph.size()+75*bd.size())*sizeof(Contact);
-	All += sizeof(cell);
-	All += sizeof(dat);
-	All += sizeof(Gravity);
-
-	printf("Le programme a alloue %f ko\n",All/1000.);
-	printf("Le programme a alloue %f Mo\n",All/1000./1000.);
 
 	if(dat.TIME != 0)
 		Ntp = (int)((dat.TIME-dat.t0)/(dat.dts))+1;
@@ -262,33 +239,25 @@ int main(int argc,char **argv){
 
 	switch(opt.mode){
 	case 0:
-		Ntp = Evolution::Evolve(Nct, pl,plr,co,elb,sph,bd,hb,ct, dat,gf,cell,Ntp, opt.directory,record,Nthreshold);
+	{
+		Evolution evolution(sph.size(), bd.size());
+		Ntp = evolution.Evolve(pl,plr,co,elb,sph,bd,hb, dat,gf,cell,Ntp, opt.directory,record,Nthreshold);
 		break;
+	}
 	case 1:
 		dat.Total = 0;
-		Ntp = Compaction::Run(Nct ,pl,plr,co,elb,sph,bd,hb,ct ,dat,gf,cell,Ntp, opt.directory,record,opt.NtapMin,opt.NtapMax,opt.Gamma,opt.Freq,Nthreshold);
+		Ntp = Compaction::Run(pl,plr,co,elb,sph,bd,hb ,dat,gf,cell,Ntp, opt.directory,record,opt.NtapMin,opt.NtapMax,opt.Gamma,opt.Freq,Nthreshold);
 		break;
 	case 2:
 		dat.Total = 0.0;
-		Ntp = PowderPaQ::PowderPaQRun(Nct,pl,plr,co,elb,sph,bd,hb,ct,dat,gf,cell,Ntp, opt.directory,record,opt.NtapMin,opt.NtapMax,Nthreshold,opt.PQheight,opt.PQVel);
+		Ntp = PowderPaQ::PowderPaQRun(pl,plr,co,elb,sph,bd,hb,dat,gf,cell,Ntp, opt.directory,record,opt.NtapMin,opt.NtapMax,Nthreshold,opt.PQheight,opt.PQVel);
 		break;
 	}
 
-	// Free of dynamical table
-	delete [] ct;
 
 	for(int i = 0 ; i < bdsp.size() ; i++)
 		bdsp[i].FreeMemory();
 
-
-	pl.clear();
-	plr.clear();
-	co.clear();
-	elb.clear();
-	sph.clear();
-	bd.clear();
-	bdsp.clear();
-	hb.clear();
 
 	if(opt.compression == 1){
 		char commande[1024];
@@ -303,7 +272,6 @@ int main(int argc,char **argv){
 	}
 
 	tm.Stop();
-
 
 	printf("Time: %s ns\n", tm.Minutes().c_str());
 	printf("Time: %s ns\n", tm.Nanosecond().c_str());

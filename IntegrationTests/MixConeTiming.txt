@@ -10,15 +10,15 @@
 > MasterSolid : 0 Plan
 > MasterSolid : 0 PlanR
 > MasterSolid : 0 Cone
-59,60c62,63
-< Le programme a alloue 2313.352000 ko
-< Le programme a alloue 2.313352 Mo
----
+55a59,63
+> Etat de la memoire
+> ------------------
+> 
 > Le programme a alloue 2612.728000 ko
 > Le programme a alloue 2.612728 Mo
-65,66c68,69
-< Time: 2m46s686703604ns ns
-< Time: 166686703604 ns
+60,61c68,69
+< Time: 2m44s90830204ns ns
+< Time: 164090830204 ns
 ---
 > Time: 2m48s81880050ns ns
 > Time: 168081880050 ns

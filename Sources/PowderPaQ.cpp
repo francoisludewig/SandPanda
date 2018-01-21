@@ -74,16 +74,17 @@ void PowderPaQ::PowderPaQrelaxation(std::vector<Plan> & pl,std::vector<PlanR> & 
 	dat.Total += (t-PQheight/PQVel-sqrt(2*PQheight/9.81));	
 }
 
-int PowderPaQ::PowderPaQRun(int & Nct, std::vector<Plan> & pl,std::vector<PlanR> & plr,std::vector<Cone> & co,std::vector<Elbow> & elb,std::vector<Sphere> & sph,std::vector<Body> & bd,std::vector<HollowBall> & hb,Contact *ct,Data & dat,Gravity & gf,
+int PowderPaQ::PowderPaQRun(std::vector<Plan> & pl,std::vector<PlanR> & plr,std::vector<Cone> & co,std::vector<Elbow> & elb,std::vector<Sphere> & sph,std::vector<Body> & bd,std::vector<HollowBall> & hb,Data & dat,Gravity & gf,
 		Sphere *cell[], int & Ntp, char *name,bool record,int ntpi, int ntpf, int Nthreshold, double PQheight, double PQVel) noexcept {
+	Evolution evolution(sph.size(), bd.size());
 	record = 0;
 	for(int nt = ntpi  ; nt <= ntpf ; nt++){
 		//Secousse
 		PowderPaQsecousseUpward(pl,plr,co,dat,PQheight,PQVel);
-		Ntp = Evolution::Evolve(Nct,pl,plr,co,elb,sph,bd,hb,ct,dat,gf,cell,Ntp, name,record,Nthreshold);
+		Ntp = evolution.Evolve(pl,plr,co,elb,sph,bd,hb,dat,gf,cell,Ntp, name,record,Nthreshold);
 
 		PowderPaQsecousseDownward(pl,plr,co,dat,PQheight);
-		Ntp = Evolution::Evolve(Nct,pl,plr,co,elb,sph,bd,hb,ct,dat,gf,cell,Ntp, name,record,Nthreshold);
+		Ntp = evolution.Evolve(pl,plr,co,elb,sph,bd,hb,dat,gf,cell,Ntp, name,record,Nthreshold);
 
 		// Relaxation
 		if(nt < 100)
@@ -91,7 +92,7 @@ int PowderPaQ::PowderPaQRun(int & Nct, std::vector<Plan> & pl,std::vector<PlanR>
 		else
 			PowderPaQrelaxation(pl,plr,co,dat,0.25,PQheight,PQVel);
 
-		Ntp = Evolution::Evolve(Nct,pl,plr,co,elb,sph,bd,hb,ct,dat,gf,cell,Ntp, name,record,Nthreshold);
+		Ntp = evolution.Evolve(pl,plr,co,elb,sph,bd,hb,dat,gf,cell,Ntp, name,record,Nthreshold);
 		// Enregistrement
 		ReadWrite::writeStartStopContainer(name,pl,plr,co,elb);
 		ReadWrite::writeStartStopSphere(name,sph);
@@ -103,7 +104,7 @@ int PowderPaQ::PowderPaQRun(int & Nct, std::vector<Plan> & pl,std::vector<PlanR>
 		ReadWrite::writeOutSphere(name,nt,sph,dat.outMode);
 		ReadWrite::writeOutBodies(name,nt,bd,dat.outMode);
 		ReadWrite::writeOutData(name, nt, &gf, &dat);
-		ReadWrite::writeOutContact(name,nt,Nct,ct,dat);
+		ReadWrite::writeOutContact(name,nt,evolution.ContactCount(),evolution.GetContacts(),dat);
 		ReadWrite::writeOutHollowBall(name, Ntp, hb);
 		Ntp++;
 

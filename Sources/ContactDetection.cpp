@@ -1,6 +1,8 @@
 #include "../Includes/ContactDetection.h"
 //#include <omp.h>
 
+#include <cmath>
+
 #include "../Includes/Velocity.h"
 #include "../Includes/Gravity.h"
 #include "../Includes/Plan.h"
@@ -20,7 +22,7 @@ int ContactDetection::ContactSphBody(Sphere *a, Body *b, Contact *ct, int &Nct) 
 	Nx = a->X()-b->X();
 	Ny = a->Y()-b->Y();
 	Nz = a->Z()-b->Z();
-	norme = sqrt(Nx*Nx+Ny*Ny+Nz*Nz);
+	norme = std::sqrt(Nx*Nx+Ny*Ny+Nz*Nz);
 	Nx = Nx/norme;
 	Ny = Ny/norme;
 	Nz = Nz/norme;
@@ -246,8 +248,10 @@ int ContactDetection::ContactSphSph(Sphere *a, Sphere *b, Contact *ct, int & Nct
 		pz = a->Z() - b->Z();
 		Q = (a->Radius()+b->Radius());
 		P2 = px*px+py*py+pz*pz;
+		//P2 = std::fma(px, px, std::fma(py, py, pz*pz));
+
 		if(P2 < Q*Q){
-			P2 = sqrt(P2);
+			P2 = std::sqrt(P2);
 			ct[Nct].type = Contact::Type::SphereSphere;// 0;
 			ct[Nct].delta = P2-Q;
 			ct[Nct].nx = px/P2;

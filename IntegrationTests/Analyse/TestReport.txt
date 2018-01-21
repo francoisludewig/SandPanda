@@ -1,11 +1,11 @@
 ------------------------------------
 BodyBox
 Consistency test : Succeed
-Efficiency test : 0%
+Efficiency test : -3%
 ------------------------------------
 MixBox
 Consistency test : Succeed
-Efficiency test : -2%
+Efficiency test : -3%
 ------------------------------------
 SphereBox
 Consistency test : Succeed
@@ -13,11 +13,11 @@ Efficiency test : -9%
 ------------------------------------
 BodyCone
 Consistency test : Succeed
-Efficiency test : 2%
+Efficiency test : -2%
 ------------------------------------
 MixCone
 Consistency test : Succeed
-Efficiency test : 0%
+Efficiency test : -2%
 ------------------------------------
 SphereCone
 Consistency test : Succeed

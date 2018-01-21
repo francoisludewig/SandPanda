@@ -9,7 +9,6 @@
 #include "../Includes/Elbow.h"
 #include "../Includes/Sphere.h"
 #include "../Includes/Body.h"
-#include "../Includes/Contact.h"
 #include "../Includes/ReadWrite.h"
 #include "../Includes/ContactDetection.h"
 #include "../Includes/Periodicity.h"
@@ -18,9 +17,8 @@
 #include "../Includes/Move.h"
 #include "../Includes/HollowBall.h"
 
-int Evolution::Evolve(int & Nct, vector<Plan> & pl,vector<PlanR> & plr,vector<Cone> & co,vector<Elbow> & elb,vector<Sphere> & sph,vector<Body> & bd,vector<HollowBall> & hb,Contact *ct,Data & dat,Gravity & gf,
-											Sphere *cell[], int & Ntp, char *name,bool record, int Nthreshold) noexcept {
-	std::vector<Contact> ctl(18*sph.size()+75*bd.size(),{});
+int Evolution::Evolve(vector<Plan> & pl,vector<PlanR> & plr,vector<Cone> & co,vector<Elbow> & elb,vector<Sphere> & sph,vector<Body> & bd,vector<HollowBall> & hb,Data & dat,Gravity & gf,
+		Sphere *cell[], int & Ntp, char *name,bool record, int Nthreshold) noexcept {
 	// Sequential Version
 	printf("Evolution\n");
 	do{
@@ -30,12 +28,12 @@ int Evolution::Evolve(int & Nct, vector<Plan> & pl,vector<PlanR> & plr,vector<Co
 		dat.mas->Move(dat.dt/2);
 		Move::moveSphere(sph, dat.dt/2);
 		Move::upDateHollowBall(hb,dat.dt);
-		
+
 		gf.Move(dat.TIME,dat.dt/2);
 		//Doublon pour test
 		Move::moveBodies(bd, dat.dt/2, sph);
 		PeriodicityPL(sph, pl);
-		
+
 		// Linked Cells
 		ContactDetection::linkedCell(sph,&dat,cell);
 		// Initialization for the time step
@@ -56,16 +54,16 @@ int Evolution::Evolve(int & Nct, vector<Plan> & pl,vector<PlanR> & plr,vector<Co
 
 		// Computing Force
 		ComputeForce::Compute(ct, Nct,dat);
-		
+
 		Move::UpDateForceContainer(sph,pl,plr,co,dat.TIME,dat.dt,gf);
 		dat.mas->getForces();
-		
+
 		// Update Velocities
 		Move::upDateVelocitySphere(sph, gf, dat.dt);
 		Move::upDateVelocityBodies(bd, gf, dat.dt, sph);
 		Move::upDateVelocityContainer(pl, plr, co, elb, dat.TIME, dat.dt, gf);
 		dat.mas->UpDateVelocity(dat.dt);
-		
+
 		// Move
 		Move::moveContainer(pl, plr, co, elb, dat.TIME, dat.dt/2, sph,gf);
 		dat.mas->Move(dat.dt/2);
@@ -74,7 +72,7 @@ int Evolution::Evolve(int & Nct, vector<Plan> & pl,vector<PlanR> & plr,vector<Co
 		Move::upDateHollowBall(hb,dat.dt);
 		gf.Move(dat.TIME,dat.dt/2);
 		PeriodicityPL(sph, pl);
-		
+
 		// Record data
 		if(record){
 			if(fabs((dat.TIME-dat.t0)-Ntp*(dat.dts)) < dat.dt*0.99  && (dat.TIME-dat.t0 > 0.)){
@@ -83,7 +81,7 @@ int Evolution::Evolve(int & Nct, vector<Plan> & pl,vector<PlanR> & plr,vector<Co
 				ReadWrite::writeStartStopBodies(name,bd,sph);
 				ReadWrite::writeStartStopData(name, &gf, &dat);
 				ReadWrite::writeStartStopHollowBall(name, hb);
-				
+
 				ReadWrite::writeOutContainer(name,Ntp,pl,plr,co,elb,dat.outMode);
 				ReadWrite::writeOutSphere(name,Ntp,sph,dat.outMode);
 				ReadWrite::writeOutBodies(name,Ntp,bd,dat.outMode);
@@ -91,11 +89,11 @@ int Evolution::Evolve(int & Nct, vector<Plan> & pl,vector<PlanR> & plr,vector<Co
 				//writeOutData(name, Ntp, &gf, &dat);
 				if(dat.outContact == 1 || dat.outContact > 2)
 					ReadWrite::writeOutContact(name,Ntp,Nct,ct,dat);
-					if(dat.outContact >= 2)
-						ReadWrite::writeOutContactDetails(name,Ntp,Nct,ct,dat);
-						printf("Save File %d\t\ttime = %e\r",Ntp,dat.TIME);
-						fflush(stdout);
-						Ntp++;
+				if(dat.outContact >= 2)
+					ReadWrite::writeOutContactDetails(name,Ntp,Nct,ct,dat);
+				printf("Save File %d\t\ttime = %e\r",Ntp,dat.TIME);
+				fflush(stdout);
+				Ntp++;
 			}
 		}
 	}while(dat.TIME <= dat.Total-dat.dt*0.99);
@@ -104,9 +102,8 @@ int Evolution::Evolve(int & Nct, vector<Plan> & pl,vector<PlanR> & plr,vector<Co
 	return(Ntp);
 }
 
-int Evolution::EvolveMelt(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,int & Nsph0,int & Nbd,int & Nhb,int & Nct,
-													vector<Plan> & pl,vector<PlanR> & plr,vector<Cone> & co,vector<Elbow> & elb,vector<Sphere> & sph,vector<Body> & bd,vector<HollowBall> & hb,Contact *ct,Data & dat,Gravity & gf,
-													Sphere *cell[], int & Ntp, char *name,bool record, double vr,double delayVr, int Nthreshold) noexcept{
+int Evolution::EvolveMelt(vector<Plan> & pl,vector<PlanR> & plr,vector<Cone> & co,vector<Elbow> & elb,vector<Sphere> & sph,vector<Body> & bd,vector<HollowBall> & hb,Data & dat,Gravity & gf,
+		Sphere *cell[], int & Ntp, char *name,bool record, double vr,double delayVr, int Nthreshold) noexcept{
 	printf("Evolution\n");
 	double dtl;
 	double r0,r1;
@@ -124,27 +121,26 @@ int Evolution::EvolveMelt(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,i
 		//Doublon pour test
 		Move::moveBodies(bd, dat.dt/2, sph);
 		PeriodicityPL(sph, pl);
-		
+
 		// Linked Cells
 		ContactDetection::linkedCell(sph,&dat,cell);
 		// Initialization for the time step
 		ComputeForce::InitForTimeStep(Nct, sph, bd, ct,pl,plr,co,elb);
-		
+
 		// Contact Detection
 		Nct = 0;
 		ContactDetection::sphContact(0, dat.Nx,dat.Nx,0, dat.Ny, dat.Ny, dat.Nz, ct, Nct, cell);
 		ContactDetection::sphContainer(sph, pl, plr, co, elb, hb, Nct, ct, cell,dat.Rmax);
-		
+
 		if(dat.modelTg == 1){
-			for(int i = 0 ; i < Nsph ; i++) {
+			for(int i = 0 ; i < sph.size() ; i++) {
 				sph[i].GetElongationManager().InitXsi();
-				}
+			}
 		}
-		//printf("Nct = %d\n",Nct);
-		
+
 		// Computing Force
 		ComputeForce::Compute(ct, Nct,dat);
-		
+
 		// Update Velocities
 		Move::upDateVelocitySphere(sph, gf, dat.dt);
 		Move::upDateVelocityBodies(bd, gf, dat.dt, sph);
@@ -156,7 +152,7 @@ int Evolution::EvolveMelt(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,i
 		Move::MeltingSphere(sph, vr, delayVr, dat.dt/2);
 		gf.Move(dat.TIME,dat.dt/2);
 		PeriodicityPL(sph, pl);
-		
+
 		// Record data
 		if(record){
 			if(fabs((dat.TIME-dat.t0)-Ntp*(dat.dts)) < dat.dt  && (dat.TIME-dat.t0 > 0.)){
@@ -165,18 +161,18 @@ int Evolution::EvolveMelt(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,i
 				ReadWrite::writeStartStopBodies(name,bd,sph);
 				ReadWrite::writeStartStopData(name, &gf, &dat);
 				ReadWrite::writeStartStopHollowBall(name, hb);
-				
+
 				ReadWrite::writeOutContainer(name,Ntp,pl,plr,co,elb,dat.outMode);
 				ReadWrite::writeOutSphere(name,Ntp,sph,dat.outMode);
 				ReadWrite::writeOutBodies(name,Ntp,bd,dat.outMode);
 				ReadWrite::writeOutHollowBall(name, Ntp, hb);
 				if(dat.outContact == 1)
 					ReadWrite::writeOutContact(name,Ntp,Nct,ct,dat);
-					if(dat.outContact == 2)
-						ReadWrite::writeOutContactDetails(name,Ntp,Nct,ct,dat);
-						printf("Save File %d\t\ttime = %e\r",Ntp,dat.TIME);
-						fflush(stdout);
-						Ntp++;
+				if(dat.outContact == 2)
+					ReadWrite::writeOutContactDetails(name,Ntp,Nct,ct,dat);
+				printf("Save File %d\t\ttime = %e\r",Ntp,dat.TIME);
+				fflush(stdout);
+				Ntp++;
 			}
 		}
 		r1 = sph[0].Radius();
