@@ -8,7 +8,7 @@
 #include "../../Includes/Solids/Cone.h"
 #include "../../Includes/Solids/Elbow.h"
 
-void LinkedCellSolidListBuilder::ListCellForPlan(Data *dat, std::vector<Plan> & pl, Gravity& gt) noexcept {
+void LinkedCellSolidListBuilder::ListCellForPlan(const Data& dat, std::vector<Plan> & pl, Gravity& gt) noexcept {
 	int a,b;
 	int i,j,k;
 	int I,num;
@@ -25,7 +25,7 @@ void LinkedCellSolidListBuilder::ListCellForPlan(Data *dat, std::vector<Plan> & 
 
 	double Vmax,time,dtime,dist;
 	int Nts;
-	localCell =(int*)malloc(dat->Nx*dat->Ny*dat->Nz*sizeof(int));
+	localCell =(int*)malloc(dat.Nx*dat.Ny*dat.Nz*sizeof(int));
 
 	for(a = 0 ; a < pl.size() ; a++){
 		if(pl[a].GetForce() == 0){
@@ -35,16 +35,16 @@ void LinkedCellSolidListBuilder::ListCellForPlan(Data *dat, std::vector<Plan> & 
 
 			time = pl[a].Delay();
 
-			dist = dat->ax/2;
-			if(dist > dat->ay/2)dist = dat->ay/2;
-			if(dist > dat->az/2)dist = dat->az/2;
+			dist = dat.ax/2;
+			if(dist > dat.ay/2)dist = dat.ay/2;
+			if(dist > dat.az/2)dist = dat.az/2;
 
 			if(Vmax != 0)
 				dtime = dist/Vmax;
 			else
 				dtime = 0.0;
 
-			if(time == 10000.0)time = dat->Total;
+			if(time == 10000.0)time = dat.Total;
 
 			if(time != 0)
 				Nts = (int)(time/dtime)+1;
@@ -53,7 +53,7 @@ void LinkedCellSolidListBuilder::ListCellForPlan(Data *dat, std::vector<Plan> & 
 
 
 			localNcell = 0;
-			for(i = dat->Nx*dat->Ny*dat->Nz ; i--;){
+			for(i = dat.Nx*dat.Ny*dat.Nz ; i--;){
 				localCell[i] = -9;
 			}
 
@@ -77,15 +77,15 @@ void LinkedCellSolidListBuilder::ListCellForPlan(Data *dat, std::vector<Plan> & 
 				sz = pl[a].Sz();
 
 				//printf("at b = %d => t = %e => z = %e\n",b,b*dtime,oz);
-				dn = sqrt(dat->ax*dat->ax+dat->ay*dat->ay+dat->az*dat->az);
+				dn = sqrt(dat.ax*dat.ax+dat.ay*dat.ay+dat.az*dat.az);
 				dt = dn;
 				ds = dn;
-				for(i = 0 ; i < dat->Nx ; i++){
-					for(j = 0 ; j < dat->Ny ; j++){
-						for(k = 0 ; k < dat->Nz ; k++){
-							x = dat->xmin + dat->ax*(i+0.5);
-							y = dat->ymin + dat->ay*(j+0.5);
-							z = dat->zmin + dat->az*(k+0.5);
+				for(i = 0 ; i < dat.Nx ; i++){
+					for(j = 0 ; j < dat.Ny ; j++){
+						for(k = 0 ; k < dat.Nz ; k++){
+							x = dat.xmin + dat.ax*(i+0.5);
+							y = dat.ymin + dat.ay*(j+0.5);
+							z = dat.zmin + dat.az*(k+0.5);
 							pn = (x-ox)*nx+(y-oy)*ny+(z-oz)*nz;
 							pt = (x-ox)*tx+(y-oy)*ty+(z-oz)*tz;
 							ps = (x-ox)*sx+(y-oy)*sy+(z-oz)*sz;
@@ -94,7 +94,7 @@ void LinkedCellSolidListBuilder::ListCellForPlan(Data *dat, std::vector<Plan> & 
 							   (pn <= dn) && pn > -dn){
 								// Control de doublon
 								doublon = 0;
-								num = (i*dat->Ny*dat->Nz+j*dat->Nz+k);
+								num = (i*dat.Ny*dat.Nz+j*dat.Nz+k);
 								for(I = 0 ; I < localNcell ; I++){
 									if(num == localCell[I]){
 										doublon++;
@@ -118,10 +118,10 @@ void LinkedCellSolidListBuilder::ListCellForPlan(Data *dat, std::vector<Plan> & 
 		}
 		else{
 			// Si une force est appliquee toutes les cellules sont considerees
-			pl[a].Cell = (int*)malloc(dat->Nx*dat->Ny*dat->Nz*sizeof(int));
-			pl[a].NCell = dat->Nx*dat->Ny*dat->Nz;
+			pl[a].Cell = (int*)malloc(dat.Nx*dat.Ny*dat.Nz*sizeof(int));
+			pl[a].NCell = dat.Nx*dat.Ny*dat.Nz;
 			printf("Ncell(%d pl) = %d\n",a,pl[a].NCell);
-			for(i = 0 ; i < dat->Nx*dat->Ny*dat->Nz ; i++){
+			for(i = 0 ; i < dat.Nx*dat.Ny*dat.Nz ; i++){
 				pl[a].Cell[i] = i;
 			}
 		}
@@ -130,7 +130,7 @@ void LinkedCellSolidListBuilder::ListCellForPlan(Data *dat, std::vector<Plan> & 
 	free(localCell);
 }
 
-void LinkedCellSolidListBuilder::ListCellForPlanR(Data *dat, std::vector<PlanR> & plr, Gravity& gt) noexcept {
+void LinkedCellSolidListBuilder::ListCellForPlanR(const Data& dat, std::vector<PlanR> & plr, Gravity& gt) noexcept {
 	int a,b;
 	int i,j,k;
 	int I,num;
@@ -148,7 +148,7 @@ void LinkedCellSolidListBuilder::ListCellForPlanR(Data *dat, std::vector<PlanR> 
 	double Vmax,time,dtime,dist;
 	int Nts;
 
-	localCell =(int*)malloc(dat->Nx*dat->Ny*dat->Nz*sizeof(int));
+	localCell =(int*)malloc(dat.Nx*dat.Ny*dat.Nz*sizeof(int));
 
 	for(a = 0 ;  a < plr.size() ; a++){
 
@@ -159,15 +159,15 @@ void LinkedCellSolidListBuilder::ListCellForPlanR(Data *dat, std::vector<PlanR> 
 			if(Vmax < plr[a].Wmax()*plr[a].Radius())Vmax = plr[a].Wmax()*plr[a].Radius();
 			time = plr[a].Delay();
 
-			dist = dat->ax/2;
-			if(dist > dat->ay/2)dist = dat->ay/2;
-			if(dist > dat->az/2)dist = dat->az/2;
+			dist = dat.ax/2;
+			if(dist > dat.ay/2)dist = dat.ay/2;
+			if(dist > dat.az/2)dist = dat.az/2;
 			if(Vmax != 0)
 				dtime = dist/Vmax;
 			else
 				dtime = 0.0;
 
-			if(time == 10000.0)time = dat->Total;
+			if(time == 10000.0)time = dat.Total;
 
 			if(time != 0)
 				Nts = (int)(time/dtime)+1;
@@ -175,7 +175,7 @@ void LinkedCellSolidListBuilder::ListCellForPlanR(Data *dat, std::vector<PlanR> 
 				Nts = 0;
 
 			localNcell = 0;
-			for(i = dat->Nx*dat->Ny*dat->Nz ; i--;){
+			for(i = dat.Nx*dat.Ny*dat.Nz ; i--;){
 				localCell[i] = -9;
 			}
 
@@ -196,14 +196,14 @@ void LinkedCellSolidListBuilder::ListCellForPlanR(Data *dat, std::vector<PlanR> 
 				sx = plr[a].Sx();
 				sy = plr[a].Sy();
 				sz = plr[a].Sz();
-				dn = sqrt(dat->ax*dat->ax+dat->ay*dat->ay+dat->az*dat->az);
+				dn = sqrt(dat.ax*dat.ax+dat.ay*dat.ay+dat.az*dat.az);
 
-				for(i = 0 ; i < dat->Nx ; i++){
-					for(j = 0 ; j < dat->Ny ; j++){
-						for(k = 0 ; k < dat->Nz ; k++){
-							x = dat->xmin + dat->ax*(i+0.5);
-							y = dat->ymin + dat->ay*(j+0.5);
-							z = dat->zmin + dat->az*(k+0.5);
+				for(i = 0 ; i < dat.Nx ; i++){
+					for(j = 0 ; j < dat.Ny ; j++){
+						for(k = 0 ; k < dat.Nz ; k++){
+							x = dat.xmin + dat.ax*(i+0.5);
+							y = dat.ymin + dat.ay*(j+0.5);
+							z = dat.zmin + dat.az*(k+0.5);
 							pn = (x-ox)*nx+(y-oy)*ny+(z-oz)*nz;
 							pt = (x-ox)*tx+(y-oy)*ty+(z-oz)*tz;
 							ps = (x-ox)*sx+(y-oy)*sy+(z-oz)*sz;
@@ -211,7 +211,7 @@ void LinkedCellSolidListBuilder::ListCellForPlanR(Data *dat, std::vector<PlanR> 
 							   (pn >= -dn) && (pn < 2*dn)){
 								// Control de doublon
 								doublon = 0;
-								num = (i*dat->Ny*dat->Nz+j*dat->Nz+k);
+								num = (i*dat.Ny*dat.Nz+j*dat.Nz+k);
 								for(I = 0 ; I < localNcell ; I++){
 									if(num == localCell[I]){
 										doublon++;
@@ -237,10 +237,10 @@ void LinkedCellSolidListBuilder::ListCellForPlanR(Data *dat, std::vector<PlanR> 
 		}
 		else{
 			// Si une force est appliquee toutes les cellules sont considerees
-			plr[a].Cell = (int*)malloc(dat->Nx*dat->Ny*dat->Nz*sizeof(int));
-			plr[a].NCell = dat->Nx*dat->Ny*dat->Nz;
+			plr[a].Cell = (int*)malloc(dat.Nx*dat.Ny*dat.Nz*sizeof(int));
+			plr[a].NCell = dat.Nx*dat.Ny*dat.Nz;
 			printf("Ncell(%d plr) = %d\n",a,plr[a].NCell);
-			for(i = 0 ; i < dat->Nx*dat->Ny*dat->Nz ; i++){
+			for(i = 0 ; i < dat.Nx*dat.Ny*dat.Nz ; i++){
 				plr[a].Cell[i] = i;
 			}
 
@@ -249,7 +249,7 @@ void LinkedCellSolidListBuilder::ListCellForPlanR(Data *dat, std::vector<PlanR> 
 	free(localCell);
 }
 
-void LinkedCellSolidListBuilder::ListCellForCone(Data *dat, std::vector<Cone> & co, Gravity& gt) noexcept {
+void LinkedCellSolidListBuilder::ListCellForCone(const Data& dat, std::vector<Cone> & co, Gravity& gt) noexcept {
 	int numCone;
 	int i,j,k;
 	int I,num;
@@ -268,7 +268,7 @@ void LinkedCellSolidListBuilder::ListCellForCone(Data *dat, std::vector<Cone> & 
 	int Nts,b2;
 
 
-	localCell =(int*)malloc(dat->Nx*dat->Ny*dat->Nz*sizeof(int));
+	localCell =(int*)malloc(dat.Nx*dat.Ny*dat.Nz*sizeof(int));
 
 	for(numCone = 0 ;  numCone < co.size() ; numCone++){
 		if(co[numCone].GetForce() == 0){
@@ -276,15 +276,15 @@ void LinkedCellSolidListBuilder::ListCellForCone(Data *dat, std::vector<Cone> & 
 			if(Vmax < co[numCone].Wmax()*co[numCone].Height()/2.)Vmax = co[numCone].Wmax()*co[numCone].Height()/2.;
 			time = co[numCone].Delay();
 
-			dist = dat->ax/2;
-			if(dist > dat->ay/2)dist = dat->ay/2;
-			if(dist > dat->az/2)dist = dat->az/2;
+			dist = dat.ax/2;
+			if(dist > dat.ay/2)dist = dat.ay/2;
+			if(dist > dat.az/2)dist = dat.az/2;
 
 			if(Vmax != 0)
 				dtime = dist/Vmax;
 			else
 				dtime = 0.0;
-			if(time == 10000.0)time = dat->Total;
+			if(time == 10000.0)time = dat.Total;
 
 			if(time != 0)
 				Nts = (int)(time/dtime)+1;
@@ -294,7 +294,7 @@ void LinkedCellSolidListBuilder::ListCellForCone(Data *dat, std::vector<Cone> & 
 
 
 			localNcell = 0;
-			for(i = dat->Nx*dat->Ny*dat->Nz ; i--;){
+			for(i = dat.Nx*dat.Ny*dat.Nz ; i--;){
 				localCell[i] = -9;
 			}
 
@@ -317,18 +317,18 @@ void LinkedCellSolidListBuilder::ListCellForCone(Data *dat, std::vector<Cone> & 
 				sx = co[numCone].Sx();
 				sy = co[numCone].Sy();
 				sz = co[numCone].Sz();
-				if(dat->Nx > 1)
-					dn = sqrt(dat->ax*dat->ax+dat->ay*dat->ay+dat->az*dat->az);
+				if(dat.Nx > 1)
+					dn = sqrt(dat.ax*dat.ax+dat.ay*dat.ay+dat.az*dat.az);
 				else{
-					dn = sqrt(dat->ay*dat->ay+dat->az*dat->az);
+					dn = sqrt(dat.ay*dat.ay+dat.az*dat.az);
 
 				}
-				for(i = 0 ; i < dat->Nx ; i++){
-					for(j = 0 ; j < dat->Ny ; j++){
-						for(k = 0 ; k < dat->Nz ; k++){
-							px = dat->xmin + dat->ax*(i+0.5);
-							py = dat->ymin + dat->ay*(j+0.5);
-							pz = dat->zmin + dat->az*(k+0.5);
+				for(i = 0 ; i < dat.Nx ; i++){
+					for(j = 0 ; j < dat.Ny ; j++){
+						for(k = 0 ; k < dat.Nz ; k++){
+							px = dat.xmin + dat.ax*(i+0.5);
+							py = dat.ymin + dat.ay*(j+0.5);
+							pz = dat.zmin + dat.az*(k+0.5);
 							pn = (px-ox)*nx+(py-oy)*ny+(pz-oz)*nz;
 							pt = (px-ox)*tx+(py-oy)*ty+(pz-oz)*tz;
 							ps = (px-ox)*sx+(py-oy)*sy+(pz-oz)*sz;
@@ -348,7 +348,7 @@ void LinkedCellSolidListBuilder::ListCellForCone(Data *dat, std::vector<Cone> & 
 										//Cellule validee
 										// Control de doublon
 										doublon = 0;
-										num = (i*dat->Ny*dat->Nz+j*dat->Nz+k);
+										num = (i*dat.Ny*dat.Nz+j*dat.Nz+k);
 										for(I = 0 ; I < localNcell ; I++){
 											if(num == localCell[I]){
 												doublon++;
@@ -369,7 +369,7 @@ void LinkedCellSolidListBuilder::ListCellForCone(Data *dat, std::vector<Cone> & 
 										//Cellule validee
 										// Control de doublon
 										doublon = 0;
-										num = (i*dat->Ny*dat->Nz+j*dat->Nz+k);
+										num = (i*dat.Ny*dat.Nz+j*dat.Nz+k);
 										for(I = 0 ; I < localNcell ; I++){
 											if(num == localCell[I]){
 												doublon++;
@@ -397,10 +397,10 @@ void LinkedCellSolidListBuilder::ListCellForCone(Data *dat, std::vector<Cone> & 
 		}
 		else{
 			// Si une force est appliquee toutes les cellules sont considerees
-			co[numCone].Cell = (int*)malloc(dat->Nx*dat->Ny*dat->Nz*sizeof(int));
-			co[numCone].NCell = dat->Nx*dat->Ny*dat->Nz;
+			co[numCone].Cell = (int*)malloc(dat.Nx*dat.Ny*dat.Nz*sizeof(int));
+			co[numCone].NCell = dat.Nx*dat.Ny*dat.Nz;
 			printf("Ncell(%d plr) = %d\n",numCone,co[numCone].NCell);
-			for(i = 0 ; i < dat->Nx*dat->Ny*dat->Nz ; i++){
+			for(i = 0 ; i < dat.Nx*dat.Ny*dat.Nz ; i++){
 				co[numCone].Cell[i] = i;
 			}
 
@@ -410,7 +410,7 @@ void LinkedCellSolidListBuilder::ListCellForCone(Data *dat, std::vector<Cone> & 
 
 }
 
-void LinkedCellSolidListBuilder::ListCellForElbow(Data *dat, std::vector<Elbow> & el) noexcept {
+void LinkedCellSolidListBuilder::ListCellForElbow(const Data& dat, std::vector<Elbow> & el) noexcept {
 	int numEl;
 	int i,j,k;
 	int I,num;
@@ -434,21 +434,21 @@ void LinkedCellSolidListBuilder::ListCellForElbow(Data *dat, std::vector<Elbow> 
 	int Nts,b;
 	double rl, alphal,cx,cy,cz,D;
 
-	localCell =(int*)malloc(dat->Nx*dat->Ny*dat->Nz*sizeof(int));
+	localCell =(int*)malloc(dat.Nx*dat.Ny*dat.Nz*sizeof(int));
 
 	for(numEl = 0 ;  numEl < el.size() ; numEl++){
 		Vmax = el[numEl].Vmax();
 		if(Vmax < el[numEl].Wmax()*(el[numEl].r+el[numEl].R))Vmax = el[numEl].Wmax()*(el[numEl].r+el[numEl].R);
 		time = el[numEl].Delay();
 
-		dist = dat->ax/2;
-		if(dist > dat->ay/2)dist = dat->ay/2;
-		if(dist > dat->az/2)dist = dat->az/2;
+		dist = dat.ax/2;
+		if(dist > dat.ay/2)dist = dat.ay/2;
+		if(dist > dat.az/2)dist = dat.az/2;
 		if(Vmax != 0)
 			dtime = dist/Vmax;
 		else
 			dtime = 0.0;
-		if(time == 10000.0)time = dat->Total;
+		if(time == 10000.0)time = dat.Total;
 
 		if(time != 0)
 			Nts = (int)(time/dtime)+1;
@@ -456,7 +456,7 @@ void LinkedCellSolidListBuilder::ListCellForElbow(Data *dat, std::vector<Elbow> 
 			Nts = 0;
 
 		localNcell = 0;
-		for(i = dat->Nx*dat->Ny*dat->Nz ; i--;){
+		for(i = dat.Nx*dat.Ny*dat.Nz ; i--;){
 			localCell[i] = -9;
 		}
 
@@ -489,13 +489,13 @@ void LinkedCellSolidListBuilder::ListCellForElbow(Data *dat, std::vector<Elbow> 
 			sx = el[numEl].sx;
 			sy = el[numEl].sy;
 			sz = el[numEl].sz;
-			dn = sqrt(dat->ax*dat->ax+dat->ay*dat->ay+dat->az*dat->az);
-			for(i = 0 ; i < dat->Nx ; i++){
-				for(j = 0 ; j < dat->Ny ; j++){
-					for(k = 0 ; k < dat->Nz ; k++){
-						px = dat->xmin + dat->ax*(i+0.5);
-						py = dat->ymin + dat->ay*(j+0.5);
-						pz = dat->zmin + dat->az*(k+0.5);
+			dn = sqrt(dat.ax*dat.ax+dat.ay*dat.ay+dat.az*dat.az);
+			for(i = 0 ; i < dat.Nx ; i++){
+				for(j = 0 ; j < dat.Ny ; j++){
+					for(k = 0 ; k < dat.Nz ; k++){
+						px = dat.xmin + dat.ax*(i+0.5);
+						py = dat.ymin + dat.ay*(j+0.5);
+						pz = dat.zmin + dat.az*(k+0.5);
 						pn = (px-ox)*nx + (py-oy)*ny + (pz-oz)*nz;
 						pt = (px-ox)*tx + (py-oy)*ty + (pz-oz)*tz;
 						ps = (px-ox)*sx + (py-oy)*sy + (pz-oz)*sz;
@@ -523,7 +523,7 @@ void LinkedCellSolidListBuilder::ListCellForElbow(Data *dat, std::vector<Elbow> 
 									//Cellule validee
 									// Control de doublon
 									doublon = 0;
-									num = (i*dat->Ny*dat->Nz+j*dat->Nz+k);
+									num = (i*dat.Ny*dat.Nz+j*dat.Nz+k);
 									for(I = 0 ; I < localNcell ; I++){
 										if(num == localCell[I]){
 											doublon++;

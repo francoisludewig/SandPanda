@@ -30,7 +30,7 @@ int Evolution::Evolve(std::vector<Plan> & pl,std::vector<PlanR> & plr,std::vecto
 		PeriodicityPL(sph, pl);
 
 		// Linked Cells
-		LinkedCellFiller::Fill(sph,&dat,cell);
+		LinkedCellFiller::Fill(sph,dat,cell);
 		// Initialization for the time step
 		ComputeForce::InitForTimeStep(Nct, sph, bd, ct,pl,plr,co,elb);
 		// Contact Detection
@@ -118,7 +118,7 @@ int Evolution::EvolveMelt(std::vector<Plan> & pl,std::vector<PlanR> & plr,std::v
 		PeriodicityPL(sph, pl);
 
 		// Linked Cells
-		LinkedCellFiller::Fill(sph,&dat,cell);
+		LinkedCellFiller::Fill(sph,dat,cell);
 		// Initialization for the time step
 		ComputeForce::InitForTimeStep(Nct, sph, bd, ct,pl,plr,co,elb);
 

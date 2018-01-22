@@ -191,10 +191,10 @@ int main(int argc,char **argv){
 	printf("List of Linking Cell for Solid\n");
 	printf("------------------------------\n\n");
 	// Making list of linking cell for each solid
-	LinkedCellSolidListBuilder::ListCellForPlan(&dat, pl, gf);
-	LinkedCellSolidListBuilder::ListCellForPlanR(&dat, plr, gf);
-	LinkedCellSolidListBuilder::ListCellForCone(&dat, co, gf);
-	LinkedCellSolidListBuilder::ListCellForElbow(&dat, elb);
+	LinkedCellSolidListBuilder::ListCellForPlan(dat, pl, gf);
+	LinkedCellSolidListBuilder::ListCellForPlanR(dat, plr, gf);
+	LinkedCellSolidListBuilder::ListCellForCone(dat, co, gf);
+	LinkedCellSolidListBuilder::ListCellForElbow(dat, elb);
 	printf("\n");
 
 	if(dat.TIME != 0)
