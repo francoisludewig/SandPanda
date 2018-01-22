@@ -13,16 +13,16 @@ Efficiency test : -9%
 ------------------------------------
 BodyCone
 Consistency test : Succeed
-Efficiency test : -2%
+Efficiency test : -5%
 ------------------------------------
 MixCone
 Consistency test : Succeed
-Efficiency test : -2%
+Efficiency test : 0%
 ------------------------------------
 SphereCone
 Consistency test : Succeed
-Efficiency test : -4%
+Efficiency test : -3%
 ------------------------------------
 MasterSolid
 Consistency test : Succeed
-Efficiency test : -6%
+Efficiency test : -3%

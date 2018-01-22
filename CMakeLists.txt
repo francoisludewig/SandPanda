@@ -3,63 +3,77 @@ cmake_minimum_required(VERSION 3.1.2)
 project(SandPanda VERSION 1.0.0)
 
 set(SOURCES_FILES
- Sources/AffinityCache.cpp	
- Sources/HollowBall.cpp
- Sources/Body.cpp		
- Sources/MasterSolid.cpp
- Sources/BodySpecie.cpp		
+ Sources/Contact/ContactDetection.cpp	
+ Sources/Contact/Contact.cpp	
+
+ Sources/Elongations/Elongation.cpp	
+
+	
+ Sources/Solids/HollowBall.cpp
+ Sources/Solids/Body.cpp		
+ Sources/Solids/MasterSolid.cpp
+ Sources/Solids/BodySpecie.cpp		
+ Sources/Solids/Plan.cpp
+ Sources/Solids/Cone.cpp		
+ Sources/Solids/PlanR.cpp	
+ Sources/Solids/Elbow.cpp		
+ Sources/Solids/Solid.cpp	
+ Sources/Solids/Sphere.cpp
+ Sources/Solids/Velocity.cpp	
+ Sources/Solids/Sinusoid.cpp	
+
+ Sources/LinkedCells/LinkedCellFiller.cpp
+ Sources/LinkedCells/LinkedCellSolidListBuilber.cpp	
+
+ Sources/AffinityCache.cpp
  Sources/Move.cpp
  Sources/Option.cpp
  Sources/Compaction.cpp		
  Sources/Periodicity.cpp
- Sources/ComputingForce.cpp	
- Sources/Plan.cpp
- Sources/Cone.cpp		
- Sources/PlanR.cpp
- Sources/Contact.cpp		
+ Sources/ComputingForce.cpp
  Sources/PowderPaQ.cpp
- Sources/ContactDetection.cpp	
  Sources/ReadWrite.cpp
- Sources/Data.cpp
- Sources/Elbow.cpp		
- Sources/Solid.cpp
- Sources/Elongation.cpp		
- Sources/Sphere.cpp
+ Sources/Data.cpp 
  Sources/Evolution.cpp
  Sources/Gravity.cpp	
- Sources/Velocity.cpp	
- Sources/Sinusoid.cpp	
  Sources/main.cpp
 )
 
 set(INCLUDES_FILES
+ Includes/Contact/ContactDetection.h	
+ Includes/Contact/Contact.h	
+
+ Includes/Elongations/Elongation.h	
+ Includes/Elongations/ElongationManager.h	
+
+ Includes/Solids/Body.h		
+ Includes/Solids/MasterSolid.h
+ Includes/Solids/BodySpecie.h		
+ Includes/Solids/Cone.h			
+ Includes/Solids/Plan.h	
+ Includes/Solids/PlanR.h
+ Includes/Solids/Elbow.h	
+ Includes/Solids/Solid.h
+ Includes/Solids/Sphere.h		
+ Includes/Solids/Velocity.h
+ Includes/Solids/Sinusoid.h
+ Includes/Solids/MechanicalPoint.h
+ Includes/Solids/HollowBall.h
+
+ Includes/LinkedCells/LinkedCellFiller.h
+ Includes/LinkedCells/LinkedCellSolidListBuilder.h	
+
  Includes/AffinityCache.h
- Includes/HollowBall.h
- Includes/Body.h		
- Includes/MasterSolid.h
- Includes/BodySpecie.h		
  Includes/Move.h
  Includes/Compaction.h		
  Includes/Option.h
  Includes/ComputingForce.h	
- Includes/Periodicity.h
- Includes/Cone.h			
- Includes/Plan.h
- Includes/Contact.h		
- Includes/PlanR.h
- Includes/ContactDetection.h	
+ Includes/Periodicity.h 
  Includes/PowderPaQ.h
  Includes/Data.h			
- Includes/ReadWrite.h
- Includes/Elbow.h
- Includes/Elongation.h		
- Includes/Solid.h
- Includes/Evolution.h		
- Includes/Sphere.h		
+ Includes/ReadWrite.h 
+ Includes/Evolution.h 
  Includes/Gravity.h	
- Includes/Velocity.h
- Includes/Sinusoid.h
- Includes/MechanicalPoint.h
 )
 
 set(SandPanda_FILES

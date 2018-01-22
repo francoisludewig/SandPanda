@@ -1,23 +1,23 @@
-#include "../Includes/Velocity.h"
+#include "../Includes/Solids/Velocity.h"
 #include "../Includes/Gravity.h"
-#include "../Includes/Plan.h"
-#include "../Includes/PlanR.h"
-#include "../Includes/Cone.h"
-#include "../Includes/Elbow.h"
-#include "../Includes/Sphere.h"
-#include "../Includes/Body.h"
-#include "../Includes/Contact.h"
+#include "../Includes/Solids/Plan.h"
+#include "../Includes/Solids/PlanR.h"
+#include "../Includes/Solids/Cone.h"
+#include "../Includes/Solids/Elbow.h"
+#include "../Includes/Solids/Sphere.h"
+#include "../Includes/Solids/Body.h"
 #include "../Includes/ReadWrite.h"
-#include "../Includes/ContactDetection.h"
 #include "../Includes/ComputingForce.h"
 #include "../Includes/Data.h"
 #include "../Includes/Move.h"
 #include "../Includes/Evolution.h"
 #include "../Includes/Compaction.h"
-#include "../Includes/BodySpecie.h"
+#include "../Includes/Solids/BodySpecie.h"
 #include "../Includes/PowderPaQ.h"
-#include "../Includes/HollowBall.h"
+#include "../Includes/Solids/HollowBall.h"
 #include "../Includes/Option.h"
+#include "../Includes/Contact/ContactDetection.h"
+#include "../Includes/LinkedCells/LinkedCellSolidListBuilder.h"
 #include <iostream>
 #include <vector>
 //#include <omp.h>
@@ -191,10 +191,10 @@ int main(int argc,char **argv){
 	printf("List of Linking Cell for Solid\n");
 	printf("------------------------------\n\n");
 	// Making list of linking cell for each solid
-	ContactDetection::listCellForPlan(&dat, pl, gf);
-	ContactDetection::listCellForPlanR(&dat, plr, gf);
-	ContactDetection::listCellForCone(&dat, co, gf);
-	ContactDetection::listCellForElbow(&dat, elb);
+	LinkedCellSolidListBuilder::ListCellForPlan(&dat, pl, gf);
+	LinkedCellSolidListBuilder::ListCellForPlanR(&dat, plr, gf);
+	LinkedCellSolidListBuilder::ListCellForCone(&dat, co, gf);
+	LinkedCellSolidListBuilder::ListCellForElbow(&dat, elb);
 	printf("\n");
 
 	if(dat.TIME != 0)

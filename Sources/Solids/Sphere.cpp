@@ -4,10 +4,10 @@
 #include <stdio.h>
 #include <vector>
 
-#include "../Includes/Sphere.h"
-#include "../Includes/Gravity.h"
-#include "../Includes/Elongation.h"
-#include "../Includes/Body.h"
+#include "../../Includes/Solids/Sphere.h"
+#include "../../Includes/Gravity.h"
+#include "../../Includes/Elongations/Elongation.h"
+#include "../../Includes/Solids/Body.h"
 
 Sphere::Sphere() noexcept {
 	// Initialisation des donnees des elongations

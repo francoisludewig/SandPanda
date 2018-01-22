@@ -1,8 +1,8 @@
 #pragma once
 
 #include "MechanicalPoint.h"
-#include "Elongation.h"
-#include "ElongationManager.h"
+#include "../Elongations/Elongation.h"
+#include "../Elongations/ElongationManager.h"
 #include <vector>
 #include <array>
 #include <tuple>

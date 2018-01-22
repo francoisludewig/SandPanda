@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Velocity.h"
-#include "Gravity.h"
+#include "../Gravity.h"
 #include "MechanicalPoint.h"
 #include <vector>
 

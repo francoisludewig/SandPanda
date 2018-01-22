@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Sinusoid.h"
+#include "Solids/Sinusoid.h"
 
 class Gravity{
 public:

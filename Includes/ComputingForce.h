@@ -3,7 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
-#include "Contact.h"
+#include "Contact/Contact.h"
 
 class Sphere;
 class Body;

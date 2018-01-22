@@ -1,7 +1,7 @@
 #pragma once
 
 #include "MechanicalPoint.h"
-#include "ElongationManager.h"
+#include "../Elongations/ElongationManager.h"
 #include <vector>
 
 class Contact;

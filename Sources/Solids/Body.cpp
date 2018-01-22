@@ -2,13 +2,13 @@
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "../Includes/Body.h"
-#include "../Includes/Sphere.h"
-#include "../Includes/BodySpecie.h"
-#include "../Includes/Gravity.h"
-#include "../Includes/HollowBall.h"
-#include "../Includes/ComputingForce.h"
-#include "../Includes/ContactDetection.h"
+#include "../../Includes/Solids/Body.h"
+#include "../../Includes/Solids/Sphere.h"
+#include "../../Includes/Solids/BodySpecie.h"
+#include "../../Includes/Gravity.h"
+#include "../../Includes/Solids/HollowBall.h"
+#include "../../Includes/ComputingForce.h"
+#include "../../Includes/Contact/ContactDetection.h"
 
 Body::Body() noexcept :
 sp(0), Ng(0), numl(0), Rmax(0), m(0), NhollowBall(0),ActiveRotation(0) {

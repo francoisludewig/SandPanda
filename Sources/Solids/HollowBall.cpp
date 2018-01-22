@@ -1,12 +1,10 @@
-#include "../Includes/HollowBall.h"
-#include "../Includes/Sphere.h"
-#include "../Includes/ContactDetection.h"
-#include "../Includes/Contact.h"
-#include "../Includes/Body.h"
+#include "../../Includes/Solids/HollowBall.h"
+#include "../../Includes/Solids/Sphere.h"
+#include "../../Includes/Contact/ContactDetection.h"
+#include "../../Includes/Contact/Contact.h"
+#include "../../Includes/Solids/Body.h"
 
 #include <cmath>
-
-
 
 
 HollowBall::HollowBall() noexcept :

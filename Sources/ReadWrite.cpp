@@ -1,18 +1,18 @@
 #include "../Includes/ReadWrite.h"
 
-#include "../Includes/Velocity.h"
+#include "../Includes/Solids/Velocity.h"
 #include "../Includes/Gravity.h"
 #include "../Includes/Data.h"
-#include "../Includes/Plan.h"
-#include "../Includes/PlanR.h"
-#include "../Includes/Cone.h"
-#include "../Includes/Elbow.h"
-#include "../Includes/Sphere.h"
-#include "../Includes/Body.h"
-#include "../Includes/BodySpecie.h"
-#include "../Includes/Contact.h"
+#include "../Includes/Solids/Plan.h"
+#include "../Includes/Solids/PlanR.h"
+#include "../Includes/Solids/Cone.h"
+#include "../Includes/Solids/Elbow.h"
+#include "../Includes/Solids/Sphere.h"
+#include "../Includes/Solids/Body.h"
+#include "../Includes/Solids/BodySpecie.h"
+#include "../Includes/Contact/Contact.h"
 #include "../Includes/Data.h"
-#include "../Includes/HollowBall.h"
+#include "../Includes/Solids/HollowBall.h"
 
 void ReadWrite::readOutBodySpecie(char *directory,vector<BodySpecie> & bdsp) noexcept {
 	char fileName[1024];

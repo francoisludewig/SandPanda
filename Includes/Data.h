@@ -3,8 +3,8 @@
 #include <iostream>
 #include <math.h>
 #include <vector>
-#import "Sphere.h"
-#import "MasterSolid.h"
+#import "Solids/Sphere.h"
+#import "Solids/MasterSolid.h"
 
 class Data{
 public:

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Contact.h"
+#include "Contact/Contact.h"
 
 #include <vector>
 

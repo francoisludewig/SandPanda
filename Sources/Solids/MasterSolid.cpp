@@ -1,9 +1,9 @@
-#include "../Includes/MasterSolid.h"
+#include "../../Includes/Solids/MasterSolid.h"
 
-#include "../Includes/Plan.h"
-#include "../Includes/PlanR.h"
-#include "../Includes/Cone.h"
-#include "../Includes/Elbow.h"
+#include "../../Includes/Solids/Plan.h"
+#include "../../Includes/Solids/PlanR.h"
+#include "../../Includes/Solids/Cone.h"
+#include "../../Includes/Solids/Elbow.h"
 
 MasterSolid::MasterSolid() noexcept :
 	x(0), y(0), z(0), vx(0), vy(0), vz(0),

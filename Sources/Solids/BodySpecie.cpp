@@ -2,7 +2,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "../Includes/BodySpecie.h"
+#include "../../Includes/Solids/BodySpecie.h"
 
 
 BodySpecie::BodySpecie() noexcept :

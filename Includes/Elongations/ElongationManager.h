@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Elongation.h"
-#include "Contact.h"
+#include "../Contact/Contact.h"
 
 #include <memory>
 #include <vector>

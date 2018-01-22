@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include "Velocity.h"
-#include "ComputingForce.h"
+#include "../ComputingForce.h"
 
 class Contact;
 class Data;

@@ -43,10 +43,4 @@ public:
 	static void sphElbowContact(int & Nct, std::vector<Elbow> & elb, Contact *ct, Sphere *cell[]) noexcept;
 	static void sphHollowBallContact(int & Nct, std::vector<HollowBall> & hb, Contact *ct) noexcept;
 	static void sphContainer(std::vector<Sphere> & sph, std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co, std::vector<Elbow> & elb, std::vector<HollowBall> & hb, int & Nct, Contact *ct, Sphere *cell[], const double rmax) noexcept;
-	
-	static void linkedCell(std::vector<Sphere> & sph, const Data *dat, Sphere *cell[]) noexcept;
-	static void listCellForPlan(Data *dat, std::vector<Plan> & pl, Gravity& gt) noexcept;
-	static void listCellForPlanR(Data *dat, std::vector<PlanR> & plr, Gravity& gt) noexcept;
-	static void listCellForCone(Data *dat, std::vector<Cone> & co, Gravity& gt) noexcept;
-	static void listCellForElbow(Data *dat, std::vector<Elbow> & elb) noexcept;
 };

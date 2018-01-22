@@ -1,23 +1,18 @@
 #include <ctime>
 
 #include "../Includes/Evolution.h"
-#include "../Includes/Velocity.h"
-#include "../Includes/Gravity.h"
-#include "../Includes/Plan.h"
-#include "../Includes/PlanR.h"
-#include "../Includes/Cone.h"
-#include "../Includes/Elbow.h"
-#include "../Includes/Sphere.h"
-#include "../Includes/Body.h"
-#include "../Includes/ReadWrite.h"
-#include "../Includes/ContactDetection.h"
-#include "../Includes/Periodicity.h"
-#include "../Includes/ComputingForce.h"
 #include "../Includes/Data.h"
+#include "../Includes/ComputingForce.h"
 #include "../Includes/Move.h"
-#include "../Includes/HollowBall.h"
+#include "../Includes/ReadWrite.h"
+#include "../Includes/Contact/ContactDetection.h"
+#include "../Includes/Periodicity.h"
+#include "../Includes/Gravity.h"
+#include "../Includes/Solids/Sphere.h"
+#include "../Includes/Solids/Body.h"
+#include "../Includes/LinkedCells/LinkedCellFiller.h"
 
-int Evolution::Evolve(vector<Plan> & pl,vector<PlanR> & plr,vector<Cone> & co,vector<Elbow> & elb,vector<Sphere> & sph,vector<Body> & bd,vector<HollowBall> & hb,Data & dat,Gravity & gf,
+int Evolution::Evolve(std::vector<Plan> & pl,std::vector<PlanR> & plr,std::vector<Cone> & co,std::vector<Elbow> & elb,std::vector<Sphere> & sph,std::vector<Body> & bd,std::vector<HollowBall> & hb,Data & dat,Gravity & gf,
 		Sphere *cell[], int & Ntp, char *name,bool record, int Nthreshold) noexcept {
 	// Sequential Version
 	printf("Evolution\n");
@@ -35,7 +30,7 @@ int Evolution::Evolve(vector<Plan> & pl,vector<PlanR> & plr,vector<Cone> & co,ve
 		PeriodicityPL(sph, pl);
 
 		// Linked Cells
-		ContactDetection::linkedCell(sph,&dat,cell);
+		LinkedCellFiller::Fill(sph,&dat,cell);
 		// Initialization for the time step
 		ComputeForce::InitForTimeStep(Nct, sph, bd, ct,pl,plr,co,elb);
 		// Contact Detection
@@ -102,7 +97,7 @@ int Evolution::Evolve(vector<Plan> & pl,vector<PlanR> & plr,vector<Cone> & co,ve
 	return(Ntp);
 }
 
-int Evolution::EvolveMelt(vector<Plan> & pl,vector<PlanR> & plr,vector<Cone> & co,vector<Elbow> & elb,vector<Sphere> & sph,vector<Body> & bd,vector<HollowBall> & hb,Data & dat,Gravity & gf,
+int Evolution::EvolveMelt(std::vector<Plan> & pl,std::vector<PlanR> & plr,std::vector<Cone> & co,std::vector<Elbow> & elb,std::vector<Sphere> & sph,std::vector<Body> & bd,std::vector<HollowBall> & hb,Data & dat,Gravity & gf,
 		Sphere *cell[], int & Ntp, char *name,bool record, double vr,double delayVr, int Nthreshold) noexcept{
 	printf("Evolution\n");
 	double dtl;
@@ -123,7 +118,7 @@ int Evolution::EvolveMelt(vector<Plan> & pl,vector<PlanR> & plr,vector<Cone> & c
 		PeriodicityPL(sph, pl);
 
 		// Linked Cells
-		ContactDetection::linkedCell(sph,&dat,cell);
+		LinkedCellFiller::Fill(sph,&dat,cell);
 		// Initialization for the time step
 		ComputeForce::InitForTimeStep(Nct, sph, bd, ct,pl,plr,co,elb);
 

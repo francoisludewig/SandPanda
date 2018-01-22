@@ -1,5 +1,5 @@
-#include "../Includes/Solid.h"
-#include "../Includes/Sphere.h"
+#include "../../Includes/Solids/Solid.h"
+#include "../../Includes/Solids/Sphere.h"
 
 Solid::Solid() noexcept :
 	Cell(nullptr), NCell(0), numero(0), Fcx(0), Fcy(0), Fcz(0),

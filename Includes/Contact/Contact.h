@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Elongation.h"
+#include "../Elongations/Elongation.h"
 
 class Sphere;
 class Body;
