@@ -75,16 +75,16 @@ void PowderPaQ::PowderPaQrelaxation(std::vector<Plan> & pl,std::vector<PlanR> & 
 }
 
 int PowderPaQ::PowderPaQRun(std::vector<Plan> & pl,std::vector<PlanR> & plr,std::vector<Cone> & co,std::vector<Elbow> & elb,std::vector<Sphere> & sph,std::vector<Body> & bd,std::vector<HollowBall> & hb,Data & dat,Gravity & gf,
-		std::vector<Sphere*>& cell, int & Ntp, char *name,bool record,int ntpi, int ntpf, int Nthreshold, double PQheight, double PQVel) noexcept {
+		std::vector<Sphere*>& cell, int & Ntp, char *name,int ntpi, int ntpf, int Nthreshold, double PQheight, double PQVel) noexcept {
 	Evolution evolution(sph.size(), bd.size());
-	record = 0;
+	dat.record = 0;
 	for(int nt = ntpi  ; nt <= ntpf ; nt++){
 		//Secousse
 		PowderPaQsecousseUpward(pl,plr,co,dat,PQheight,PQVel);
-		Ntp = evolution.Evolve(pl,plr,co,elb,sph,bd,hb,dat,gf,cell,Ntp, name,record,Nthreshold);
+		Ntp = evolution.Evolve(pl,plr,co,elb,sph,bd,hb,dat,gf,cell,Ntp, name,Nthreshold);
 
 		PowderPaQsecousseDownward(pl,plr,co,dat,PQheight);
-		Ntp = evolution.Evolve(pl,plr,co,elb,sph,bd,hb,dat,gf,cell,Ntp, name,record,Nthreshold);
+		Ntp = evolution.Evolve(pl,plr,co,elb,sph,bd,hb,dat,gf,cell,Ntp, name,Nthreshold);
 
 		// Relaxation
 		if(nt < 100)
@@ -92,7 +92,7 @@ int PowderPaQ::PowderPaQRun(std::vector<Plan> & pl,std::vector<PlanR> & plr,std:
 		else
 			PowderPaQrelaxation(pl,plr,co,dat,0.25,PQheight,PQVel);
 
-		Ntp = evolution.Evolve(pl,plr,co,elb,sph,bd,hb,dat,gf,cell,Ntp, name,record,Nthreshold);
+		Ntp = evolution.Evolve(pl,plr,co,elb,sph,bd,hb,dat,gf,cell,Ntp, name,Nthreshold);
 		// Enregistrement
 		ReadWrite::writeStartStopContainer(name,pl,plr,co,elb);
 		ReadWrite::writeStartStopSphere(name,sph);

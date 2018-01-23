@@ -84,7 +84,6 @@ int main(int argc,char **argv){
 	int Ntp;
 	int Nsph0 = 0;
 	double dila = 0;
-	bool record = 1;
 	int Nthreshold = 0;
 
 	vector<Plan> pl;
@@ -197,6 +196,8 @@ int main(int argc,char **argv){
 	LinkedCellSolidListBuilder::ListCellForElbow(dat, elb);
 	printf("\n");
 
+	dat.record = true;
+
 	if(dat.TIME != 0)
 		Ntp = (int)((dat.TIME-dat.t0)/(dat.dts))+1;
 	else
@@ -241,16 +242,16 @@ int main(int argc,char **argv){
 	case 0:
 	{
 		Evolution evolution(sph.size(), bd.size());
-		Ntp = evolution.Evolve(pl,plr,co,elb,sph,bd,hb, dat,gf,cell,Ntp, opt.directory,record,Nthreshold);
+		Ntp = evolution.Evolve(pl,plr,co,elb,sph,bd,hb, dat,gf,cell,Ntp, opt.directory,Nthreshold);
 		break;
 	}
 	case 1:
 		dat.Total = 0;
-		Ntp = Compaction::Run(pl,plr,co,elb,sph,bd,hb ,dat,gf,cell,Ntp, opt.directory,record,opt.NtapMin,opt.NtapMax,opt.Gamma,opt.Freq,Nthreshold);
+		Ntp = Compaction::Run(pl,plr,co,elb,sph,bd,hb ,dat,gf,cell,Ntp, opt.directory,opt.NtapMin,opt.NtapMax,opt.Gamma,opt.Freq,Nthreshold);
 		break;
 	case 2:
 		dat.Total = 0.0;
-		Ntp = PowderPaQ::PowderPaQRun(pl,plr,co,elb,sph,bd,hb,dat,gf,cell,Ntp, opt.directory,record,opt.NtapMin,opt.NtapMax,Nthreshold,opt.PQheight,opt.PQVel);
+		Ntp = PowderPaQ::PowderPaQRun(pl,plr,co,elb,sph,bd,hb,dat,gf,cell,Ntp, opt.directory,opt.NtapMin,opt.NtapMax,Nthreshold,opt.PQheight,opt.PQVel);
 		break;
 	}
 

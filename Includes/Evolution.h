@@ -28,10 +28,10 @@ public:
 	int ContactCount() const noexcept { return Nct; }
 
     int Evolve(std::vector<Plan> & pl,std::vector<PlanR> & plr,std::vector<Cone> & co,std::vector<Elbow> & elb,std::vector<Sphere> & sph,std::vector<Body> & bd,std::vector<HollowBall> & hb,Data & dat,Gravity & gf,
-    		std::vector<Sphere*>& cell, int & Ntp, char *name,bool record, int Nthreshold) noexcept;
+    		std::vector<Sphere*>& cell, int & Ntp, char *name, int Nthreshold) noexcept;
 	
     int EvolveMelt(std::vector<Plan> & pl,std::vector<PlanR> & plr,std::vector<Cone> & co,std::vector<Elbow> & elb,std::vector<Sphere> & sph,std::vector<Body> & bd,std::vector<HollowBall> & hb,Data & dat,Gravity & gf,
-    		std::vector<Sphere*> cell, int & Ntp, char *name,bool record, double vr, double delayVr, int Nthreshold) noexcept;
+    		std::vector<Sphere*> cell, int & Ntp, char *name, double vr, double delayVr, int Nthreshold) noexcept;
 
 private:
 	Contact *ct;

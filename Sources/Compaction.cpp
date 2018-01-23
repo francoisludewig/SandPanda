@@ -54,21 +54,21 @@ void Compaction::Relaxation(vector<Plan> & pl,vector<PlanR> & plr,vector<Cone> &
 
 
 int Compaction::Run(vector<Plan> & pl,vector<PlanR> & plr,vector<Cone> & co,vector<Elbow> & elb,vector<Sphere> & sph,vector<Body> & bd,vector<HollowBall> & hb,Data & dat,Gravity & gf,
-		std::vector<Sphere*>& cell, int & Ntp, char *name,bool record,int ntpi, int ntpf, double Gamma, double f, int Nthreshold) noexcept {
+		std::vector<Sphere*>& cell, int & Ntp, char *name,int ntpi, int ntpf, double Gamma, double f, int Nthreshold) noexcept {
 
 	Evolution evolution(sph.size(), bd.size());
-	record = 0;
+	dat.record = 0;
 	for(int nt = ntpi  ; nt <= ntpf ; nt++){
 		//Secousse
 		Secousse(pl,plr,co,Gamma,f,dat);
 		printf("Total = %e\n",dat.Total);
-		Ntp = evolution.Evolve(pl,plr,co,elb,sph,bd,hb,dat,gf,cell,Ntp, name,record,Nthreshold);
+		Ntp = evolution.Evolve(pl,plr,co,elb,sph,bd,hb,dat,gf,cell,Ntp, name,Nthreshold);
 		// Relaxation
 		Relaxation(pl,plr,co,dat);
 		printf("Total = %e\n",dat.Total);
-		Ntp = evolution.Evolve(pl,plr,co,elb,sph,bd,hb,dat,gf,cell,Ntp, name,record,Nthreshold);
+		Ntp = evolution.Evolve(pl,plr,co,elb,sph,bd,hb,dat,gf,cell,Ntp, name,Nthreshold);
 		
-		if(record == 0){
+		if(dat.record == 0){
 			// Enregistrement
 			ReadWrite::writeStartStopContainer(name,pl,plr,co,elb);
 			ReadWrite::writeStartStopSphere(name,sph);

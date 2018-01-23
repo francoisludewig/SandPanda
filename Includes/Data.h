@@ -40,4 +40,6 @@ public:
 	// Donnee relative aux options de la simulation
 	int outContact;
 	int outMode;
+
+	bool record;
 };

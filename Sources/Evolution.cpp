@@ -13,7 +13,7 @@
 #include "../Includes/LinkedCells/LinkedCellFiller.h"
 
 int Evolution::Evolve(std::vector<Plan> & pl,std::vector<PlanR> & plr,std::vector<Cone> & co,std::vector<Elbow> & elb,std::vector<Sphere> & sph,std::vector<Body> & bd,std::vector<HollowBall> & hb,Data & dat,Gravity & gf,
-		std::vector<Sphere*>& cell, int & Ntp, char *name,bool record, int Nthreshold) noexcept {
+		std::vector<Sphere*>& cell, int & Ntp, char *name, int Nthreshold) noexcept {
 	// Sequential Version
 	printf("Evolution\n");
 	do{
@@ -52,7 +52,6 @@ int Evolution::Evolve(std::vector<Plan> & pl,std::vector<PlanR> & plr,std::vecto
 
 		Move::UpDateForceContainer(sph,pl,plr,co,dat.TIME,dat.dt,gf);
 		dat.mas->getForces();
-
 		// Update Velocities
 		Move::upDateVelocitySphere(sph, gf, dat.dt);
 		Move::upDateVelocityBodies(bd, gf, dat.dt, sph);
@@ -65,11 +64,12 @@ int Evolution::Evolve(std::vector<Plan> & pl,std::vector<PlanR> & plr,std::vecto
 		Move::moveSphere(sph, dat.dt/2);
 		Move::moveBodies(bd, dat.dt/2, sph);
 		Move::upDateHollowBall(hb,dat.dt);
+
 		gf.Move(dat.TIME,dat.dt/2);
 		PeriodicityPL(sph, pl);
 
 		// Record data
-		if(record){
+		if(dat.record){
 			if(fabs((dat.TIME-dat.t0)-Ntp*(dat.dts)) < dat.dt*0.99  && (dat.TIME-dat.t0 > 0.)){
 				ReadWrite::writeStartStopContainer(name,pl,plr,co,elb);
 				ReadWrite::writeStartStopSphere(name,sph);
@@ -98,7 +98,7 @@ int Evolution::Evolve(std::vector<Plan> & pl,std::vector<PlanR> & plr,std::vecto
 }
 
 int Evolution::EvolveMelt(std::vector<Plan> & pl,std::vector<PlanR> & plr,std::vector<Cone> & co,std::vector<Elbow> & elb,std::vector<Sphere> & sph,std::vector<Body> & bd,std::vector<HollowBall> & hb,Data & dat,Gravity & gf,
-		std::vector<Sphere*> cell, int & Ntp, char *name,bool record, double vr,double delayVr, int Nthreshold) noexcept{
+		std::vector<Sphere*> cell, int & Ntp, char *name, double vr,double delayVr, int Nthreshold) noexcept{
 	printf("Evolution\n");
 	double dtl;
 	double r0,r1;
@@ -149,7 +149,7 @@ int Evolution::EvolveMelt(std::vector<Plan> & pl,std::vector<PlanR> & plr,std::v
 		PeriodicityPL(sph, pl);
 
 		// Record data
-		if(record){
+		if(dat.record){
 			if(fabs((dat.TIME-dat.t0)-Ntp*(dat.dts)) < dat.dt  && (dat.TIME-dat.t0 > 0.)){
 				ReadWrite::writeStartStopContainer(name,pl,plr,co,elb);
 				ReadWrite::writeStartStopSphere(name,sph);
