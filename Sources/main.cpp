@@ -186,7 +186,7 @@ int main(int argc,char **argv){
 	int Ncell = dat.Nx*dat.Ny*dat.Nz;
 	dat.Ncellmax = Ncell;
 	printf("Ncell = %d\n",Ncell);
-	Sphere *cell[Ncell];
+	std::vector<Sphere*> cell(Ncell, nullptr);
 
 	printf("List of Linking Cell for Solid\n");
 	printf("------------------------------\n\n");

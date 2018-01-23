@@ -54,7 +54,7 @@ void Compaction::Relaxation(vector<Plan> & pl,vector<PlanR> & plr,vector<Cone> &
 
 
 int Compaction::Run(vector<Plan> & pl,vector<PlanR> & plr,vector<Cone> & co,vector<Elbow> & elb,vector<Sphere> & sph,vector<Body> & bd,vector<HollowBall> & hb,Data & dat,Gravity & gf,
-										Sphere *cell[], int & Ntp, char *name,bool record,int ntpi, int ntpf, double Gamma, double f, int Nthreshold) noexcept {
+		std::vector<Sphere*>& cell, int & Ntp, char *name,bool record,int ntpi, int ntpf, double Gamma, double f, int Nthreshold) noexcept {
 
 	Evolution evolution(sph.size(), bd.size());
 	record = 0;

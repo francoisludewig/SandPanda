@@ -7,5 +7,5 @@ class Data;
 
 class LinkedCellFiller{
 public:
-	static void Fill(std::vector<Sphere> & sph, const Data& dat, Sphere *cell[]) noexcept;
+	static void Fill(std::vector<Sphere> & sph, const Data& dat, std::vector<Sphere*>& cell) noexcept;
 };

@@ -977,7 +977,7 @@ void ContactDetection::sphContactAll(std::vector<Sphere> & sph, Contact *ctl, in
 	}
 }
 
-void ContactDetection::sphContact(const int Nx0, const int Nx1, const int Nx, const int Ny0, const int Ny1, const int Ny, const int Nz, Contact *ctl, int & Nctl, Sphere **cell) noexcept {
+void ContactDetection::sphContact(const int Nx0, const int Nx1, const int Nx, const int Ny0, const int Ny1, const int Ny, const int Nz, Contact *ctl, int & Nctl, std::vector<Sphere*>& cell) noexcept {
 	int l,m;
 	Sphere *cand[5000],*anta;
 	int i,j,k,Ncand;
@@ -1145,7 +1145,7 @@ void ContactDetection::sphContact(const int Nx0, const int Nx1, const int Nx, co
 	}
 }
 
-void ContactDetection::sphPlanContact(int & Nct, std::vector<Sphere> & sph, std::vector<Plan> & pl, Contact *ct, Sphere *cell[], const double rmax) noexcept {
+void ContactDetection::sphPlanContact(int & Nct, std::vector<Sphere> & sph, std::vector<Plan> & pl, Contact *ct, std::vector<Sphere*>& cell, const double rmax) noexcept {
 	Sphere *anta;
 	std::vector<int> control(pl.size(), 0);
 	
@@ -1203,7 +1203,7 @@ void ContactDetection::sphPlanContact(int & Nct, std::vector<Sphere> & sph, std:
 	}
 }
 
-void ContactDetection::sphPlanRContact(int & Nct, std::vector<PlanR> & plr, Contact *ct, Sphere *cell[]) noexcept {
+void ContactDetection::sphPlanRContact(int & Nct, std::vector<PlanR> & plr, Contact *ct, std::vector<Sphere*>& cell) noexcept {
 	Sphere *anta;
 	for(auto& disk: plr) {
 		for(int j = 0 ; j < disk.NCell ; j++){
@@ -1216,7 +1216,7 @@ void ContactDetection::sphPlanRContact(int & Nct, std::vector<PlanR> & plr, Cont
 	}
 }
 
-void ContactDetection::sphConeContact(int & Nct, std::vector<Cone> & co, Contact *ct, Sphere *cell[])  noexcept {
+void ContactDetection::sphConeContact(int & Nct, std::vector<Cone> & co, Contact *ct, std::vector<Sphere*>& cell)  noexcept {
 	Sphere *anta;
 	for(auto& cone : co) {
 		for(int j = 0 ; j < cone.NCell ; j++){
@@ -1229,7 +1229,7 @@ void ContactDetection::sphConeContact(int & Nct, std::vector<Cone> & co, Contact
 	}
 }
 
-void ContactDetection::sphElbowContact(int & Nct, std::vector<Elbow> & elb, Contact *ct, Sphere *cell[])  noexcept {
+void ContactDetection::sphElbowContact(int & Nct, std::vector<Elbow> & elb, Contact *ct, std::vector<Sphere*>& cell)  noexcept {
 	Sphere *anta;
 	for(auto& elbow : elb) {
 		for(int j = 0 ; j < elbow.NCell ; j++){
@@ -1251,7 +1251,7 @@ void ContactDetection::sphHollowBallContact(int & Nct, std::vector<HollowBall> &
 	}
 }
 
-void ContactDetection::sphContainer(std::vector<Sphere> & sph, std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co, std::vector<Elbow> & elb, std::vector<HollowBall> & hb, int & Nct, Contact *ct, Sphere *cell[], const double rmax) noexcept {
+void ContactDetection::sphContainer(std::vector<Sphere> & sph, std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co, std::vector<Elbow> & elb, std::vector<HollowBall> & hb, int & Nct, Contact *ct, std::vector<Sphere*>& cell, const double rmax) noexcept {
 	sphPlanContact(Nct, sph, pl, ct, cell,rmax);
 	sphPlanRContact(Nct, plr, ct, cell);
 	sphConeContact(Nct, co, ct, cell);

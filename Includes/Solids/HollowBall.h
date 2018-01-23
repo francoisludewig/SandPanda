@@ -21,7 +21,9 @@ public:
     void Makeavatar(std::vector<Sphere> & sph, const int numero) noexcept;
 
 private:
-    Sphere **inSph,**cell,*avatar;
+    std::vector<Sphere*> inSph;
+	std::vector<Sphere*> cell;
+	Sphere *avatar;
     int Navatar;
     int NinSph;
     double x,y,z,q0,q1,q2,q3;

@@ -13,7 +13,7 @@
 #include "../Includes/LinkedCells/LinkedCellFiller.h"
 
 int Evolution::Evolve(std::vector<Plan> & pl,std::vector<PlanR> & plr,std::vector<Cone> & co,std::vector<Elbow> & elb,std::vector<Sphere> & sph,std::vector<Body> & bd,std::vector<HollowBall> & hb,Data & dat,Gravity & gf,
-		Sphere *cell[], int & Ntp, char *name,bool record, int Nthreshold) noexcept {
+		std::vector<Sphere*>& cell, int & Ntp, char *name,bool record, int Nthreshold) noexcept {
 	// Sequential Version
 	printf("Evolution\n");
 	do{
@@ -98,7 +98,7 @@ int Evolution::Evolve(std::vector<Plan> & pl,std::vector<PlanR> & plr,std::vecto
 }
 
 int Evolution::EvolveMelt(std::vector<Plan> & pl,std::vector<PlanR> & plr,std::vector<Cone> & co,std::vector<Elbow> & elb,std::vector<Sphere> & sph,std::vector<Body> & bd,std::vector<HollowBall> & hb,Data & dat,Gravity & gf,
-		Sphere *cell[], int & Ntp, char *name,bool record, double vr,double delayVr, int Nthreshold) noexcept{
+		std::vector<Sphere*> cell, int & Ntp, char *name,bool record, double vr,double delayVr, int Nthreshold) noexcept{
 	printf("Evolution\n");
 	double dtl;
 	double r0,r1;

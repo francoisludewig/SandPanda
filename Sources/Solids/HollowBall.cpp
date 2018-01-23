@@ -8,8 +8,7 @@
 
 
 HollowBall::HollowBall() noexcept :
-inSph(nullptr), cell(nullptr), avatar(nullptr),
-Navatar(0), NinSph(0), x(0), y(0), z(0),
+avatar(nullptr), Navatar(0), NinSph(0), x(0), y(0), z(0),
 q0(1), q1(0), q2(0), q3(0), vx(0), vy(0), vz(0),
 wx(0), wy(0), wz(0), lockVx(false), lockVy(false),
 lockVz(false), lockWx(false), lockWy(false), lockWz(false),
@@ -17,10 +16,6 @@ mass(1), Inertia(10), r(2), xmin(0), ymin(0), zmin(0),
 a(0),rmax(0), N(0), list(nullptr), Nlist(0) {}
 
 HollowBall::~HollowBall() noexcept {
-    if(inSph != nullptr)
-        delete[] inSph;
-    if(cell != nullptr)
-       delete[] cell;
     if(list != nullptr)
         delete[] list;
 }
@@ -63,7 +58,7 @@ void HollowBall::LinkInSph(std::vector<Sphere> & sph, const int numero) noexcept
         if(sph[i].HollowballNum() == numero)
             NinSph++;
     }
-    inSph = new Sphere*[NinSph];
+    inSph.resize(NinSph);
     
     NinSph = 0;
     for(int i = 0 ; i < sph.size() ; i++){
@@ -83,7 +78,7 @@ void HollowBall::LinkInSph(std::vector<Sphere> & sph, const int numero) noexcept
         a = 2*rmax*1.01;
         N = (int)(2*r/a);
         a = 2*r/N;
-        cell = new Sphere*[N*N*N];
+        cell.resize(N*N*N);
         
         printf("Ninsph = %d\n",NinSph);
         printf("rmax = %e\n",rmax);

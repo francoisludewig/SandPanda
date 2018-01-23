@@ -19,9 +19,7 @@ public:
 	static void upDateVelocitySphere(std::vector<Sphere> & sph, Gravity gt, double dt) noexcept;
 	static void upDateVelocitySphereOMP(int & Nsph, std::vector<Sphere> & sph, Gravity gt, double dt,int Nprocess) noexcept;
 	static void moveSphere(std::vector<Sphere> & sph, double dt) noexcept;
-	static void moveSphereOMP(int & Nsph, std::vector<Sphere> & sph, double dt,int Nprocess) noexcept;
 	static void moveBodies(std::vector<Body> & bd, double dt, std::vector<Sphere> & sph) noexcept;
-	static void moveBodiesOMP(int & Nbd, std::vector<Body> & bd, double dt, std::vector<Sphere> & sph,int Nprocess) noexcept;
 	static void upDateVelocityBodies(std::vector<Body> & bd, Gravity gt, double dt, std::vector<Sphere> & sph) noexcept;
 	static void upDateVelocityBodiesOMP(int & Nbd, std::vector<Body> & bd, Gravity gt, double dt, std::vector<Sphere> & sph,int Nprocess) noexcept;
 	static void MeltingSphere(std::vector<Sphere> & sph, double vr, double delayVr, double dt) noexcept;

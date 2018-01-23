@@ -134,114 +134,12 @@ void Move::moveSphere(std::vector<Sphere> & sph, double dt) noexcept {
 		sphere.move(dt);
 }
 
-void Move::moveSphereOMP(int & Nsph, std::vector<Sphere> & sph, double dt, int Nprocess) noexcept {
-	if(Nprocess == 2){
-#pragma omp parallel 
-		{
-#pragma omp sections 
-			{
-#pragma omp section	
-			for(int i = 0 ; i < Nsph/2 ; i++){
-				sph[i].move(dt);
-			}
-#pragma omp section
-			for(int i = Nsph/2 ; i < Nsph ; i++){
-				sph[i].move(dt);
-			}
-			}
-		}
-	}
-	else{
-		
-#pragma omp parallel 
-		{
-#pragma omp sections 
-			{
-#pragma omp section	
-			for(int i = 0 ; i < Nsph/4 ; i++){
-				sph[i].move(dt);
-			}
-#pragma omp section
-			for(int i = Nsph/4 ; i < Nsph/2 ; i++){
-				sph[i].move(dt);
-			}
-#pragma omp section
-			for(int i = Nsph/2 ; i < 3*Nsph/4 ; i++){
-				sph[i].move(dt);
-			}
-			
-#pragma omp section
-			for(int i = 3*Nsph/4 ; i < Nsph ; i++){
-				sph[i].move(dt);
-			}
-			
-			}
-		}
-		
-	}
-}
-
 void Move::moveBodies(std::vector<Body> & bd, double dt, std::vector<Sphere> & sph) noexcept {
 	for(auto& body : bd){
 		body.Move(dt);
 		body.UpDateLinkedSphere(sph);
 	}
 }
-
-void Move::moveBodiesOMP(int & Nbd, std::vector<Body> & bd, double dt, std::vector<Sphere> & sph, int Nprocess) noexcept {
-	if(Nprocess == 2){
-#pragma omp parallel 
-		{
-#pragma omp sections 
-			{
-#pragma omp section	
-			for(int i = 0 ; i < Nbd/2 ; i++){
-				bd[i].Move(dt);
-				bd[i].UpDateLinkedSphere(sph);
-			}
-			
-#pragma omp section	
-			for(int i = Nbd/2 ; i < Nbd ; i++){
-				bd[i].Move(dt);
-				bd[i].UpDateLinkedSphere(sph);
-			}
-			}
-		}
-	}
-	else{
-#pragma omp parallel 
-		{
-#pragma omp sections 
-			{
-#pragma omp section	
-			for(int i = 0 ; i < Nbd/4 ; i++){
-				bd[i].Move(dt);
-				bd[i].UpDateLinkedSphere(sph);
-			}
-			
-#pragma omp section	
-			for(int i = Nbd/4 ; i < Nbd/2 ; i++){
-				bd[i].Move(dt);
-				bd[i].UpDateLinkedSphere(sph);
-			}
-			
-#pragma omp section	
-			for(int i = Nbd/2 ; i < 3*Nbd/4 ; i++){
-				bd[i].Move(dt);
-				bd[i].UpDateLinkedSphere(sph);
-			}
-			
-#pragma omp section	
-			for(int i = 3*Nbd/4 ; i < Nbd ; i++){
-				bd[i].Move(dt);
-				bd[i].UpDateLinkedSphere(sph);
-			}
-			
-			}
-		}
-	}
-}
-
 
 void Move::upDateVelocityBodies(std::vector<Body> & bd, Gravity gt, double dt, std::vector<Sphere> & sph) noexcept {
 	for(auto& body : bd){

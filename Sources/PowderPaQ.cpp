@@ -75,7 +75,7 @@ void PowderPaQ::PowderPaQrelaxation(std::vector<Plan> & pl,std::vector<PlanR> & 
 }
 
 int PowderPaQ::PowderPaQRun(std::vector<Plan> & pl,std::vector<PlanR> & plr,std::vector<Cone> & co,std::vector<Elbow> & elb,std::vector<Sphere> & sph,std::vector<Body> & bd,std::vector<HollowBall> & hb,Data & dat,Gravity & gf,
-		Sphere *cell[], int & Ntp, char *name,bool record,int ntpi, int ntpf, int Nthreshold, double PQheight, double PQVel) noexcept {
+		std::vector<Sphere*>& cell, int & Ntp, char *name,bool record,int ntpi, int ntpf, int Nthreshold, double PQheight, double PQVel) noexcept {
 	Evolution evolution(sph.size(), bd.size());
 	record = 0;
 	for(int nt = ntpi  ; nt <= ntpf ; nt++){
