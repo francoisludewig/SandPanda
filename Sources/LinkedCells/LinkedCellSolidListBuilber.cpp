@@ -125,7 +125,6 @@ void LinkedCellSolidListBuilder::ListCellForPlan(const Data& dat, std::vector<Pl
 				pl[a].Cell[i] = i;
 			}
 		}
-
 	}
 	free(localCell);
 }

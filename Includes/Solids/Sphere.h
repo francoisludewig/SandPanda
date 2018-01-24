@@ -7,7 +7,6 @@
 class Contact;
 class ContactTampon;
 class Data;
-class Cell;
 class Gravity;
 class Body;
 class Elongation;
