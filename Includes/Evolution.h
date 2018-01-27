@@ -4,8 +4,8 @@
 
 #include "LinkedCells/SolidCells.h"
 #include "LinkedCells/Cells.h"
-#include "LinkedCells/LinkedCellSolidListBuilder.h"
 #include <vector>
+#include "LinkedCells/SolidCellsBuilder.h"
 
 class Sphere;
 class Plan;
@@ -22,7 +22,7 @@ class Evolution{
 public:
 	Evolution(int sphereCount, int bodyCount, std::vector<Plan> & pl,std::vector<PlanR> & plr,std::vector<Cone> & co,std::vector<Elbow> & elb, Data & dat, Gravity & gf) noexcept {
 		ct = new Contact[18*sphereCount+75*bodyCount];
-		solidCells = SolidCells(LinkedCellSolidListBuilder::Build(dat, pl, plr, co, elb, gf));
+		solidCells = SolidCellsBuilder::Build(dat, pl, plr, co, elb, gf);
 		Nct = 0;
 	}
 

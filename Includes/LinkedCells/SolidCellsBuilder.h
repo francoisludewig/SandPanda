@@ -10,7 +10,7 @@ class Cone;
 class Elbow;
 class Gravity;
 
-class LinkedCellSolidListBuilder{
+class SolidCellsBuilder{
 public:
 
 	static SolidCells Build(const Data& dat, std::vector<Plan>& pl, std::vector<PlanR>& plr,

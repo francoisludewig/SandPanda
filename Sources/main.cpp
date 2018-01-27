@@ -17,7 +17,7 @@
 #include "../Includes/Solids/HollowBall.h"
 #include "../Includes/Option.h"
 #include "../Includes/Contact/ContactDetection.h"
-#include "../Includes/LinkedCells/LinkedCellSolidListBuilder.h"
+#include "../Includes/LinkedCells/SolidCellsBuilder.h"
 #include <iostream>
 #include <vector>
 //#include <omp.h>

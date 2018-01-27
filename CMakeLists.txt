@@ -36,7 +36,7 @@ set(SOURCES_FILES
  Sources/Solids/Sinusoid.cpp	
 
  Sources/LinkedCells/LinkedCellFiller.cpp
- Sources/LinkedCells/LinkedCellSolidListBuilber.cpp	
+ Sources/LinkedCells/SolidCellsBuilder.cpp	
 
  Sources/AffinityCache.cpp
  Sources/Move.cpp
@@ -85,7 +85,7 @@ set(INCLUDES_FILES
  Includes/Solids/HollowBall.h
 
  Includes/LinkedCells/LinkedCellFiller.h
- Includes/LinkedCells/LinkedCellSolidListBuilder.h	
+ Includes/LinkedCells/SolidCellsBuilder.h	
 
  Includes/AffinityCache.h
  Includes/Move.h

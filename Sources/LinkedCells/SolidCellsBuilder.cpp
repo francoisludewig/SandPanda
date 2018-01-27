@@ -1,14 +1,13 @@
-#include "../../Includes/LinkedCells/LinkedCellSolidListBuilder.h"
-
 #include <vector>
 #include "../../Includes/LinkedCells/SolidCells.h"
 #include "../../Includes/Data.h"
+#include "../../Includes/LinkedCells/SolidCellsBuilder.h"
 #include "../../Includes/Solids/Plan.h"
 #include "../../Includes/Solids/PlanR.h"
 #include "../../Includes/Solids/Cone.h"
 #include "../../Includes/Solids/Elbow.h"
 
-SolidCells LinkedCellSolidListBuilder::Build(const Data& dat, std::vector<Plan>& pl, std::vector<PlanR>& plr,
+SolidCells SolidCellsBuilder::Build(const Data& dat, std::vector<Plan>& pl, std::vector<PlanR>& plr,
 		std::vector<Cone>& co, std::vector<Elbow>& elb, Gravity& gt) {
 	SolidCells solidCells;
 	ListCellForPlan(solidCells, dat, pl, gt);
@@ -18,7 +17,7 @@ SolidCells LinkedCellSolidListBuilder::Build(const Data& dat, std::vector<Plan>&
 	return solidCells;
 }
 
-void LinkedCellSolidListBuilder::ListCellForPlan(SolidCells& solidCells, const Data& dat, std::vector<Plan> & pl, Gravity& gt) noexcept {
+void SolidCellsBuilder::ListCellForPlan(SolidCells& solidCells, const Data& dat, std::vector<Plan> & pl, Gravity& gt) noexcept {
 	int a,b;
 	int i,j,k;
 	int I,num;
@@ -119,7 +118,7 @@ void LinkedCellSolidListBuilder::ListCellForPlan(SolidCells& solidCells, const D
 	}
 }
 
-void LinkedCellSolidListBuilder::ListCellForPlanR(SolidCells& solidCells, const Data& dat, std::vector<PlanR> & plr, Gravity& gt) noexcept {
+void SolidCellsBuilder::ListCellForPlanR(SolidCells& solidCells, const Data& dat, std::vector<PlanR> & plr, Gravity& gt) noexcept {
 	int a,b;
 	int i,j,k;
 	int I,num;
@@ -215,7 +214,7 @@ void LinkedCellSolidListBuilder::ListCellForPlanR(SolidCells& solidCells, const 
 	}
 }
 
-void LinkedCellSolidListBuilder::ListCellForCone(SolidCells& solidCells, const Data& dat, std::vector<Cone> & co, Gravity& gt) noexcept {
+void SolidCellsBuilder::ListCellForCone(SolidCells& solidCells, const Data& dat, std::vector<Cone> & co, Gravity& gt) noexcept {
 	int numCone;
 	int i,j,k;
 	int I,num;
@@ -350,7 +349,7 @@ void LinkedCellSolidListBuilder::ListCellForCone(SolidCells& solidCells, const D
 	}
 }
 
-void LinkedCellSolidListBuilder::ListCellForElbow(SolidCells& solidCells, const Data& dat, std::vector<Elbow> & el) noexcept {
+void SolidCellsBuilder::ListCellForElbow(SolidCells& solidCells, const Data& dat, std::vector<Elbow> & el) noexcept {
 	int numEl;
 	int i,j,k;
 	int I,num;
