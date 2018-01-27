@@ -64,5 +64,5 @@ Ncell(1 plr) = 4225
 Ncell(0 co) = 4225
 Evolution
 Save File 1		time = 5.000000e-01Save File 2		time = 1.000000e+00Save File 3		time = 1.500000e+00Save File 4		time = 2.000000e+00Save File 5		time = 2.500000e+00
-Time: 3m41s935135395ns ns
-Time: 221935135395 ns
+Time: 3m35s266069487ns ns
+Time: 215266069487 ns

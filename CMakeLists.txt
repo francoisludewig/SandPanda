@@ -5,6 +5,19 @@ project(SandPanda VERSION 1.0.0)
 set(SOURCES_FILES
  Sources/Contact/ContactDetection.cpp	
  Sources/Contact/Contact.cpp	
+ Sources/Contact/ContactDetectorSphereVersusCone.cpp
+ Sources/Contact/ContactDetectorSphereVersusDisk.cpp
+ Sources/Contact/ContactDetectorBodyVersusBody.cpp	
+ Sources/Contact/ContactDetectorSphereVersusElbow.cpp
+ Sources/Contact/ContactDetectorBodyVersusCone.cpp	
+ Sources/Contact/ContactDetectorSphereVersusPlan.cpp
+ Sources/Contact/ContactDetectorBodyVersusDisk.cpp	
+ Sources/Contact/ContactDetectorSphereVersusSphere.cpp
+ Sources/Contact/ContactDetectorBodyVersusPlan.cpp	
+ Sources/Contact/ContactDetectorBodyVersusElbow.cpp
+ Sources/Contact/ContactDetectorSphereVersusBody.cpp
+
+
 
  Sources/Elongations/Elongation.cpp	
 
@@ -42,6 +55,17 @@ set(SOURCES_FILES
 set(INCLUDES_FILES
  Includes/Contact/ContactDetection.h	
  Includes/Contact/Contact.h	
+ Includes/Contact/ContactDetectorSphereVersusCone.h
+ Includes/Contact/ContactDetectorSphereVersusDisk.h
+ Includes/Contact/ContactDetectorBodyVersusBody.h		
+ Includes/Contact/ContactDetectorSphereVersusElbow.h
+ Includes/Contact/ContactDetectorBodyVersusCone.h		
+ Includes/Contact/ContactDetectorSphereVersusPlan.h
+ Includes/Contact/ContactDetectorBodyVersusDisk.h		
+ Includes/Contact/ContactDetectorSphereVersusSphere.h
+ Includes/Contact/ContactDetectorBodyVersusPlan.h		
+ Includes/Contact/ContactDetectorBodyVersusElbow.h
+ Includes/Contact/ContactDetectorSphereVersusBody.h
 
  Includes/Elongations/Elongation.h	
  Includes/Elongations/ElongationManager.h	

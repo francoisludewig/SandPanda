@@ -60,5 +60,5 @@ Nts(4) = 0
 Ncell(4 pl) = 98
 Evolution
 Save File 1		time = 9.999999e-02Save File 2		time = 2.000000e-01Save File 3		time = 3.000000e-01Save File 4		time = 4.000000e-01Save File 5		time = 4.999999e-01
-Time: 4m2s372538634ns ns
-Time: 242372538634 ns
+Time: 4m4s263144083ns ns
+Time: 244263144083 ns
