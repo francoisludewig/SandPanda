@@ -1,3 +1,0 @@
-
--fusion 0 0 1 0 
--d /Users/ludewigfrancois/Documents/LuGaProjects/Test/MasterSolid/Original/ 

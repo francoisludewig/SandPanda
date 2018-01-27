@@ -1,9 +1,9 @@
 
-Directory : /Users/ludewigfrancois/Documents/LuGaProjects/Test//Mix/Box/Original/
+Directory : /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/IntegrationTests//Mix/Box/Original/
 Uploading Container File
 ------------------------
 
-FileName : /Users/ludewigfrancois/Documents/LuGaProjects/Test//Mix/Box/Original/Export/container.txt
+FileName : /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/IntegrationTests//Mix/Box/Original/Export/container.txt
 Number of Plan = 5
 Number of Disk = 0
 Number of Cone = 0
@@ -72,5 +72,5 @@ Time Path = 1.012853e-06
 
 Evolution
 Save File 1		time = 9.999999e-02Save File 2		time = 2.000000e-01Save File 3		time = 3.000000e-01Save File 4		time = 4.000000e-01Save File 5		time = 4.999999e-01
-Time: 1m40s715383324ns ns
-Time: 100715383324 ns
+Time: 1m42s955427844ns ns
+Time: 102955427844 ns

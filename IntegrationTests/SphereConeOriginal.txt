@@ -1,9 +1,9 @@
 
-Directory : /Users/ludewigfrancois/Documents/LuGaProjects/Test//Sphere/Cone/Original/
+Directory : /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/IntegrationTests//Sphere/Cone/Original/
 Uploading Container File
 ------------------------
 
-FileName : /Users/ludewigfrancois/Documents/LuGaProjects/Test//Sphere/Cone/Original/Export/container.txt
+FileName : /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/IntegrationTests//Sphere/Cone/Original/Export/container.txt
 Number of Plan = 0
 Number of Disk = 1
 Number of Cone = 1
@@ -65,5 +65,5 @@ Time Path = 6.433366e-06
 
 Evolution
 Save File 1		time = 9.999960e-01Save File 2		time = 1.999998e+00Save File 3		time = 2.999994e+00Save File 4		time = 3.999997e+00Save File 5		time = 4.999999e+00
-Time: 1m46s861712157ns ns
-Time: 106861712157 ns
+Time: 1m48s351881138ns ns
+Time: 108351881138 ns

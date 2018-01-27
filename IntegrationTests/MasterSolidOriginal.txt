@@ -1,9 +1,9 @@
 
-Directory : /Users/ludewigfrancois/Documents/LuGaProjects/Test/MasterSolid/Original/
+Directory : /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/IntegrationTests//MasterSolid/Original/
 Uploading Container File
 ------------------------
 
-FileName : /Users/ludewigfrancois/Documents/LuGaProjects/Test/MasterSolid/Original/Export/container.txt
+FileName : /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/IntegrationTests//MasterSolid/Original/Export/container.txt
 Number of Plan = 5
 Number of Disk = 2
 Number of Cone = 1
@@ -76,5 +76,5 @@ Time Path = 5.000000e-06
 
 Evolution
 Save File 1		time = 5.000000e-01Save File 2		time = 1.000000e+00Save File 3		time = 1.500000e+00Save File 4		time = 2.000000e+00Save File 5		time = 2.500000e+00
-Time: 3m47s688688310ns ns
-Time: 227688688310 ns
+Time: 3m47s520020975ns ns
+Time: 227520020975 ns

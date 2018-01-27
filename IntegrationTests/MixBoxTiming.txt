@@ -1,32 +1,24 @@
 2c2
 < Directory : /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/IntegrationTests//Mix/Box/New/
 ---
-> Directory : /Users/ludewigfrancois/Documents/LuGaProjects/Test//Mix/Box/Original/
+> Directory : /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/IntegrationTests//Mix/Box/Original/
 6c6
 < FileName : /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/IntegrationTests//Mix/Box/New/Export/container.txt
 ---
-> FileName : /Users/ludewigfrancois/Documents/LuGaProjects/Test//Mix/Box/Original/Export/container.txt
+> FileName : /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/IntegrationTests//Mix/Box/Original/Export/container.txt
 42a43,45
 > MasterSolid : 0 Plan
 > MasterSolid : 0 PlanR
 > MasterSolid : 0 Cone
-49c52,53
-< Time Path = 1.012853e-06
----
-> List of Linking Cell for Solid
-> ------------------------------
-60a65,72
-> 
+62a66,70
 > Etat de la memoire
 > ------------------
 > 
 > Le programme a alloue 2598.320000 ko
 > Le programme a alloue 2.598320 Mo
-> Time Path = 1.012853e-06
-> 
-63,64c75,76
-< Time: 1m41s148724853ns ns
-< Time: 101148724853 ns
+67,68c75,76
+< Time: 1m39s958268209ns ns
+< Time: 99958268209 ns
 ---
-> Time: 1m40s715383324ns ns
-> Time: 100715383324 ns
+> Time: 1m42s955427844ns ns
+> Time: 102955427844 ns
