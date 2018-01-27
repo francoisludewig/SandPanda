@@ -9,7 +9,6 @@ public:
 	~BodySpecie() noexcept;
 	
 	void LoadFromFile(FILE *ft) noexcept;
-	void FreeMemory() noexcept;
 	void Display() const noexcept;
 	
 	int SphereCount() const noexcept { return Ng; }

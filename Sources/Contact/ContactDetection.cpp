@@ -3,6 +3,7 @@
 
 #include <cmath>
 
+#include "../../Includes/LinkedCells/SolidCells.h"
 #include "../../Includes/Solids/Velocity.h"
 #include "../../Includes/Gravity.h"
 #include "../../Includes/Solids/Plan.h"
@@ -1145,7 +1146,7 @@ void ContactDetection::sphContact(const int Nx0, const int Nx1, const int Nx, co
 	}
 }
 
-void ContactDetection::sphPlanContact(int & Nct, std::vector<Sphere> & sph, std::vector<Plan> & pl, Contact *ct, std::vector<Sphere*>& cell, const double rmax) noexcept {
+void ContactDetection::sphPlanContact(int & Nct, std::vector<Sphere> & sph, std::vector<Plan> & pl, Contact *ct, std::vector<Sphere*>& cell, const SolidCells& solidCells, const double rmax) noexcept {
 	Sphere *anta;
 	std::vector<int> control(pl.size(), 0);
 	
@@ -1157,9 +1158,10 @@ void ContactDetection::sphPlanContact(int & Nct, std::vector<Sphere> & sph, std:
 	}
 	
 	for(int i = 0 ; i < pl.size() ; i++){
+		const auto& cellIndex = solidCells.PlanCells(i);
 		if(pl[i].Periodic() == -9){
-			for(int j = 0 ; j < pl[i].NCell ; j++){
-				if((anta = cell[pl[i].Cell[j]]) != nullptr){
+			for(int j = 0 ; j < cellIndex.Size() ; ++j){
+				if((anta = cell[cellIndex[j]]) != nullptr){
 					do{
 						ContactSphPlan(pl[i], anta, ct, Nct);
 					}while((anta = anta->TDL()) != nullptr);
@@ -1172,8 +1174,8 @@ void ContactDetection::sphPlanContact(int & Nct, std::vector<Sphere> & sph, std:
 				std::vector<Sphere*> llistI(sph.size(), nullptr);
 
 				pl[i].ListCount(0);
-				for(int j = 0 ; j < pl[i].NCell ; j++){
-					if((anta = cell[pl[i].Cell[j]]) != nullptr){
+				for(int j = 0 ; j < cellIndex.Size() ; ++j){
+					if((anta = cell[cellIndex[j]]) != nullptr){
 						do{
 							ContactSphPlanPeriodic(llistI, pl[i], pl[pl[i].Periodic()], anta, rmax);
 						}while((anta = anta->TDL()) != nullptr);
@@ -1182,9 +1184,10 @@ void ContactDetection::sphPlanContact(int & Nct, std::vector<Sphere> & sph, std:
 
 				std::vector<Sphere*> llistK(sph.size(), nullptr);
 				int k = pl[i].Periodic();
+				const auto& cellIndexPeriodic = solidCells.PlanCells(k);
 				pl[k].ListCount(0);
-				for(int j = 0 ; j < pl[k].NCell ; j++){
-					if((anta = cell[pl[k].Cell[j]]) != nullptr){
+				for(int j = 0 ; j < cellIndexPeriodic.Size() ; j++){
+					if((anta = cell[cellIndexPeriodic[j]]) != nullptr){
 						do{
 							ContactSphPlanPeriodic(llistK, pl[k], pl[pl[k].Periodic()], anta, rmax);
 						}while((anta = anta->TDL()) != nullptr);
@@ -1203,11 +1206,12 @@ void ContactDetection::sphPlanContact(int & Nct, std::vector<Sphere> & sph, std:
 	}
 }
 
-void ContactDetection::sphPlanRContact(int & Nct, std::vector<PlanR> & plr, Contact *ct, std::vector<Sphere*>& cell) noexcept {
+void ContactDetection::sphPlanRContact(int & Nct, std::vector<PlanR> & plr, Contact *ct, std::vector<Sphere*>& cell, const SolidCells& solidCells) noexcept {
 	Sphere *anta;
 	for(auto& disk: plr) {
-		for(int j = 0 ; j < disk.NCell ; j++){
-			if((anta = cell[disk.Cell[j]]) != nullptr){
+		const auto& cellIndex = solidCells.PlanRCells(disk.Numero());
+		for(int j = 0 ; j < cellIndex.Size() ; j++){
+			if((anta = cell[cellIndex[j]]) != nullptr){
 				do{
 					ContactSphPlanR(disk, anta, ct, Nct);
 				}while((anta = anta->TDL()) != nullptr);
@@ -1216,11 +1220,12 @@ void ContactDetection::sphPlanRContact(int & Nct, std::vector<PlanR> & plr, Cont
 	}
 }
 
-void ContactDetection::sphConeContact(int & Nct, std::vector<Cone> & co, Contact *ct, std::vector<Sphere*>& cell)  noexcept {
+void ContactDetection::sphConeContact(int & Nct, std::vector<Cone> & co, Contact *ct, std::vector<Sphere*>& cell, const SolidCells& solidCells)  noexcept {
 	Sphere *anta;
 	for(auto& cone : co) {
-		for(int j = 0 ; j < cone.NCell ; j++){
-			if((anta = cell[cone.Cell[j]]) != nullptr){
+		const auto& cellIndex = solidCells.ConeCells(cone.Numero());
+		for(int j = 0 ; j < cellIndex.Size() ; j++){
+			if((anta = cell[cellIndex[j]]) != nullptr){
 				do{
 					ContactSphCone(cone, anta, ct, Nct);
 				}while((anta = anta->TDL()) != nullptr);
@@ -1229,11 +1234,12 @@ void ContactDetection::sphConeContact(int & Nct, std::vector<Cone> & co, Contact
 	}
 }
 
-void ContactDetection::sphElbowContact(int & Nct, std::vector<Elbow> & elb, Contact *ct, std::vector<Sphere*>& cell)  noexcept {
+void ContactDetection::sphElbowContact(int & Nct, std::vector<Elbow> & elb, Contact *ct, std::vector<Sphere*>& cell, const SolidCells& solidCells)  noexcept {
 	Sphere *anta;
 	for(auto& elbow : elb) {
-		for(int j = 0 ; j < elbow.NCell ; j++){
-			if((anta = cell[elbow.Cell[j]]) != nullptr){
+		const auto& cellIndex = solidCells.ElbowCells(elbow.numero);
+		for(int j = 0 ; j < cellIndex.Size() ; j++){
+			if((anta = cell[cellIndex[j]]) != nullptr){
 				do{
 					ContactSphElbow(elbow, anta, ct, Nct);
 				}while((anta = anta->TDL()) != nullptr);
@@ -1241,7 +1247,6 @@ void ContactDetection::sphElbowContact(int & Nct, std::vector<Elbow> & elb, Cont
 		}
 	}
 }
-
 
 void ContactDetection::sphHollowBallContact(int & Nct, std::vector<HollowBall> & hb, Contact *ct)  noexcept {
 
@@ -1251,11 +1256,11 @@ void ContactDetection::sphHollowBallContact(int & Nct, std::vector<HollowBall> &
 	}
 }
 
-void ContactDetection::sphContainer(std::vector<Sphere> & sph, std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co, std::vector<Elbow> & elb, std::vector<HollowBall> & hb, int & Nct, Contact *ct, std::vector<Sphere*>& cell, const double rmax) noexcept {
-	sphPlanContact(Nct, sph, pl, ct, cell,rmax);
-	sphPlanRContact(Nct, plr, ct, cell);
-	sphConeContact(Nct, co, ct, cell);
-	sphElbowContact(Nct, elb, ct, cell);
+void ContactDetection::sphContainer(std::vector<Sphere> & sph, std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co, std::vector<Elbow> & elb, std::vector<HollowBall> & hb, int & Nct, Contact *ct, std::vector<Sphere*>& cell, const SolidCells& solidCells, const double rmax) noexcept {
+	sphPlanContact(Nct, sph, pl, ct, cell, solidCells,rmax);
+	sphPlanRContact(Nct, plr, ct, cell, solidCells);
+	sphConeContact(Nct, co, ct, cell, solidCells);
+	sphElbowContact(Nct, elb, ct, cell, solidCells);
 	sphHollowBallContact(Nct, hb, ct);
 }
 

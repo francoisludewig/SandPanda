@@ -1,21 +1,20 @@
 #pragma once
 
+#include "Cells.h"
+
 class SolidCells {
+public:
 	SolidCells() {}
 	~SolidCells() {}
-	SolidCells(const SolidCells& other) noexcept = default;
-	SolidCells(SolidCells&& other) noexcept = default;
-	SolidCells& operator=(const SolidCells& other) noexcept = default;
-	SolidCells& operator=(SolidCells&& other) noexcept = default;
+	SolidCells(const SolidCells& other) = default;
+	SolidCells(SolidCells&& other) = default;
+	SolidCells& operator=(const SolidCells& other) = default;
+	SolidCells& operator=(SolidCells&& other) = default;
 
-	void AddPlanCells(const Cells& cells) { planCells.push_back(cells); }
-	void AddPlanCells(Cells&& cells) { planCells.push_back(cells); }
-	void AddPlanRCells(const Cells& cells) { planRCells.push_back(cells); }
-	void AddPlanRCells(Cells&& cells) { planRCells.push_back(cells); }
-	void AddConeCells(const Cells& cells) { coneCells.push_back(cells); }
-	void AddConeCells(Cells&& cells) { coneCells.push_back(cells); }
-	void AddElbowCells(const Cells& cells) { elbowCells.push_back(cells); }
-	void AddElbowCells(Cells&& cells) { elbowCells.push_back(cells); }
+	void AddPlanCells(Cells&& cells) { planCells.push_back(std::move(cells)); }
+	void AddPlanRCells(Cells&& cells) { planRCells.push_back(std::move(cells)); }
+	void AddConeCells(Cells&& cells) { coneCells.push_back(std::move(cells)); }
+	void AddElbowCells(Cells&& cells) { elbowCells.push_back(std::move(cells)); }
 
 	const Cells& PlanCells(std::size_t index) const { return planCells[index]; }
 	const Cells& PlanRCells(std::size_t index) const { return planRCells[index]; }

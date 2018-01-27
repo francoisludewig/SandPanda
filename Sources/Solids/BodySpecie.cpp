@@ -21,18 +21,14 @@ Ng(0), m(0), FeretMax(0) {
 
 BodySpecie::~BodySpecie() noexcept {}
 
-void BodySpecie::FreeMemory() noexcept {
-	num.clear();
+void BodySpecie::LoadFromFile(FILE *ft) noexcept {
+	double x, y, z, r;
+	fscanf(ft,"%d",&Ng);
 	xl.clear();
 	yl.clear();
 	zl.clear();
 	rl.clear();
-}
-
-void BodySpecie::LoadFromFile(FILE *ft) noexcept {
-	double x, y, z, r;
-	fscanf(ft,"%d",&Ng);
-	FreeMemory();
+	num.clear();
 	for(int j = 0 ; j < Ng ; j++){
 		num.push_back(j);
 		fscanf(ft,"%lf\t%lf\t%lf\t%lf\n",&x,&y,&z,&r);

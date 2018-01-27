@@ -186,7 +186,7 @@ int main(int argc,char **argv){
 	dat.Ncellmax = Ncell;
 	printf("Ncell = %d\n",Ncell);
 	std::vector<Sphere*> cell(Ncell, nullptr);
-
+/*
 	printf("List of Linking Cell for Solid\n");
 	printf("------------------------------\n\n");
 	// Making list of linking cell for each solid
@@ -195,7 +195,7 @@ int main(int argc,char **argv){
 	LinkedCellSolidListBuilder::ListCellForCone(dat, co, gf);
 	LinkedCellSolidListBuilder::ListCellForElbow(dat, elb);
 	printf("\n");
-
+*/
 	dat.record = true;
 
 	if(dat.TIME != 0)
@@ -241,7 +241,7 @@ int main(int argc,char **argv){
 	switch(opt.mode){
 	case 0:
 	{
-		Evolution evolution(sph.size(), bd.size());
+		Evolution evolution(sph.size(), bd.size(), pl, plr, co, elb, dat, gf);
 		Ntp = evolution.Evolve(pl,plr,co,elb,sph,bd,hb, dat,gf,cell,Ntp, opt.directory,Nthreshold);
 		break;
 	}
@@ -254,11 +254,6 @@ int main(int argc,char **argv){
 		Ntp = PowderPaQ::PowderPaQRun(pl,plr,co,elb,sph,bd,hb,dat,gf,cell,Ntp, opt.directory,opt.NtapMin,opt.NtapMax,Nthreshold,opt.PQheight,opt.PQVel);
 		break;
 	}
-
-
-	for(int i = 0 ; i < bdsp.size() ; i++)
-		bdsp[i].FreeMemory();
-
 
 	if(opt.compression == 1){
 		char commande[1024];

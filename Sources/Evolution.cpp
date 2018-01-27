@@ -37,7 +37,7 @@ int Evolution::Evolve(std::vector<Plan> & pl,std::vector<PlanR> & plr,std::vecto
 		Nct = 0;
 		// Verison sequentiel normale
 		ContactDetection::sphContact(0, dat.Nx,dat.Nx,0, dat.Ny, dat.Ny, dat.Nz, ct, Nct, cell);
-		ContactDetection::sphContainer(sph, pl, plr, co, elb, hb, Nct, ct, cell,dat.Rmax);
+		ContactDetection::sphContainer(sph, pl, plr, co, elb, hb, Nct, ct, cell, solidCells,dat.Rmax);
 
 		if(dat.modelTg == 1){
 			for(auto& sphere : sph)
@@ -125,7 +125,7 @@ int Evolution::EvolveMelt(std::vector<Plan> & pl,std::vector<PlanR> & plr,std::v
 		// Contact Detection
 		Nct = 0;
 		ContactDetection::sphContact(0, dat.Nx,dat.Nx,0, dat.Ny, dat.Ny, dat.Nz, ct, Nct, cell);
-		ContactDetection::sphContainer(sph, pl, plr, co, elb, hb, Nct, ct, cell,dat.Rmax);
+		ContactDetection::sphContainer(sph, pl, plr, co, elb, hb, Nct, ct, cell, solidCells, dat.Rmax);
 
 		if(dat.modelTg == 1){
 			for(int i = 0 ; i < sph.size() ; i++) {
@@ -174,5 +174,6 @@ int Evolution::EvolveMelt(std::vector<Plan> & pl,std::vector<PlanR> & plr,std::v
 		dat.dt = dtl*pow(r1/r0,3./2.);
 	}while(dat.TIME < dat.Total-dat.dt);
 	printf("\n");
+	printf("End of Evolution\n");
 	return(Ntp);
 }

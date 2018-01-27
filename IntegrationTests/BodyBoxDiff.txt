@@ -1,1 +1,0 @@
-Binary files /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/IntegrationTests//Body/Box/Original/Start_stop/.DS_Store and /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/IntegrationTests//Body/Box/New/Start_stop/.DS_Store differ

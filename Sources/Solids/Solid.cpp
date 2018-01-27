@@ -2,7 +2,7 @@
 #include "../../Includes/Solids/Sphere.h"
 
 Solid::Solid() noexcept :
-	Cell(nullptr), NCell(0), numero(0), Fcx(0), Fcy(0), Fcz(0),
+	/*Cell(nullptr), NCell(0),*/ numero(0), Fcx(0), Fcy(0), Fcz(0),
 	Mcx(0), Mcy(0), Mcz(0), Mass(1), In(1), It(1), Is(1),
 	Force(0), activeGravity(0), V(), num(nullptr), GBx(nullptr),
 	GBy(nullptr), GBz(nullptr), xMemory(0), yMemory(0), zMemory(0),

@@ -46,8 +46,7 @@ MasterSolid : mass = 0.000000e+00
 Nsph0 = 150 & Nsph = 150
 NctMax = 2700
 Ncell = 1225
-List of Linking Cell for Solid
-------------------------------
+Time Path = 6.433366e-06
 
 Nts(0) = 0
 Ncell(0 pl) = 350
@@ -59,10 +58,7 @@ Nts(3) = 0
 Ncell(3 pl) = 350
 Nts(4) = 0
 Ncell(4 pl) = 98
-
-Time Path = 6.433366e-06
-
 Evolution
 Save File 1		time = 9.999960e-01Save File 2		time = 1.999998e+00Save File 3		time = 2.999994e+00Save File 4		time = 3.999997e+00Save File 5		time = 4.999999e+00
-Time: 1m11s324963918ns ns
-Time: 71324963918 ns
+Time: 1m11s252161128ns ns
+Time: 71252161128 ns

@@ -9,6 +9,10 @@
 #include <sys/stat.h>
 
 Option::Option() noexcept {
+	delay = 0;
+	vr = 0;
+	Nlist = 0;
+	outContact = 0;
 	NoRotation = 0;
 	Vrdm = 0.0;
 	Wrdm = 0.0;

@@ -77,7 +77,7 @@ public:
 	int GetNgb() const noexcept { return Ngb; }
 
 	// Linked cell
-	int *Cell,NCell;
+	//int *Cell,NCell;
 
 protected:
 	int numero;

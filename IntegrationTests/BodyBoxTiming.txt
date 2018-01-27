@@ -10,15 +10,23 @@
 > MasterSolid : 0 Plan
 > MasterSolid : 0 PlanR
 > MasterSolid : 0 Cone
-62a66,70
+49c52,53
+< Time Path = 1.012853e-06
+---
+> List of Linking Cell for Solid
+> ------------------------------
+60a65,72
+> 
 > Etat de la memoire
 > ------------------
 > 
 > Le programme a alloue 4414.760000 ko
 > Le programme a alloue 4.414760 Mo
-67,68c75,76
-< Time: 3m58s575477284ns ns
-< Time: 238575477284 ns
+> Time Path = 1.012853e-06
+> 
+63,64c75,76
+< Time: 4m2s372538634ns ns
+< Time: 242372538634 ns
 ---
-> Time: 4m6s279859190ns ns
-> Time: 246279859190 ns
+> Time: 4m8s244545685ns ns
+> Time: 248244545685 ns
