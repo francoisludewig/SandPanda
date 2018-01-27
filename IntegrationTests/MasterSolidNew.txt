@@ -1,9 +1,9 @@
 
-Directory : /Users/ludewigfrancois/Documents/LuGaProjects/Test//MasterSolid/New/
+Directory : /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/IntegrationTests//MasterSolid/New/
 Uploading Container File
 ------------------------
 
-FileName : /Users/ludewigfrancois/Documents/LuGaProjects/Test//MasterSolid/New/Export/container.txt
+FileName : /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/IntegrationTests//MasterSolid/New/Export/container.txt
 Number of Plan = 5
 Number of Disk = 2
 Number of Cone = 1
@@ -47,8 +47,7 @@ MasterSolid : mass = 5.000000e-02
 Nsph0 = 600 & Nsph = 600
 NctMax = 10800
 Ncell = 4225
-List of Linking Cell for Solid
-------------------------------
+Time Path = 5.000000e-06
 
 Nts(0) = 0
 Ncell(0 pl) = 650
@@ -62,11 +61,8 @@ Nts(4) = 0
 Ncell(4 pl) = 338
 Ncell(0 plr) = 4225
 Ncell(1 plr) = 4225
-Ncell(0 plr) = 4225
-
-Time Path = 5.000000e-06
-
+Ncell(0 co) = 4225
 Evolution
 Save File 1		time = 5.000000e-01Save File 2		time = 1.000000e+00Save File 3		time = 1.500000e+00Save File 4		time = 2.000000e+00Save File 5		time = 2.500000e+00
-Time: 3m40s420202500ns ns
-Time: 220420202500 ns
+Time: 3m35s32219575ns ns
+Time: 215032219575 ns

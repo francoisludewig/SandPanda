@@ -1,9 +1,9 @@
 
-Directory : /Users/ludewigfrancois/Documents/LuGaProjects/Test//Sphere/Cone/New/
+Directory : /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/IntegrationTests//Sphere/Cone/New/
 Uploading Container File
 ------------------------
 
-FileName : /Users/ludewigfrancois/Documents/LuGaProjects/Test//Sphere/Cone/New/Export/container.txt
+FileName : /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/IntegrationTests//Sphere/Cone/New/Export/container.txt
 Number of Plan = 0
 Number of Disk = 1
 Number of Cone = 1
@@ -46,16 +46,12 @@ MasterSolid : mass = 0.000000e+00
 Nsph0 = 150 & Nsph = 150
 NctMax = 2700
 Ncell = 15200
-List of Linking Cell for Solid
-------------------------------
+Time Path = 6.433366e-06
 
 Ncell(0 plr) = 448
 Nts(0) = 0
 Ncell(0 co) = 9040
-
-Time Path = 6.433366e-06
-
 Evolution
 Save File 1		time = 9.999960e-01Save File 2		time = 1.999998e+00Save File 3		time = 2.999994e+00Save File 4		time = 3.999997e+00Save File 5		time = 4.999999e+00
-Time: 1m47s224136479ns ns
-Time: 107224136479 ns
+Time: 1m45s118786513ns ns
+Time: 105118786513 ns

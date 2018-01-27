@@ -1,9 +1,9 @@
 
-Directory : /Users/ludewigfrancois/Documents/LuGaProjects/Test//Mix/Cone/New/
+Directory : /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/IntegrationTests//Mix/Cone/New/
 Uploading Container File
 ------------------------
 
-FileName : /Users/ludewigfrancois/Documents/LuGaProjects/Test//Mix/Cone/New/Export/container.txt
+FileName : /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/IntegrationTests//Mix/Cone/New/Export/container.txt
 Number of Plan = 0
 Number of Disk = 1
 Number of Cone = 1
@@ -46,16 +46,12 @@ MasterSolid : mass = 0.000000e+00
 Nsph0 = 75 & Nsph = 150
 NctMax = 8325
 Ncell = 2925
-List of Linking Cell for Solid
-------------------------------
+Time Path = 1.012853e-06
 
 Ncell(0 plr) = 404
 Nts(0) = 0
 Ncell(0 co) = 2344
-
-Time Path = 1.012853e-06
-
 Evolution
 Save File 1		time = 9.999999e-02Save File 2		time = 2.000000e-01Save File 3		time = 3.000000e-01Save File 4		time = 4.000000e-01Save File 5		time = 4.999999e-01
-Time: 2m44s381782351ns ns
-Time: 164381782351 ns
+Time: 2m40s445991443ns ns
+Time: 160445991443 ns

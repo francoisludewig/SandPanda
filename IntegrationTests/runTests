@@ -1,1 +1,1 @@
-sh tests.sh /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Builds/Eclipse/SandPanda /Users/ludewigfrancois/Documents/LuGaProjects/Test/
+sh tests.sh /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Builds/Make/SandPanda /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/IntegrationTests/

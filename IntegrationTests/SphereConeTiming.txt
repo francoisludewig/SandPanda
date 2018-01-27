@@ -1,24 +1,32 @@
 2c2
-< Directory : /Users/ludewigfrancois/Documents/LuGaProjects/Test//Sphere/Cone/New/
+< Directory : /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/IntegrationTests//Sphere/Cone/New/
 ---
 > Directory : /Users/ludewigfrancois/Documents/LuGaProjects/Test//Sphere/Cone/Original/
 6c6
-< FileName : /Users/ludewigfrancois/Documents/LuGaProjects/Test//Sphere/Cone/New/Export/container.txt
+< FileName : /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/IntegrationTests//Sphere/Cone/New/Export/container.txt
 ---
 > FileName : /Users/ludewigfrancois/Documents/LuGaProjects/Test//Sphere/Cone/Original/Export/container.txt
 42a43,45
 > MasterSolid : 0 Plan
 > MasterSolid : 0 PlanR
 > MasterSolid : 0 Cone
-55a59,63
+49c52,53
+< Time Path = 6.433366e-06
+---
+> List of Linking Cell for Solid
+> ------------------------------
+53a58,65
+> 
 > Etat de la memoire
 > ------------------
 > 
 > Le programme a alloue 892.792000 ko
 > Le programme a alloue 0.892792 Mo
-60,61c68,69
-< Time: 1m47s224136479ns ns
-< Time: 107224136479 ns
+> Time Path = 6.433366e-06
+> 
+56,57c68,69
+< Time: 1m45s118786513ns ns
+< Time: 105118786513 ns
 ---
 > Time: 1m46s861712157ns ns
 > Time: 106861712157 ns
