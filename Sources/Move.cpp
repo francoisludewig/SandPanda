@@ -85,50 +85,6 @@ void Move::MeltingSphere(std::vector<Sphere> & sph, double vr, double delayVr, d
 		sphere.Freeze(vr/delayVr, dt);
 }
 
-void Move::upDateVelocitySphereOMP(int & Nsph, std::vector<Sphere> & sph, Gravity gt, double dt, int Nprocess) noexcept {
-	if(Nprocess == 2){
-#pragma omp parallel 
-		{
-#pragma omp sections 
-			{
-#pragma omp section				
-			for(int i = 0 ; i < Nsph/2 ; i++){
-				sph[i].upDateVelocity(dt,gt,0.0);
-			}
-#pragma omp section				
-			for(int i = Nsph/2 ; i < Nsph ; i++){
-				sph[i].upDateVelocity(dt,gt,0.0);
-			}
-			}
-		}
-	}
-	else{
-#pragma omp parallel 
-		{
-#pragma omp sections 
-			{
-#pragma omp section				
-			for(int i = 0 ; i < Nsph/4 ; i++){
-				sph[i].upDateVelocity(dt,gt,0.0);
-			}
-#pragma omp section				
-			for(int i = Nsph/4 ; i < Nsph/2 ; i++){
-				sph[i].upDateVelocity(dt,gt,0.0);
-			}
-#pragma omp section				
-			for(int i = Nsph/2 ; i < 3*Nsph/4 ; i++){
-				sph[i].upDateVelocity(dt,gt,0.0);
-			}
-#pragma omp section				
-			for(int i = 3*Nsph/4 ; i < Nsph ; i++){
-				sph[i].upDateVelocity(dt,gt,0.0);
-			}
-			}
-		}
-		
-	}
-}
-
 void Move::moveSphere(std::vector<Sphere> & sph, double dt) noexcept {
 	for(auto& sphere : sph)
 		sphere.move(dt);
@@ -148,51 +104,3 @@ void Move::upDateVelocityBodies(std::vector<Body> & bd, Gravity gt, double dt, s
 	}
 }
 
-void Move::upDateVelocityBodiesOMP(int & Nbd, std::vector<Body> & bd, Gravity gt, double dt, std::vector<Sphere> & sph, int Nprocess) noexcept {
-	if(Nprocess == 2){
-#pragma omp parallel 
-		{
-#pragma omp sections 
-			{
-#pragma omp section	
-			for(int i = 0 ; i < Nbd/2 ; i++){
-				bd[i].UpDateVelocity(dt,gt);
-				bd[i].UpDateLinkedSphere(sph);
-			}
-#pragma omp section	
-			for(int i = Nbd/2 ; i < Nbd ; i++){
-				bd[i].UpDateVelocity(dt,gt);
-				bd[i].UpDateLinkedSphere(sph);
-			}
-			}
-		}
-	}
-	else{
-#pragma omp parallel 
-		{
-#pragma omp sections 
-			{
-#pragma omp section	
-			for(int i = 0 ; i < Nbd/4 ; i++){
-				bd[i].UpDateVelocity(dt,gt);
-				bd[i].UpDateLinkedSphere(sph);
-			}
-#pragma omp section	
-			for(int i = Nbd/4 ; i < Nbd/2 ; i++){
-				bd[i].UpDateVelocity(dt,gt);
-				bd[i].UpDateLinkedSphere(sph);
-			}
-#pragma omp section	
-			for(int i = Nbd/2 ; i < 3*Nbd/4 ; i++){
-				bd[i].UpDateVelocity(dt,gt);
-				bd[i].UpDateLinkedSphere(sph);
-			}
-#pragma omp section	
-			for(int i = 3*Nbd/4 ; i < Nbd ; i++){
-				bd[i].UpDateVelocity(dt,gt);
-				bd[i].UpDateLinkedSphere(sph);
-			}
-			}
-		}
-	}
-}
