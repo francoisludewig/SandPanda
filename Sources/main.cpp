@@ -238,20 +238,23 @@ int main(int argc,char **argv){
 	}
 	printf("Time Path = %e\n\n",dat.dt);
 
+
+	CellBounds cellBounds(0, 0, 0, dat.Nx, dat.Ny, dat.Nz, 0, 0, 0, dat.Nx, dat.Ny, dat.Nz, dat.ax, dat.ay, dat.az, dat.xmin, dat.ymin, dat.zmin);
+
 	switch(opt.mode){
 	case 0:
 	{
-		Evolution evolution(sph.size(), bd.size(), pl, plr, co, elb, dat, gf);
+		Evolution evolution(sph.size(), bd.size(), pl, plr, co, elb, dat, gf, cellBounds);
 		Ntp = evolution.Evolve(pl,plr,co,elb,sph,bd,hb, dat,gf,cell,Ntp, opt.directory,Nthreshold);
 		break;
 	}
 	case 1:
 		dat.Total = 0;
-		Ntp = Compaction::Run(pl,plr,co,elb,sph,bd,hb ,dat,gf,cell,Ntp, opt.directory,opt.NtapMin,opt.NtapMax,opt.Gamma,opt.Freq,Nthreshold);
+		Ntp = Compaction::Run(pl,plr,co,elb,sph,bd,hb ,dat,gf,cell,Ntp, opt.directory,opt.NtapMin,opt.NtapMax,opt.Gamma,opt.Freq,Nthreshold, cellBounds);
 		break;
 	case 2:
 		dat.Total = 0.0;
-		Ntp = PowderPaQ::PowderPaQRun(pl,plr,co,elb,sph,bd,hb,dat,gf,cell,Ntp, opt.directory,opt.NtapMin,opt.NtapMax,Nthreshold,opt.PQheight,opt.PQVel);
+		Ntp = PowderPaQ::PowderPaQRun(pl,plr,co,elb,sph,bd,hb,dat,gf,cell,Ntp, opt.directory,opt.NtapMin,opt.NtapMax,Nthreshold,opt.PQheight,opt.PQVel, cellBounds);
 		break;
 	}
 

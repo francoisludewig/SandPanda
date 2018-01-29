@@ -6,6 +6,7 @@
 #include "LinkedCells/Cells.h"
 #include <vector>
 #include "LinkedCells/SolidCellsBuilder.h"
+#include "LinkedCells/CellBounds.h"
 
 class Sphere;
 class Plan;
@@ -20,9 +21,9 @@ class Gravity;
 
 class Evolution{
 public:
-	Evolution(int sphereCount, int bodyCount, std::vector<Plan> & pl,std::vector<PlanR> & plr,std::vector<Cone> & co,std::vector<Elbow> & elb, Data & dat, Gravity & gf) noexcept {
+	Evolution(int sphereCount, int bodyCount, std::vector<Plan> & pl,std::vector<PlanR> & plr,std::vector<Cone> & co,std::vector<Elbow> & elb, Data & dat, Gravity & gf, const CellBounds& cellBounds) noexcept : cellBounds(cellBounds) {
 		ct = new Contact[18*sphereCount+75*bodyCount];
-		solidCells = SolidCellsBuilder::Build(dat, pl, plr, co, elb, gf);
+		solidCells = SolidCellsBuilder::Build(dat, pl, plr, co, elb, gf, cellBounds);
 		Nct = 0;
 	}
 
@@ -40,5 +41,6 @@ public:
 private:
 	Contact *ct;
 	SolidCells solidCells;
+	CellBounds cellBounds;
     int Nct;
 };

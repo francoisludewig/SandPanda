@@ -6,18 +6,19 @@
 #include "../../Includes/Solids/PlanR.h"
 #include "../../Includes/Solids/Cone.h"
 #include "../../Includes/Solids/Elbow.h"
+#include "../../Includes/LinkedCells/CellBounds.h"
 
 SolidCells SolidCellsBuilder::Build(const Data& dat, std::vector<Plan>& pl, std::vector<PlanR>& plr,
-		std::vector<Cone>& co, std::vector<Elbow>& elb, Gravity& gt) {
+		std::vector<Cone>& co, std::vector<Elbow>& elb, Gravity& gt, const CellBounds& cellBounds) {
 	SolidCells solidCells;
-	ListCellForPlan(solidCells, dat, pl, gt);
-	ListCellForPlanR(solidCells, dat, plr, gt);
-	ListCellForCone(solidCells, dat, co, gt);
-	ListCellForElbow(solidCells, dat, elb);
+	ListCellForPlan(solidCells, dat, pl, gt, cellBounds);
+	ListCellForPlanR(solidCells, dat, plr, gt, cellBounds);
+	ListCellForCone(solidCells, dat, co, gt, cellBounds);
+	ListCellForElbow(solidCells, dat, elb, cellBounds);
 	return solidCells;
 }
 
-void SolidCellsBuilder::ListCellForPlan(SolidCells& solidCells, const Data& dat, std::vector<Plan> & pl, Gravity& gt) noexcept {
+void SolidCellsBuilder::ListCellForPlan(SolidCells& solidCells, const Data& dat, std::vector<Plan> & pl, Gravity& gt, const CellBounds& cellBounds) noexcept {
 	int a,b;
 	int i,j,k;
 	int I,num;
@@ -42,9 +43,9 @@ void SolidCellsBuilder::ListCellForPlan(SolidCells& solidCells, const Data& dat,
 
 			time = pl[a].Delay();
 
-			dist = dat.ax/2;
-			if(dist > dat.ay/2)dist = dat.ay/2;
-			if(dist > dat.az/2)dist = dat.az/2;
+			dist = cellBounds.Lx()/2;
+			if(dist > cellBounds.Ly()/2)dist = cellBounds.Ly()/2;
+			if(dist > cellBounds.Lz()/2)dist = cellBounds.Lz()/2;
 
 			if(Vmax != 0)
 				dtime = dist/Vmax;
@@ -78,15 +79,15 @@ void SolidCellsBuilder::ListCellForPlan(SolidCells& solidCells, const Data& dat,
 				sz = pl[a].Sz();
 
 				//printf("at b = %d => t = %e => z = %e\n",b,b*dtime,oz);
-				dn = sqrt(dat.ax*dat.ax+dat.ay*dat.ay+dat.az*dat.az);
+				dn = sqrt(cellBounds.Lx()*cellBounds.Lx()+cellBounds.Ly()*cellBounds.Ly()+cellBounds.Lz()*cellBounds.Lz());
 				dt = dn;
 				ds = dn;
-				for(i = 0 ; i < dat.Nx ; i++){
-					for(j = 0 ; j < dat.Ny ; j++){
-						for(k = 0 ; k < dat.Nz ; k++){
-							x = dat.xmin + dat.ax*(i+0.5);
-							y = dat.ymin + dat.ay*(j+0.5);
-							z = dat.zmin + dat.az*(k+0.5);
+				for(i = cellBounds.StartX(); i < cellBounds.EndX() ; i++){
+					for(j = cellBounds.StartY() ; j < cellBounds.EndY() ; j++){
+						for(k = cellBounds.StartZ() ; k < cellBounds.EndZ() ; k++){
+							x = cellBounds.XMin() + cellBounds.Lx()*(i+0.5);
+							y = cellBounds.YMin() + cellBounds.Ly()*(j+0.5);
+							z = cellBounds.ZMin() + cellBounds.Lz()*(k+0.5);
 							pn = (x-ox)*nx+(y-oy)*ny+(z-oz)*nz;
 							pt = (x-ox)*tx+(y-oy)*ty+(z-oz)*tz;
 							ps = (x-ox)*sx+(y-oy)*sy+(z-oz)*sz;
@@ -95,7 +96,7 @@ void SolidCellsBuilder::ListCellForPlan(SolidCells& solidCells, const Data& dat,
 									(pn <= dn) && pn > -dn){
 								// Control de doublon
 								doublon = 0;
-								num = (i*dat.Ny*dat.Nz+j*dat.Nz+k);
+								num = cellBounds.Index(i, j, k);
 								for(I = 0 ; I < cell.size() ; I++){
 									if(num == cell[I]){
 										doublon++;
@@ -109,7 +110,7 @@ void SolidCellsBuilder::ListCellForPlan(SolidCells& solidCells, const Data& dat,
 				}
 			}
 		} else {
-			for(i = 0 ; i < dat.Nx*dat.Ny*dat.Nz ; i++)
+			for(i = 0 ; i < cellBounds.CellCount() ; i++)
 				cell.push_back(i);
 		}
 
@@ -118,7 +119,7 @@ void SolidCellsBuilder::ListCellForPlan(SolidCells& solidCells, const Data& dat,
 	}
 }
 
-void SolidCellsBuilder::ListCellForPlanR(SolidCells& solidCells, const Data& dat, std::vector<PlanR> & plr, Gravity& gt) noexcept {
+void SolidCellsBuilder::ListCellForPlanR(SolidCells& solidCells, const Data& dat, std::vector<PlanR> & plr, Gravity& gt, const CellBounds& cellBounds) noexcept {
 	int a,b;
 	int i,j,k;
 	int I,num;
@@ -144,9 +145,9 @@ void SolidCellsBuilder::ListCellForPlanR(SolidCells& solidCells, const Data& dat
 			if(Vmax < plr[a].Wmax()*plr[a].Radius())Vmax = plr[a].Wmax()*plr[a].Radius();
 			time = plr[a].Delay();
 
-			dist = dat.ax/2;
-			if(dist > dat.ay/2)dist = dat.ay/2;
-			if(dist > dat.az/2)dist = dat.az/2;
+			dist = cellBounds.Lx()/2;
+			if(dist > cellBounds.Ly()/2)dist = cellBounds.Ly()/2;
+			if(dist > cellBounds.Lz()/2)dist = cellBounds.Lz()/2;
 			if(Vmax != 0)
 				dtime = dist/Vmax;
 			else
@@ -176,14 +177,14 @@ void SolidCellsBuilder::ListCellForPlanR(SolidCells& solidCells, const Data& dat
 				sx = plr[a].Sx();
 				sy = plr[a].Sy();
 				sz = plr[a].Sz();
-				dn = sqrt(dat.ax*dat.ax+dat.ay*dat.ay+dat.az*dat.az);
+				dn = sqrt(cellBounds.Lx()*cellBounds.Lx()+cellBounds.Ly()*cellBounds.Ly()+cellBounds.Lz()*cellBounds.Lz());
 
-				for(i = 0 ; i < dat.Nx ; i++){
-					for(j = 0 ; j < dat.Ny ; j++){
-						for(k = 0 ; k < dat.Nz ; k++){
-							x = dat.xmin + dat.ax*(i+0.5);
-							y = dat.ymin + dat.ay*(j+0.5);
-							z = dat.zmin + dat.az*(k+0.5);
+				for(i = cellBounds.StartX(); i < cellBounds.EndX() ; i++){
+					for(j = cellBounds.StartY() ; j < cellBounds.EndY() ; j++){
+						for(k = cellBounds.StartZ() ; k < cellBounds.EndZ() ; k++){
+							x = cellBounds.XMin() + cellBounds.Lx()*(i+0.5);
+							y = cellBounds.YMin() + cellBounds.Ly()*(j+0.5);
+							z = cellBounds.ZMin() + cellBounds.Lz()*(k+0.5);
 							pn = (x-ox)*nx+(y-oy)*ny+(z-oz)*nz;
 							pt = (x-ox)*tx+(y-oy)*ty+(z-oz)*tz;
 							ps = (x-ox)*sx+(y-oy)*sy+(z-oz)*sz;
@@ -191,7 +192,7 @@ void SolidCellsBuilder::ListCellForPlanR(SolidCells& solidCells, const Data& dat
 									(pn >= -dn) && (pn < 2*dn)){
 								// Control de doublon
 								doublon = 0;
-								num = (i*dat.Ny*dat.Nz+j*dat.Nz+k);
+								num = cellBounds.Index(i, j, k);
 								for(I = 0 ; I < cell.size() ; I++){
 									if(num == cell[I]){
 										doublon++;
@@ -206,7 +207,7 @@ void SolidCellsBuilder::ListCellForPlanR(SolidCells& solidCells, const Data& dat
 			}
 
 		} else {
-			for(i = 0 ; i < dat.Nx*dat.Ny*dat.Nz ; i++)
+			for(i = 0 ; i < cellBounds.CellCount() ; i++)
 				cell.push_back(i);
 		}
 		printf("Ncell(%d plr) = %d\n",a,static_cast<int>(cell.size()));
@@ -214,7 +215,7 @@ void SolidCellsBuilder::ListCellForPlanR(SolidCells& solidCells, const Data& dat
 	}
 }
 
-void SolidCellsBuilder::ListCellForCone(SolidCells& solidCells, const Data& dat, std::vector<Cone> & co, Gravity& gt) noexcept {
+void SolidCellsBuilder::ListCellForCone(SolidCells& solidCells, const Data& dat, std::vector<Cone> & co, Gravity& gt, const CellBounds& cellBounds) noexcept {
 	int numCone;
 	int i,j,k;
 	int I,num;
@@ -238,9 +239,9 @@ void SolidCellsBuilder::ListCellForCone(SolidCells& solidCells, const Data& dat,
 			if(Vmax < co[numCone].Wmax()*co[numCone].Height()/2.)Vmax = co[numCone].Wmax()*co[numCone].Height()/2.;
 			time = co[numCone].Delay();
 
-			dist = dat.ax/2;
-			if(dist > dat.ay/2)dist = dat.ay/2;
-			if(dist > dat.az/2)dist = dat.az/2;
+			dist = cellBounds.Lx()/2;
+			if(dist > cellBounds.Ly()/2)dist = cellBounds.Ly()/2;
+			if(dist > cellBounds.Lz()/2)dist = cellBounds.Lz()/2;
 
 			if(Vmax != 0)
 				dtime = dist/Vmax;
@@ -273,18 +274,14 @@ void SolidCellsBuilder::ListCellForCone(SolidCells& solidCells, const Data& dat,
 				sx = co[numCone].Sx();
 				sy = co[numCone].Sy();
 				sz = co[numCone].Sz();
-				if(dat.Nx > 1)
-					dn = sqrt(dat.ax*dat.ax+dat.ay*dat.ay+dat.az*dat.az);
-				else{
-					dn = sqrt(dat.ay*dat.ay+dat.az*dat.az);
+				dn = sqrt(cellBounds.Lx()*cellBounds.Lx()+cellBounds.Ly()*cellBounds.Ly()+cellBounds.Lz()*cellBounds.Lz());
 
-				}
-				for(i = 0 ; i < dat.Nx ; i++){
-					for(j = 0 ; j < dat.Ny ; j++){
-						for(k = 0 ; k < dat.Nz ; k++){
-							px = dat.xmin + dat.ax*(i+0.5);
-							py = dat.ymin + dat.ay*(j+0.5);
-							pz = dat.zmin + dat.az*(k+0.5);
+				for(i = cellBounds.StartX(); i < cellBounds.EndX() ; i++){
+					for(j = cellBounds.StartY() ; j < cellBounds.EndY() ; j++){
+						for(k = cellBounds.StartZ() ; k < cellBounds.EndZ() ; k++){
+							px = cellBounds.XMin() + cellBounds.Lx()*(i+0.5);
+							py = cellBounds.YMin() + cellBounds.Ly()*(j+0.5);
+							pz = cellBounds.ZMin() + cellBounds.Lz()*(k+0.5);
 							pn = (px-ox)*nx+(py-oy)*ny+(pz-oz)*nz;
 							pt = (px-ox)*tx+(py-oy)*ty+(pz-oz)*tz;
 							ps = (px-ox)*sx+(py-oy)*sy+(pz-oz)*sz;
@@ -304,7 +301,7 @@ void SolidCellsBuilder::ListCellForCone(SolidCells& solidCells, const Data& dat,
 										//Cellule validee
 										// Control de doublon
 										doublon = 0;
-										num = (i*dat.Ny*dat.Nz+j*dat.Nz+k);
+										num = cellBounds.Index(i, j, k);
 										for(I = 0 ; I < cell.size() ; I++){
 											if(num == cell[I]){
 												doublon++;
@@ -323,7 +320,7 @@ void SolidCellsBuilder::ListCellForCone(SolidCells& solidCells, const Data& dat,
 										//Cellule validee
 										// Control de doublon
 										doublon = 0;
-										num = (i*dat.Ny*dat.Nz+j*dat.Nz+k);
+										num = cellBounds.Index(i, j, k);
 										for(I = 0 ; I < cell.size() ; I++){
 											if(num == cell[I]){
 												doublon++;
@@ -341,7 +338,7 @@ void SolidCellsBuilder::ListCellForCone(SolidCells& solidCells, const Data& dat,
 				}
 			}
 		} else {
-			for(int i = 0 ; i < dat.Nx*dat.Ny*dat.Nz ; i++)
+			for(int i = 0 ; i < cellBounds.CellCount() ; i++)
 				cell.push_back(i);
 		}
 		printf("Ncell(%d co) = %d\n",numCone,static_cast<int>(cell.size()));
@@ -349,7 +346,7 @@ void SolidCellsBuilder::ListCellForCone(SolidCells& solidCells, const Data& dat,
 	}
 }
 
-void SolidCellsBuilder::ListCellForElbow(SolidCells& solidCells, const Data& dat, std::vector<Elbow> & el) noexcept {
+void SolidCellsBuilder::ListCellForElbow(SolidCells& solidCells, const Data& dat, std::vector<Elbow> & el, const CellBounds& cellBounds) noexcept {
 	int numEl;
 	int i,j,k;
 	int I,num;
@@ -377,9 +374,9 @@ void SolidCellsBuilder::ListCellForElbow(SolidCells& solidCells, const Data& dat
 		if(Vmax < el[numEl].Wmax()*(el[numEl].r+el[numEl].R))Vmax = el[numEl].Wmax()*(el[numEl].r+el[numEl].R);
 		time = el[numEl].Delay();
 
-		dist = dat.ax/2;
-		if(dist > dat.ay/2)dist = dat.ay/2;
-		if(dist > dat.az/2)dist = dat.az/2;
+		dist = cellBounds.Lx()/2;
+		if(dist > cellBounds.Ly()/2)dist = cellBounds.Ly()/2;
+		if(dist > cellBounds.Lz()/2)dist = cellBounds.Lz()/2;
 		if(Vmax != 0)
 			dtime = dist/Vmax;
 		else
@@ -420,13 +417,13 @@ void SolidCellsBuilder::ListCellForElbow(SolidCells& solidCells, const Data& dat
 			sx = el[numEl].sx;
 			sy = el[numEl].sy;
 			sz = el[numEl].sz;
-			dn = sqrt(dat.ax*dat.ax+dat.ay*dat.ay+dat.az*dat.az);
-			for(i = 0 ; i < dat.Nx ; i++){
-				for(j = 0 ; j < dat.Ny ; j++){
-					for(k = 0 ; k < dat.Nz ; k++){
-						px = dat.xmin + dat.ax*(i+0.5);
-						py = dat.ymin + dat.ay*(j+0.5);
-						pz = dat.zmin + dat.az*(k+0.5);
+			dn = sqrt(cellBounds.Lx()*cellBounds.Lx()+cellBounds.Ly()*cellBounds.Ly()+cellBounds.Lz()*cellBounds.Lz());
+			for(i = cellBounds.StartX(); i < cellBounds.EndX() ; i++){
+				for(j = cellBounds.StartY() ; j < cellBounds.EndY() ; j++){
+					for(k = cellBounds.StartZ() ; k < cellBounds.EndZ() ; k++){
+						px = cellBounds.XMin() + cellBounds.Lx()*(i+0.5);
+						py = cellBounds.YMin() + cellBounds.Ly()*(j+0.5);
+						pz = cellBounds.ZMin() + cellBounds.Lz()*(k+0.5);
 						pn = (px-ox)*nx + (py-oy)*ny + (pz-oz)*nz;
 						pt = (px-ox)*tx + (py-oy)*ty + (pz-oz)*tz;
 						ps = (px-ox)*sx + (py-oy)*sy + (pz-oz)*sz;
@@ -454,7 +451,7 @@ void SolidCellsBuilder::ListCellForElbow(SolidCells& solidCells, const Data& dat
 									//Cellule validee
 									// Control de doublon
 									doublon = 0;
-									num = (i*dat.Ny*dat.Nz+j*dat.Nz+k);
+									num = cellBounds.Index(i, j, k);
 									for(I = 0 ; I < cell.size() ; I++){
 										if(num == cell[I]){
 											doublon++;

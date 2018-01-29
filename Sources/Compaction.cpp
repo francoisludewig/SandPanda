@@ -16,6 +16,7 @@
 #include "../Includes/Evolution.h"
 #include "../Includes/Data.h"
 #include "../Includes/Solids/HollowBall.h"
+#include "../Includes/LinkedCells/CellBounds.h"
 
 void Compaction::Secousse(vector<Plan> & pl,vector<PlanR> & plr,vector<Cone> & co, double Gamma, double f, Data & dat) noexcept {
 	double w = 2*M_PI*f;
@@ -54,9 +55,9 @@ void Compaction::Relaxation(vector<Plan> & pl,vector<PlanR> & plr,vector<Cone> &
 
 
 int Compaction::Run(vector<Plan> & pl,vector<PlanR> & plr,vector<Cone> & co,vector<Elbow> & elb,vector<Sphere> & sph,vector<Body> & bd,vector<HollowBall> & hb,Data & dat,Gravity & gf,
-		std::vector<Sphere*>& cell, int & Ntp, char *name,int ntpi, int ntpf, double Gamma, double f, int Nthreshold) noexcept {
+		std::vector<Sphere*>& cell, int & Ntp, char *name,int ntpi, int ntpf, double Gamma, double f, int Nthreshold, const CellBounds& cellBounds) noexcept {
 
-	Evolution evolution(sph.size(), bd.size(), pl ,plr, co, elb, dat, gf);
+	Evolution evolution(sph.size(), bd.size(), pl ,plr, co, elb, dat, gf, cellBounds);
 	dat.record = 0;
 	for(int nt = ntpi  ; nt <= ntpf ; nt++){
 		//Secousse

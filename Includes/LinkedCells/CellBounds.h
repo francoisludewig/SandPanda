@@ -7,18 +7,21 @@ public:
 		maxX(0), maxY(0), maxZ(0),
 		startX(0), startY(0), startZ(0),
 		endX(0), endY(0), endZ(0),
-		lx(0), ly(0), lz(0){}
+		lx(0), ly(0), lz(0),
+		xMin(0), yMin(0), zMin(0){}
 
 	CellBounds(int minX, int minY, int minZ,
 			   int maxX, int maxY, int maxZ,
 			   int startX, int startY, int startZ,
 			   int endX, int endY, int endZ,
-			   double lx, double ly, double lz) noexcept :
+			   double lx, double ly, double lz,
+			   double xMin, double yMin, double zMin) noexcept :
 			minX(minX), minY(minY), minZ(minZ),
 			maxX(maxX), maxY(maxY), maxZ(maxZ),
 			startX(startX), startY(startY), startZ(startZ),
 			endX(endX), endY(endY), endZ(endZ),
-			lx(lx), ly(ly), lz(lz){}
+			lx(lx), ly(ly), lz(lz),
+			xMin(xMin), yMin(yMin), zMin(zMin){}
 
 
 	CellBounds(const CellBounds& other) noexcept = default;
@@ -43,6 +46,12 @@ public:
 	double Lx() const noexcept { return lx;}
 	double Ly() const noexcept { return ly;}
 	double Lz() const noexcept { return lz;}
+	double XMin() const noexcept { return xMin;}
+	double YMin() const noexcept { return yMin;}
+	double ZMin() const noexcept { return zMin;}
+
+	int CellCount() const noexcept {return (endX-startX)*(endY-startY)*(endZ-startZ);}
+	int Index(int xIndex, int yIndex, int zIndex) const noexcept { return (xIndex*maxY*maxZ+yIndex*maxZ+zIndex); }
 
 private:
 	int minX, minY, minZ;
@@ -50,4 +59,5 @@ private:
 	int startX, startY, startZ;
 	int endX, endY, endZ;
 	double lx, ly, lz;
+	double xMin, yMin, zMin;
 };
