@@ -14,6 +14,7 @@ class Data;
 class HollowBall;
 class Gravity;
 class SolidCells;
+class CellBounds;
 
 class ContactDetection {
 public:
@@ -21,9 +22,7 @@ public:
 	static void ContactSphSphPeriodic(Sphere *a, Sphere *b, Contact *ct, int & Nct) noexcept;
 	static void ContactSphPlanPeriodic(std::vector<Sphere*>&llist, Plan & p, Plan & p2, Sphere *b, const double rmax) noexcept;
 
-
-	static void sphContact(const int Nx0, const int Nx1, const int Nx, const int Ny0, const int Ny1, const int Ny,
-												 const int Nz, Contact *ctl, int & Nctl, std::vector<Sphere*>& cell) noexcept;
+	static void sphContact(const CellBounds& cellBounds, Contact *ctl, int & Nctl, std::vector<Sphere*>& cell) noexcept;
 
 	static void sphContactAll(std::vector<Sphere> & sph, Contact *ctl, int & Nctl) noexcept;
 	static void sphPlanContact(int & Nct, std::vector<Sphere> & sph, std::vector<Plan> & pl, Contact *ct, std::vector<Sphere*>& cell, const SolidCells& solidCells, const double rmax) noexcept;

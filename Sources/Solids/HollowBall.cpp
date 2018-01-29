@@ -3,9 +3,9 @@
 #include "../../Includes/Contact/ContactDetection.h"
 #include "../../Includes/Contact/Contact.h"
 #include "../../Includes/Solids/Body.h"
+#include "../../Includes/LinkedCells/CellBounds.h"
 
 #include <cmath>
-
 
 HollowBall::HollowBall() noexcept :
 avatar(nullptr), Navatar(0), NinSph(0), x(0), y(0), z(0),
@@ -142,7 +142,9 @@ void HollowBall::ContactDetectionInHollowBall(Contact *ct, int & Nct) noexcept {
             cell[nx*N*N+ny*N+nz] = inSph[i];
         }
     }
-	ContactDetection::sphContact(0,N,N,0,N,N,N,ct,Nct,cell);
+
+    CellBounds cellBounds(0, 0, 0, N, N, N, 0, 0, 0, N, N, N, a, a, a, xmin, ymin, zmin);
+	ContactDetection::sphContact(cellBounds,ct,Nct,cell);
 }
 
 void HollowBall::ContactDetectionWithHollowBall(Contact *ct, int & Nct) noexcept {

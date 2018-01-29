@@ -34,5 +34,4 @@ private:
     double xmin,ymin,zmin;
     double a,rmax;
     int N,*list,Nlist;
-
 };

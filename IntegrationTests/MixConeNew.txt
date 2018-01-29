@@ -53,5 +53,5 @@ Nts(0) = 0
 Ncell(0 co) = 2344
 Evolution
 Save File 1		time = 9.999999e-02Save File 2		time = 2.000000e-01Save File 3		time = 3.000000e-01Save File 4		time = 4.000000e-01Save File 5		time = 4.999999e-01
-Time: 2m48s508623252ns ns
-Time: 168508623252 ns
+Time: 2m38s465686361ns ns
+Time: 158465686361 ns

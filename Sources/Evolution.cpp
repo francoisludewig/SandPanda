@@ -21,6 +21,7 @@ int Evolution::Evolve(std::vector<Plan> & pl,std::vector<PlanR> & plr,std::vecto
 		// Position anticipation
 		Move::moveContainer(pl, plr, co, elb, dat.TIME, dat.dt/2, sph,gf);
 		dat.mas->Move(dat.dt/2);
+
 		Move::moveSphere(sph, dat.dt/2);
 		Move::upDateHollowBall(hb,dat.dt);
 
@@ -36,7 +37,7 @@ int Evolution::Evolve(std::vector<Plan> & pl,std::vector<PlanR> & plr,std::vecto
 		// Contact Detection
 		Nct = 0;
 		// Verison sequentiel normale
-		ContactDetection::sphContact(0, dat.Nx,dat.Nx,0, dat.Ny, dat.Ny, dat.Nz, ct, Nct, cell);
+		ContactDetection::sphContact(cellBounds, ct, Nct, cell);
 		ContactDetection::sphContainer(sph, pl, plr, co, elb, hb, Nct, ct, cell, solidCells,dat.Rmax);
 
 		if(dat.modelTg == 1){
@@ -124,7 +125,7 @@ int Evolution::EvolveMelt(std::vector<Plan> & pl,std::vector<PlanR> & plr,std::v
 
 		// Contact Detection
 		Nct = 0;
-		ContactDetection::sphContact(0, dat.Nx,dat.Nx,0, dat.Ny, dat.Ny, dat.Nz, ct, Nct, cell);
+		ContactDetection::sphContact(cellBounds, ct, Nct, cell);
 		ContactDetection::sphContainer(sph, pl, plr, co, elb, hb, Nct, ct, cell, solidCells, dat.Rmax);
 
 		if(dat.modelTg == 1){

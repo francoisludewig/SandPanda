@@ -4,6 +4,7 @@
 #include <cmath>
 
 #include "../../Includes/LinkedCells/SolidCells.h"
+#include "../../Includes/LinkedCells/CellBounds.h"
 #include "../../Includes/Solids/Velocity.h"
 #include "../../Includes/Gravity.h"
 #include "../../Includes/Solids/Plan.h"
@@ -167,16 +168,19 @@ void ContactDetection::sphContactAll(std::vector<Sphere> & sph, Contact *ctl, in
 	}
 }
 
-void ContactDetection::sphContact(const int Nx0, const int Nx1, const int Nx, const int Ny0, const int Ny1, const int Ny, const int Nz, Contact *ctl, int & Nctl, std::vector<Sphere*>& cell) noexcept {
+void ContactDetection::sphContact(const CellBounds& cellBounds, Contact *ctl, int & Nctl, std::vector<Sphere*>& cell) noexcept {
 	int l,m;
 	Sphere *cand[5000],*anta;
 	int i,j,k,Ncand;
 	int num;
-	for(i = Nx0 ; i < Nx1 ; i++){
-		for(j = Ny0 ; j < Ny1 ; j++){
-			for(k = 0 ; k < Nz ; k++){
+
+
+
+	for(i = cellBounds.StartX() ; i < cellBounds.EndX() ; i++){
+		for(j = cellBounds.StartY() ; j < cellBounds.EndY() ; j++){
+			for(k = cellBounds.StartZ() ; k < cellBounds.EndZ() ; k++){
 				// num = i*Ny*Nz+j*Nz+k
-				num = i*Ny*Nz+j*Nz+k;
+				num = cellBounds.Index(i, j, k);
 				Ncand = 0;
 
 				//printf("(%d,%d,%d) => %d\n",i,j,k,num);
@@ -194,25 +198,25 @@ void ContactDetection::sphContact(const int Nx0, const int Nx1, const int Nx, co
 							ContactDetectorSphereVersusSphere::Detect(cand[l],cand[m],ctl,Nctl);
 					}
 					// Solo
-					if(i+1 < Nx){
+					if(i+1 < cellBounds.MaxX()){
 						//(i+1)*Ny*Nz+j*Nz+k = num+Ny*Nz
-						if((anta = cell[num+Ny*Nz]) != nullptr){
+						if((anta = cell[num+cellBounds.MaxY()*cellBounds.MaxZ()]) != nullptr){
 							do{
 								for(l = 0 ; l < Ncand ; l++)
 									ContactDetectorSphereVersusSphere::Detect(cand[l],anta,ctl,Nctl);
 							}while((anta = anta->TDL()) != nullptr);
 						}
 					}
-					if(j+1 < Ny){
+					if(j+1 < cellBounds.MaxY()){
 						//i*Ny*Nz+(j+1)*Nz+k = num+Nz
-						if((anta = cell[num+Nz]) != nullptr){
+						if((anta = cell[num+cellBounds.MaxZ()]) != nullptr){
 							do{
 								for(l = 0 ; l < Ncand ; l++)
 									ContactDetectorSphereVersusSphere::Detect(cand[l],anta,ctl,Nctl);
 							}while((anta = anta->TDL()) != nullptr);
 						}
 					}
-					if(k+1 < Nz){
+					if(k+1 < cellBounds.MaxZ()){
 						//i*Ny*Nz+j*Nz+k+1 = num+1
 						if((anta = cell[num+1]) != nullptr){
 							do{
@@ -222,18 +226,18 @@ void ContactDetection::sphContact(const int Nx0, const int Nx1, const int Nx, co
 						}
 					}
 					// plan XY
-					if(i+1 < Nx && j+1 < Ny){
+					if(i+1 < cellBounds.MaxX() && j+1 < cellBounds.MaxY()){
 						//(i+1)*Ny*Nz+(j+1)*Nz+k = num + Ny*Nz + Nz = num + Nz*(Ny+1)
-						if((anta = cell[num+Nz*(Ny+1)]) != nullptr){
+						if((anta = cell[num+cellBounds.MaxZ()*(cellBounds.MaxY()+1)]) != nullptr){
 							do{
 								for(l = 0 ; l < Ncand ; l++)
 									ContactDetectorSphereVersusSphere::Detect(cand[l],anta,ctl,Nctl);
 							}while((anta = anta->TDL()) != nullptr);
 						}
 					}
-					if(i+1 < Nx && j-1 >= 0){
+					if(i+1 < cellBounds.MaxX() && j-1 >= 0){
 						//(i+1)*Ny*Nz+(j-1)*Nz+k = num + Ny*Nz - Nz = num + Nz*(Ny-1)
-						if((anta = cell[num+Nz*(Ny-1)]) != nullptr){
+						if((anta = cell[num+cellBounds.MaxZ()*(cellBounds.MaxY()-1)]) != nullptr){
 							do{
 								for(l = 0 ; l < Ncand ; l++)
 									ContactDetectorSphereVersusSphere::Detect(cand[l],anta,ctl,Nctl);
@@ -241,18 +245,18 @@ void ContactDetection::sphContact(const int Nx0, const int Nx1, const int Nx, co
 						}
 					}
 					// plan XZ
-					if(i+1 < Nx && k+1 < Nz){
+					if(i+1 < cellBounds.MaxX() && k+1 < cellBounds.MaxZ()){
 						//(i+1)*Ny*Nz+j*Nz+k+1 = num + Ny*Nz + 1
-						if((anta = cell[num+Ny*Nz+1]) != nullptr){
+						if((anta = cell[num+cellBounds.MaxY()*cellBounds.MaxZ()+1]) != nullptr){
 							do{
 								for(l = 0 ; l < Ncand ; l++)
 									ContactDetectorSphereVersusSphere::Detect(cand[l],anta,ctl,Nctl);
 							}while((anta = anta->TDL()) != nullptr);
 						}
 					}
-					if(i+1 < Nx && k-1 >= 0){
+					if(i+1 < cellBounds.MaxX() && k-1 >= 0){
 						//(i+1)*Ny*Nz+j*Nz+k-1 = num + Ny*Nz - 1
-						if((anta = cell[num+Ny*Nz-1]) != nullptr){
+						if((anta = cell[num+cellBounds.MaxY()*cellBounds.MaxZ()-1]) != nullptr){
 							do{
 								for(l = 0 ; l < Ncand ; l++)
 									ContactDetectorSphereVersusSphere::Detect(cand[l],anta,ctl,Nctl);
@@ -260,18 +264,18 @@ void ContactDetection::sphContact(const int Nx0, const int Nx1, const int Nx, co
 						}
 					}
 					// plan YZ
-					if(j+1 < Ny && k+1 < Nz){
+					if(j+1 < cellBounds.MaxY() && k+1 < cellBounds.MaxZ()){
 						//i*Ny*Nz+(j+1)*Nz+k+1 = num + Nz + 1
-						if((anta = cell[num+Nz+1]) != nullptr){
+						if((anta = cell[num+cellBounds.MaxZ()+1]) != nullptr){
 							do{
 								for(l = 0 ; l < Ncand ; l++)
 									ContactDetectorSphereVersusSphere::Detect(cand[l],anta,ctl,Nctl);
 							}while((anta = anta->TDL()) != nullptr);
 						}
 					}
-					if(j+1 < Ny && k-1 >= 0){
+					if(j+1 < cellBounds.MaxY() && k-1 >= 0){
 						//i*Ny*Nz+(j+1)*Nz+k-1 = num + Nz - 1
-						if((anta = cell[num+Nz-1]) != nullptr){
+						if((anta = cell[num+cellBounds.MaxZ()-1]) != nullptr){
 							do{
 								for(l = 0 ; l < Ncand ; l++)
 									ContactDetectorSphereVersusSphere::Detect(cand[l],anta,ctl,Nctl);
@@ -279,36 +283,36 @@ void ContactDetection::sphContact(const int Nx0, const int Nx1, const int Nx, co
 						}
 					}
 					// tripple
-					if(i+1 < Nx && j+1 < Ny && k+1 < Nz){
+					if(i+1 < cellBounds.MaxX() && j+1 < cellBounds.MaxY() && k+1 < cellBounds.MaxZ()){
 						//(i+1)*Ny*Nz+(j+1)*Nz+k+1 = num + Nz*(Ny + 1) + 1
-						if((anta = cell[num+Nz*(Ny+1)+1]) != nullptr){
+						if((anta = cell[num+cellBounds.MaxZ()*(cellBounds.MaxY()+1)+1]) != nullptr){
 							do{
 								for(l = 0 ; l < Ncand ; l++)
 									ContactDetectorSphereVersusSphere::Detect(cand[l],anta,ctl,Nctl);
 							}while((anta = anta->TDL()) != nullptr);
 						}
 					}
-					if(i+1 < Nx && j+1 < Ny && k-1 >= 0){
+					if(i+1 < cellBounds.MaxX() && j+1 < cellBounds.MaxY() && k-1 >= 0){
 						//(i+1)*Ny*Nz+(j+1)*Nz+k-1 = num + Nz*(Ny + 1) - 1
-						if((anta = cell[num+Nz*(Ny+1)-1]) != nullptr){
+						if((anta = cell[num+cellBounds.MaxZ()*(cellBounds.MaxY()+1)-1]) != nullptr){
 							do{
 								for(l = 0 ; l < Ncand ; l++)
 									ContactDetectorSphereVersusSphere::Detect(cand[l],anta,ctl,Nctl);
 							}while((anta = anta->TDL()) != nullptr);
 						}
 					}
-					if(i+1 < Nx && j-1 >= 0 && k+1 < Nz){
+					if(i+1 < cellBounds.MaxX() && j-1 >= 0 && k+1 < cellBounds.MaxZ()){
 						//(i+1)*Ny*Nz+(j-1)*Nz+k+1 = num + Nz*(Ny - 1) + 1
-						if((anta = cell[num+Nz*(Ny-1)+1]) != nullptr){
+						if((anta = cell[num+cellBounds.MaxZ()*(cellBounds.MaxY()-1)+1]) != nullptr){
 							do{
 								for(l = 0 ; l < Ncand ; l++)
 									ContactDetectorSphereVersusSphere::Detect(cand[l],anta,ctl,Nctl);
 							}while((anta = anta->TDL()) != nullptr);
 						}
 					}
-					if(i-1 >= 0 && j+1 < Ny && k+1 < Nz){
+					if(i-1 >= 0 && j+1 < cellBounds.MaxY() && k+1 < cellBounds.MaxZ()){
 						//(i-1)*Ny*Nz+(j+1)*Nz+k+1 = num + Nz*(1-Ny)+1
-						if((anta = cell[num+Nz*(1-Ny)+1]) != nullptr){
+						if((anta = cell[num+cellBounds.MaxZ()*(1-cellBounds.MaxY())+1]) != nullptr){
 							do{
 								for(l = 0 ; l < Ncand ; l++)
 									ContactDetectorSphereVersusSphere::Detect(cand[l],anta,ctl,Nctl);
