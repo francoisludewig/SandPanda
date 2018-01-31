@@ -25,8 +25,8 @@
 > Time Path = 6.433366e-06
 > 
 56,57c68,69
-< Time: 1m55s123683054ns ns
-< Time: 115123683054 ns
+< Time: 1m44s28256406ns ns
+< Time: 104028256406 ns
 ---
 > Time: 1m47s697700557ns ns
 > Time: 107697700557 ns

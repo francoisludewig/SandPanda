@@ -184,11 +184,12 @@ void ContactDetection::sphContact(const CellBounds& cellBounds, Contact *ctl, in
 	int maxy = cellBounds.MaxY();
 	int maxz = cellBounds.MaxZ();
 
+
 	for(int i = startx ; i < endx ; i++){
 		for(int j = starty ; j < endy ; j++){
 			for(int k = startz ; k < endz ; k++){
 				// num = i*Ny*Nz+j*Nz+k
-				num = cellBounds.Index(i, j, k);
+				num = i*maxy*maxz+j*maxz+k;
 				Ncand = 0;
 
 				//printf("(%d,%d,%d) => %d\n",i,j,k,num);

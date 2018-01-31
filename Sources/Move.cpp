@@ -15,8 +15,9 @@
 #include "../Includes/Data.h"
 #include "../Includes/Move.h"
 #include "../Includes/Solids/HollowBall.h"
+#include "../Includes/LinkedCells/CellBounds.h"
 
-void Move::UpDateForceContainer(std::vector<Sphere> & sph, std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co, double time, double dt, Gravity gt) noexcept {
+void Move::UpDateForceContainer(std::vector<Sphere> & sph, std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co, double time, double dt, Gravity& gt) noexcept {
 	for(auto& plan : pl)
 		plan.UpdateForceFromGB(sph);
 
@@ -29,7 +30,7 @@ void Move::UpDateForceContainer(std::vector<Sphere> & sph, std::vector<Plan> & p
 	}
 }
 
-void Move::upDateVelocityContainer(std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co, std::vector<Elbow> & elb, double time, double dt, Gravity gt) noexcept {
+void Move::upDateVelocityContainer(std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co, std::vector<Elbow> & elb, double time, double dt, Gravity& gt) noexcept {
 	for(auto& plan : pl)
 		plan.UpDateVelocity(time,dt,gt);
 
@@ -41,7 +42,7 @@ void Move::upDateVelocityContainer(std::vector<Plan> & pl, std::vector<PlanR> & 
 }
 
 
-void Move::moveContainer(std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co, std::vector<Elbow> & elb, double time, double dt, std::vector<Sphere> & sph, Gravity gt) noexcept {
+void Move::moveContainer(std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co, std::vector<Elbow> & elb, double time, double dt, std::vector<Sphere> & sph, Gravity& gt) noexcept {
 	for(auto& plan : pl) {
 		plan.Move(dt);
 		plan.UpDateLinkedSphere(sph,time,gt);
@@ -75,6 +76,29 @@ void Move::upDateVelocitySphere(std::vector<Sphere> & sph, Gravity gt, double dt
 		sphere.upDateVelocity(dt,gt,0.0);
 }
 
+void Move::upDateVelocitySphere(std::vector<Sphere> & sph, std::vector<Sphere*> & cell, const CellBounds& cellBounds, Gravity& gt, double dt) noexcept {
+	int num;
+	Sphere* sphere;
+	for(int i = cellBounds.StartX() ; i < cellBounds.EndX() ; ++i) {
+		for(int j = cellBounds.StartY() ; j < cellBounds.EndY() ; ++j) {
+			for(int k = cellBounds.StartZ() ; k < cellBounds.EndZ() ; ++k) {
+				num = cellBounds.Index(i, j, k);
+				if((sphere = cell[num]) != nullptr) {
+					do {
+						if(sphere->NoBodies())
+							sphere->upDateVelocity(dt,gt,0.0);
+						else {
+							(sphere->GetBody())->UpDateVelocity(dt,gt);
+							(sphere->GetBody())->UpDateLinkedSphere(sph);
+						}
+					} while((sphere = sphere->TDL()) != nullptr);
+				}
+			}
+		}
+	}
+}
+
+
 void Move::upDateHollowBall(std::vector<HollowBall> & hb, double dt) noexcept {
 	for(auto& hollowBall : hb)
 		hollowBall.UpdateFromSph(dt);
@@ -89,6 +113,27 @@ void Move::moveSphere(std::vector<Sphere> & sph, double dt) noexcept {
 	for(auto& sphere : sph)
 		sphere.move(dt);
 }
+
+void Move::moveSphere(std::vector<Sphere*> & cell, const CellBounds& cellBounds, double dt) noexcept {
+	int num;
+	Sphere* sphere;
+	for(int i = cellBounds.StartX() ; i < cellBounds.EndX() ; ++i) {
+		for(int j = cellBounds.StartY() ; j < cellBounds.EndY() ; ++j) {
+			for(int k = cellBounds.StartZ() ; k < cellBounds.EndZ() ; ++k) {
+				num = cellBounds.Index(i, j, k);
+				if((sphere = cell[num]) != nullptr) {
+					do {
+						if(sphere->NoBodies())
+							sphere->move(dt);
+						else
+							(sphere->GetBody())->Move(dt);
+					} while((sphere = sphere->TDL()) != nullptr);
+				}
+			}
+		}
+	}
+}
+
 
 void Move::moveBodies(std::vector<Body> & bd, double dt, std::vector<Sphere> & sph) noexcept {
 	for(auto& body : bd){
