@@ -1,13 +1,13 @@
-#include "../Includes/Data.h"
+#include "../Includes/Configuration.h"
 
-Data::Data() noexcept :
+Configuration::Configuration() noexcept :
 	dt(0), TIME(0), Total(0), Nsp(0), xmin(0), ymin(0), zmin(0),
 	xmax(0), ymax(0), zmax(0), ax(0), ay(0), az(0), Nx(0), Ny(0), Nz(0),
   en(0), mu(0), k(0), muS(0), muD(0), dts(0), t0(0), outContact(0), outMode(0) {}
 
-Data::~Data() noexcept {}
+Configuration::~Configuration() noexcept {}
 
-void Data::LoadFromFile(FILE *ft) noexcept{
+void Configuration::LoadFromFile(FILE *ft) noexcept{
 	fscanf(ft,"%lf\t%lf\t%lf\n",&dt,&TIME,&Total);
 	fscanf(ft,"%d\n",&Nsp);
     
@@ -31,7 +31,7 @@ void Data::LoadFromFile(FILE *ft) noexcept{
 	printf("a = (%e,%e,%e)\n\n",ax,ay,az);
 }
 
-void Data::WriteToFile(FILE *ft) const noexcept{
+void Configuration::WriteToFile(FILE *ft) const noexcept{
 	fprintf(ft,"%e\t%e\t%e\n",dt,TIME,Total);
 	fprintf(ft,"%d\n",Nsp);
     if(modelTg == 0)
@@ -45,14 +45,14 @@ void Data::WriteToFile(FILE *ft) const noexcept{
 	fprintf(ft,"%d\t%d\t%d\n",Nx,Ny,Nz);
 }
 
-void Data::ComputeRmax(std::vector<Sphere> & sph) noexcept{
+void Configuration::ComputeRmax(std::vector<Sphere> & sph) noexcept{
 	Rmax = sph[0].Radius();
 	for(const auto& sphere : sph){
 		if(Rmax < sphere.Radius())Rmax = sphere.Radius();
 	}
 }
 
-void Data::ComputeLinkedCell() noexcept{
+void Configuration::ComputeLinkedCell() noexcept{
 	ax = Rmax*2.01;
 	ay = Rmax*2.01;
 	az = Rmax*2.01;

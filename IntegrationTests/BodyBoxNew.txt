@@ -43,8 +43,6 @@ Uploading HollowBall File
 MasterSolid : cm = (nan,nan,nan)
 MasterSolid : Fc = (0.000000e+00,0.000000e+00,0.000000e+00)
 MasterSolid : mass = 0.000000e+00
-Nsph0 = 0 & Nsph = 150
-NctMax = 13950
 Ncell = 637
 Time Path = 1.012853e-06
 
@@ -60,5 +58,5 @@ Nts(4) = 0
 Ncell(4 pl) = 98
 Evolution
 Save File 1		time = 9.999999e-02Save File 2		time = 2.000000e-01Save File 3		time = 3.000000e-01Save File 4		time = 4.000000e-01Save File 5		time = 4.999999e-01
-Time: 3m57s853851434ns ns
-Time: 237853851434 ns
+Time: 3m57s190354939ns ns
+Time: 237190354939 ns

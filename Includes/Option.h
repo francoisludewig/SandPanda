@@ -1,7 +1,7 @@
 #pragma once
 
 #include <stdio.h>
-#include "Data.h"
+#include "Configuration.h"
 #include "Gravity.h"
 
 class Option{
@@ -29,5 +29,5 @@ public:
 	int Management(char **argv, int argc) noexcept;
 	int DirectoryManagement() noexcept;
 	void Record() noexcept;
-	void InData(Data & dat, Gravity &gf, std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co) noexcept;
+	void InData(Configuration & dat, Gravity &gf, std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co) noexcept;
 };

@@ -47,7 +47,8 @@ void HollowBall::Makeavatar(vector<Sphere> & sph, const int numero) noexcept {
 	sphl.Num(sph.size());
     sphl.IsHollowBall();
 	//sphl->NhollowBall = numero;
-	sph.push_back(std::move(sphl));
+    sph.emplace_back(std::move(sphl));
+	//sph.push_back(std::move(sphl));
     Navatar = sph.size()-1;
 }
 

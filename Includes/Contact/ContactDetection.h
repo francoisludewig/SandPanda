@@ -10,7 +10,7 @@ class PlanR;
 class Body;
 class Cone;
 class Elbow;
-class Data;
+class Configuration;
 class HollowBall;
 class Gravity;
 class SolidCells;

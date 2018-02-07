@@ -1,5 +1,7 @@
 #pragma once
 
+#include <mutex>
+
 class MechanicalPoint {
 public:
 	MechanicalPoint() noexcept :
@@ -8,13 +10,16 @@ public:
 	vx(0), vy(0), vz(0),
 	wx(0), wy(0), wz(0),
 	Fx(0), Fy(0), Fz(0),
-	Mx(0), My(0), Mz(0) {}
-	
-	MechanicalPoint(const MechanicalPoint& other) noexcept = default;
-	MechanicalPoint(MechanicalPoint&& other) noexcept = default;
-	MechanicalPoint& operator=(const MechanicalPoint& other) noexcept = default;
-	MechanicalPoint& operator=(MechanicalPoint&& other) noexcept = default;
-	
+	Mx(0), My(0), Mz(0) {
+		forceMutex = std::unique_ptr<std::mutex>(new std::mutex());
+		momentumMutex = std::unique_ptr<std::mutex>(new std::mutex());
+	}
+
+	MechanicalPoint(const MechanicalPoint& other) = delete;
+	MechanicalPoint(MechanicalPoint&& other) = default;
+	MechanicalPoint& operator=(const MechanicalPoint& other) = delete;
+	MechanicalPoint& operator=(MechanicalPoint&& other) = default;
+
 	const double& X() const noexcept { return x; }
 	const double& Y() const noexcept { return y; }
 	const double& Z() const noexcept { return z; }
@@ -65,9 +70,31 @@ public:
 		My += my;
 		Mz += mz;
 	}
+
+	void AddForceMutex(const double fx, const double fy, const double fz) noexcept {
+		std::lock_guard<std::mutex> lock(*forceMutex);
+		Fx += fx;
+		Fy += fy;
+		Fz += fz;
+	}
+
+	void AddMomemtumMutex(const double mx, const double my, const double mz) noexcept {
+		std::lock_guard<std::mutex> lock(*momentumMutex);
+		Mx += mx;
+		My += my;
+		Mz += mz;
+	}
+
+	void PointVelocityMutex(double& vpx, double& vpy, double& vpz,
+			const double& lx, const double& ly, const double& lz) const noexcept{
+		vpx = vx + wy*lz - wz*ly;
+		vpy = vy + wz*lx - wx*lz;
+		vpz = vz + wx*ly - wy*lx;
+	}
+	
 	
 	void PointVelocity(double& vpx, double& vpy, double& vpz,
-			const double& lx, const double& ly, const double& lz) const noexcept{
+										 const double& lx, const double& ly, const double& lz) const noexcept{
 		vpx = vx + wy*lz - wz*ly;
 		vpy = vy + wz*lx - wx*lz;
 		vpz = vz + wx*ly - wy*lx;
@@ -80,6 +107,8 @@ protected:
 	double wx, wy, wz;
 	double Fx, Fy, Fz;
 	double Mx, My, Mz;
+	std::unique_ptr<std::mutex> forceMutex {nullptr};
+	std::unique_ptr<std::mutex> momentumMutex {nullptr};
 };
 
 
@@ -91,10 +120,10 @@ public:
 	tx(0), ty(1), tz(0),
 	sx(0), sy(0), sz(1) {}
 
-	MechanicalPointWithBase(const MechanicalPointWithBase& other) noexcept = default;
-	MechanicalPointWithBase(MechanicalPointWithBase&& other) noexcept = default;
-	MechanicalPointWithBase& operator=(const MechanicalPointWithBase& other) noexcept = default;
-	MechanicalPointWithBase& operator=(MechanicalPointWithBase&& other) noexcept = default;
+	MechanicalPointWithBase(const MechanicalPointWithBase& other) = delete;
+	MechanicalPointWithBase(MechanicalPointWithBase&& other) = default;
+	MechanicalPointWithBase& operator=(const MechanicalPointWithBase& other) = delete;
+	MechanicalPointWithBase& operator=(MechanicalPointWithBase&& other) = default;
 
 	double Nx() const noexcept { return nx; }
 	double Ny() const noexcept { return ny; }

@@ -1,6 +1,6 @@
 #include <vector>
 #include "../../Includes/LinkedCells/SolidCells.h"
-#include "../../Includes/Data.h"
+#include "../../Includes/Configuration.h"
 #include "../../Includes/LinkedCells/SolidCellsBuilder.h"
 #include "../../Includes/Solids/Plan.h"
 #include "../../Includes/Solids/PlanR.h"
@@ -8,7 +8,7 @@
 #include "../../Includes/Solids/Elbow.h"
 #include "../../Includes/LinkedCells/CellBounds.h"
 
-SolidCells SolidCellsBuilder::Build(const Data& dat, std::vector<Plan>& pl, std::vector<PlanR>& plr,
+SolidCells SolidCellsBuilder::Build(const Configuration& dat, std::vector<Plan>& pl, std::vector<PlanR>& plr,
 		std::vector<Cone>& co, std::vector<Elbow>& elb, Gravity& gt, const CellBounds& cellBounds) {
 	SolidCells solidCells;
 	ListCellForPlan(solidCells, dat, pl, gt, cellBounds);
@@ -18,7 +18,7 @@ SolidCells SolidCellsBuilder::Build(const Data& dat, std::vector<Plan>& pl, std:
 	return solidCells;
 }
 
-void SolidCellsBuilder::ListCellForPlan(SolidCells& solidCells, const Data& dat, std::vector<Plan> & pl, Gravity& gt, const CellBounds& cellBounds) noexcept {
+void SolidCellsBuilder::ListCellForPlan(SolidCells& solidCells, const Configuration& dat, std::vector<Plan> & pl, Gravity& gt, const CellBounds& cellBounds) noexcept {
 	int a,b;
 	int i,j,k;
 	int I,num;
@@ -119,7 +119,7 @@ void SolidCellsBuilder::ListCellForPlan(SolidCells& solidCells, const Data& dat,
 	}
 }
 
-void SolidCellsBuilder::ListCellForPlanR(SolidCells& solidCells, const Data& dat, std::vector<PlanR> & plr, Gravity& gt, const CellBounds& cellBounds) noexcept {
+void SolidCellsBuilder::ListCellForPlanR(SolidCells& solidCells, const Configuration& dat, std::vector<PlanR> & plr, Gravity& gt, const CellBounds& cellBounds) noexcept {
 	int a,b;
 	int i,j,k;
 	int I,num;
@@ -215,7 +215,7 @@ void SolidCellsBuilder::ListCellForPlanR(SolidCells& solidCells, const Data& dat
 	}
 }
 
-void SolidCellsBuilder::ListCellForCone(SolidCells& solidCells, const Data& dat, std::vector<Cone> & co, Gravity& gt, const CellBounds& cellBounds) noexcept {
+void SolidCellsBuilder::ListCellForCone(SolidCells& solidCells, const Configuration& dat, std::vector<Cone> & co, Gravity& gt, const CellBounds& cellBounds) noexcept {
 	int numCone;
 	int i,j,k;
 	int I,num;
@@ -346,7 +346,7 @@ void SolidCellsBuilder::ListCellForCone(SolidCells& solidCells, const Data& dat,
 	}
 }
 
-void SolidCellsBuilder::ListCellForElbow(SolidCells& solidCells, const Data& dat, std::vector<Elbow> & el, const CellBounds& cellBounds) noexcept {
+void SolidCellsBuilder::ListCellForElbow(SolidCells& solidCells, const Configuration& dat, std::vector<Elbow> & el, const CellBounds& cellBounds) noexcept {
 	int numEl;
 	int i,j,k;
 	int I,num;

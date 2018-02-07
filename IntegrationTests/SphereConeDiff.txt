@@ -1,0 +1,12 @@
+diff -ENwbur /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/IntegrationTests//Sphere/Cone/Original/Start_stop/container.txt /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/IntegrationTests//Sphere/Cone/New/Start_stop/container.txt
+--- /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/IntegrationTests//Sphere/Cone/Original/Start_stop/container.txt	2018-01-27 13:12:27.000000000 +0100
++++ /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/IntegrationTests//Sphere/Cone/New/Start_stop/container.txt	2018-02-07 18:59:59.000000000 +0100
+@@ -17,7 +17,7 @@
+ 0.000000e+00	0.000000e+00	0.000000e+00
+ 0.000000e+00	0.000000e+00	0.000000e+00
+ 0.000000e+00	0.000000e+00	0.000000e+00
+-5.000000e-01	-5.000000e-01	-5.000000e-01	-5.000000e-01
++5.000000e-01	-5.000000e-01	-5.000000e-01	0.000000e+00
+ 0.000000e+00	0.000000e+00	0.000000e+00	0.000000e+00
+ 0.000000e+00	0.000000e+00	0.000000e+00	0.000000e+00
+ 0.000000e+00	0.000000e+00	0.000000e+00	0.000000e+00

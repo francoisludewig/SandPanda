@@ -10,7 +10,7 @@
 #include "../../Includes/ComputingForce.h"
 #include "../../Includes/Contact/ContactDetection.h"
 
-Body::Body() noexcept :
+Body::Body() :
 sp(0), Ng(0), numl(0), Rmax(0), m(0), NhollowBall(0),ActiveRotation(0) {
 	QuaternionToBase();
 	Ine_1[0][0] = 0;
@@ -22,10 +22,9 @@ sp(0), Ng(0), numl(0), Rmax(0), m(0), NhollowBall(0),ActiveRotation(0) {
 	Ine_1[2][0] = 0;
 	Ine_1[2][1] = 0;
 	Ine_1[2][2] = 0;
-	elongationManager = ElongationManager(250);
 }
 
-Body::~Body() noexcept {}
+Body::~Body() {}
 
 void Body::LoadFromFile(FILE *ft) noexcept {
 	fscanf(ft,"%d\t%d\t",&sp,&NhollowBall);
@@ -233,7 +232,7 @@ void Body::UploadSpecies(vector<BodySpecie> bdsp,vector<Sphere> & sph, int numer
 	sphl.Z(z);
 	sphl.Num(sph.size());
 	numl = sph.size();
-	sph.push_back(std::move(sphl));
+	sph.emplace_back(std::move(sphl));
 	
 	//Correction de la densite 7700 -> 1000
 	//printf("m = %e\n",bdsp[sp].m);

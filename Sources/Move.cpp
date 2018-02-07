@@ -12,8 +12,9 @@
 #include "../Includes/ReadWrite.h"
 #include "../Includes/Contact/ContactDetection.h"
 #include "../Includes/ComputingForce.h"
-#include "../Includes/Data.h"
 #include "../Includes/Move.h"
+
+#include "../Includes/Configuration.h"
 #include "../Includes/Solids/HollowBall.h"
 #include "../Includes/LinkedCells/CellBounds.h"
 

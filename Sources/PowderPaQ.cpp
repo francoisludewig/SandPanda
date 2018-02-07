@@ -8,16 +8,17 @@
 #include "../Includes/Solids/Elbow.h"
 #include "../Includes/Solids/Sphere.h"
 #include "../Includes/Solids/Body.h"
+#include "../Includes/Solids/Solids.h"
 #include "../Includes/Contact/Contact.h"
 #include "../Includes/ReadWrite.h"
 #include "../Includes/Contact/ContactDetection.h"
 #include "../Includes/ComputingForce.h"
 #include "../Includes/Move.h"
 #include "../Includes/Evolution.h"
-#include "../Includes/Data.h"
+#include "../Includes/Configuration.h"
 #include "../Includes/LinkedCells/CellBounds.h"
 
-void PowderPaQ::PowderPaQsecousseUpward(std::vector<Plan> & pl,std::vector<PlanR> & plr,std::vector<Cone> & co, Data & dat, double PQheight, double PQVel) noexcept {
+void PowderPaQ::PowderPaQsecousseUpward(std::vector<Plan> & pl,std::vector<PlanR> & plr,std::vector<Cone> & co, Configuration & dat, double PQheight, double PQVel) noexcept {
 	for(auto& plan : pl){
 		plan.SetVz(PQVel,0,0,0);
 		plan.SetMemoryPosition();
@@ -33,7 +34,7 @@ void PowderPaQ::PowderPaQsecousseUpward(std::vector<Plan> & pl,std::vector<PlanR
 	dat.Total += PQheight/PQVel;
 }
 
-void PowderPaQ::PowderPaQsecousseDownward(std::vector<Plan> & pl,std::vector<PlanR> & plr,std::vector<Cone> & co, Data & dat, double PQheight) noexcept {
+void PowderPaQ::PowderPaQsecousseDownward(std::vector<Plan> & pl,std::vector<PlanR> & plr,std::vector<Cone> & co, Configuration & dat, double PQheight) noexcept {
 	double delay = sqrt(2*PQheight/9.81);
 	dat.Total += delay;	
 	int Ntsp = (delay)/(dat.dt) + 1;
@@ -56,7 +57,7 @@ void PowderPaQ::PowderPaQsecousseDownward(std::vector<Plan> & pl,std::vector<Pla
 	}	
 }
 
-void PowderPaQ::PowderPaQrelaxation(std::vector<Plan> & pl,std::vector<PlanR> & plr,std::vector<Cone> & co, Data & dat, double t, double PQheight, double PQVel) noexcept {
+void PowderPaQ::PowderPaQrelaxation(std::vector<Plan> & pl,std::vector<PlanR> & plr,std::vector<Cone> & co, Configuration & dat, double t, double PQheight, double PQVel) noexcept {
 	for(auto& plan : pl){
 		plan.SetVz(0,0,0,0);
 		plan.OnOffGravity(false);
@@ -75,38 +76,37 @@ void PowderPaQ::PowderPaQrelaxation(std::vector<Plan> & pl,std::vector<PlanR> & 
 	dat.Total += (t-PQheight/PQVel-sqrt(2*PQheight/9.81));	
 }
 
-int PowderPaQ::PowderPaQRun(std::vector<Plan> & pl,std::vector<PlanR> & plr,std::vector<Cone> & co,std::vector<Elbow> & elb,std::vector<Sphere> & sph,std::vector<Body> & bd,std::vector<HollowBall> & hb,Data & dat,Gravity & gf,
-		std::vector<Sphere*>& cell, int & Ntp, char *name,int ntpi, int ntpf, int Nthreshold, double PQheight, double PQVel, const CellBounds& cellBounds) noexcept {
-	Evolution evolution(sph.size(), bd.size(), pl, plr, co, elb, dat, gf, cellBounds);
-	dat.record = 0;
+int PowderPaQ::PowderPaQRun(std::shared_ptr<Solids>& solids, std::vector<Sphere*>& cell, int & Ntp, char *name,int ntpi, int ntpf, int Nthreshold, double PQheight, double PQVel, const CellBounds& cellBounds) noexcept {
+	Evolution evolution(solids, cellBounds, false);
+	solids->configuration.record = 0;
 	for(int nt = ntpi  ; nt <= ntpf ; nt++){
 		//Secousse
-		PowderPaQsecousseUpward(pl,plr,co,dat,PQheight,PQVel);
-		Ntp = evolution.Evolve(pl,plr,co,elb,sph,bd,hb,dat,gf,cell,Ntp, name,Nthreshold);
+		PowderPaQsecousseUpward(solids->plans,solids->disks,solids->cones,solids->configuration,PQheight,PQVel);
+		Ntp = evolution.Evolve(cell,Ntp, name,Nthreshold);
 
-		PowderPaQsecousseDownward(pl,plr,co,dat,PQheight);
-		Ntp = evolution.Evolve(pl,plr,co,elb,sph,bd,hb,dat,gf,cell,Ntp, name,Nthreshold);
+		PowderPaQsecousseDownward(solids->plans,solids->disks,solids->cones,solids->configuration,PQheight);
+		Ntp = evolution.Evolve(cell,Ntp, name,Nthreshold);
 
 		// Relaxation
 		if(nt < 100)
-			PowderPaQrelaxation(pl,plr,co,dat,0.5,PQheight,PQVel);
+			PowderPaQrelaxation(solids->plans,solids->disks,solids->cones,solids->configuration,0.5,PQheight,PQVel);
 		else
-			PowderPaQrelaxation(pl,plr,co,dat,0.25,PQheight,PQVel);
+			PowderPaQrelaxation(solids->plans,solids->disks,solids->cones,solids->configuration,0.25,PQheight,PQVel);
 
-		Ntp = evolution.Evolve(pl,plr,co,elb,sph,bd,hb,dat,gf,cell,Ntp, name,Nthreshold);
+		Ntp = evolution.Evolve(cell,Ntp, name,Nthreshold);
 		// Enregistrement
-		ReadWrite::writeStartStopContainer(name,pl,plr,co,elb);
-		ReadWrite::writeStartStopSphere(name,sph);
-		ReadWrite::writeStartStopBodies(name,bd,sph);
-		ReadWrite::writeStartStopData(name, &gf, &dat);
-		ReadWrite::writeStartStopHollowBall(name, hb);
+		ReadWrite::writeStartStopContainer(name,solids->plans,solids->disks,solids->cones,solids->elbows);
+		ReadWrite::writeStartStopSphere(name,solids->spheres);
+		ReadWrite::writeStartStopBodies(name,solids->bodies,solids->spheres);
+		ReadWrite::writeStartStopData(name, solids->gravity, solids->configuration);
+		ReadWrite::writeStartStopHollowBall(name, solids->hollowBalls);
 
-		ReadWrite::writeOutContainer(name,nt,pl,plr,co,elb,dat.outMode);
-		ReadWrite::writeOutSphere(name,nt,sph,dat.outMode);
-		ReadWrite::writeOutBodies(name,nt,bd,dat.outMode);
-		ReadWrite::writeOutData(name, nt, &gf, &dat);
-		ReadWrite::writeOutContact(name,nt,evolution.ContactCount(),evolution.GetContacts(),dat);
-		ReadWrite::writeOutHollowBall(name, Ntp, hb);
+		ReadWrite::writeOutContainer(name,nt,solids->plans,solids->disks,solids->cones,solids->elbows,solids->configuration.outMode);
+		ReadWrite::writeOutSphere(name,nt,solids->spheres,solids->configuration.outMode);
+		ReadWrite::writeOutBodies(name,nt,solids->bodies,solids->configuration.outMode);
+		ReadWrite::writeOutData(name, nt, solids->gravity, solids->configuration);
+		ReadWrite::writeOutContact(name,nt,evolution.ContactCount(),evolution.GetContacts(),solids->configuration);
+		ReadWrite::writeOutHollowBall(name, Ntp, solids->hollowBalls);
 		Ntp++;
 
 	}

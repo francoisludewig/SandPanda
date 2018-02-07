@@ -1,8 +1,8 @@
 #include <ctime>
 
 #include "../Includes/Evolution.h"
-#include "../Includes/Data.h"
 #include "../Includes/ComputingForce.h"
+#include "../Includes/Configuration.h"
 #include "../Includes/Move.h"
 #include "../Includes/ReadWrite.h"
 #include "../Includes/Contact/ContactDetection.h"
@@ -12,168 +12,193 @@
 #include "../Includes/Solids/Body.h"
 #include "../Includes/LinkedCells/LinkedCellFiller.h"
 
-int Evolution::Evolve(std::vector<Plan> & pl,std::vector<PlanR> & plr,std::vector<Cone> & co,std::vector<Elbow> & elb,std::vector<Sphere> & sph,std::vector<Body> & bd,std::vector<HollowBall> & hb,Data & dat,Gravity & gf,
-		std::vector<Sphere*>& cell, int & Ntp, char *name, int Nthreshold) noexcept {
+int Evolution::Evolve(std::vector<Sphere*>& cell, int & Ntp, char *name, int Nthreshold) noexcept {
+	double dt = solids->configuration.dt;
+
 	// Sequential Version
 	printf("Evolution\n");
 	do{
-		dat.TIME += dat.dt;
+		solids->configuration.TIME += dt;
 		// Position anticipation
-		Move::moveContainer(pl, plr, co, elb, dat.TIME, dat.dt/2, sph,gf);
-		dat.mas->Move(dat.dt/2);
+		Move::moveContainer(solids->plans, solids->disks, solids->cones, solids->elbows, solids->configuration.TIME, dt/2, solids->spheres,solids->gravity);
+		solids->configuration.mas->Move(dt/2);
 
-		Move::moveSphere(sph, dat.dt/2);
-		Move::upDateHollowBall(hb,dat.dt);
+		Move::moveSphere(solids->spheres, dt/2);
+		Move::upDateHollowBall(solids->hollowBalls, dt);
 
-		gf.Move(dat.TIME,dat.dt/2);
+		solids->gravity.Move(solids->configuration.TIME,dt/2);
 		//Doublon pour test
-		Move::moveBodies(bd, dat.dt/2, sph);
-		PeriodicityPL(sph, pl);
+		Move::moveBodies(solids->bodies, dt/2, solids->spheres);
+		PeriodicityPL(solids->spheres, solids->plans);
 
 		// Linked Cells
-		LinkedCellFiller::Fill(sph,dat,cell);
+		LinkedCellFiller::Fill(solids->spheres,solids->configuration,cell);
 		// Initialization for the time step
-		ComputeForce::InitForTimeStep(Nct, sph, bd, ct,pl,plr,co,elb);
+		ComputeForce::InitForTimeStep(Nct, solids->spheres, solids->bodies, ct,solids->plans,solids->disks,solids->cones,solids->elbows);
 		// Contact Detection
 		Nct = 0;
 		// Verison sequentiel normale
 		ContactDetection::sphContact(cellBounds, ct, Nct, cell);
-		ContactDetection::sphContainer(sph, pl, plr, co, elb, hb, Nct, ct, cell, solidCells,dat.Rmax);
+		ContactDetection::sphContainer(solids->spheres, solids->plans, solids->disks, solids->cones, solids->elbows, solids->hollowBalls, Nct, ct, cell, solidCells,solids->configuration.Rmax);
 
-		if(dat.modelTg == 1){
-			for(auto& sphere : sph)
+		if(solids->configuration.modelTg == 1){
+			for(auto& sphere : solids->spheres)
 				sphere.GetElongationManager().InitXsi();
 
-			for(auto& body : bd)
+			for(auto& body : solids->bodies)
 				body.GetElongationManager().InitXsi();
 		}
 
 		// Computing Force
-		ComputeForce::Compute(ct, Nct,dat);
+		if(isMultiThreads)
+			ComputeForce::ComputeMutex(ct, Nct,solids->configuration);
+		else
+			ComputeForce::Compute(ct, Nct,solids->configuration);
 
-		Move::UpDateForceContainer(sph,pl,plr,co,dat.TIME,dat.dt,gf);
-		dat.mas->getForces();
+		Move::UpDateForceContainer(solids->spheres,solids->plans,solids->disks,solids->cones,solids->configuration.TIME, dt, solids->gravity);
+		solids->configuration.mas->getForces();
 		// Update Velocities
-		Move::upDateVelocitySphere(sph, gf, dat.dt);
-		Move::upDateVelocityBodies(bd, gf, dat.dt, sph);
-		Move::upDateVelocityContainer(pl, plr, co, elb, dat.TIME, dat.dt, gf);
-		dat.mas->UpDateVelocity(dat.dt);
+		Move::upDateVelocitySphere(solids->spheres, solids->gravity, dt);
+		Move::upDateVelocityBodies(solids->bodies, solids->gravity, dt, solids->spheres);
+		Move::upDateVelocityContainer(solids->plans, solids->disks, solids->cones, solids->elbows, solids->configuration.TIME, dt, solids->gravity);
+		solids->configuration.mas->UpDateVelocity(dt);
 
 		// Move
-		Move::moveContainer(pl, plr, co, elb, dat.TIME, dat.dt/2, sph,gf);
-		dat.mas->Move(dat.dt/2);
-		Move::moveSphere(sph, dat.dt/2);
-		Move::moveBodies(bd, dat.dt/2, sph);
-		Move::upDateHollowBall(hb,dat.dt);
+		Move::moveContainer(solids->plans, solids->disks, solids->cones, solids->elbows, solids->configuration.TIME, dt/2, solids->spheres, solids->gravity);
+		solids->configuration.mas->Move(dt/2);
+		Move::moveSphere(solids->spheres, dt/2);
+		Move::moveBodies(solids->bodies, dt/2, solids->spheres);
+		Move::upDateHollowBall(solids->hollowBalls,dt);
 
-		gf.Move(dat.TIME,dat.dt/2);
-		PeriodicityPL(sph, pl);
+		solids->gravity.Move(solids->configuration.TIME,dt/2);
+		PeriodicityPL(solids->spheres, solids->plans);
 
 		// Record data
-		if(dat.record){
-			if(fabs((dat.TIME-dat.t0)-Ntp*(dat.dts)) < dat.dt*0.99  && (dat.TIME-dat.t0 > 0.)){
-				ReadWrite::writeStartStopContainer(name,pl,plr,co,elb);
-				ReadWrite::writeStartStopSphere(name,sph);
-				ReadWrite::writeStartStopBodies(name,bd,sph);
-				ReadWrite::writeStartStopData(name, &gf, &dat);
-				ReadWrite::writeStartStopHollowBall(name, hb);
+		if(solids->configuration.record){
+			if(fabs((solids->configuration.TIME-solids->configuration.t0)-Ntp*(solids->configuration.dts)) < solids->configuration.dt*0.99  && (solids->configuration.TIME-solids->configuration.t0 > 0.)){
 
-				ReadWrite::writeOutContainer(name,Ntp,pl,plr,co,elb,dat.outMode);
-				ReadWrite::writeOutSphere(name,Ntp,sph,dat.outMode);
-				ReadWrite::writeOutBodies(name,Ntp,bd,dat.outMode);
-				ReadWrite::writeOutHollowBall(name, Ntp, hb);
+				ReadWrite::writeStartStopContainer(name,solids->plans,solids->disks,solids->cones,solids->elbows);
+				ReadWrite::writeStartStopSphere(name,solids->spheres);
+				ReadWrite::writeStartStopBodies(name,solids->bodies,solids->spheres);
+				ReadWrite::writeStartStopData(name, solids->gravity, solids->configuration);
+				ReadWrite::writeStartStopHollowBall(name, solids->hollowBalls);
+
+				ReadWrite::writeOutContainer(name,Ntp,solids->plans,solids->disks,solids->cones,solids->elbows,solids->configuration.outMode);
+				ReadWrite::writeOutSphere(name,Ntp,solids->spheres,solids->configuration.outMode);
+				ReadWrite::writeOutBodies(name,Ntp,solids->bodies,solids->configuration.outMode);
+				ReadWrite::writeOutHollowBall(name, Ntp, solids->hollowBalls);
+
 				//writeOutData(name, Ntp, &gf, &dat);
-				if(dat.outContact == 1 || dat.outContact > 2)
-					ReadWrite::writeOutContact(name,Ntp,Nct,ct,dat);
-				if(dat.outContact >= 2)
-					ReadWrite::writeOutContactDetails(name,Ntp,Nct,ct,dat);
-				printf("Save File %d\t\ttime = %e\r",Ntp,dat.TIME);
+				if(solids->configuration.outContact == 1 || solids->configuration.outContact > 2)
+					ReadWrite::writeOutContact(name,Ntp,Nct,ct,solids->configuration);
+				if(solids->configuration.outContact >= 2)
+					ReadWrite::writeOutContactDetails(name,Ntp,Nct,ct,solids->configuration);
+				printf("Save File %d\t\ttime = %e\r",Ntp,solids->configuration.TIME);
 				fflush(stdout);
 				Ntp++;
 			}
 		}
-	}while(dat.TIME <= dat.Total-dat.dt*0.99);
+	}while(solids->configuration.TIME <= solids->configuration.Total-solids->configuration.dt*0.99);
 	//printf("TIME = %.20lf > %.20lf = Total-dt\n",dat.TIME,dat.Total-dat.dt*0.9);
 	printf("\n");
 	return(Ntp);
 }
 
-int Evolution::EvolveMelt(std::vector<Plan> & pl,std::vector<PlanR> & plr,std::vector<Cone> & co,std::vector<Elbow> & elb,std::vector<Sphere> & sph,std::vector<Body> & bd,std::vector<HollowBall> & hb,Data & dat,Gravity & gf,
-		std::vector<Sphere*> cell, int & Ntp, char *name, double vr,double delayVr, int Nthreshold) noexcept{
+int Evolution::EvolveMelt(std::vector<Sphere*> cell, int & Ntp, char *name, double vr,double delayVr, int Nthreshold) noexcept{
+	double dt = solids->configuration.dt;
 	printf("Evolution\n");
 	double dtl;
 	double r0,r1;
 	// Sequential Version
 	do{
-		dat.TIME += dat.dt;
-		dtl = dat.dt;
-		r0 = sph[0].Radius();
+		solids->configuration.TIME += dt;
+		dtl = dt;
+		r0 = solids->spheres[0].Radius();
 		// Position anticipation
-		Move::moveContainer(pl, plr, co, elb, dat.TIME, dat.dt/2, sph,gf);
-		Move::moveSphere(sph, dat.dt/2);
-		Move::upDateHollowBall(hb,dat.dt);
-		Move::MeltingSphere(sph, vr, delayVr, dat.dt/2);
-		gf.Move(dat.TIME,dat.dt/2);
+		Move::moveContainer(solids->plans, solids->disks, solids->cones, solids->elbows, solids->configuration.TIME, dt/2, solids->spheres,solids->gravity);
+		Move::moveSphere(solids->spheres, dt/2);
+		Move::moveBodies(solids->bodies, dt/2, solids->spheres);
+
+		Move::upDateHollowBall(solids->hollowBalls, dt);
+		Move::MeltingSphere(solids->spheres, vr, delayVr, dt/2);
+		solids->gravity.Move(solids->configuration.TIME,dt/2);
+
+
 		//Doublon pour test
-		Move::moveBodies(bd, dat.dt/2, sph);
-		PeriodicityPL(sph, pl);
+		Move::moveBodies(solids->bodies, dt/2, solids->spheres);
+		PeriodicityPL(solids->spheres, solids->plans);
 
 		// Linked Cells
-		LinkedCellFiller::Fill(sph,dat,cell);
+		LinkedCellFiller::Fill(solids->spheres,solids->configuration,cell);
 		// Initialization for the time step
-		ComputeForce::InitForTimeStep(Nct, sph, bd, ct,pl,plr,co,elb);
-
+		ComputeForce::InitForTimeStep(Nct, solids->spheres, solids->bodies, ct,solids->plans,solids->disks,solids->cones,solids->elbows);
 		// Contact Detection
 		Nct = 0;
+		// Verison sequentiel normale
 		ContactDetection::sphContact(cellBounds, ct, Nct, cell);
-		ContactDetection::sphContainer(sph, pl, plr, co, elb, hb, Nct, ct, cell, solidCells, dat.Rmax);
+		ContactDetection::sphContainer(solids->spheres, solids->plans, solids->disks, solids->cones, solids->elbows, solids->hollowBalls, Nct, ct, cell, solidCells,solids->configuration.Rmax);
 
-		if(dat.modelTg == 1){
-			for(int i = 0 ; i < sph.size() ; i++) {
-				sph[i].GetElongationManager().InitXsi();
-			}
+
+		if(solids->configuration.modelTg == 1){
+			for(auto& sphere : solids->spheres)
+				sphere.GetElongationManager().InitXsi();
 		}
 
 		// Computing Force
-		ComputeForce::Compute(ct, Nct,dat);
+		if(isMultiThreads)
+			ComputeForce::ComputeMutex(ct, Nct,solids->configuration);
+		else
+			ComputeForce::Compute(ct, Nct,solids->configuration);
+
 
 		// Update Velocities
-		Move::upDateVelocitySphere(sph, gf, dat.dt);
-		Move::upDateVelocityBodies(bd, gf, dat.dt, sph);
+		Move::upDateVelocitySphere(solids->spheres, solids->gravity, dt);
+		Move::upDateVelocityBodies(solids->bodies, solids->gravity, dt, solids->spheres);
+		Move::upDateVelocityContainer(solids->plans, solids->disks, solids->cones, solids->elbows, solids->configuration.TIME, dt, solids->gravity);
+		solids->configuration.mas->UpDateVelocity(dt);
+
+
 		// Move
-		Move::moveContainer(pl, plr, co, elb, dat.TIME, dat.dt/2, sph,gf);
-		Move::moveSphere(sph, dat.dt/2);
-		Move::moveBodies(bd, dat.dt/2, sph);
-		Move::upDateHollowBall(hb,dat.dt);
-		Move::MeltingSphere(sph, vr, delayVr, dat.dt/2);
-		gf.Move(dat.TIME,dat.dt/2);
-		PeriodicityPL(sph, pl);
+		Move::moveContainer(solids->plans, solids->disks, solids->cones, solids->elbows, solids->configuration.TIME, dt/2, solids->spheres,solids->gravity);
+		Move::moveSphere(solids->spheres, dt/2);
+		Move::moveBodies(solids->bodies, dt/2, solids->spheres);
+
+
+		Move::upDateHollowBall(solids->hollowBalls,dt);
+		Move::MeltingSphere(solids->spheres, vr, delayVr, dt/2);
+
+		solids->gravity.Move(solids->configuration.TIME,dt/2);
+		PeriodicityPL(solids->spheres, solids->plans);
 
 		// Record data
-		if(dat.record){
-			if(fabs((dat.TIME-dat.t0)-Ntp*(dat.dts)) < dat.dt  && (dat.TIME-dat.t0 > 0.)){
-				ReadWrite::writeStartStopContainer(name,pl,plr,co,elb);
-				ReadWrite::writeStartStopSphere(name,sph);
-				ReadWrite::writeStartStopBodies(name,bd,sph);
-				ReadWrite::writeStartStopData(name, &gf, &dat);
-				ReadWrite::writeStartStopHollowBall(name, hb);
+		if(solids->configuration.record){
+			if(fabs((solids->configuration.TIME-solids->configuration.t0)-Ntp*(solids->configuration.dts)) < solids->configuration.dt*0.99  && (solids->configuration.TIME-solids->configuration.t0 > 0.)){
 
-				ReadWrite::writeOutContainer(name,Ntp,pl,plr,co,elb,dat.outMode);
-				ReadWrite::writeOutSphere(name,Ntp,sph,dat.outMode);
-				ReadWrite::writeOutBodies(name,Ntp,bd,dat.outMode);
-				ReadWrite::writeOutHollowBall(name, Ntp, hb);
-				if(dat.outContact == 1)
-					ReadWrite::writeOutContact(name,Ntp,Nct,ct,dat);
-				if(dat.outContact == 2)
-					ReadWrite::writeOutContactDetails(name,Ntp,Nct,ct,dat);
-				printf("Save File %d\t\ttime = %e\r",Ntp,dat.TIME);
+				ReadWrite::writeStartStopContainer(name,solids->plans,solids->disks,solids->cones,solids->elbows);
+				ReadWrite::writeStartStopSphere(name,solids->spheres);
+				ReadWrite::writeStartStopBodies(name,solids->bodies,solids->spheres);
+				ReadWrite::writeStartStopData(name, solids->gravity, solids->configuration);
+				ReadWrite::writeStartStopHollowBall(name, solids->hollowBalls);
+
+				ReadWrite::writeOutContainer(name,Ntp,solids->plans,solids->disks,solids->cones,solids->elbows,solids->configuration.outMode);
+				ReadWrite::writeOutSphere(name,Ntp,solids->spheres,solids->configuration.outMode);
+				ReadWrite::writeOutBodies(name,Ntp,solids->bodies,solids->configuration.outMode);
+				ReadWrite::writeOutHollowBall(name, Ntp, solids->hollowBalls);
+
+				//writeOutData(name, Ntp, &gf, &dat);
+				if(solids->configuration.outContact == 1 || solids->configuration.outContact > 2)
+					ReadWrite::writeOutContact(name,Ntp,Nct,ct,solids->configuration);
+				if(solids->configuration.outContact >= 2)
+					ReadWrite::writeOutContactDetails(name,Ntp,Nct,ct,solids->configuration);
+				printf("Save File %d\t\ttime = %e\r",Ntp,solids->configuration.TIME);
 				fflush(stdout);
 				Ntp++;
 			}
 		}
-		r1 = sph[0].Radius();
-		dat.dt = dtl*pow(r1/r0,3./2.);
-	}while(dat.TIME < dat.Total-dat.dt);
+		r1 = solids->spheres[0].Radius();
+		solids->configuration.dt = dtl*pow(r1/r0,3./2.);
+		dt = dtl*pow(r1/r0,3./2.);
+	}while(solids->configuration.TIME <= solids->configuration.Total-solids->configuration.dt*0.99);
 	printf("\n");
 	printf("End of Evolution\n");
 	return(Ntp);

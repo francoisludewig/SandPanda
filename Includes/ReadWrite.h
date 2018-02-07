@@ -9,7 +9,7 @@ class Cone;
 class Elbow;
 class HollowBall;
 class Sphere;
-class Data;
+class Configuration;
 class Body;
 class Gravity;
 class Contact;
@@ -37,14 +37,14 @@ public:
 	static void writeOutBodies(char *directory, int n, std::vector<Body> & bd, int mode) noexcept;
 	static void readStart_stopBodies(char *directory, std::vector<Body> & bd, int limite) noexcept;
 	
-	static void readOutData(char *directory, Gravity *gf, Data *dat) noexcept;
-	static void writeOutData(char *directory, int n, Gravity *gf, Data *dat) noexcept;
-	static void writeStartStopData(char *directory, Gravity *gf, Data *dat) noexcept;
-	static void readStartStopData(char *directory, Gravity *gf, Data *dat) noexcept;
+	static void readOutData(char *directory, Gravity &gf, Configuration &dat) noexcept;
+	static void writeOutData(char *directory, int n, Gravity& gf, Configuration& dat) noexcept;
+	static void writeStartStopData(char *directory, Gravity& gf, Configuration& dat) noexcept;
+	static void readStartStopData(char *directory, Gravity& gf, Configuration& dat) noexcept;
 	
 	//void readOutType(char *directory, Data & dat);
-	static void writeOutContact(char *directory, int n, int Nct, Contact *ct, Data & dat) noexcept;
-	static void writeOutContactDetails(char *directory, int n, int & Nct, Contact *ct, Data & dat) noexcept;
+	static void writeOutContact(char *directory, int n, int Nct, Contact *ct, Configuration & dat) noexcept;
+	static void writeOutContactDetails(char *directory, int n, int & Nct, Contact *ct, Configuration & dat) noexcept;
 	static void readOutBodySpecie(char *directory,std::vector<BodySpecie> & bdsp) noexcept;
 	//void readExportLink(char *directory, std::vector<Link> &lk, double k);
 };

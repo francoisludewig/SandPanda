@@ -74,7 +74,7 @@ int main(int argc,char **argv){
 	Option opt;
 
 	Contact *ct = nullptr,*cta = nullptr,*ctb = nullptr,*ctc = nullptr;
-	Data dat;
+	Configuration dat;
 	Gravity gf;
     
 	printf("\n");

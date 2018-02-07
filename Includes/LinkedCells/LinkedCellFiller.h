@@ -3,9 +3,9 @@
 #include <vector>
 
 class Sphere;
-class Data;
+class Configuration;
 
 class LinkedCellFiller{
 public:
-	static void Fill(std::vector<Sphere> & sph, const Data& dat, std::vector<Sphere*>& cell) noexcept;
+	static void Fill(std::vector<Sphere> & sph, const Configuration& dat, std::vector<Sphere*>& cell) noexcept;
 };

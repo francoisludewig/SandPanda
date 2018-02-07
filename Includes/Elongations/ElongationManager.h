@@ -7,6 +7,7 @@
 #include <vector>
 #include <stdlib.h>
 #include <stdio.h>
+#include <mutex>
 
 class ElongationManager {
 public:
@@ -77,12 +78,13 @@ public:
 	ElongationManager(int maxElongationCount) {
 		read = std::make_shared<ElongationData>(maxElongationCount);
 		write = std::make_shared<ElongationData>(maxElongationCount);
+		mutex = std::unique_ptr<std::mutex>(new std::mutex());
 	}
 
-	ElongationManager(const ElongationManager& other) = default;
-	ElongationManager(ElongationManager&& other) noexcept = default;
-	ElongationManager& operator=(const ElongationManager& other) = default;
-	ElongationManager& operator=(ElongationManager&& other) noexcept = default;
+	ElongationManager(const ElongationManager& other) = delete;
+	ElongationManager(ElongationManager&& other) = default;
+	ElongationManager& operator=(const ElongationManager& other) = delete;
+	ElongationManager& operator=(ElongationManager&& other) = default;
 
 	// Sphere - *
 	void AddElongation(Elongation& elongation, int neighbourNumber , Contact::Type contactType, int bodyNumber) noexcept {
@@ -103,6 +105,28 @@ public:
 		write->neighbourCount++;
 	}
 
+	// Sphere - *
+	void AddElongationMutex(Elongation& elongation, int neighbourNumber , Contact::Type contactType, int bodyNumber) noexcept {
+		std::lock_guard<std::mutex> lock(*mutex);
+		write->elongations[write->neighbourCount] = elongation;
+		write->neighbourNumber[write->neighbourCount] = neighbourNumber;
+		write->type[write->neighbourCount] = contactType;
+		write->bodyNumber[write->neighbourCount] = bodyNumber;
+		write->neighbourCount++;
+	}
+	
+	// Body - *
+	void AddElongationMutex(Elongation& elongation, int neighbourNumber , Contact::Type contactType, int selfBodyNumner, int bodyNumber) noexcept {
+		std::lock_guard<std::mutex> lock(*mutex);
+		write->elongations[write->neighbourCount] = elongation;
+		write->neighbourNumber[write->neighbourCount] = neighbourNumber;
+		write->type[write->neighbourCount] = contactType;
+		write->bodyNumber[write->neighbourCount] = bodyNumber;
+		write->selfBodyNumber[write->neighbourCount] = selfBodyNumner;
+		write->neighbourCount++;
+	}
+	
+	
 	// Contact Sphere - *
 	Elongation GetElongation(int neighbourNumber, Contact::Type contactType, int bodyNumber) const noexcept {
 		for(int i = 0 ; i < read->neighbourCount ; i++){
@@ -144,6 +168,7 @@ public:
     void ReadFromFileForBody(FILE *ft) { read->ReadFromFileForBody(ft); }
 
 private:
+	std::unique_ptr<std::mutex> mutex {nullptr};
 	std::shared_ptr<ElongationData> read;
 	std::shared_ptr<ElongationData> write;
 

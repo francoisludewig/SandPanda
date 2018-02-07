@@ -13,7 +13,7 @@ class Contact;
 class Plan;
 class PlanR;
 class Fluid;
-class Data;
+class Configuration;
 class Cone;
 class Elbow;
 class BodySpecie;
@@ -21,8 +21,8 @@ class Gravity;
 
 class Body : public MechanicalPointWithBase{
 public:
-	Body() noexcept;
-	~Body() noexcept;
+	Body();
+	~Body();
 
 	int NumberOfSphere() const noexcept { return Ng; }
 	int Num() const noexcept { return numl; }
@@ -73,7 +73,7 @@ private:
 	std::vector<double> xg;
 	std::vector<double> yg;
 	std::vector<double> zg;
-	ElongationManager elongationManager;
+	ElongationManager elongationManager{250};
 
 	int ActiveRotation;
 };

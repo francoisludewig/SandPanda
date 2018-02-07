@@ -11,7 +11,7 @@ class Plan;
 class PlanR;
 class Cone;
 class Elbow;
-class Data;
+class Configuration;
 
 class ComputeForce {
 public:
@@ -19,7 +19,9 @@ public:
 
 	static void InitForTimeStepOMP(const int & Nsph, const int & Nbd , const int & Nct , const int & Ncta , const int & Nctb , const int & Nctc ,int & Npl, int & Nplr, int & Nco, int & Nelb, std::vector<Sphere> & sph, std::vector<Body> & bd, Contact *ct, Contact *cta, Contact *ctb, Contact *ctc, std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co, std::vector<Elbow> & elb) noexcept;
 
-	static void Compute(Contact *ct, const int Nct,Data & dat) noexcept;
+	static void Compute(Contact *ct, const int Nct,Configuration & dat) noexcept;
+
+	static void ComputeMutex(Contact *ct, const int Nct,Configuration & dat) noexcept;
 
 private:
 	static inline double DampingCoefficient(const double& en, const double& meff, const double& k) {

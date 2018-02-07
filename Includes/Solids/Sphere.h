@@ -6,7 +6,7 @@
 
 class Contact;
 class ContactTampon;
-class Data;
+class Configuration;
 class Gravity;
 class Body;
 class Elongation;
@@ -21,7 +21,7 @@ private:
 	Sphere *tdl;
 	Body *b;
 
-	ElongationManager elongationManager;
+	ElongationManager elongationManager {maxContact};
 
 	double r0;
 
@@ -38,10 +38,10 @@ public:
 	Sphere(double radius, double mass, double inertia) noexcept;
 	~Sphere() noexcept;
 	
+	Sphere(Sphere&& other) = default;
+	Sphere& operator=(Sphere&& other) = default;
 	Sphere(const Sphere& other) = delete;
-	Sphere(Sphere&& other) noexcept = default;
 	Sphere& operator=(const Sphere& other) = delete;
-	Sphere& operator=(Sphere&& other) noexcept = default;
 
 	int Num() const noexcept { return num; }
 	void Num(int rhs) noexcept { this->num = rhs; }

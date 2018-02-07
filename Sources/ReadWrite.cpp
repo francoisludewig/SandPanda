@@ -2,7 +2,7 @@
 
 #include "../Includes/Solids/Velocity.h"
 #include "../Includes/Gravity.h"
-#include "../Includes/Data.h"
+#include "../Includes/Configuration.h"
 #include "../Includes/Solids/Plan.h"
 #include "../Includes/Solids/PlanR.h"
 #include "../Includes/Solids/Cone.h"
@@ -11,7 +11,6 @@
 #include "../Includes/Solids/Body.h"
 #include "../Includes/Solids/BodySpecie.h"
 #include "../Includes/Contact/Contact.h"
-#include "../Includes/Data.h"
 #include "../Includes/Solids/HollowBall.h"
 
 void ReadWrite::readOutBodySpecie(char *directory,vector<BodySpecie> & bdsp) noexcept {
@@ -71,34 +70,27 @@ void ReadWrite::readOutContainer(char *directory, vector<Plan> & pl, vector<Plan
 	printf("Number of Elbow = %d\n\n",Nelb);
 	// Upload Plan
 
-	for(int i = 0 ; i < Npl ; i++){
-		pl.push_back(Plan());
-	}
+
+	pl = std::vector<Plan>(Npl);
+	plr = std::vector<PlanR>(Nplr);
+	co = std::vector<Cone>(Nco);
+	elb = std::vector<Elbow>(Nelb);
 	printf("push_back\n");
 	for(int i = 0 ; i < Npl ; i++){
 		pl[i].LoadFromFile(ft);
 		pl[i].Numero(i);
 	}
-	// Upload PlanR
-	for(int i = 0 ; i < Nplr ; i++){
-		plr.push_back(PlanR());
-	}
+
 	for(int i = 0 ; i < Nplr ; i++){
 		plr[i].readFromFile(ft);
 		plr[i].Numero(i);
 	}
-	// Upload Cone
-	for(int i = 0 ; i < Nco ; i++){
-		co.push_back(Cone());
-	}
+
 	for(int i = 0 ; i < Nco ; i++){
 		co[i].readFromFile(ft);
 		co[i].Numero(i);
 	}
-	// Upload Elbow
-	for(int i = 0 ; i < Nelb ; i++){
-		elb.push_back(Elbow());
-	}
+
 	for(int i = 0 ; i < Nelb ; i++){
 		elb[i].ReadFromFile(ft);
 		elb[i].numero = i;
@@ -138,26 +130,29 @@ void ReadWrite::readStart_stopContainer(char *directory, vector<Plan> & pl, vect
 	printf("Number of Cone = %d\n",Nco);
 	printf("Number of Elbow = %d\n\n",Nelb);
 
+
+	pl = std::vector<Plan>(Npl);
+	plr = std::vector<PlanR>(Nplr);
+	co = std::vector<Cone>(Nco);
+	elb = std::vector<Elbow>(Nelb);
+
+
 	// Upload Plan
-	pl.resize(Npl);
 	for(int i = 0 ; i < pl.size() ; i++) {
 		pl[i].LoadFromFile(ft);
 		pl[i].Numero(i);
 	}
 	// Upload PlanR
-	plr.resize(Nplr);
 	for(int i = 0 ; i < plr.size() ; i++) {
 		plr[i].readFromFile(ft);
 		plr[i].Numero(i);
 	}
 	// Upload Cone
-	co.resize(Nco);
 	for(int i = 0 ; i < co.size() ; i++){
 		co[i].readFromFile(ft);
 		co[i].Numero(i);
 	}
 	// Upload Elbow
-	elb.resize(Nelb);
 	for(int i = 0 ; i < elb.size() ; i++){
 		elb[i].ReadFromFile(ft);
 		elb[i].numero = i;
@@ -452,13 +447,13 @@ void ReadWrite::readOutBodies(char *directory, vector<Body> & bd, int limite) no
 		fscanf(ft,"%d",&b);
 		Nbd = limite;
 	}
+
+	bd = std::vector<Body>(Nbd);
+
 	printf("Number of Body = %d\n\n",Nbd);
-	for(int i = 0 ; i < Nbd ; i++){
-		Body *bdl = new Body();
-		bdl->LoadFromFile(ft);
-		bd.push_back(*bdl);
-		delete bdl;
-	}
+	for(int i = 0 ; i < Nbd ; i++)
+		bd[i].LoadFromFile(ft);
+
 	fclose(ft);
 	fflush(ft);
 }
@@ -483,8 +478,9 @@ void ReadWrite::readStart_stopBodies(char *directory, vector<Body> & bd, int lim
 		fscanf(ft,"%d",&b);
 		Nbd = limite;
 	}
+
 	printf("Number of Body = %d\n\n",Nbd);
-	bd.resize(Nbd);
+	bd = std::vector<Body>(Nbd);
 	for(int i = 0 ; i < bd.size() ; i++)
 		bd[i].ReadStartStopFile(ft);
 
@@ -530,7 +526,7 @@ void ReadWrite::writeOutBodies(char *directory, int n, vector<Body> & bd, int mo
 	}
 }
 
-void ReadWrite::readOutData(char *directory, Gravity *gf, Data *dat) noexcept {
+void ReadWrite::readOutData(char *directory, Gravity& gf, Configuration& dat) noexcept {
 	char fileName[1024];
 	FILE *ft;
 	// Making FileName
@@ -539,13 +535,13 @@ void ReadWrite::readOutData(char *directory, Gravity *gf, Data *dat) noexcept {
 	//printf("FileName : %s\n",fileName);
 	// Open File
 	ft = fopen(fileName,"r");
-	gf->LoadFromFile(ft);
-	dat->LoadFromFile(ft);
+	gf.LoadFromFile(ft);
+	dat.LoadFromFile(ft);
 	fclose(ft);
 	fflush(ft);
 }
 
-void ReadWrite::readStartStopData(char *directory, Gravity *gf, Data *dat) noexcept {
+void ReadWrite::readStartStopData(char *directory, Gravity& gf, Configuration& dat) noexcept {
 	char fileName[1024];
 	FILE *ft;
 	// Making FileName
@@ -554,14 +550,14 @@ void ReadWrite::readStartStopData(char *directory, Gravity *gf, Data *dat) noexc
 	//printf("FileName : %s\n",fileName);
 	// Open File
 	ft = fopen(fileName,"r");
-	gf->LoadFromFile(ft);
-	dat->LoadFromFile(ft);
+	gf.LoadFromFile(ft);
+	dat.LoadFromFile(ft);
 	fclose(ft);
 	fflush(ft);
 }
 
 
-void ReadWrite::writeOutData(char *directory, int n, Gravity *gf, Data *dat) noexcept {
+void ReadWrite::writeOutData(char *directory, int n, Gravity& gf, Configuration& dat) noexcept {
 	char fileName[1024];
 	FILE *ft;
 	// Making FileName
@@ -570,8 +566,8 @@ void ReadWrite::writeOutData(char *directory, int n, Gravity *gf, Data *dat) noe
 	//printf("FileName : %s\n",fileName);
 	// Open File
 	ft = fopen(fileName,"w");
-	gf->WriteToFile(ft);
-	dat->WriteToFile(ft);
+	gf.WriteToFile(ft);
+	dat.WriteToFile(ft);
 	fclose(ft);
 	fflush(ft);
 	/*
@@ -581,7 +577,7 @@ void ReadWrite::writeOutData(char *directory, int n, Gravity *gf, Data *dat) noe
 	 */
 }
 
-void ReadWrite::writeStartStopData(char *directory, Gravity *gf, Data *dat) noexcept {
+void ReadWrite::writeStartStopData(char *directory, Gravity& gf, Configuration& dat) noexcept {
 	char fileName[1024];
 	FILE *ft;
 	// Making FileName
@@ -590,14 +586,14 @@ void ReadWrite::writeStartStopData(char *directory, Gravity *gf, Data *dat) noex
 	//printf("FileName : %s\n",fileName);
 	// Open File
 	ft = fopen(fileName,"w");
-	gf->WriteToFile(ft);
-	dat->WriteToFile(ft);
+	gf.WriteToFile(ft);
+	dat.WriteToFile(ft);
 	fclose(ft);
 	fflush(ft);
 }
 
 
-void ReadWrite::writeOutContact(char *directory, int n, int Nct, Contact *ct, Data & dat) noexcept {
+void ReadWrite::writeOutContact(char *directory, int n, int Nct, Contact *ct, Configuration & dat) noexcept {
 	char fileName[1024];
 	FILE *ft;
 	// Making FileName
@@ -618,7 +614,7 @@ void ReadWrite::writeOutContact(char *directory, int n, int Nct, Contact *ct, Da
 	//printf("File %s has been closed\n",fileName);
 }
 
-void ReadWrite::writeOutContactDetails(char *directory, int n, int & Nct, Contact *ct, Data & dat) noexcept {
+void ReadWrite::writeOutContactDetails(char *directory, int n, int & Nct, Contact *ct, Configuration & dat) noexcept {
 	char fileName[1024];
 	FILE *ft;
 	// Making FileName

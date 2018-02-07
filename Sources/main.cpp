@@ -8,18 +8,22 @@
 #include "../Includes/Solids/Body.h"
 #include "../Includes/ReadWrite.h"
 #include "../Includes/ComputingForce.h"
-#include "../Includes/Data.h"
+#include "../Includes/Configuration.h"
 #include "../Includes/Move.h"
 #include "../Includes/Evolution.h"
+#include "../Includes/MultiThread.h"
 #include "../Includes/Compaction.h"
 #include "../Includes/Solids/BodySpecie.h"
 #include "../Includes/PowderPaQ.h"
 #include "../Includes/Solids/HollowBall.h"
+#include "../Includes/Solids/Solids.h"
+#include "../Includes/SolidBuilder.h"
 #include "../Includes/Option.h"
 #include "../Includes/Contact/ContactDetection.h"
 #include "../Includes/LinkedCells/SolidCellsBuilder.h"
 #include <iostream>
 #include <vector>
+#include <memory>
 //#include <omp.h>
 #include "../Includes/AffinityCache.h"
 #include <sys/stat.h>
@@ -86,18 +90,7 @@ int main(int argc,char **argv){
 	double dila = 0;
 	int Nthreshold = 0;
 
-	vector<Plan> pl;
-	vector<PlanR> plr;
-	vector<Cone> co;
-	vector<Elbow> elb;
-	vector<Sphere> sph;
-	vector<BodySpecie> bdsp;
-	vector<Body> bd;
-	vector<HollowBall> hb;
 	Option opt;
-
-	Data dat;
-	Gravity gf;
 
 	printf("\n");
 
@@ -109,81 +102,60 @@ int main(int argc,char **argv){
 
 	opt.Record();
 
-	if(opt.restart == 0){
-		// Loading file from Export directory
-		ReadWrite::readOutContainer(opt.directory,pl,plr,co,elb);
-		ReadWrite::readOutSphere(opt.directory,sph,opt.limitNg);
-		ReadWrite::readOutBodies(opt.directory,bd,opt.limitNbd);
 
-		Nsph0 = sph.size();
-		ReadWrite::readOutBodySpecie(opt.directory,bdsp);
-		for( int i = 0 ; i < bd.size() ; i++)
-			bd[i].UploadSpecies(bdsp,sph,i);
+	std::shared_ptr<Solids> solids;
 
-		ReadWrite::readOutData(opt.directory, &gf, &dat);
-		ReadWrite::readOutHollowBall(opt.directory, hb);
-	}
-	else{
-		// Loading file from Export directory
-		ReadWrite::readStart_stopContainer(opt.directory,pl,plr,co,elb);
-		ReadWrite::readStart_stopSphere(opt.directory,sph,opt.limitNg);
-		ReadWrite::readStart_stopBodies(opt.directory,bd,opt.limitNbd);
-		Nsph0 = sph.size();
-		ReadWrite::readOutBodySpecie(opt.directory,bdsp);
-		for(int i = 0 ; i < bd.size() ; i++)
-			bd[i].UploadSpecies(bdsp,sph,i);
+	if(opt.restart == 0)
+		solids = SolidBuilder::BuildFromExport(opt);
+	else
+		solids = SolidBuilder::BuildFromStart_Stop(opt);
 
-		ReadWrite::readStartStopData(opt.directory, &gf, &dat);
-		ReadWrite::readStart_stopHollowBall(opt.directory, hb);
-	}
-
-
-	opt.InData(dat, gf, pl, plr, co);
+	opt.InData(solids->configuration, solids->gravity, solids->plans, solids->disks, solids->cones);
 
 	// Calcul du rayon maximum dans Data
-	if(!sph.empty())
-		dat.ComputeRmax(sph);
+	if(!solids->spheres.empty())
+		solids->configuration.ComputeRmax(solids->spheres);
 
 	// Calcul des cellules liees en fonction de dila et de Rmax dans Data
 	if(dila != 0)
-		dat.ComputeLinkedCell();
+		solids->configuration.ComputeLinkedCell();
 
 	// Annulation des vitesses
 	if(opt.cancelVel == 1)
-		CancelVelocity(sph,bd);
+		CancelVelocity(solids->spheres, solids->bodies);
 	// Generation de vitesse aleatoire
 	if(opt.RdmVel == 1)
-		RandomVelocity(sph,bd,opt.Vrdm,opt.Wrdm);
+		RandomVelocity(solids->spheres,solids->bodies,opt.Vrdm,opt.Wrdm);
 
 	// Gel des rotations
 	if(opt.NoRotation == 1)
-		FreezeRotation(bd);
+		FreezeRotation(solids->bodies);
 
 	// Lien entre les spheres et les solides
-	Sphere::sphereLinking(sph,  bd);
+	Sphere::sphereLinking(solids->spheres,  solids->bodies);
 
 
-	for(auto& cone : co)
-		cone.LimitLink(plr);
+	for(auto& cone : solids->cones)
+		cone.LimitLink(solids->disks);
 
 	// Lien entre les spheres et la hollowball dans laquelle elles sont
-	for(int i = 0 ; i < hb.size() ; ++i)
-		hb[i].Makeavatar(sph,i);
+	for(int i = 0 ; i < solids->hollowBalls.size() ; ++i)
+		solids->hollowBalls[i].Makeavatar(solids->spheres,i);
 
-	for(int i = 0 ; i < hb.size() ; ++i)
-		hb[i].LinkInSph(sph,i);
-
-
-	for(auto& plan : pl)
-		plan.InitList(sph.size());
+	for(int i = 0 ; i < solids->hollowBalls.size() ; ++i)
+		solids->hollowBalls[i].LinkInSph(solids->spheres,i);
 
 
-	printf("Nsph0 = %d & Nsph = %d\n",Nsph0,static_cast<int>(sph.size()));
+	for(auto& plan : solids->plans)
+		plan.InitList(solids->spheres.size());
 
-	printf("NctMax = %d\n",18*static_cast<int>(sph.size())+75*static_cast<int>(bd.size()));
 
-	int Ncell = dat.Nx*dat.Ny*dat.Nz;
-	dat.Ncellmax = Ncell;
+	//printf("Nsph0 = %d & Nsph = %d\n",Nsph0,static_cast<int>(sph.size()));
+
+	//printf("NctMax = %d\n",18*static_cast<int>(sph.size())+75*static_cast<int>(bd.size()));
+
+	int Ncell = solids->configuration.Nx*solids->configuration.Ny*solids->configuration.Nz;
+	solids->configuration.Ncellmax = Ncell;
 	printf("Ncell = %d\n",Ncell);
 	std::vector<Sphere*> cell(Ncell, nullptr);
 /*
@@ -196,65 +168,49 @@ int main(int argc,char **argv){
 	LinkedCellSolidListBuilder::ListCellForElbow(dat, elb);
 	printf("\n");
 */
-	dat.record = true;
+	solids->configuration.record = true;
 
-	if(dat.TIME != 0)
-		Ntp = (int)((dat.TIME-dat.t0)/(dat.dts))+1;
+	if(solids->configuration.TIME != 0)
+		Ntp = (int)((solids->configuration.TIME-solids->configuration.t0)/(solids->configuration.dts))+1;
 	else
 		Ntp = 0;
 
 	if(opt.mode == 0){
-		if(Ntp == 0 && dat.t0 <= dat.TIME){
-			ReadWrite::writeStartStopContainer(opt.directory,pl,plr,co,elb);
-			ReadWrite::writeStartStopSphere(opt.directory,sph);
-			ReadWrite::writeStartStopBodies(opt.directory,bd,sph);
-			ReadWrite::writeStartStopData(opt.directory, &gf, &dat);
-			ReadWrite::writeStartStopHollowBall(opt.directory, hb);
-
-			ReadWrite::writeOutContainer(opt.directory,Ntp,pl,plr,co,elb,dat.outMode);
-			ReadWrite::writeOutSphere(opt.directory,Ntp,sph,dat.outMode);
-			ReadWrite::writeOutBodies(opt.directory,Ntp,bd,dat.outMode);
-			ReadWrite::writeOutData(opt.directory, Ntp, &gf, &dat);
-			ReadWrite::writeOutHollowBall(opt.directory, Ntp, hb);
+		if(Ntp == 0 && solids->configuration.t0 <= solids->configuration.TIME){
+			SolidBuilder::WriteStart_Stop(opt, solids, Ntp);
 			Ntp++;
 		}
 	}
 
 	if(opt.mode == 1 || opt.mode == 2){
 		if(opt.NtapMin == 1){
-			ReadWrite::writeStartStopContainer(opt.directory,pl,plr,co,elb);
-			ReadWrite::writeStartStopSphere(opt.directory,sph);
-			ReadWrite::writeStartStopBodies(opt.directory,bd,sph);
-			ReadWrite::writeStartStopData(opt.directory, &gf, &dat);
-			ReadWrite::writeStartStopHollowBall(opt.directory, hb);
-
-			ReadWrite::writeOutContainer(opt.directory,Ntp,pl,plr,co,elb,dat.outMode);
-			ReadWrite::writeOutSphere(opt.directory,Ntp,sph,dat.outMode);
-			ReadWrite::writeOutBodies(opt.directory,Ntp,bd,dat.outMode);
-			ReadWrite::writeOutHollowBall(opt.directory, Ntp, hb);
-			ReadWrite::writeOutData(opt.directory, Ntp, &gf, &dat);
+			SolidBuilder::WriteStart_Stop(opt, solids, Ntp);
 			Ntp++;
 		}
 	}
-	printf("Time Path = %e\n\n",dat.dt);
+	printf("Time Path = %e\n\n",solids->configuration.dt);
 
 
-	CellBounds cellBounds(0, 0, 0, dat.Nx, dat.Ny, dat.Nz, 0, 0, 0, dat.Nx, dat.Ny, dat.Nz, dat.ax, dat.ay, dat.az, dat.xmin, dat.ymin, dat.zmin);
+	CellBounds cellBounds(0, 0, 0, solids->configuration.Nx, solids->configuration.Ny, solids->configuration.Nz, 0, 0, 0, solids->configuration.Nx, solids->configuration.Ny, solids->configuration.Nz, solids->configuration.ax, solids->configuration.ay, solids->configuration.az, solids->configuration.xmin, solids->configuration.ymin, solids->configuration.zmin);
+/*
+	MultiThread mutlithread(4, sph.size(), bd.size(), pl, plr, co, elb, dat, gf, cellBounds);
+	mutlithread.Run(pl,plr,co,elb,sph,bd,hb,dat,gf,cell,Ntp,opt.directory,Nthreshold);
+*/
 
 	switch(opt.mode){
 	case 0:
 	{
-		Evolution evolution(sph.size(), bd.size(), pl, plr, co, elb, dat, gf, cellBounds);
-		Ntp = evolution.Evolve(pl,plr,co,elb,sph,bd,hb, dat,gf,cell,Ntp, opt.directory,Nthreshold);
+		Evolution evolution(solids, cellBounds, false);
+		Ntp = evolution.Evolve(cell,Ntp, opt.directory,Nthreshold);
 		break;
 	}
 	case 1:
-		dat.Total = 0;
-		Ntp = Compaction::Run(pl,plr,co,elb,sph,bd,hb ,dat,gf,cell,Ntp, opt.directory,opt.NtapMin,opt.NtapMax,opt.Gamma,opt.Freq,Nthreshold, cellBounds);
+		solids->configuration.Total = 0;
+		Ntp = Compaction::Run(solids,cell,Ntp, opt.directory,opt.NtapMin,opt.NtapMax,opt.Gamma,opt.Freq,Nthreshold, cellBounds);
 		break;
 	case 2:
-		dat.Total = 0.0;
-		Ntp = PowderPaQ::PowderPaQRun(pl,plr,co,elb,sph,bd,hb,dat,gf,cell,Ntp, opt.directory,opt.NtapMin,opt.NtapMax,Nthreshold,opt.PQheight,opt.PQVel, cellBounds);
+		solids->configuration.Total = 0.0;
+		Ntp = PowderPaQ::PowderPaQRun(solids,cell,Ntp, opt.directory,opt.NtapMin,opt.NtapMax,Nthreshold,opt.PQheight,opt.PQVel, cellBounds);
 		break;
 	}
 

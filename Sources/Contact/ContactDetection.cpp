@@ -3,6 +3,7 @@
 
 #include <cmath>
 
+#include "../../Includes/Configuration.h"
 #include "../../Includes/LinkedCells/SolidCells.h"
 #include "../../Includes/LinkedCells/CellBounds.h"
 #include "../../Includes/Solids/Velocity.h"
@@ -14,7 +15,6 @@
 #include "../../Includes/Solids/Sphere.h"
 #include "../../Includes/Solids/Body.h"
 #include "../../Includes/Contact/Contact.h"
-#include "../../Includes/Data.h"
 #include "../../Includes/Solids/HollowBall.h"
 
 #include "../../Includes/Contact/ContactDetectorSphereVersusSphere.h"

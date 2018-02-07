@@ -6,16 +6,16 @@
 #import "Solids/Sphere.h"
 #import "Solids/MasterSolid.h"
 
-class Data{
+class Configuration{
 public:
-	Data() noexcept;
+	Configuration() noexcept;
 	
-	Data(const Data& other) noexcept = default;
-	Data(Data&& other) noexcept = default;
-	Data& operator=(const Data& other) noexcept = default;
-	Data& operator=(Data&& other) noexcept = default;
+	Configuration(const Configuration& other) noexcept = default;
+	Configuration(Configuration&& other) noexcept = default;
+	Configuration& operator=(const Configuration& other) noexcept = default;
+	Configuration& operator=(Configuration&& other) noexcept = default;
 	
-	~Data() noexcept;
+	~Configuration() noexcept;
 	void LoadFromFile(FILE *ft) noexcept;
 	void WriteToFile(FILE *ft) const noexcept;
 	double DilatationCoefficient() const noexcept;

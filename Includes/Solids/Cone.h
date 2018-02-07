@@ -4,7 +4,7 @@
 #include <vector>
 
 class Contact;
-class Data;
+class Configuration;
 class Body;
 class PlanR;
 

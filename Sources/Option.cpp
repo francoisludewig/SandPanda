@@ -436,7 +436,7 @@ void Option::Record() noexcept {
 	fflush(ft);
 }
 
-void Option::InData(Data & dat, Gravity & gf, std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co) noexcept {
+void Option::InData(Configuration & dat, Gravity & gf, std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co) noexcept {
 	// Fabrication du MasterSolid memorise dans dat
 	dat.mas = new MasterSolid();
 	// Plan

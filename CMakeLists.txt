@@ -46,9 +46,11 @@ set(SOURCES_FILES
  Sources/ComputingForce.cpp
  Sources/PowderPaQ.cpp
  Sources/ReadWrite.cpp
- Sources/Data.cpp 
+ Sources/Configuration.cpp 
  Sources/Evolution.cpp
+ Sources/MultiThread.cpp
  Sources/Gravity.cpp	
+ Sources/SolidBuilder.cpp	
  Sources/main.cpp
 )
 
@@ -83,6 +85,7 @@ set(INCLUDES_FILES
  Includes/Solids/Sinusoid.h
  Includes/Solids/MechanicalPoint.h
  Includes/Solids/HollowBall.h
+ Includes/Solids/Solids.h
 
  Includes/LinkedCells/LinkedCellFiller.h
  Includes/LinkedCells/SolidCellsBuilder.h	
@@ -94,10 +97,12 @@ set(INCLUDES_FILES
  Includes/ComputingForce.h	
  Includes/Periodicity.h 
  Includes/PowderPaQ.h
- Includes/Data.h			
+ Includes/Configuration.h			
  Includes/ReadWrite.h 
  Includes/Evolution.h 
+ Includes/MultiThread.h 
  Includes/Gravity.h	
+ Includes/SolidBuilder.h	
 )
 
 set(SandPanda_FILES

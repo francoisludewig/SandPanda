@@ -5,7 +5,7 @@
 #include "../ComputingForce.h"
 
 class Contact;
-class Data;
+class Configuration;
 class Body;
 class Sphere;
 

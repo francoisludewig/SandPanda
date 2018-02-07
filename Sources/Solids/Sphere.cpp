@@ -24,8 +24,6 @@ Sphere::Sphere() noexcept {
 	tdl = nullptr;
 	num = -9;
 	ct_pl = 0;
-	// Elongation
-	elongationManager = ElongationManager(maxContact);
 }
 
 Sphere::Sphere(int bodies, int nHollowBall, double radius) noexcept : Sphere() {

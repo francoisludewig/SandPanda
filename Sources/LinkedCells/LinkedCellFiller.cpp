@@ -1,9 +1,9 @@
 #include "../../Includes/LinkedCells/LinkedCellFiller.h"
 
+#include "../../Includes/Configuration.h"
 #include "../../Includes/Solids/Sphere.h"
-#include "../../Includes/Data.h"
 
-void LinkedCellFiller::Fill(std::vector<Sphere> & sph, const Data& dat, std::vector<Sphere*>& cell) noexcept {
+void LinkedCellFiller::Fill(std::vector<Sphere> & sph, const Configuration& dat, std::vector<Sphere*>& cell) noexcept {
 	int x,y,z;
 	// Initialisation du tableau tdl
 	for(auto& sphere : sph)
