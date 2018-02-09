@@ -8,7 +8,7 @@
 #include "../Includes/Solids/Elbow.h"
 #include "../Includes/Solids/Sphere.h"
 #include "../Includes/Solids/Body.h"
-#include "../Includes/Solids/Solids.h"
+#include "../Includes/Solids/SimulationData.h"
 #include "../Includes/Contact/Contact.h"
 #include "../Includes/ReadWrite.h"
 #include "../Includes/Contact/ContactDetection.h"
@@ -76,7 +76,7 @@ void PowderPaQ::PowderPaQrelaxation(std::vector<Plan> & pl,std::vector<PlanR> & 
 	dat.Total += (t-PQheight/PQVel-sqrt(2*PQheight/9.81));	
 }
 
-int PowderPaQ::PowderPaQRun(std::shared_ptr<Solids>& solids, std::vector<Sphere*>& cell, int & Ntp, char *name,int ntpi, int ntpf, int Nthreshold, double PQheight, double PQVel, const CellBounds& cellBounds) noexcept {
+int PowderPaQ::PowderPaQRun(std::shared_ptr<SimulationData>& solids, std::vector<Sphere*>& cell, int & Ntp, char *name,int ntpi, int ntpf, int Nthreshold, double PQheight, double PQVel, const CellBounds& cellBounds) noexcept {
 	Evolution evolution(solids, cellBounds, false);
 	solids->configuration.record = 0;
 	for(int nt = ntpi  ; nt <= ntpf ; nt++){

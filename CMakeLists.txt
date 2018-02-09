@@ -34,7 +34,6 @@ set(SOURCES_FILES
  Sources/Solids/Sphere.cpp
  Sources/Solids/Velocity.cpp	
  Sources/Solids/Sinusoid.cpp	
-
  Sources/LinkedCells/LinkedCellFiller.cpp
  Sources/LinkedCells/SolidCellsBuilder.cpp	
 
@@ -50,7 +49,7 @@ set(SOURCES_FILES
  Sources/Evolution.cpp
  Sources/MultiThread.cpp
  Sources/Gravity.cpp	
- Sources/SolidBuilder.cpp	
+ Sources/SimulationDataManager.cpp	
  Sources/main.cpp
 )
 
@@ -85,7 +84,7 @@ set(INCLUDES_FILES
  Includes/Solids/Sinusoid.h
  Includes/Solids/MechanicalPoint.h
  Includes/Solids/HollowBall.h
- Includes/Solids/Solids.h
+ Includes/Solids/SimulationData.h
 
  Includes/LinkedCells/LinkedCellFiller.h
  Includes/LinkedCells/SolidCellsBuilder.h	
@@ -102,7 +101,7 @@ set(INCLUDES_FILES
  Includes/Evolution.h 
  Includes/MultiThread.h 
  Includes/Gravity.h	
- Includes/SolidBuilder.h	
+ Includes/SimulationDataManager.h	
 )
 
 set(SandPanda_FILES

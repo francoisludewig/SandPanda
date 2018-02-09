@@ -8,7 +8,7 @@
 #include "../Includes/Solids/Elbow.h"
 #include "../Includes/Solids/Sphere.h"
 #include "../Includes/Solids/Body.h"
-#include "../Includes/Solids/Solids.h"
+#include "../Includes/Solids/SimulationData.h"
 #include "../Includes/Contact/Contact.h"
 #include "../Includes/ReadWrite.h"
 #include "../Includes/Contact/ContactDetection.h"
@@ -55,7 +55,7 @@ void Compaction::Relaxation(std::vector<Plan> & pl,std::vector<PlanR> & plr,std:
 }
 
 
-int Compaction::Run(std::shared_ptr<Solids>& solids,std::vector<Sphere*>& cell, int & Ntp, char *name,int ntpi, int ntpf, double Gamma, double f, int Nthreshold, const CellBounds& cellBounds) noexcept {
+int Compaction::Run(std::shared_ptr<SimulationData>& solids,std::vector<Sphere*>& cell, int & Ntp, char *name,int ntpi, int ntpf, double Gamma, double f, int Nthreshold, const CellBounds& cellBounds) noexcept {
 
 	Evolution evolution(solids, cellBounds, false);
 	solids->configuration.record = 0;

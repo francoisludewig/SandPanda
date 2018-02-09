@@ -6,7 +6,7 @@
 #include "LinkedCells/Cells.h"
 #include "LinkedCells/SolidCellsBuilder.h"
 #include "LinkedCells/CellBounds.h"
-#include "Solids/Solids.h"
+#include "Solids/SimulationData.h"
 
 #include <vector>
 #include <memory>
@@ -23,7 +23,7 @@ class Gravity;
 
 class Evolution{
 public:
-	Evolution(std::shared_ptr<Solids>& solids,
+	Evolution(std::shared_ptr<SimulationData>& solids,
 			  const CellBounds& cellBounds,
 			  bool isMultiThreads) :
 		cellBounds(cellBounds),
@@ -49,5 +49,5 @@ private:
 	CellBounds cellBounds;
     int Nct;
     bool isMultiThreads;
-    std::shared_ptr<Solids> solids;
+    std::shared_ptr<SimulationData> solids;
 };

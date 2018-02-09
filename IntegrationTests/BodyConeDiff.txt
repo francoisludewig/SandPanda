@@ -1,6 +1,10 @@
 diff -ENwbur /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/IntegrationTests//Body/Cone/Original/Start_stop/particle.txt /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/IntegrationTests//Body/Cone/New/Start_stop/particle.txt
 --- /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/IntegrationTests//Body/Cone/Original/Start_stop/particle.txt	2018-01-27 13:22:17.000000000 +0100
+<<<<<<< Updated upstream
 +++ /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/IntegrationTests//Body/Cone/New/Start_stop/particle.txt	2018-02-08 17:51:20.000000000 +0100
+=======
++++ /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/IntegrationTests//Body/Cone/New/Start_stop/particle.txt	2018-02-07 20:16:47.000000000 +0100
+>>>>>>> Stashed changes
 @@ -1,1156 +1,1248 @@
  150
 -0	-9	-0.001956371473436	0.008653684405389	-0.019624234465810	-3.963823e-01	-5.967141e-01	-3.911657e-01	-5.777566e-01	-1.340260e-05	-3.408065e-06	-5.832810e-06	-1.964403e-02	-1.835910e-02	-1.341906e-02

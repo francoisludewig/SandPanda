@@ -16,8 +16,8 @@
 #include "../Includes/Solids/BodySpecie.h"
 #include "../Includes/PowderPaQ.h"
 #include "../Includes/Solids/HollowBall.h"
-#include "../Includes/Solids/Solids.h"
-#include "../Includes/SolidBuilder.h"
+#include "../Includes/Solids/SimulationData.h"
+#include "../Includes/SimulationDataManager.h"
 #include "../Includes/Option.h"
 #include "../Includes/Contact/ContactDetection.h"
 #include "../Includes/LinkedCells/SolidCellsBuilder.h"
@@ -86,7 +86,6 @@ int main(int argc,char **argv){
 	TimeDurationMeasure tm;
 	tm.Start();
 	int Ntp;
-	int Nsph0 = 0;
 	double dila = 0;
 	int Nthreshold = 0;
 
@@ -103,12 +102,12 @@ int main(int argc,char **argv){
 	opt.Record();
 
 
-	std::shared_ptr<Solids> solids;
+	std::shared_ptr<SimulationData> solids;
 
 	if(opt.restart == 0)
-		solids = SolidBuilder::BuildFromExport(opt);
+		solids = SimulationDataManager::FromExport(opt);
 	else
-		solids = SolidBuilder::BuildFromStart_Stop(opt);
+		solids = SimulationDataManager::FromStart_Stop(opt);
 
 	opt.InData(solids->configuration, solids->gravity, solids->plans, solids->disks, solids->cones);
 
@@ -177,14 +176,14 @@ int main(int argc,char **argv){
 
 	if(opt.mode == 0){
 		if(Ntp == 0 && solids->configuration.t0 <= solids->configuration.TIME){
-			SolidBuilder::WriteStart_Stop(opt, solids, Ntp);
+			SimulationDataManager::WriteStart_Stop(opt, solids, Ntp);
 			Ntp++;
 		}
 	}
 
 	if(opt.mode == 1 || opt.mode == 2){
 		if(opt.NtapMin == 1){
-			SolidBuilder::WriteStart_Stop(opt, solids, Ntp);
+			SimulationDataManager::WriteStart_Stop(opt, solids, Ntp);
 			Ntp++;
 		}
 	}

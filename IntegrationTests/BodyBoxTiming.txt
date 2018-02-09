@@ -28,8 +28,13 @@
 > Time Path = 1.012853e-06
 > 
 61,62c75,76
+<<<<<<< Updated upstream
 < Time: 4m20s75819708ns ns
 < Time: 260075819708 ns
+=======
+< Time: 3m58s143784554ns ns
+< Time: 238143784554 ns
+>>>>>>> Stashed changes
 ---
 > Time: 4m8s244545685ns ns
 > Time: 248244545685 ns

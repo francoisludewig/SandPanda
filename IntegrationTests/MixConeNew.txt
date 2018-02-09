@@ -51,5 +51,10 @@ Nts(0) = 0
 Ncell(0 co) = 2344
 Evolution
 Save File 1		time = 9.999999e-02Save File 2		time = 2.000000e-01Save File 3		time = 3.000000e-01Save File 4		time = 4.000000e-01Save File 5		time = 4.999999e-01
+<<<<<<< Updated upstream
 Time: 2m50s357439511ns ns
 Time: 170357439511 ns
+=======
+Time: 2m39s619983045ns ns
+Time: 159619983045 ns
+>>>>>>> Stashed changes
