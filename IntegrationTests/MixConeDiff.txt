@@ -1,6 +1,6 @@
 diff -ENwbur /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/IntegrationTests//Mix/Cone/Original/Start_stop/grain.txt /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/IntegrationTests//Mix/Cone/New/Start_stop/grain.txt
 --- /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/IntegrationTests//Mix/Cone/Original/Start_stop/grain.txt	2018-01-27 13:26:49.000000000 +0100
-+++ /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/IntegrationTests//Mix/Cone/New/Start_stop/grain.txt	2018-02-07 19:13:41.000000000 +0100
++++ /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/IntegrationTests//Mix/Cone/New/Start_stop/grain.txt	2018-02-08 17:55:54.000000000 +0100
 @@ -1,809 +1,788 @@
  75
 --0.005162172371016	0.003096949644263	-0.020778422036292
@@ -1592,7 +1592,7 @@ diff -ENwbur /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/Integrat
 +0	3	-1.025236e-09	-5.732456e-10	-2.608249e-09
 diff -ENwbur /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/IntegrationTests//Mix/Cone/Original/Start_stop/particle.txt /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/IntegrationTests//Mix/Cone/New/Start_stop/particle.txt
 --- /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/IntegrationTests//Mix/Cone/Original/Start_stop/particle.txt	2018-01-27 13:26:49.000000000 +0100
-+++ /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/IntegrationTests//Mix/Cone/New/Start_stop/particle.txt	2018-02-07 19:13:41.000000000 +0100
++++ /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/IntegrationTests//Mix/Cone/New/Start_stop/particle.txt	2018-02-08 17:55:54.000000000 +0100
 @@ -1,563 +1,568 @@
  75
 -0	-9	-0.001351198297605	0.003080118942074	-0.018875606823191	2.423650e-01	1.577541e-01	-7.610195e-01	5.807083e-01	6.061441e-05	-7.603292e-05	9.486923e-05	-5.350457e-02	-4.664038e-02	-2.638596e-02
