@@ -68,9 +68,8 @@ void ReadWrite::readOutContainer(char *directory, int & Npl, int & Nplr, int & N
 	// Upload Plan
 	
 	for(int i = 0 ; i < Npl ; i++){
-		Plan *pll = new  Plan();
+		Plan *pll = new Plan();
 		pl.push_back(*pll);
-		delete pll;
 	}
 	printf("push_back\n");
 	for(int i = 0 ; i < Npl ; i++){

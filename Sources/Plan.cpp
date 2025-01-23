@@ -9,10 +9,12 @@ Plan::Plan() noexcept : Solid(){
 	periodic = -9;
 	sigma = 0;
 	ra = 0;
+    list = nullptr;
 }
 
 Plan::~Plan() noexcept {
-	delete [] list;
+    if(list != nullptr)
+    	delete [] list;
 }
 
 void Plan::InitList(int N) noexcept {

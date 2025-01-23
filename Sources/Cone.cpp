@@ -2,7 +2,7 @@
 #include "../Includes/PlanR.h"
 #include <vector>
 
-Cone::Cone() noexcept :Solid(){
+Cone::Cone() noexcept : Solid(){
 	r0 = 0.25;
 	r1 = 0.25;
 	dr = 0;

@@ -3,6 +3,7 @@
 #include <iostream>
 #include <cmath>
 #include <sys/stat.h>
+#include <filesystem>
 
 
 Option::Option() noexcept {
@@ -349,20 +350,19 @@ int Option::DirectoryManagement() noexcept {
 	char commande[2048];
 	
 	// Test de l existance du repertoire Export
-	sprintf(commande,"%s/Export",directory);
-	struct stat st;
-	if(stat(commande,&st) != 0){
+	sprintf(commande,"%sExport",directory);
+    if(!std::filesystem::exists(commande)){
 		// Si non : creation
 		printf("The %s directory doesn't exists\n",commande);
 		return 0;
 	}
+
 	
 	if(restart == 1){
 		// Test de l existance du repertoire Start_stop Si l'option restart est activee
 		sprintf(commande,"%s/Start_stop",directory);
 		// Test de l existance du repertoire
-		struct stat st;
-		if(stat(commande,&st) != 0){
+		if(!std::filesystem::exists(commande)){
 			// Si non : creation
 			printf("The current directory doesn't exists\n");
 			return 0;
@@ -370,10 +370,9 @@ int Option::DirectoryManagement() noexcept {
 		// Test de l existance du repertoire Start_stop Si l'option restart est activee
 		sprintf(commande,"%s/Out",directory);
 		// Test de l existance du repertoire
-		if(stat(commande,&st) != 0){
+		if(!std::filesystem::exists(commande)){
 			// Si non : creation
-			sprintf(commande,"mkdir %s/Out",directory);
-			system(commande);
+            std::filesystem::create_directory(commande);
 		}
 	}
 	else{
@@ -381,32 +380,27 @@ int Option::DirectoryManagement() noexcept {
 		sprintf(commande,"%s/Start_stop",directory);
 		// Test de l existance du repertoire
 		struct stat st;
-		if(stat(commande,&st) != 0){
+		if(!std::filesystem::exists(commande)){
 			// Si non : creation
-			sprintf(commande,"mkdir %s/Start_stop",directory);
-			system(commande);
-		}
+            std::filesystem::create_directory(commande);
+        }
 		else{
 			// Si oui : creation
-			sprintf(commande,"rm -rf %s/Start_stop/*",directory);
-			system(commande);
-			
-		}
+            //std::filesystem::remove_all(commande);
+            //std::filesystem::create_directory(commande);
+        }
 		// Test de l existance du repertoire Start_stop Si l'option restart est activee
 		sprintf(commande,"%s/Out",directory);
 		// Test de l existance du repertoire
-		if(stat(commande,&st) != 0){
+		if(!std::filesystem::exists(commande)){
 			// Si non : creation
-			sprintf(commande,"mkdir %s/Out",directory);
-			system(commande);
-		}
+            std::filesystem::create_directory(commande);
+        }
 		else{
 			// Si non : creation
-			sprintf(commande,"rm -rf %s/Out",directory);
-			system(commande);
-			sprintf(commande,"mkdir %s/Out",directory);
-			system(commande);
-		}
+            //std::filesystem::remove_all(commande);
+            //std::filesystem::create_directory(commande);
+        }
 	}
 	return 1;
 }

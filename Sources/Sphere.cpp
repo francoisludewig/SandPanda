@@ -243,10 +243,18 @@ void Sphere::move(double dt) noexcept {
 			ql1 = q1;
 			ql2 = q2;
 			ql3 = q3;
-			q0 = ql0*p0 - ql1*p1 - ql2*p2 - ql3*p3;
-			q1 = ql0*p1 + ql1*p0 - ql2*p3 + ql3*p2;
-			q2 = ql0*p2 + ql1*p3 + ql2*p0 - ql3*p1;
-			q3 = ql0*p3 - ql1*p2 + ql2*p1 + ql3*p0;
+
+            if(q0 == 0 && q1 == 0 && q2 ==0 && q3 == 0) {
+                q0 = p0;
+                q1 = p1;
+                q2 = p2;
+                q3 = p3;
+            } else {
+                q0 = ql0 * p0 - ql1 * p1 - ql2 * p2 - ql3 * p3;
+                q1 = ql0 * p1 + ql1 * p0 - ql2 * p3 + ql3 * p2;
+                q2 = ql0 * p2 + ql1 * p3 + ql2 * p0 - ql3 * p1;
+                q3 = ql0 * p3 - ql1 * p2 + ql2 * p1 + ql3 * p0;
+            }
 		}
 	}
 }

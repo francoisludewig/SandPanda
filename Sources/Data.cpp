@@ -24,7 +24,16 @@ void Data::LoadFromFile(FILE *ft) noexcept{
 	fscanf(ft,"%d\t%d\t%d\n",&Nx,&Ny,&Nz);
 
     // Affichage
-	printf("\n%e < x < %e\n",xmin,xmax);
+
+
+    printf("\nNomral : e = %e, kn = %e\n", en, k);
+    printf("\nModel Tg : %s\n",modelTg==0 ? "Dynamic" : "Static");
+    if(modelTg == 0)
+        printf("mu = %e\n",&mu);
+    else
+        printf("mus = %e, mud = %e\n",muS,muD);
+
+    printf("\n%e < x < %e\n",xmin,xmax);
 	printf("%e < y < %e\n",ymin,ymax);
 	printf("%e < z < %e\n",zmin,zmax);
 	printf("N = (%d,%d,%d)\n",Nx,Ny,Nz);

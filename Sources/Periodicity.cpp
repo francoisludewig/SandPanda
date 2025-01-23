@@ -1,8 +1,8 @@
 #include "../Includes/Periodicity.h"
 
-#import "../Includes/Plan.h"
-#import "../Includes/Sphere.h"
-#import "../Includes/Body.h"
+#include "../Includes/Plan.h"
+#include "../Includes/Sphere.h"
+#include "../Includes/Body.h"
 
 void PeriodicityPL(const int & Nsph, const int & Nbd, const int &Npl, vector<Sphere> & sph, vector<Body> & bd, vector<Plan> & pl) noexcept {	
 	int plp;

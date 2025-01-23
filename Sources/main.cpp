@@ -6,23 +6,15 @@
 #include "../Includes/Elbow.h"
 #include "../Includes/Sphere.h"
 #include "../Includes/Body.h"
-#include "../Includes/Contact.h"
 #include "../Includes/ReadWrite.h"
-#include "../Includes/ContactDetection.h"
-#include "../Includes/ComputingForce.h"
 #include "../Includes/Data.h"
-#include "../Includes/Move.h"
 #include "../Includes/Evolution.h"
 #include "../Includes/Compaction.h"
-#include "../Includes/BodySpecie.h"
 #include "../Includes/PowderPaQ.h"
-#include "../Includes/HollowBall.h"
 #include "../Includes/Option.h"
 #include <iostream>
 #include <vector>
-//#include <omp.h>
-#include "../Includes/AffinityCache.h"
-#include <sys/stat.h>
+#include <filesystem>
 
 using namespace std;
 
@@ -50,17 +42,19 @@ void FreezeRotation(vector<Body> & bd, int Nbd){
 	}
 }
 
+/*
 void deborde(){
-	printf("Memory Lacking\n");
+	printf("Lack of Memory\n");
 	printf("Simulation is stopped\n");
 	exit(-1);
 }
+*/
 
 int main(int argc,char **argv){
 	int Ntp;
 	int Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nct = 0,Ncta = 0,Nctb = 0,Nctc = 0,Nbdsp,Nhb;
-	double dila = 0;
-	bool record = 1;
+	//double dila = 0;
+	bool record = true;
 	int Nthreshold = 0;
 	
 	vector<Plan> pl;
@@ -73,7 +67,7 @@ int main(int argc,char **argv){
 	vector<HollowBall> hb;
 	Option opt;
 	
-	Contact *ct = NULL,*cta = NULL,*ctb = NULL,*ctc = NULL;
+	Contact *ct = nullptr,*cta = nullptr,*ctb = nullptr,*ctc = nullptr;
 	Data dat;
 	Gravity gf;
 	
@@ -121,10 +115,12 @@ int main(int argc,char **argv){
 	if(Nsph != 0)
 		dat.ComputeRmax(sph,Nsph);
 	
-	// Calcul des cellules liees en fonction de dila et de Rmax dans Data
+	/*
+    // Calcul des cellules liees en fonction de dila et de Rmax dans Data
 	if(dila != 0)
 		dat.ComputeLinkedCell();
-	
+	*/
+
 	// Annulation des vitesses
 	if(opt.cancelVel == 1){
 		CancelVelocity(sph,Nsph,bd,Nbd);
@@ -164,17 +160,17 @@ int main(int argc,char **argv){
 	switch(opt.parallel){
 		case 0:
 			ct  = new Contact[18*Nsph+75*Nbd];
-			cta = NULL;
-			ctb = NULL;
-			ctc = NULL;
+			cta = nullptr;
+			ctb = nullptr;
+			ctc = nullptr;
 			break;
 		case 1:
 			switch(opt.Nprocess){
 				case 2:
 					ct  = new Contact[18*Nsph];
 					cta = new Contact[9*Nsph];
-					ctb = NULL;
-					ctc = NULL;
+					ctb = nullptr;
+					ctc = nullptr;
 					break;
 				case 4:
 					ct  = new Contact[20*Nsph];
@@ -187,8 +183,8 @@ int main(int argc,char **argv){
 					printf("Nprocess must be 2 or 4\nThe value used in this simulation will be 2\n");
 					ct  = new Contact[18*Nsph];
 					cta = new Contact[9*Nsph];
-					ctb = NULL;
-					ctc = NULL;
+					ctb = nullptr;
+					ctc = nullptr;
 					opt.Nprocess = 2;
 					break;
 			}
@@ -213,18 +209,18 @@ int main(int argc,char **argv){
 	printf("Etat de la memoire\n");
 	printf("------------------\n\n");
 	int All = 0;
-	All += Nsph*sizeof(Sphere);
-	All += Nbdsp*sizeof(BodySpecie);
-	All += Nbd*sizeof(Body);
-	All += Npl*sizeof(Plan);
-	All += Nplr*sizeof(PlanR);
-	All += Nco*sizeof(Cone);
-	All += Nelb*sizeof(Elbow);
-	All += Nhb*sizeof(HollowBall);
-	All += (18*Nsph+75*Nbd)*sizeof(Contact);
-	All += sizeof(cell);
-	All += sizeof(dat);
-	All += sizeof(Gravity);
+	All += Nsph*static_cast<int>(sizeof(Sphere));
+	All += Nbdsp*static_cast<int>(sizeof(BodySpecie));
+	All += Nbd*static_cast<int>(sizeof(Body));
+	All += Npl*static_cast<int>(sizeof(Plan));
+	All += Nplr*static_cast<int>(sizeof(PlanR));
+	All += Nco*static_cast<int>(sizeof(Cone));
+	All += Nelb*static_cast<int>(sizeof(Elbow));
+	All += Nhb*static_cast<int>(sizeof(HollowBall));
+	All += (18*Nsph+75*Nbd)*static_cast<int>(sizeof(Contact));
+	All += static_cast<int>(sizeof(cell));
+	All += static_cast<int>(sizeof(dat));
+	All += static_cast<int>(sizeof(Gravity));
 	
 	printf("Le programme a alloue %f ko\n",All/1000.);
 	printf("Le programme a alloue %f Mo\n",All/1000./1000.);
@@ -326,14 +322,25 @@ int main(int argc,char **argv){
 	
 	if(opt.compression == 1){
 		char commande[1024];
+        //TODO Use a library for archive in all operating systems
 		sprintf(commande,"tar -zcvmf %s/Out.tgz %s/Out",opt.directory,opt.directory);
 		system(commande);
 		sprintf(commande,"tar -zcvmf %s/Start_stop.tgz %s/Start_stop",opt.directory,opt.directory);
 		system(commande);
 		sprintf(commande,"tar -zcvmf %s/Export.tgz %s/Export",opt.directory,opt.directory);
 		system(commande);
-		sprintf(commande,"rm -rf %s/Out %s/Start_stop %s/Export",opt.directory,opt.directory,opt.directory);
-		system(commande);
+
+        char directory[2048];
+        sprintf(directory,"%s/Export", opt.directory);
+        std::filesystem::remove_all(directory);
+
+        sprintf(directory,"%s/Start_stop", opt.directory);
+        std::filesystem::remove_all(directory);
+
+        sprintf(directory,"%s/Out", opt.directory);
+        std::filesystem::remove_all(directory);
+		//sprintf(commande,"rm -rf %s/Out %s/Start_stop %s/Export",opt.directory,opt.directory,opt.directory);
+		//system(commande);
 	}
 	
 	return 0;

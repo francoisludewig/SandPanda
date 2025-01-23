@@ -19,7 +19,7 @@ public:
 
 	static void InitForTimeStepOMP(const int & Nsph, const int & Nbd , const int & Nct , const int & Ncta , const int & Nctb , const int & Nctc ,int & Npl, int & Nplr, int & Nco, int & Nelb, std::vector<Sphere> & sph, std::vector<Body> & bd, Contact *ct, Contact *cta, Contact *ctb, Contact *ctc, std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co, std::vector<Elbow> & elb) noexcept;
 
-	static void Compute(Contact *ct, const int Nct,Data & dat) noexcept;
+	static void Compute(Contact *ct, const int Nct, Data & dat) noexcept;
 
 private:
 	/* Fonction qui calcul la force globale au contact */

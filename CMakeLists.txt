@@ -1,11 +1,11 @@
-cmake_minimum_required(VERSION 3.1.2)
+cmake_minimum_required(VERSION 3.6)
 
 project(SandPanda VERSION 1.0.0)
 
 set(SOURCES_FILES
- Sources/AffinityCache.cpp	
+ #Sources/AffinityCache.cpp
  Sources/HollowBall.cpp
- Sources/Bodies.cpp		
+ Sources/Body.cpp
  Sources/MasterSolid.cpp
  Sources/BodySpecie.cpp		
  Sources/Move.cpp
@@ -33,9 +33,9 @@ set(SOURCES_FILES
 )
 
 set(INCLUDES_FILES
- Includes/AffinityCache.h
+ #Includes/AffinityCache.h
  Includes/HollowBall.h
- Includes/Bodies.h		
+ Includes/Body.h
  Includes/MasterSolid.h
  Includes/BodySpecie.h		
  Includes/Move.h
@@ -66,7 +66,7 @@ set(SandPanda_FILES
  ${SOURCES_FILES}
 )
 
-set (CMAKE_CXX_STANDARD 11)
+set (CMAKE_CXX_STANDARD 20)
 
 add_executable(
  SandPanda
@@ -77,7 +77,6 @@ target_link_libraries(
 SandPanda
 ${GTEST_LIBRARIES}
 )
-
 
 enable_testing()
 

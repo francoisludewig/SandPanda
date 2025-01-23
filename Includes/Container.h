@@ -14,6 +14,7 @@
 #include <vector>
 
 using LuGa::SandPanda::AppliedVelocities;
+using namespace std;
 
 class Sphere;
 class Contact;
