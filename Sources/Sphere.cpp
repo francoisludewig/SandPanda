@@ -116,8 +116,8 @@ void Sphere::readStartStop(FILE *ft) noexcept {
 	}
 	
 	fscanf(ft,"%d\n",&Nneighbour2);
-	Nneighbour2+=maxContact;
-	for(int i = maxContact ; i < Nneighbour2 ; i++)
+	//Nneighbour2+=maxContact;
+	for(int i = 0 ; i < Nneighbour2 ; i++)
 		fscanf(ft,"%d\t%d\t%lf\t%lf\t%lf\n",&NumNeighbour[i],&type[i],&xsi[i].x,&xsi[i].y,&xsi[i].z);
     r0 = r;
 }

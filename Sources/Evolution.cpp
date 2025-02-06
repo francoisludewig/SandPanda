@@ -49,9 +49,9 @@ int Evolution::Evolve(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,int &
 		if(dat.modelTg == 1){
 			for(int i = 0 ; i < Nsph ; i++)
 				sph[i].InitXsi();
-				for(int i = 0 ; i < Nbd ; i++)
-					bd[i].InitXsi();
-					}
+            for(int i = 0 ; i < Nbd ; i++)
+                bd[i].InitXsi();
+        }
 		
 		// Computing Force
 		ComputeForce::Compute(ct, Nct,dat);

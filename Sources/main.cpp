@@ -194,11 +194,14 @@ int main(int argc,char **argv){
 	int Ncell = dat.Nx*dat.Ny*dat.Nz;
 	dat.Ncellmax = Ncell;
 	printf("Ncell = %d\n",Ncell);
-	Sphere *cell[Ncell];
+    // TODO Remettre dans la stack au lieu du heap pour gagner en performance !!!
+    Sphere **cell = (Sphere**)malloc(sizeof(Sphere*)*Ncell);
+	//Sphere *cell[Ncell];
 	
 	
 	printf("List of Linking Cell for Solid\n");
 	printf("------------------------------\n\n");
+    fflush(stdout);
 	// Making list of linking cell for each solid
 	ContactDetection::listCellForPlan(&dat, pl, Npl, gf);
 	ContactDetection::listCellForPlanR(&dat, plr, Nplr, gf);
@@ -300,7 +303,9 @@ int main(int argc,char **argv){
 			delete [] ctc;
 		}
 	}
-	
+
+    free(cell);
+
 	// Liberation manuelle de tableau
 	for(int i = 0 ; i < Nsph ; i++){
 		sph[i].SphDealloc();
