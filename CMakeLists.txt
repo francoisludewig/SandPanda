@@ -77,6 +77,11 @@ target_link_libraries(
 SandPanda
 ${GTEST_LIBRARIES}
 )
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(CMAKE_CXX_FLAGS "-O0 -g")
+else()
+    set(CMAKE_CXX_FLAGS "-O3")
+endif()
 
 enable_testing()
 

@@ -22,7 +22,7 @@ void Compaction::Secousse(vector<Plan> & pl,vector<PlanR> & plr,vector<Cone> & c
 	double w = 2*M_PI*f;
 	double A = Gamma*9.81/w/w;
 	
-	printf("A = %e, w = %e , Aw = %e\n",A,w,A*w);
+	printf("Vibration\nA = %e, w = %e , Aw = %e\n",A,w,A*w);
 	
 	for(i = 0 ; i < Npl ; i++)
 		pl[i].SetVz(0,A*w,-w,M_PI);
@@ -38,7 +38,6 @@ void Compaction::Secousse(vector<Plan> & pl,vector<PlanR> & plr,vector<Cone> & c
 	int Ntsp = (1./f)/(dat.dt) + 1;
 	dat.dt = (1./f)/(double)(Ntsp);
 	printf("dt = %e\n",dat.dt);
-	
 }
 
 void Compaction::Relaxation(vector<Plan> & pl,vector<PlanR> & plr,vector<Cone> & co,int Npl, int Nplr, int Nco, double Gamma, double f, Data & dat) noexcept {
@@ -67,7 +66,7 @@ int Compaction::Run(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,int & N
 		Ntp = Evolution::Evolve(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,pl,plr,co,elb,sph,bd,hb,ct,dat,gf,cell,Ntp, name,record,Nthreshold);
 		// Relaxation
 		Relaxation(pl,plr,co,Npl,Nplr,Nco,0,0,dat);
-		printf("Total = %e\n",dat.Total);
+		printf("Relaxation\nTotal = %e\n",dat.Total);
 		Ntp = Evolution::Evolve(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,pl,plr,co,elb,sph,bd,hb,ct,dat,gf,cell,Ntp, name,record,Nthreshold);
 		
 		if(record == 0){

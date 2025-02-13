@@ -276,7 +276,7 @@ int main(int argc,char **argv){
 				Ntp = Evolution::Evolve(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,               pl,plr,co,elb,sph,bd,hb,ct,            dat,gf,cell,Ntp, opt.directory,record,Nthreshold);
 			break;
 		case 1:
-			dat.Total = 0;
+            dat.Total = dat.TIME;
 			if(opt.parallel == 0)
 				Ntp = Compaction::Run(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct               ,pl,plr,co,elb,sph,bd,hb,ct            ,dat,gf,cell,Ntp, opt.directory,record,opt.NtapMin,opt.NtapMax,opt.Gamma,opt.Freq,Nthreshold);
 			else
@@ -284,7 +284,7 @@ int main(int argc,char **argv){
 			
 			break;
 		case 2:
-			dat.Total = 0.0;
+			dat.Total = dat.TIME;
 			if(opt.parallel == 0)
 				Ntp = PowderPaQ::PowderPaQRun(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct               ,pl,plr,co,elb,sph,bd,hb,ct            ,dat,gf,cell,Ntp, opt.directory,record,opt.NtapMin,opt.NtapMax,Nthreshold,opt.PQheight,opt.PQVel);
 			else
@@ -302,6 +302,7 @@ int main(int argc,char **argv){
 			delete [] ctb;
 			delete [] ctc;
 		}
+
 	}
 
     free(cell);
