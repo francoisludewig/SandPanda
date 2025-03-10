@@ -1,6 +1,6 @@
-#include "../Includes/Plan.h"
-#include "../Includes/Contact.h"
-#include "../Includes/Sphere.h"
+#include "../../Includes/Object/Plan.h"
+#include "../../Includes/Contact/Contact.h"
+#include "../../Includes/Object/Sphere.h"
 
 Plan::Plan() noexcept : Solid(){
 	dt = 0.5;

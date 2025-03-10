@@ -1,5 +1,5 @@
-#include "../Includes/Cone.h"
-#include "../Includes/PlanR.h"
+#include "../../Includes/Object/Cone.h"
+#include "../../Includes/Object/PlanR.h"
 #include <vector>
 
 Cone::Cone() noexcept : Solid(){

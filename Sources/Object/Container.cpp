@@ -7,8 +7,8 @@
  *
  */
 
-#include "../Includes/Container.h"
-#include "../Includes/Sphere.h"
+#include "../../Includes/Container.h"
+#include "../../Includes/Object/Sphere.h"
 
 Container::Container(){
 	x = 0;

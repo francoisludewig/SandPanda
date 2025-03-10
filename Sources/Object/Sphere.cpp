@@ -2,10 +2,10 @@
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "../Includes/Sphere.h"
-#include "../Includes/Gravity.h"
-#include "../Includes/Elongation.h"
-#include "../Includes/Body.h"
+#include "../../Includes/Object/Sphere.h"
+#include "../../Includes/Configuration/Gravity.h"
+#include "../../Includes/Contact/Elongation.h"
+#include "../../Includes/Object/Body.h"
 
 Sphere::Sphere() noexcept {
 	// Initialisation des donnees des elongations

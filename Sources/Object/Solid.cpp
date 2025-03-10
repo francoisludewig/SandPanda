@@ -1,5 +1,5 @@
-#include "../Includes/Solid.h"
-#include "../Includes/Sphere.h"
+#include "../../Includes/Object/Solid.h"
+#include "../../Includes/Object/Sphere.h"
 
 Solid::Solid() noexcept {
     nx = 1;

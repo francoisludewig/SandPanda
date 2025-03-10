@@ -1,12 +1,12 @@
 #pragma once
 
 #include "BodySpecie.h"
-#include "Gravity.h"
-#include "Elongation.h"
+#include "../Configuration/Gravity.h"
+#include "../Contact/Elongation.h"
 #include "HollowBall.h"
-#include "ComputingForce.h"
+#include "../Contact/ComputingForce.h"
 #include "MechanicalPoint.h"
-#include "ContactDetection.h"
+#include "../Contact/ContactDetection.h"
 #include <vector>
 #include <array>
 

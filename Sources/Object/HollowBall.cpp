@@ -1,8 +1,8 @@
-#include "../Includes/HollowBall.h"
-#include "../Includes/Sphere.h"
-#include "../Includes/ContactDetection.h"
-#include "../Includes/Contact.h"
-#include "../Includes/Body.h"
+#include "../../Includes/Object/HollowBall.h"
+#include "../../Includes/Object/Sphere.h"
+#include "../../Includes/Contact/ContactDetection.h"
+#include "../../Includes/Contact/Contact.h"
+#include "../../Includes/Object/Body.h"
 
 #include <cmath>
 

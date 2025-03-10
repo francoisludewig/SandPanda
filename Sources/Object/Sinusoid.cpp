@@ -1,4 +1,4 @@
-#include "../Includes/Sinusoid.h"
+#include "../../Includes/Object/Sinusoid.h"
 
 
 Sinusoid::Sinusoid() noexcept :

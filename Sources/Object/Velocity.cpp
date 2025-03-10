@@ -1,4 +1,4 @@
-#include "../Includes/Velocity.h"
+#include "../../Includes/Object/Velocity.h"
 
 Velocity::Velocity() noexcept : ox(0), oy(0), oz(0){}
 

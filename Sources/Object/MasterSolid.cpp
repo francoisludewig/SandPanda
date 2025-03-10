@@ -1,4 +1,4 @@
-#include "../Includes/MasterSolid.h"
+#include "../../Includes/Object/MasterSolid.h"
 
 MasterSolid::MasterSolid() noexcept {
 	x = 0;
