@@ -40,7 +40,7 @@ void Compaction::Secousse(vector<Plan> & pl,vector<PlanR> & plr,vector<Cone> & c
 	printf("dt = %e\n",dat.dt);
 }
 
-void Compaction::Relaxation(vector<Plan> & pl,vector<PlanR> & plr,vector<Cone> & co,int Npl, int Nplr, int Nco, double Gamma, double f, Data & dat) noexcept {
+void Compaction::Relaxation(vector<Plan> & pl,vector<PlanR> & plr,vector<Cone> & co,int Npl, int Nplr, int Nco, Data & dat) noexcept {
 	int i;
 	for(i = 0 ; i < Npl ; i++)
 		pl[i].SetVz(0,0,0,0);

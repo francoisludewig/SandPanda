@@ -64,7 +64,7 @@ void Body::ReadStartStopFile(FILE *ft) noexcept {
 		QuaternionToBase();
 		}
 
-void Body::WriteToFile(FILE *ft,vector<Sphere> & sph) const noexcept {
+void Body::WriteToFile(FILE *ft) const noexcept {
 	fprintf(ft,"%d\t%d\t",sp,NhollowBall);
 	fprintf(ft,"%.15f\t%.15f\t%.15f\t",x,y,z);
 	fprintf(ft,"%e\t%e\t%e\t%e\t",q0,q1,q2,q3);
@@ -243,7 +243,7 @@ void Body::RandomVelocity(double V, double W) noexcept {
 	wz = wz/Norme*W;
 }
 
-void Body::UploadSpecies(int Nbdsp, vector<BodySpecie> bdsp,vector<Sphere> & sph, int & Nsph, int numero) noexcept {
+void Body::UploadSpecies(vector<BodySpecie> bdsp,vector<Sphere> & sph, int & Nsph, int numero) noexcept {
 	Ng = bdsp[sp].Ng;
 	
 	for(int j = 0 ; j < Ng ; j++){
