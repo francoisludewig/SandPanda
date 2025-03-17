@@ -32,13 +32,14 @@ Sphere::Sphere() noexcept {
     bodyNumber.reserve(maxContact);
     tp_bodyNumber.reserve(maxContact);
 
+    std::fill(type.begin(), type.end(), -1);
+    std::fill(tp_type.begin(), tp_type.end(), -1);
+    std::fill(neighbourNumber.begin(), neighbourNumber.end(), -9);
+    std::fill(tp_neighbourNumber.begin(), tp_neighbourNumber.end(), -9);
+
 	for(int i = 0 ; i < maxContact ; i++){
-        neighbourNumber.push_back(-9);
-        type.push_back(-1);
         Elongation elongation;
         xsi.push_back(elongation);
-        tp_neighbourNumber.push_back(-9);
-        tp_type.push_back(-1);
         Elongation tp_elongation;
         tp_xsi.push_back(tp_elongation);
 	}
