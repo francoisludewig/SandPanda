@@ -14,18 +14,6 @@
 #include "../../Includes/Contact/ComputingForce.h"
 #include "../../Includes/Configuration/Data.h"
 
-void Move::UpDateForceContainer(int & Nsph, vector<Sphere> & sph, int & Npl, int & Nplr, int & Nco, vector<Plan> & pl, vector<PlanR> & plr, vector<Cone> & co, double time, double dt, Gravity gt) noexcept {
-	for(int i = 0 ; i < Npl ; i++){
-		pl[i].UpdateForceFromGB(Nsph,sph);
-	}
-	for(int i = 0 ; i < Nplr ; i++){
-		plr[i].UpdateForceFromGB(Nsph,sph);
-	}
-	for(int i = 0 ; i < Nco ; i++){
-		co[i].UpdateForceFromGB(Nsph,sph);
-		co[i].LimitForce();
-	}
-}
 
 void Move::upDateVelocityContainer(int & Npl, int & Nplr, int & Nco, int & Nelb, vector<Plan> & pl, vector<PlanR> & plr, vector<Cone> & co, vector<Elbow> & elb, double time, double dt, Gravity gt) noexcept {
 	for(int i = 0 ; i < Npl ; i++){
@@ -44,31 +32,16 @@ void Move::upDateVelocityContainer(int & Npl, int & Nplr, int & Nco, int & Nelb,
 void Move::moveContainer(int & Npl, int & Nplr, int & Nco, int & Nelb, vector<Plan> & pl, vector<PlanR> & plr, vector<Cone> & co, vector<Elbow> & elb, double time, double dt, vector<Sphere> & sph, Gravity gt) noexcept {
 	for(int i = 0 ; i < Npl ; i++){
 		pl[i].Move(dt);
-		pl[i].UpDateLinkedSphere(sph,time,gt);
 	}
 	for(int i = 0 ; i < Nplr ; i++){
 		plr[i].Move(dt);
-		plr[i].UpDateLinkedSphere(sph,time,gt);
 	}
 	for(int i = 0 ; i < Nco ; i++){
 		co[i].Move(dt);
-		co[i].UpDateLinkedSphere(sph,time,gt);
 		co[i].LimitUpdate();
 	}
 	for(int i = 0 ; i < Nelb ; i++){
 		elb[i].Move(time,dt);
-	}
-}
-
-void Move::upDateVelocityLinkedSphereContainer(int & Npl, int & Nplr, int & Nco, int & Nelb, vector<Plan> & pl, vector<PlanR> & plr, vector<Cone> & co, vector<Elbow> & elb, double time, double dt, vector<Sphere> & sph) noexcept {
-	for(int i = 0 ; i < Npl ; i++){
-		pl[i].UpDateVelocityLinkedSphere(sph,time);
-	}
-	for(int i = 0 ; i < Nplr ; i++){
-		plr[i].UpDateVelocityLinkedSphere(sph,time);
-	}
-	for(int i = 0 ; i < Nco ; i++){
-		co[i].UpDateVelocityLinkedSphere(sph,time);
 	}
 }
 

@@ -65,7 +65,7 @@ int Compaction::Run(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,int & N
 		printf("Total = %e\n",dat.Total);
 		Ntp = Evolution::Evolve(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,pl,plr,co,elb,sph,bd,hb,ct,dat,gf,cell,Ntp, name,record,Nthreshold);
 		// Relaxation
-		Relaxation(pl,plr,co,Npl,Nplr,Nco,0,0,dat);
+		Relaxation(pl,plr,co,Npl,Nplr,Nco,dat);
 		printf("Relaxation\nTotal = %e\n",dat.Total);
 		Ntp = Evolution::Evolve(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,pl,plr,co,elb,sph,bd,hb,ct,dat,gf,cell,Ntp, name,record,Nthreshold);
 		
@@ -100,7 +100,7 @@ int Compaction::RunOMP(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,int 
 		printf("Total = %e\n",dat.Total);
 		Ntp = Evolution::EvolveOMP(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,Ncta,Nctb,Nctc,pl,plr,co,elb,sph,bd,hb,ct,cta,ctb,ctc,dat,gf,cell,Ntp, name,record,Nthreshold);
 		// Relaxation
-		Relaxation(pl,plr,co,Npl,Nplr,Nco,0,0,dat);
+		Relaxation(pl,plr,co,Npl,Nplr,Nco,dat);
 		printf("Total = %e\n",dat.Total);
 		Ntp = Evolution::EvolveOMP(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,Ncta,Nctb,Nctc,pl,plr,co,elb,sph,bd,hb,ct,cta,ctb,ctc,dat,gf,cell,Ntp, name,record,Nthreshold);
 		if(record == 0){

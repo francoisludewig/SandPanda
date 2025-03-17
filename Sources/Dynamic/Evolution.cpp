@@ -56,7 +56,6 @@ int Evolution::Evolve(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,int &
 		// Computing Force
 		ComputeForce::Compute(ct, Nct,dat);
 		
-		Move::UpDateForceContainer(Nsph,sph,Npl,Nplr,Nco,pl,plr,co,dat.TIME,dat.dt,gf);
 		dat.mas->getForces();
 		
 		// Update Velocities
@@ -205,9 +204,7 @@ int Evolution::EvolveOMP(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,in
 				ComputeForce::Compute(ctb, Nctb,dat);
 				ComputeForce::Compute(ctc, Nctc,dat);
 			}
-			
-			Move::UpDateForceContainer(Nsph,sph,Npl,Nplr,Nco,pl,plr,co,dat.TIME,dat.dt,gf);
-			
+
 			// Update Velocities
 			Move::upDateVelocitySphereOMP(Nsph, sph, gf, dat.dt,Nprocess);
 			Move::upDateVelocityBodiesOMP(Nbd, bd, gf, dat.dt, sph,Nprocess);

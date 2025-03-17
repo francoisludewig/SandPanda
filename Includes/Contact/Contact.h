@@ -32,8 +32,8 @@ public:
 	Sphere *sa,*sb;
 	Body *ba,*bb;
 	int nba,nbb;
-	
-	Plan *pa;
+
+    Plan *pa;
 	PlanR *par;
 	Cone *cn;
 	Elbow *ew;

@@ -32,7 +32,7 @@ public:
 	void Move(double dt) noexcept;
 	void UpDateLinkedSphere(vector<Sphere> & sph) noexcept;
 	void UpDateLinkedSphereTp() noexcept;
-	void UploadSpecies(vector<BodySpecie> bdsp, vector<Sphere> & sph, int & Nsph, int numero) noexcept;
+	void UploadSpecies(vector<BodySpecie> & bdsp, vector<Sphere> & sph, int & Nsph, int numero) noexcept;
 	int NumberOfSphere() const noexcept;
 	void CancelVelocity() noexcept;
 	void RandomVelocity(double V, double W) noexcept;

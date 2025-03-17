@@ -1,5 +1,7 @@
 #include "../../Includes/Configuration/Gravity.h"
 
+#include <cmath>
+
 Gravity::Gravity() noexcept :
 G(9.81), ngx(0), ngy(0),	ngz(-1), ngx0(0), ngy0(0),
 ngz0(-1), q0(1), q1(0), q2(0), q3(0) {}

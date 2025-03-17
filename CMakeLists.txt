@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.6)
 project(SandPanda VERSION 1.0.0)
 
 set(SOURCES_FILES
- #Sources/AffinityCache.cpp
         Sources/Object/HollowBall.cpp
         Sources/Object/Body.cpp
         Sources/Object/MasterSolid.cpp
@@ -25,10 +24,10 @@ set(SOURCES_FILES
 		Sources/Contact/Contact.cpp		
 		Sources/Contact/ContactDetection.cpp	
 		Sources/Contact/Elongation.cpp
+		Sources/Contact/ComputingForce.cpp
 
 		Sources/Dynamic/Move.cpp
 		Sources/Dynamic/Compaction.cpp
-		Sources/Contact/ComputingForce.cpp
 		Sources/Dynamic/PowderPaQ.cpp
 		Sources/Dynamic/Evolution.cpp
 		
@@ -59,32 +58,34 @@ set(INCLUDES_FILES
 		Includes/Contact/Contact.h
 		Includes/Contact/ContactDetection.h	
 		Includes/Contact/Elongation.h
-		
+		Includes/Contact/ComputingForce.h
+
 		Includes/Dynamic/Move.h
 		Includes/Dynamic/Compaction.h
-		Includes/Contact/ComputingForce.h
-		Includes/Dynamic/PowderPaQ.h	
+		Includes/Dynamic/PowderPaQ.h
 		Includes/Dynamic/Evolution.h
 			
 		Includes/Repository/ReadWrite.h
 )
 
 set(SandPanda_FILES
- ${INCLUDES_FILES}
- ${SOURCES_FILES}
+		${INCLUDES_FILES}
+		${SOURCES_FILES}
 )
 
 set (CMAKE_CXX_STANDARD 20)
 
 add_executable(
- SandPanda
- ${SandPanda_FILES}
+		SandPanda
+		${SandPanda_FILES}
 )
 
 target_link_libraries(
-SandPanda
-${GTEST_LIBRARIES}
+		SandPanda
+		${GTEST_LIBRARIES}
 )
+
+
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_CXX_FLAGS "-O0 -g")
 else()
@@ -93,4 +94,4 @@ endif()
 
 enable_testing()
 
-#add_subdirectory("Tests")
+add_subdirectory("Tests")

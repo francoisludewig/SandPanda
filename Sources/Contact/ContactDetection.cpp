@@ -1850,7 +1850,7 @@ void ContactDetection::sphPlanContactOMP(const int &Nsph, const int &Npl, int & 
 			control[i] = 0;
 	}
 	for(int i = 0 ; i < Npl ; i++){
-		if(pl[i].periodic == -9 && pl[i].Ngb == 0){
+		if(pl[i].periodic == -9){
 #pragma omp parallel private(anta)
 			{
 #pragma omp sections

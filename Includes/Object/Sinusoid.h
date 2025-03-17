@@ -1,13 +1,11 @@
 #pragma once
 
 #include <iostream>
-#include <math.h>
-#include <stdlib.h>
-#include <stdio.h>
 
 class Sinusoid{
 public:
 	Sinusoid() noexcept;
+    explicit Sinusoid(double a0) noexcept;
 	Sinusoid(double a0, double a1, double w, double phi) noexcept;
 	
 	Sinusoid(const Sinusoid& other) noexcept = default;
@@ -18,10 +16,10 @@ public:
 	void LoadFromFile(FILE *ft) noexcept;
 	void WriteToFile(FILE *ft, int mode) const noexcept;
 	void Display() const noexcept;
-	double Value(double t) const noexcept;
-	double Max() const noexcept;
-	double DelayTr() const noexcept;
-	double DelayRot() const noexcept;
+	[[nodiscard]] double Value(double t) const noexcept;
+    [[nodiscard]] double Max() const noexcept;
+	[[nodiscard]] double DelayTr() const noexcept;
+    [[nodiscard]] double DelayRot() const noexcept;
 
 private:
 	double a0,a1,w,phi;

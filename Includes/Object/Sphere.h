@@ -4,7 +4,6 @@
 #include <vector>
 
 class Contact;
-class ContactTampon;
 class Data;
 class Cell;
 class Gravity;
@@ -25,13 +24,13 @@ public:
 	bool autoIntegrate;
 	Sphere *tdl;
 	// Data contact statique
-	Elongation *xsi,*xsi2;
-	int *NumNeighbour,*NumNeighbour2;
+    std::vector<Elongation> xsi, tp_xsi;
+    std::vector<int> neighbourNumber, tp_neighbourNumber;
+    std::vector<int> type, tp_type;
+    std::vector<int> bodyNumber, tp_bodyNumber;
 	int Nneighbour,Nneighbour2;
-	int *type,*type2;
-	int *NumFromBody,*NumFromBody2;
-	
-	//Contact avec plan
+
+    //Contact avec plan
 	double ct_pl_nx,ct_pl_ny,ct_pl_nz;
 	int ct_pl;
 	

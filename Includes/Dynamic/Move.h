@@ -25,7 +25,5 @@ public:
 	static void upDateVelocityBodies(int & Nbd, std::vector<Body> & bd, Gravity gt, double dt, std::vector<Sphere> & sph) noexcept;
 	static void upDateVelocityBodiesOMP(int & Nbd, std::vector<Body> & bd, Gravity gt, double dt, std::vector<Sphere> & sph,int Nprocess) noexcept;
 	static void MeltingSphere(int & Nsph, std::vector<Sphere> & sph, double vr, double delayVr, double dt) noexcept;
-	static void UpDateForceContainer(int & Nsph, std::vector<Sphere> & sph, int & Npl, int & Nplr, int & Nco, std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co, double time, double dt, Gravity gt) noexcept;
-	static void upDateVelocityLinkedSphereContainer(int & Npl, int & Nplr, int & Nco, int & Nelb, std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co, std::vector<Elbow> & elb, double time, double dt, std::vector<Sphere> & sph) noexcept;
 	static void upDateHollowBall(const int &Nhb, std::vector<HollowBall> & hb, double dt) noexcept;
 };

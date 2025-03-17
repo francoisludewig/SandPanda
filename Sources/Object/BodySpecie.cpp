@@ -17,6 +17,7 @@ BodySpecie::BodySpecie() noexcept {
 	Ine_1[2][1] = 0;
 	Ine_1[2][2] = 0;
 	sp = 0;
+    FeretMax = 0;
 }
 
 BodySpecie::~BodySpecie() noexcept {}
@@ -31,7 +32,8 @@ void BodySpecie::FreeMemory() noexcept {
 
 void BodySpecie::LoadFromFile(FILE *ft) noexcept {
 	double x, y, z, r;
-	fscanf(ft,"%d",&Ng);
+    if(fscanf(ft,"%d",&Ng) != 1)
+        return;
 	FreeMemory();
 	for(int j = 0 ; j < Ng ; j++){
 		num.push_back(j);

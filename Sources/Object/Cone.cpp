@@ -81,6 +81,7 @@ void Cone::writeToFile(FILE *ft) const noexcept {
 
 void Cone::writeOutFile(FILE *ft, int mode) const noexcept {
 	Solid::WriteOutFile(ft,mode);
+    int Ngb = 0;
 	if(mode == 0){
 		fprintf(ft,"%e\t%e\t%e\t%e\n",h,r0,r1,dr);
 		fprintf(ft,"%d\t%d\t%d\n",in,periodic,Ngb);

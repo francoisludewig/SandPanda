@@ -1,7 +1,6 @@
 #pragma once
 
 #include <iostream>
-#include <math.h>
 #include <vector>
 #include "../../Includes/Object/Sphere.h"
 #include "../../Includes/Object/MasterSolid.h"

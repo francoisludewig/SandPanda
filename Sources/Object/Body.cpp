@@ -243,7 +243,7 @@ void Body::RandomVelocity(double V, double W) noexcept {
 	wz = wz/Norme*W;
 }
 
-void Body::UploadSpecies(vector<BodySpecie> bdsp,vector<Sphere> & sph, int & Nsph, int numero) noexcept {
+void Body::UploadSpecies(vector<BodySpecie> & bdsp,vector<Sphere> & sph, int & Nsph, int numero) noexcept {
 	Ng = bdsp[sp].Ng;
 	
 	for(int j = 0 ; j < Ng ; j++){

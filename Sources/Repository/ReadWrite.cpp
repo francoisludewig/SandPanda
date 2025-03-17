@@ -525,7 +525,7 @@ void ReadWrite::writeStartStopBodies(char *directory, int & Nbd, vector<Body> & 
 	ft = fopen(fileName,"w");
 	fprintf(ft,"%d\n",Nbd);
 	for(int i = 0 ; i < Nbd ; i++){
-		bd[i].WriteToFile(ft,sph);
+		bd[i].WriteToFile(ft);
 	}
 	fclose(ft);
 	fflush(ft);

@@ -42,14 +42,6 @@ void FreezeRotation(vector<Body> & bd, int Nbd){
 	}
 }
 
-/*
-void deborde(){
-	printf("Lack of Memory\n");
-	printf("Simulation is stopped\n");
-	exit(-1);
-}
-*/
-
 int main(int argc,char **argv){
 	int Ntp;
 	int Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nct = 0,Ncta = 0,Nctb = 0,Nctc = 0,Nbdsp,Nhb;
@@ -90,7 +82,7 @@ int main(int argc,char **argv){
 		Nsph0 = Nsph;
 		ReadWrite::readOutBodySpecie(opt.directory,Nbdsp,bdsp);
 		for(int i = 0 ; i < Nbd ; i++){
-			bd[i].UploadSpecies(Nbdsp,bdsp,sph,Nsph,i);
+			bd[i].UploadSpecies(bdsp,sph,Nsph,i);
 		}
 		ReadWrite::readOutData(opt.directory, &gf, &dat);
 		ReadWrite::readOutHollowBall(opt.directory, Nhb, hb);
@@ -103,7 +95,7 @@ int main(int argc,char **argv){
 		Nsph0 = Nsph;
 		ReadWrite::readOutBodySpecie(opt.directory,Nbdsp,bdsp);
 		for(int i = 0 ; i < Nbd ; i++){
-			bd[i].UploadSpecies(Nbdsp,bdsp,sph,Nsph,i);
+			bd[i].UploadSpecies(bdsp,sph,Nsph,i);
 		}
 		ReadWrite::readStartStopData(opt.directory, &gf, &dat);
 		ReadWrite::readStart_stopHollowBall(opt.directory, Nhb, hb);
@@ -307,12 +299,6 @@ int main(int argc,char **argv){
 
     free(cell);
 
-	// Liberation manuelle de tableau
-	for(int i = 0 ; i < Nsph ; i++){
-		sph[i].SphDealloc();
-	}
-	
-	
 	for(int i = 0 ; i < Nbdsp ; i++){
 		bdsp[i].FreeMemory();
 	}

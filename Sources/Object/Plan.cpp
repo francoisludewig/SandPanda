@@ -2,6 +2,8 @@
 #include "../../Includes/Contact/Contact.h"
 #include "../../Includes/Object/Sphere.h"
 
+#include <cmath>
+
 Plan::Plan() noexcept : Solid(){
 	dt = 0.5;
 	ds = 0.5;
@@ -85,6 +87,7 @@ void Plan::WriteToFile(FILE *ft) const noexcept {
 
 void Plan::WriteOutFile(FILE *ft, int mode) const noexcept {
 	Solid::WriteOutFile(ft,mode);
+    int Ngb = 0;
 	if(mode == 0){
 		fprintf(ft,"%e\t%e\t%e\n",0.0,dt,ds);
 		fprintf(ft,"%d\t%d\t%d\n",periodic,Ngb,inAndOut);

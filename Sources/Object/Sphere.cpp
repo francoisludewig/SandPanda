@@ -23,24 +23,26 @@ Sphere::Sphere() noexcept {
 	num = -9;
 	ct_pl = 0;
 	// Elongation
-	xsi = new Elongation[maxContact];
-	NumNeighbour = new int[maxContact];
-	type = new int[maxContact];
-	NumFromBody = new int[maxContact];
-	
-	xsi2 = new Elongation[maxContact];
-	NumNeighbour2 = new int[maxContact];
-	type2 = new int[maxContact];
-	NumFromBody2 = new int[maxContact];
-	
+    xsi.reserve(maxContact);
+    tp_xsi.reserve(maxContact);
+    type.reserve(maxContact);
+    tp_type.reserve(maxContact);
+    neighbourNumber.reserve(maxContact);
+    tp_neighbourNumber.reserve(maxContact);
+    bodyNumber.reserve(maxContact);
+    tp_bodyNumber.reserve(maxContact);
+
 	for(int i = 0 ; i < maxContact ; i++){
-		NumNeighbour[i] = -9;
-		type[i] = -1;
-		xsi[i].Reset();
-		NumNeighbour2[i] = -9;
-		type2[i] = -1;
-		xsi2[i].Reset();
+        neighbourNumber.push_back(-9);
+        type.push_back(-1);
+        Elongation elongation;
+        xsi.push_back(elongation);
+        tp_neighbourNumber.push_back(-9);
+        tp_type.push_back(-1);
+        Elongation tp_elongation;
+        tp_xsi.push_back(tp_elongation);
 	}
+
 	Nneighbour = 0;
 	Nneighbour2 = 0;
 }
@@ -48,17 +50,6 @@ Sphere::Sphere() noexcept {
 Sphere::~Sphere() noexcept {
 	b = NULL;
 	tdl = NULL;
-}
-
-void Sphere::SphDealloc() noexcept {
-	delete [] xsi;
-	delete [] NumNeighbour;
-	delete [] type;
-	delete [] NumFromBody;
-	delete [] xsi2;
-	delete [] NumNeighbour2;
-	delete [] type2;
-	delete [] NumFromBody2;
 }
 
 double Sphere::Radius() const noexcept {
@@ -101,7 +92,7 @@ void Sphere::writeToFile(FILE *ft) const noexcept {
 		fprintf(ft,"%e\t%e\t%e\t%d\t%d\n",r,m,I,sp,NhollowBall);
 		fprintf(ft,"%d\n",Nneighbour);
 		for(int i = 0 ; i < Nneighbour ; i++)
-			fprintf(ft,"%d\t%d\t%e\t%e\t%e\n",NumNeighbour[i],type[i],xsi[i].x,xsi[i].y,xsi[i].z);
+			fprintf(ft,"%d\t%d\t%e\t%e\t%e\n",neighbourNumber[i],type[i],xsi[i].x,xsi[i].y,xsi[i].z);
 	}
 }
 
@@ -118,7 +109,7 @@ void Sphere::readStartStop(FILE *ft) noexcept {
 	fscanf(ft,"%d\n",&Nneighbour2);
 	//Nneighbour2+=maxContact;
 	for(int i = 0 ; i < Nneighbour2 ; i++)
-		fscanf(ft,"%d\t%d\t%lf\t%lf\t%lf\n",&NumNeighbour[i],&type[i],&xsi[i].x,&xsi[i].y,&xsi[i].z);
+		fscanf(ft,"%d\t%d\t%lf\t%lf\t%lf\n",&neighbourNumber[i],&type[i],&xsi[i].x,&xsi[i].y,&xsi[i].z);
     r0 = r;
 }
 
@@ -297,46 +288,44 @@ int Sphere::Num() const noexcept {
 
 // TODO Implement swapable container with RAII
 void Sphere::InitXsi() noexcept {
-	Elongation *tpe;
-	int *tpi;
+
+	auto tpe = xsi;
+	xsi = tp_xsi;
+	tp_xsi = tpe;
 	
-	tpe = xsi;
-	xsi = xsi2;
-	xsi2 = tpe;
-	
-	tpi = NumNeighbour;
-	NumNeighbour = NumNeighbour2;
-	NumNeighbour2 = tpi;
+	auto tpi = neighbourNumber;
+    neighbourNumber = tp_neighbourNumber;
+	tp_neighbourNumber = tpi;
 	
 	tpi = type;
-	type = type2;
-	type2 = tpi;
+	type = tp_type;
+	tp_type = tpi;
 	
-	tpi = NumFromBody;
-	NumFromBody = NumFromBody2;
-	NumFromBody2 = tpi;
+	tpi = bodyNumber;
+    bodyNumber = tp_bodyNumber;
+    tp_bodyNumber = tpi;
 	
 	Nneighbour = Nneighbour2;
 	Nneighbour2 = 0;
 }
 
 void Sphere::AddXsi(Elongation& e, int n , int t, int nob) noexcept {
-	xsi2[Nneighbour2] = e;
-	NumNeighbour2[Nneighbour2] = n;
-	type2[Nneighbour2] = t;
-	NumFromBody2[Nneighbour2] = nob;
+	tp_xsi[Nneighbour2] = e;
+	tp_neighbourNumber[Nneighbour2] = n;
+	tp_type[Nneighbour2] = t;
+	tp_bodyNumber[Nneighbour2] = nob;
 	Nneighbour2++;
 }
 
 Elongation Sphere::FoundIt(int n, int t, int nob) const noexcept {
 	static Elongation e;
 	for(int i = 0 ; i < Nneighbour ; i++){
-		if(NumNeighbour[i] == n && type[i] == t){
+		if(neighbourNumber[i] == n && type[i] == t){
 			if(type[i] != 10){
 				return xsi[i];
 			}
 			else{
-				if(nob == NumFromBody[i])
+				if(nob == bodyNumber[i])
 					return xsi[i];
 			}
         }

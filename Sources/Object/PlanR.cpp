@@ -25,9 +25,10 @@ void PlanR::writeToFile(FILE *ft) const  noexcept {
 
 void PlanR::writeOutFile(FILE *ft, int mode) const noexcept {
 	Solid::WriteOutFile(ft,mode);
+    int Ngb = 0;
 	if(mode == 0){
 		fprintf(ft,"%e\t%e\n",dn,r);
-		fprintf(ft,"%d\t%d\n",periodic,Ngb);	
+		fprintf(ft,"%d\t%d\n",periodic, Ngb);
 	}
 	else{
 		fwrite(&dn, sizeof(double), 1, ft);
