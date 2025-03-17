@@ -184,14 +184,6 @@ void Sphere::initTimeStep() noexcept {
 	Mz = 0.;
 }
 
-void Sphere::Melt(double dt, double vr) noexcept {
-	if(autoIntegrate){
-		r += r0*vr*dt;
-		//m = 4./3.*M_PI*r*r*r*rho;
-		I = 2./5.*m*r*r;
-	}
-}
-
 void Sphere::Freeze(double dt, double vr) noexcept {
     // printf("r = %.15e -> %.15e  (dr = %e)\n",r,r+r0*vr*dt,r0*vr);
     r += r0*vr*dt;
@@ -288,23 +280,10 @@ int Sphere::Num() const noexcept {
 
 // TODO Implement swapable container with RAII
 void Sphere::InitXsi() noexcept {
-
-	auto tpe = xsi;
-	xsi = tp_xsi;
-	tp_xsi = tpe;
-	
-	auto tpi = neighbourNumber;
-    neighbourNumber = tp_neighbourNumber;
-	tp_neighbourNumber = tpi;
-	
-	tpi = type;
-	type = tp_type;
-	tp_type = tpi;
-	
-	tpi = bodyNumber;
-    bodyNumber = tp_bodyNumber;
-    tp_bodyNumber = tpi;
-	
+    std::swap(xsi, tp_xsi);
+    std::swap(neighbourNumber, tp_neighbourNumber);
+    std::swap(type, tp_type);
+    std::swap(bodyNumber, tp_bodyNumber);
 	Nneighbour = Nneighbour2;
 	Nneighbour2 = 0;
 }
