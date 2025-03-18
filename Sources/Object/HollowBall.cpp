@@ -59,7 +59,7 @@ void HollowBall::writeToFile(FILE *ft) const noexcept {
 }
 
 void HollowBall::Makeavatar(vector<Sphere> & sph, int & Nsph, const int numero) noexcept {
-    Sphere *sphl = new Sphere();
+    auto sphl = new Sphere();
 	sphl->x = x;
 	sphl->y = y;
 	sphl->z = z;
@@ -79,10 +79,11 @@ void HollowBall::Makeavatar(vector<Sphere> & sph, int & Nsph, const int numero) 
 	delete sphl;
 	Nsph++;
     Navatar = Nsph-1;
+    avatar = &sph[Navatar];
 }
 
 void HollowBall::LinkInSph(vector<Sphere> & sph, int & Nsph, const int numero) noexcept {
-    avatar = &sph[Navatar];
+    //avatar = &sph[Navatar];
     NinSph = 0;
     for(int i = 0 ; i < Nsph ; i++){
         if(sph[i].HollowballNum() == numero)
