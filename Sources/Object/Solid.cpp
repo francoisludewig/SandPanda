@@ -240,42 +240,6 @@ void Solid::move(double dt) noexcept {
     x += ((1 - 2*q2*q2 - 2*q3*q3)*lx + (2*q1*q2 - 2*q3*q0)*ly     + (2*q1*q3 + 2*q2*q0)*lz)     + V.ox;
     y += ((2*q1*q2 + 2*q3*q0)*lx     + (1 - 2*q1*q1 - 2*q3*q3)*ly + (2*q2*q3 - 2*q1*q0)*lz)     + V.oy;
     z += ((2*q1*q3 - 2*q2*q0)*lx     + (2*q2*q3 + 2*q1*q0)*ly     + (1 - 2*q1*q1 - 2*q2*q2)*lz) + V.oz;
-    /*
-    double a,sa,ql0,ql1,ql2,ql3,p0,p1,p2,p3;
-    // Translation
-    x += vx*dt;
-    y += vy*dt;
-    z += vz*dt;
-    // Rotation
-    a = sqrt(wx*wx+wy*wy+wz*wz);
-    if(a != 0){
-        sa = sin(a*dt/2);
-        p0 = cos(a*dt/2);
-        p1 = wx/a*sa;
-        p2 = wy/a*sa;
-        p3 = wz/a*sa;
-
-        ql0 = q0;
-        ql1 = q1;
-        ql2 = q2;
-        ql3 = q3;
-
-        q0 = ql0*p0 - ql1*p1 - ql2*p2 - ql3*p3;
-        q1 = ql0*p1 + ql1*p0 - ql2*p3 + ql3*p2;
-        q2 = ql0*p2 + ql1*p3 + ql2*p0 - ql3*p1;
-        q3 = ql0*p3 - ql1*p2 + ql2*p1 + ql3*p0;
-
-        ComputeBase();
-
-        lx = (x-V.ox);
-        ly = (y-V.oy);
-        lz = (z-V.oz);
-
-        x = ((1 - 2*p2*p2 - 2*p3*p3)*lx + (2*p1*p2 - 2*p3*p0)*ly     + (2*p1*p3 + 2*p2*p0)*lz)     + V.ox;
-        y = ((2*p1*p2 + 2*p3*p0)*lx     + (1 - 2*p1*p1 - 2*p3*p3)*ly + (2*p2*p3 - 2*p1*p0)*lz)     + V.oy;
-        z = ((2*p1*p3 - 2*p2*p0)*lx     + (2*p2*p3 + 2*p1*p0)*ly     + (1 - 2*p1*p1 - 2*p2*p2)*lz) + V.oz;
-    }
-     */
 }
 
 void Solid::OnOffGravity(bool OnOff) noexcept {
@@ -288,15 +252,6 @@ void Solid::OnOffGravity(bool OnOff) noexcept {
         vy = 0;
         vz = 0;
     }
-}
-
-void Solid::SetVelocityToZero() noexcept {
-    vx = 0;
-    vy = 0;
-    vz = 0;
-    wx = 0;
-    wy = 0;
-    wz = 0;
 }
 
 double Solid::Vmax() const noexcept {
@@ -313,11 +268,6 @@ double Solid::Delay() const noexcept {
 
 void Solid::SetVz(double newA0, double newA1, double newW, double newPhi) noexcept {
     V.Set(Velocity::VelocityType::vz, newA0, newA1, newW, newPhi);
-}
-
-
-void Solid::InitTimeStep() noexcept {
-   MechanicalPoint::resetForceAndMomentum();
 }
 
 void Solid::SetMemoryPosition() noexcept {

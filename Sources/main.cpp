@@ -20,7 +20,7 @@ using namespace std;
 
 void CancelVelocity(vector<Sphere> & sph, int & Nsph, vector<Body> & bd, int Nbd){
 	for(int i = 0 ;  i < Nsph ; i++){
-		sph[i].CancelVelocity();
+        sph[i].resetVelocities();
 	}
 	for(int i = 0 ;  i < Nbd ; i++){
 		bd[i].CancelVelocity();

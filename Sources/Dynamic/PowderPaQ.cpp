@@ -46,17 +46,17 @@ void PowderPaQ::PowderPaQsecousseDownward(vector<Plan> & pl,vector<PlanR> & plr,
 	for(i = 0 ; i < Npl ; i++){
 		pl[i].SetVz(0,0,0,0);
 		pl[i].OnOffGravity(true);
-		pl[i].SetVelocityToZero();
+        pl[i].resetVelocities();
 	}
 	for(i = 0 ; i < Nplr ; i++){
 		plr[i].SetVz(0,0,0,0);
 		plr[i].OnOffGravity(true);
-		plr[i].SetVelocityToZero();
+        plr[i].resetVelocities();
 	}
 	for(i = 0 ; i < Nco ; i++){
 		co[i].SetVz(0,0,0,0);
 		co[i].OnOffGravity(true);
-		co[i].SetVelocityToZero();
+        co[i].resetVelocities();
 	}	
 }
 

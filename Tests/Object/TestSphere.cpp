@@ -32,9 +32,9 @@ protected:
     Sphere sphere;
 };
 
-// Test de la méthode initTimeStep
+// Test de la méthode resetForceAndMomentum
 TEST_F(SphereTest, InitTimeStepResetsForcesAndMoments) {
-    sphere.initTimeStep();
+    sphere.resetForceAndMomentum();
 
     EXPECT_DOUBLE_EQ(sphere.Fx, 0.0);
     EXPECT_DOUBLE_EQ(sphere.Fy, 0.0);
@@ -104,7 +104,7 @@ TEST_F(SphereTest, CountTest) {
 }
 
 TEST_F(SphereTest, CancelVelocity) {
-    sphere.CancelVelocity();
+    sphere.resetVelocities();
     EXPECT_NEAR(sphere.vx, 0.0, 1e-6);
     EXPECT_NEAR(sphere.vy, 0.0, 1e-6);
     EXPECT_NEAR(sphere.vz, 0.0, 1e-6);

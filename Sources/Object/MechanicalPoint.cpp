@@ -47,3 +47,11 @@ void MechanicalPoint::resetForceAndMomentum() {
     My = 0.;
     Mz = 0.;
 }
+void MechanicalPoint::resetVelocities() {
+    vx = 0;
+    vy = 0;
+    vz = 0;
+    wx = 0;
+    wy = 0;
+    wz = 0;
+}

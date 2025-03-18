@@ -17,7 +17,7 @@ public:
 
     virtual void move(double dt);
     virtual void resetForceAndMomentum();
-
+    virtual void resetVelocities();
 
 	double x, y, z;
 	double q0, q1, q2, q3;

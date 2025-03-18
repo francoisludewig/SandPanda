@@ -54,7 +54,7 @@ TEST_F(SolidTest, SetVelocityToZero) {
     solid->vy = 3.0;
     solid->vz = -2.0;
 
-    solid->SetVelocityToZero();
+    solid->resetVelocities();
 
     EXPECT_EQ(solid->vx, 0);
     EXPECT_EQ(solid->vy, 0);
@@ -214,7 +214,7 @@ TEST_F(SolidTest, InitTimeStepResetsForcesAndMoments) {
     solid->My = 2;
     solid->Mz = 3;
 
-    solid->InitTimeStep();
+    solid->resetForceAndMomentum();
     EXPECT_DOUBLE_EQ(solid->Fx, 0.0);
     EXPECT_DOUBLE_EQ(solid->Fy, 0.0);
     EXPECT_DOUBLE_EQ(solid->Fz, 0.0);

@@ -49,7 +49,6 @@ public:
 	void writeOutFile(FILE *ft, int n, int mode) const noexcept;
 	void readStartStop(FILE *ft) noexcept;
 	
-	void initTimeStep() noexcept;
 	void Melt(double dt, double vr) noexcept;
 	void Freeze(double dt, double vr) noexcept;
 	void upDateVelocity(double dt, Gravity & g, double g0) noexcept;
@@ -64,7 +63,6 @@ public:
 	void setRadius(double alpha) noexcept;
 	int NoBodies() const noexcept;
 	int NoAvatar() const noexcept;
-	void CancelVelocity() noexcept;
 	void RandomVelocity(double V, double W) noexcept;
 	
 	bool Border() const noexcept;

@@ -30,9 +30,7 @@ public:
 	[[nodiscard]] double Vmax() const noexcept;
 	[[nodiscard]] double Wmax() const noexcept;
 	[[nodiscard]] double Delay() const noexcept;
-	void InitTimeStep() noexcept;
 	void OnOffGravity(bool OnOff) noexcept;
-	void SetVelocityToZero() noexcept;
 	void SetMemoryPosition() noexcept;
 	void GetMemoryPosition() noexcept;
 	void SetVz(double newA0, double newA1, double newW, double newPhi) noexcept;

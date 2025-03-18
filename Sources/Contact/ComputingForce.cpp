@@ -18,7 +18,7 @@
 void ComputeForce::InitForTimeStep(const int & Nsph, const int & Nbd , const int & Nct ,int & Npl, int & Nplr, int & Nco, int & Nelb, vector<Sphere> & sph, vector<Body> & bd, Contact *ct, vector<Plan> & pl, vector<PlanR> & plr, vector<Cone> & co, vector<Elbow> & elb) noexcept {
 	Sphere *sphl = &sph[0];
 	for(int i = 0 ; i < Nsph ; i++){
-		sphl->initTimeStep();
+        sphl->resetForceAndMomentum();
 		sphl++;
 	}
 	for(int i = 0 ; i < Nbd ; i++)
@@ -26,18 +26,18 @@ void ComputeForce::InitForTimeStep(const int & Nsph, const int & Nbd , const int
 	for(int i = 0 ; i < Nct ; i++)
 		ct[i].TimeStepInitialization();	
 	for(int i = 0 ; i < Npl ; i++)
-		pl[i].InitTimeStep();	
+        pl[i].resetForceAndMomentum();
 	for(int i = 0 ; i < Nplr ; i++)
-		plr[i].InitTimeStep();
+        plr[i].resetForceAndMomentum();
 	for(int i = 0 ; i < Nco ; i++)
-		co[i].InitTimeStep();
+        co[i].resetForceAndMomentum();
 }
 
 /* Fonction qui initialise tous les obejts avant chaque etape de calcul en version parallel OMP */
 void ComputeForce::InitForTimeStepOMP(const int & Nsph, const int & Nbd , const int & Nct , const int & Ncta , const int & Nctb , const int & Nctc ,int & Npl, int & Nplr, int & Nco, int & Nelb, vector<Sphere> & sph, vector<Body> & bd, Contact *ct, Contact *cta, Contact *ctb, Contact *ctc, vector<Plan> & pl, vector<PlanR> & plr, vector<Cone> & co, vector<Elbow> & elb) noexcept {
 	// Sphere
 	for(int i = 0 ; i < Nsph ; i++)
-		sph[i].initTimeStep();
+        sph[i].resetForceAndMomentum();
 	// Bodies
 	for(int i = 0 ; i < Nbd ; i++)
 		bd[i].TimeStepInitialization();
@@ -55,13 +55,13 @@ void ComputeForce::InitForTimeStepOMP(const int & Nsph, const int & Nbd , const 
 		ctc[i].TimeStepInitialization();	
 	// Plan
 	for(int i = 0 ; i < Npl ; i++)
-		pl[i].InitTimeStep();	
+        pl[i].resetForceAndMomentum();
 	// Disque
 	for(int i = 0 ; i < Nplr ; i++)
-		plr[i].InitTimeStep();
+        plr[i].resetForceAndMomentum();
     // Cone
 	for(int i = 0 ; i < Nco ; i++)
-		co[i].InitTimeStep();
+        co[i].resetForceAndMomentum();
 
 }
 

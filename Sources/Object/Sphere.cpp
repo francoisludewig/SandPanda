@@ -142,15 +142,6 @@ void Sphere::writeOutFile(FILE *ft, int n, int mode) const noexcept {
 	}
 }
 
-void Sphere::CancelVelocity() noexcept {
-	vx = 0;
-	vy = 0;
-	vz = 0;
-	wx = 0;
-	wy = 0;
-	wz = 0;
-}
-
 void Sphere::RandomVelocity(double V, double W) noexcept {
 	double beta,alpha,rdm,Norme;
 	beta=2*M_PI*(double)(rand()%RAND_MAX)/RAND_MAX;
@@ -173,11 +164,6 @@ void Sphere::RandomVelocity(double V, double W) noexcept {
 	wx = wx/Norme*W;
 	wy = wy/Norme*W;
 	wz = wz/Norme*W;
-}
-
-
-void Sphere::initTimeStep() noexcept {
-    MechanicalPoint::resetForceAndMomentum();
 }
 
 void Sphere::Freeze(double dt, double vr) noexcept {

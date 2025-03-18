@@ -110,7 +110,7 @@ TEST_F(BodyTest, UpDateVelocity) {
 }
 
 /**
- * @brief Test the CancelVelocity method.
+ * @brief Test the resetVelocities method.
  */
 TEST_F(BodyTest, CancelVelocity) {
     body->vx = 5.0;
