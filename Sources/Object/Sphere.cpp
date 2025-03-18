@@ -1,7 +1,8 @@
 #include <iostream>
-#include <math.h>
-#include <stdlib.h>
-#include <stdio.h>
+#include <cmath>
+#include <cstdlib>
+#include <cstdio>
+#include <random>
 #include "../../Includes/Object/Sphere.h"
 #include "../../Includes/Configuration/Gravity.h"
 #include "../../Includes/Contact/Elongation.h"
@@ -49,8 +50,8 @@ Sphere::Sphere() noexcept : MechanicalPoint() {
 }
 
 Sphere::~Sphere() noexcept {
-	b = NULL;
-	tdl = NULL;
+	b = nullptr;
+	tdl = nullptr;
 }
 
 double Sphere::Radius() const noexcept {
@@ -143,27 +144,30 @@ void Sphere::writeOutFile(FILE *ft, int n, int mode) const noexcept {
 }
 
 void Sphere::RandomVelocity(double V, double W) noexcept {
-	double beta,alpha,rdm,Norme;
-	beta=2*M_PI*(double)(rand()%RAND_MAX)/RAND_MAX;
-	rdm=(double)(rand()%RAND_MAX)/RAND_MAX;
+    std::random_device rd;  // Graine aléatoire
+    std::mt19937 gen(rd()); // Générateur Mersenne Twister
+    std::uniform_real_distribution<double> distrib(0.0, 1.0);
+	double beta,alpha,rdm,speed;
+	beta=2*M_PI*distrib(gen);
+	rdm=distrib(gen);
 	alpha=acos(1-2*rdm);
 	vz=cos(alpha);
 	vx=cos(beta)*sin(alpha);
 	vy=sin(beta)*sin(alpha);
-	beta=2*M_PI*(double)(rand()%RAND_MAX)/RAND_MAX;
-	rdm=(double)(rand()%RAND_MAX)/RAND_MAX;
+	beta=2*M_PI*distrib(gen);
+	rdm=distrib(gen);
 	alpha=acos(1-2*rdm);
 	wz=cos(alpha);
 	wx=cos(beta)*sin(alpha);
 	wy=sin(beta)*sin(alpha);
-	Norme = sqrt(vx*vx+vy*vy+vz*vz);
-	vx = vx/Norme*V;
-	vy = vy/Norme*V;
-	vz = vz/Norme*V;
-	Norme = sqrt(wx*wx+wy*wy+wz*wz);
-	wx = wx/Norme*W;
-	wy = wy/Norme*W;
-	wz = wz/Norme*W;
+    speed = sqrt(vx * vx + vy * vy + vz * vz);
+	vx = vx / speed * V;
+	vy = vy / speed * V;
+	vz = vz / speed * V;
+    speed = sqrt(wx * wx + wy * wy + wz * wz);
+	wx = wx / speed * W;
+	wy = wy / speed * W;
+	wz = wz / speed * W;
 }
 
 void Sphere::Freeze(double dt, double vr) noexcept {
@@ -173,18 +177,18 @@ void Sphere::Freeze(double dt, double vr) noexcept {
 }
 
 void Sphere::upDateVelocity(double dt, Gravity & g, double g0) noexcept {
-	double gammab = g0;
-	double gammabr = g0;
+	double gamma_b = g0;
+	double gamma_br = g0;
 	if(autoIntegrate){
-		Fx += m*g.ngx*g.G - vx*gammab;
-		Fy += m*g.ngy*g.G - vy*gammab;
-		Fz += m*g.ngz*g.G - vz*gammab;
+		Fx += m*g.ngx*g.G - vx * gamma_b;
+		Fy += m*g.ngy*g.G - vy * gamma_b;
+		Fz += m*g.ngz*g.G - vz * gamma_b;
 		vx += Fx/m*dt;
 		vy += Fy/m*dt;
 		vz += Fz/m*dt;
-		wx += (Mx - gammabr*r*r*wx)/I*dt;
-		wy += (My - gammabr*r*r*wy)/I*dt;
-		wz += (Mz - gammabr*r*r*wz)/I*dt;
+		wx += (Mx - gamma_br * r * r * wx) / I * dt;
+		wy += (My - gamma_br * r * r * wy) / I * dt;
+		wz += (Mz - gamma_br * r * r * wz) / I * dt;
 	}
 }
 
@@ -221,7 +225,7 @@ void Sphere::sphereLinking(int & Nsph , vector<Sphere> & sph,  vector<Body> & bd
 		sph[i].num = i;
 		if(sph[i].bodies != -9){
 			sph[i].b = &bd[sph[i].bodies];
-			sph[i].autoIntegrate = 0;
+			sph[i].autoIntegrate = false;
 		}
 	}
 }
