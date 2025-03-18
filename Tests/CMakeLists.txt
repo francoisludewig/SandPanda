@@ -38,6 +38,7 @@ add_executable(
         ${SandPanda_SOURCE_DIR}/Sources/Object/Sinusoid.cpp
         ${SandPanda_SOURCE_DIR}/Sources/Object/Velocity.cpp
         ${SandPanda_SOURCE_DIR}/Sources/Object/Sphere.cpp
+        ${SandPanda_SOURCE_DIR}/Sources/Object/MechanicalPoint.cpp
         ${SandPanda_SOURCE_DIR}/Sources/Object/Solid.cpp
         ${SandPanda_SOURCE_DIR}/Sources/Object/Plan.cpp
         ${SandPanda_SOURCE_DIR}/Sources/Object/PlanR.cpp

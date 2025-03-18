@@ -31,13 +31,13 @@ void Move::upDateVelocityContainer(int & Npl, int & Nplr, int & Nco, int & Nelb,
 
 void Move::moveContainer(int & Npl, int & Nplr, int & Nco, int & Nelb, vector<Plan> & pl, vector<PlanR> & plr, vector<Cone> & co, vector<Elbow> & elb, double time, double dt, vector<Sphere> & sph, Gravity gt) noexcept {
 	for(int i = 0 ; i < Npl ; i++){
-		pl[i].Move(dt);
+        pl[i].move(dt);
 	}
 	for(int i = 0 ; i < Nplr ; i++){
-		plr[i].Move(dt);
+        plr[i].move(dt);
 	}
 	for(int i = 0 ; i < Nco ; i++){
-		co[i].Move(dt);
+        co[i].move(dt);
 		co[i].LimitUpdate();
 	}
 	for(int i = 0 ; i < Nelb ; i++){

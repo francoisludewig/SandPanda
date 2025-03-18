@@ -50,7 +50,8 @@ set(INCLUDES_FILES
         Includes/Object/Velocity.h
         Includes/Object/Sinusoid.h		
 		Includes/Object/Periodicity.h
-		
+		Sources/Object/MechanicalPoint.cpp
+
 		Includes/Configuration/Gravity.h
 		Includes/Configuration/Option.h
 		Includes/Configuration/Data.h	

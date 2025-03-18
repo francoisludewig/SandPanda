@@ -7,7 +7,7 @@
 #include "../../Includes/Contact/Elongation.h"
 #include "../../Includes/Object/Body.h"
 
-Sphere::Sphere() noexcept {
+Sphere::Sphere() noexcept : MechanicalPoint() {
 	// Initialisation des donnees des elongations
 	r = 0.0005;
 	m = 4./3.*2500*pow(r,3)*M_PI;
@@ -177,12 +177,7 @@ void Sphere::RandomVelocity(double V, double W) noexcept {
 
 
 void Sphere::initTimeStep() noexcept {
-	Fx = 0.;
-	Fy = 0.;
-	Fz = 0.;
-	Mx = 0.;
-	My = 0.;
-	Mz = 0.;
+    MechanicalPoint::resetForceAndMomentum();
 }
 
 void Sphere::Freeze(double dt, double vr) noexcept {
@@ -208,39 +203,9 @@ void Sphere::upDateVelocity(double dt, Gravity & g, double g0) noexcept {
 }
 
 void Sphere::move(double dt) noexcept {
-	double a,sa;
-	double p0,p1,p2,p3;
-	double ql0,ql1,ql2,ql3;
-	if(autoIntegrate){
-		x += vx*dt;
-		y += vy*dt;
-		z += vz*dt;
-		a = sqrt(wx*wx+wy*wy+wz*wz);
-		if(a != 0){
-			sa = sin(dt*a/2);
-			p0 = cos(dt*a/2);
-			p1 = wx/a*sa;
-			p2 = wy/a*sa;
-			p3 = wz/a*sa;
-			
-			ql0 = q0;
-			ql1 = q1;
-			ql2 = q2;
-			ql3 = q3;
-
-            if(q0 == 0 && q1 == 0 && q2 ==0 && q3 == 0) {
-                q0 = p0;
-                q1 = p1;
-                q2 = p2;
-                q3 = p3;
-            } else {
-                q0 = ql0 * p0 - ql1 * p1 - ql2 * p2 - ql3 * p3;
-                q1 = ql0 * p1 + ql1 * p0 - ql2 * p3 + ql3 * p2;
-                q2 = ql0 * p2 + ql1 * p3 + ql2 * p0 - ql3 * p1;
-                q3 = ql0 * p3 - ql1 * p2 + ql2 * p1 + ql3 * p0;
-            }
-		}
-	}
+    if(autoIntegrate) {
+        MechanicalPoint::move(dt);
+    }
 }
 
 void Sphere::affiche() const noexcept {

@@ -119,18 +119,106 @@ TEST_F(SolidTest, UpdateGravityVelocity) {
 }
 
 // Test move function
-TEST_F(SolidTest, Move) {
+TEST_F(SolidTest, MoveTranslation) {
     solid->vx = 2.0;
     solid->vy = -1.0;
     solid->vz = 0.5;
+    solid->wx = 0.0;
+    solid->wy = 0.0;
+    solid->wz = 0.0;
 
+    solid->V.ox = 0.0;
+    solid->V.oy = 0.0;
+    solid->V.oz = 0.0;
     solid->x = 1.0;
     solid->y = 2.0;
     solid->z = 3.0;
 
-    solid->Move(1.0);
+    solid->move(1.0);
 
     EXPECT_DOUBLE_EQ(solid->x, 3.0);
     EXPECT_DOUBLE_EQ(solid->y, 1.0);
     EXPECT_DOUBLE_EQ(solid->z, 3.5);
+}
+
+
+// Test move function
+TEST_F(SolidTest, MoveRotation) {
+    solid->x = 0.0;
+    solid->y = 0.0;
+    solid->z = 0.0;
+    solid->q0 = 1.0;
+    solid->q1 = 0.0;
+    solid->q2 = 0.0;
+    solid->q3 = 0.0;
+
+    solid->vx = 0.0;
+    solid->vy = 0.0;
+    solid->vz = 0.0;
+    solid->wx = 2.0;
+    solid->wy = -1.0;
+    solid->wz = 0.5;
+
+    solid->move(1.0);
+
+    EXPECT_DOUBLE_EQ(solid->q0, 0.41245962204144238);
+    EXPECT_DOUBLE_EQ(solid->q1, 0.7951649413491545);
+    EXPECT_DOUBLE_EQ(solid->q2, -0.39758247067457725);
+    EXPECT_DOUBLE_EQ(solid->q3, 0.19879123533728862);
+
+    EXPECT_DOUBLE_EQ(solid->x, 0.0);
+    EXPECT_DOUBLE_EQ(solid->y, 0.0);
+    EXPECT_DOUBLE_EQ(solid->z, 0.0);
+}
+
+
+// Test move function
+TEST_F(SolidTest, MoveRotationNotAroundCenterOfMass) {
+    solid->x = 0.0;
+    solid->y = 0.0;
+    solid->z = 0.0;
+    solid->q0 = 1.0;
+    solid->q1 = 0.0;
+    solid->q2 = 0.0;
+    solid->q3 = 0.0;
+
+    solid->V.ox = 5.0;
+    solid->V.oy = 0.0;
+    solid->V.oz = 0.0;
+
+    solid->vx = 0.0;
+    solid->vy = 0.0;
+    solid->vz = 0.0;
+    solid->wx = 2.0;
+    solid->wy = -1.0;
+    solid->wz = 0.5;
+
+
+    solid->move(1.0);
+
+    EXPECT_DOUBLE_EQ(solid->q0, 0.41245962204144238);
+    EXPECT_DOUBLE_EQ(solid->q1, 0.7951649413491545);
+    EXPECT_DOUBLE_EQ(solid->q2, -0.39758247067457725);
+    EXPECT_DOUBLE_EQ(solid->q3, 0.19879123533728862);
+
+    EXPECT_DOUBLE_EQ(solid->x, 1.9758977623462637);
+    EXPECT_DOUBLE_EQ(solid->y, 2.341502841830327);
+    EXPECT_DOUBLE_EQ(solid->z, -3.2205853657244008);
+}
+
+TEST_F(SolidTest, InitTimeStepResetsForcesAndMoments) {
+    solid->Fx = 1;
+    solid->Fy = 2;
+    solid->Fz = 3;
+    solid->Mx = 1;
+    solid->My = 2;
+    solid->Mz = 3;
+
+    solid->InitTimeStep();
+    EXPECT_DOUBLE_EQ(solid->Fx, 0.0);
+    EXPECT_DOUBLE_EQ(solid->Fy, 0.0);
+    EXPECT_DOUBLE_EQ(solid->Fz, 0.0);
+    EXPECT_DOUBLE_EQ(solid->Mx, 0.0);
+    EXPECT_DOUBLE_EQ(solid->My, 0.0);
+    EXPECT_DOUBLE_EQ(solid->Mz, 0.0);
 }

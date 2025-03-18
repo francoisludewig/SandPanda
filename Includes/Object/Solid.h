@@ -25,7 +25,7 @@ public:
 	void UpDateForce() noexcept;
 	void UpDateVelocity(double time, double dt, Gravity& gt) noexcept;
 	void UpDateGravityVelocity(double time, double dt, Gravity& gt) noexcept;
-	void Move(double dt) noexcept;
+	void move(double dt) noexcept override;
 	void MoveGravity(double dt, Gravity& gt) noexcept;
 	[[nodiscard]] double Vmax() const noexcept;
 	[[nodiscard]] double Wmax() const noexcept;
@@ -39,6 +39,7 @@ public:
 
 	int numero{};
 	// Base
+    double x0, y0, z0;
 	double nx,ny,nz;
 	double tx,ty,tz;
 	double sx,sy,sz;

@@ -79,7 +79,7 @@ TEST_F(BodyTest, TimeStepInitialization) {
 }
 
 /**
- * @brief Test the Move method.
+ * @brief Test the move method.
  */
 TEST_F(BodyTest, MoveUpdatesPosition) {
     body->vx = 1.0;

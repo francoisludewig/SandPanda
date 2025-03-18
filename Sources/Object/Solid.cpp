@@ -3,7 +3,10 @@
 
 #include <cmath>
 
-Solid::Solid() noexcept {
+Solid::Solid() noexcept /*: MechanicalPoint()*/ {
+    x0 = x;
+    y0 = y;
+    z0 = z;
     nx = 1;
     ny = 0;
     nz = 0;
@@ -39,6 +42,9 @@ Solid::~Solid() noexcept {
 
 void Solid::LoadFromFile(FILE *ft) noexcept {
     fscanf(ft,"%lf\t%lf\t%lf",&x,&y,&z);
+    x0 = x;
+    y0 = y;
+    z0 = z;
     fscanf(ft,"%lf\t%lf\t%lf\t%lf",&q0,&q1,&q2,&q3);
     ComputeBase();
     V.LoadFromFile(ft);
@@ -224,8 +230,17 @@ void Solid::MoveGravity(double dt, Gravity& gt) noexcept {
     }
 }
 
-void Solid::Move(double dt) noexcept {
+void Solid::move(double dt) noexcept {
+    MechanicalPoint::move(dt);
     double lx,ly,lz;
+    lx = (x0-V.ox);
+    ly = (y0-V.oy);
+    lz = (z0-V.oz);
+
+    x += ((1 - 2*q2*q2 - 2*q3*q3)*lx + (2*q1*q2 - 2*q3*q0)*ly     + (2*q1*q3 + 2*q2*q0)*lz)     + V.ox;
+    y += ((2*q1*q2 + 2*q3*q0)*lx     + (1 - 2*q1*q1 - 2*q3*q3)*ly + (2*q2*q3 - 2*q1*q0)*lz)     + V.oy;
+    z += ((2*q1*q3 - 2*q2*q0)*lx     + (2*q2*q3 + 2*q1*q0)*ly     + (1 - 2*q1*q1 - 2*q2*q2)*lz) + V.oz;
+    /*
     double a,sa,ql0,ql1,ql2,ql3,p0,p1,p2,p3;
     // Translation
     x += vx*dt;
@@ -260,6 +275,7 @@ void Solid::Move(double dt) noexcept {
         y = ((2*p1*p2 + 2*p3*p0)*lx     + (1 - 2*p1*p1 - 2*p3*p3)*ly + (2*p2*p3 - 2*p1*p0)*lz)     + V.oy;
         z = ((2*p1*p3 - 2*p2*p0)*lx     + (2*p2*p3 + 2*p1*p0)*ly     + (1 - 2*p1*p1 - 2*p2*p2)*lz) + V.oz;
     }
+     */
 }
 
 void Solid::OnOffGravity(bool OnOff) noexcept {
@@ -301,12 +317,7 @@ void Solid::SetVz(double newA0, double newA1, double newW, double newPhi) noexce
 
 
 void Solid::InitTimeStep() noexcept {
-    Fx = 0.;
-    Fy = 0.;
-    Fz = 0.;
-    Mx = 0.;
-    My = 0.;
-    Mz = 0.;
+   MechanicalPoint::resetForceAndMomentum();
 }
 
 void Solid::SetMemoryPosition() noexcept {

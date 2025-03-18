@@ -65,7 +65,7 @@ int Evolution::Evolve(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,int &
 		dat.mas->UpDateVelocity(dat.dt);
 		
 		
-		// Move
+		// move
 		Move::moveContainer(Npl, Nplr, Nco, Nelb, pl, plr, co, elb, dat.TIME, dat.dt/2, sph,gf);
 		dat.mas->Move(dat.dt/2);
 		Move::moveSphere(Nsph, sph, dat.dt/2);
@@ -210,7 +210,7 @@ int Evolution::EvolveOMP(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,in
 			Move::upDateVelocityBodiesOMP(Nbd, bd, gf, dat.dt, sph,Nprocess);
 			Move::upDateVelocityContainer(Npl, Nplr, Nco, Nelb, pl, plr, co, elb, dat.TIME, dat.dt, gf);
 			
-			// Move
+			// move
 			Move::moveContainer(Npl, Nplr, Nco, Nelb, pl, plr, co, elb, dat.TIME, dat.dt/2, sph,gf);
 			Move::moveSphereOMP(Nsph, sph, dat.dt/2,Nprocess);
 			Move::upDateHollowBall(Nhb,hb,dat.dt);
@@ -290,7 +290,7 @@ int Evolution::EvolveMelt(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,i
 		// Update Velocities
 		Move::upDateVelocitySphere(Nsph, sph, gf, dat.dt);
 		Move::upDateVelocityBodies(Nbd, bd, gf, dat.dt, sph);
-		// Move
+		// move
 		Move::moveContainer(Npl, Nplr, Nco, Nelb, pl, plr, co, elb, dat.TIME, dat.dt/2, sph,gf);
 		Move::moveSphere(Nsph, sph, dat.dt/2);
 		Move::moveBodies(Nbd, bd, dat.dt/2, sph);
@@ -426,7 +426,7 @@ int Evolution::EvolveMeltOMP(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsp
 			Move::upDateVelocityBodiesOMP(Nbd, bd, gf, dat.dt, sph,Nprocess);
 			
 			
-			// Move
+			// move
 			Move::moveContainer(Npl, Nplr, Nco, Nelb, pl, plr, co, elb, dat.TIME, dat.dt/2, sph,gf);
 			Move::moveSphereOMP(Nsph, sph, dat.dt/2,Nprocess);
 			Move::moveBodiesOMP(Nbd, bd, dat.dt/2, sph,Nprocess);

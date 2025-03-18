@@ -55,7 +55,7 @@ public:
 	void upDateVelocity(double dt, Gravity & g, double g0) noexcept;
 	
 	int Num() const noexcept;
-	void move(double dt) noexcept;
+	void move(double dt) noexcept override;
 	
 	void InitXsi() noexcept;
 	void AddXsi(Elongation& e, int n, int t, int nob) noexcept;

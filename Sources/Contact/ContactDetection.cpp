@@ -1054,7 +1054,7 @@ void ContactDetection::listCellForPlan(Data *dat, vector<Plan> & pl, int & Npl, 
 			for(b = 0 ; b <= Nts ; b++){
 				if(b != 0){
 					pl[a].UpDateVelocity(b*dtime,dtime,gt);
-					pl[a].Move(dtime);
+                    pl[a].move(dtime);
 				}
 				ox = pl[a].x;
 				oy = pl[a].y;
@@ -1195,7 +1195,7 @@ void ContactDetection::listCellForPlanR(Data *dat, vector<PlanR> & plr, int & Np
 			for(b = 0 ; b <= Nts ; b++){
 				if(b != 0){
 					plr[a].UpDateVelocity(b*dtime,dtime,gt);
-					plr[a].Move(dtime);
+                    plr[a].move(dtime);
 				}
 				ox = plr[a].x;
 				oy = plr[a].y;
@@ -1338,7 +1338,7 @@ void ContactDetection::listCellForCone(Data *dat, vector<Cone> & co, int & Nco, 
 			for(b2 = 0 ; b2 <= Nts ; b2++){
 				if(b2 != 0){
 					co[numCone].UpDateVelocity(b2*dtime,dtime,gt);
-					co[numCone].Move(dtime);
+                    co[numCone].move(dtime);
 				}
 				ox = co[numCone].x;
 				oy = co[numCone].y;

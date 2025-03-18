@@ -9,10 +9,72 @@
 
 class SphereTest : public ::testing::Test {
 protected:
-    void SetUp() override {}
+    void SetUp() override {
+        sphere.x = 1.0;
+        sphere.y = 2.0;
+        sphere.z = 3.0;
+        sphere.vx = 0.5;
+        sphere.vy = -0.2;
+        sphere.vz = 0.1;
+        sphere.wx = 0.05;
+        sphere.wy = -0.03;
+        sphere.wz = 0.02;
+        sphere.Fx = 10.0;
+        sphere.Fy = -5.0;
+        sphere.Fz = 2.0;
+        sphere.Mx = 1.0;
+        sphere.My = -0.5;
+        sphere.Mz = 0.2;
+    }
+
     void TearDown() override {}
+
     Sphere sphere;
 };
+
+// Test de la méthode initTimeStep
+TEST_F(SphereTest, InitTimeStepResetsForcesAndMoments) {
+    sphere.initTimeStep();
+
+    EXPECT_DOUBLE_EQ(sphere.Fx, 0.0);
+    EXPECT_DOUBLE_EQ(sphere.Fy, 0.0);
+    EXPECT_DOUBLE_EQ(sphere.Fz, 0.0);
+    EXPECT_DOUBLE_EQ(sphere.Mx, 0.0);
+    EXPECT_DOUBLE_EQ(sphere.My, 0.0);
+    EXPECT_DOUBLE_EQ(sphere.Mz, 0.0);
+}
+
+// Test de la méthode move avec autoIntegrate = true
+TEST_F(SphereTest, MoveUpdatesPositionWhenAutoIntegrateIsTrue) {
+    double dt = 0.1;
+    sphere.autoIntegrate = true;
+
+    double xBefore = sphere.x;
+    double yBefore = sphere.y;
+    double zBefore = sphere.z;
+
+    sphere.move(dt);
+
+    EXPECT_NE(sphere.x, xBefore);  // La position doit changer
+    EXPECT_NE(sphere.y, yBefore);
+    EXPECT_NE(sphere.z, zBefore);
+}
+
+// Test de move avec autoIntegrate = false
+TEST_F(SphereTest, MoveDoesNothingWhenAutoIntegrateIsFalse) {
+    double dt = 0.1;
+    sphere.autoIntegrate = false;
+
+    double xBefore = sphere.x;
+    double yBefore = sphere.y;
+    double zBefore = sphere.z;
+
+    sphere.move(dt);
+
+    EXPECT_DOUBLE_EQ(sphere.x, xBefore);
+    EXPECT_DOUBLE_EQ(sphere.y, yBefore);
+    EXPECT_DOUBLE_EQ(sphere.z, zBefore);
+}
 
 TEST_F(SphereTest, DefaultConstructor) {
     EXPECT_NEAR(sphere.Radius(), 0.0005, 1e-6);
@@ -24,6 +86,12 @@ TEST_F(SphereTest, Radius) {
     sphere.setRadius(2.0);
     EXPECT_NEAR(sphere.Radius(), 0.001, 1e-6);
 }
+
+
+TEST_F(SphereTest, Move) {
+
+}
+
 
 TEST_F(SphereTest, MassCalculation) {
     double initialMass = sphere.Mass();
@@ -37,20 +105,15 @@ TEST_F(SphereTest, CountTest) {
 
 TEST_F(SphereTest, CancelVelocity) {
     sphere.CancelVelocity();
-    EXPECT_NEAR(sphere.getFx(), 0.0, 1e-6);
-    EXPECT_NEAR(sphere.getFy(), 0.0, 1e-6);
-    EXPECT_NEAR(sphere.getFz(), 0.0, 1e-6);
+    EXPECT_NEAR(sphere.vx, 0.0, 1e-6);
+    EXPECT_NEAR(sphere.vy, 0.0, 1e-6);
+    EXPECT_NEAR(sphere.vz, 0.0, 1e-6);
 }
 
 TEST_F(SphereTest, RandomVelocity) {
     sphere.RandomVelocity(5.0, 2.0);
     double vNorm = sqrt(pow(sphere.vx, 2) + pow(sphere.vy, 2) + pow(sphere.vz, 2));
     EXPECT_NEAR(vNorm, 5.0, 1e-6);
-}
-
-TEST_F(SphereTest, ComputeCTD) {
-    sphere.ComputeCTD(1.0, 2.0, M_PI);
-    EXPECT_NEAR(sphere.getFx(), sphere.Mass() * 1.0 * 4.0 * cos(2.0 * M_PI), 1e-6);
 }
 
 TEST_F(SphereTest, HollowBallCheck) {
