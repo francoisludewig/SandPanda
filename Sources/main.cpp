@@ -23,7 +23,7 @@ void CancelVelocity(vector<Sphere> & sph, int & Nsph, vector<Body> & bd, int Nbd
         sph[i].resetVelocities();
 	}
 	for(int i = 0 ;  i < Nbd ; i++){
-		bd[i].CancelVelocity();
+        bd[i].resetVelocities();
 	}
 }
 

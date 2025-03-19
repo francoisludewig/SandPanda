@@ -166,7 +166,7 @@ void Move::moveSphereOMP(int & Nsph, vector<Sphere> & sph, double dt, int Nproce
 
 void Move::moveBodies(int & Nbd, vector<Body> & bd, double dt, vector<Sphere> & sph) noexcept {
 	for(int i = 0 ; i < Nbd ; i++){
-		bd[i].Move(dt);
+        bd[i].move(dt);
 		bd[i].UpDateLinkedSphere(sph);
 	}
 }
@@ -179,13 +179,13 @@ void Move::moveBodiesOMP(int & Nbd, vector<Body> & bd, double dt, vector<Sphere>
 			{
 #pragma omp section	
 			for(int i = 0 ; i < Nbd/2 ; i++){
-				bd[i].Move(dt);
+                bd[i].move(dt);
 				bd[i].UpDateLinkedSphere(sph);
 			}
 			
 #pragma omp section	
 			for(int i = Nbd/2 ; i < Nbd ; i++){
-				bd[i].Move(dt);
+                bd[i].move(dt);
 				bd[i].UpDateLinkedSphere(sph);
 			}
 			}
@@ -198,25 +198,25 @@ void Move::moveBodiesOMP(int & Nbd, vector<Body> & bd, double dt, vector<Sphere>
 			{
 #pragma omp section	
 			for(int i = 0 ; i < Nbd/4 ; i++){
-				bd[i].Move(dt);
+                bd[i].move(dt);
 				bd[i].UpDateLinkedSphere(sph);
 			}
 			
 #pragma omp section	
 			for(int i = Nbd/4 ; i < Nbd/2 ; i++){
-				bd[i].Move(dt);
+                bd[i].move(dt);
 				bd[i].UpDateLinkedSphere(sph);
 			}
 			
 #pragma omp section	
 			for(int i = Nbd/2 ; i < 3*Nbd/4 ; i++){
-				bd[i].Move(dt);
+                bd[i].move(dt);
 				bd[i].UpDateLinkedSphere(sph);
 			}
 			
 #pragma omp section	
 			for(int i = 3*Nbd/4 ; i < Nbd ; i++){
-				bd[i].Move(dt);
+                bd[i].move(dt);
 				bd[i].UpDateLinkedSphere(sph);
 			}
 			

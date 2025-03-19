@@ -66,10 +66,16 @@ TEST_F(BodyTest, LoadFromFile) {
 }
 
 /**
- * @brief Test the TimeStepInitialization method.
+ * @brief Test the resetForceAndMomentum method.
  */
 TEST_F(BodyTest, TimeStepInitialization) {
-    body->TimeStepInitialization();
+    body->Fx = 1;
+    body->Fy = 2;
+    body->Fz = 3;
+    body->Mx = 1;
+    body->My = 2;
+    body->Mz = 3;
+    body->resetForceAndMomentum();
     EXPECT_EQ(body->Fx, 0);
     EXPECT_EQ(body->Fy, 0);
     EXPECT_EQ(body->Fz, 0);
@@ -86,7 +92,7 @@ TEST_F(BodyTest, MoveUpdatesPosition) {
     body->vy = 2.0;
     body->vz = 3.0;
 
-    body->Move(1.0);
+    body->move(1.0);
 
     EXPECT_DOUBLE_EQ(body->x, 1.0);
     EXPECT_DOUBLE_EQ(body->y, 2.0);
@@ -112,7 +118,7 @@ TEST_F(BodyTest, UpDateVelocity) {
 /**
  * @brief Test the resetVelocities method.
  */
-TEST_F(BodyTest, CancelVelocity) {
+TEST_F(BodyTest, resetVelocities) {
     body->vx = 5.0;
     body->vy = 3.0;
     body->vz = -1.0;
@@ -120,7 +126,7 @@ TEST_F(BodyTest, CancelVelocity) {
     body->wy = -0.3;
     body->wz = 0.2;
 
-    body->CancelVelocity();
+    body->resetVelocities();
 
     EXPECT_DOUBLE_EQ(body->vx, 0);
     EXPECT_DOUBLE_EQ(body->vy, 0);

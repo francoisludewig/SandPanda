@@ -27,14 +27,12 @@ public:
 	void ReadStartStopFile(FILE *ft) noexcept;
 	void WriteToFile(FILE *ft) const noexcept;
 	void WriteOutFile(FILE *ft, int mode) const noexcept;
-	void TimeStepInitialization() noexcept;
 	void UpDateVelocity(double dt, Gravity & g) noexcept;
-	void Move(double dt) noexcept;
+	void move(double dt) noexcept override;
 	void UpDateLinkedSphere(vector<Sphere> & sph) noexcept;
 	void UpDateLinkedSphereTp() noexcept;
 	void UploadSpecies(vector<BodySpecie> & bdsp, vector<Sphere> & sph, int & Nsph, int numero) noexcept;
 	int NumberOfSphere() const noexcept;
-	void CancelVelocity() noexcept;
 	void RandomVelocity(double V, double W) noexcept;
 	int Num() const noexcept;
 	double GetRmax() const noexcept;

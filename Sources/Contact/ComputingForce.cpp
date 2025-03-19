@@ -22,7 +22,7 @@ void ComputeForce::InitForTimeStep(const int & Nsph, const int & Nbd , const int
 		sphl++;
 	}
 	for(int i = 0 ; i < Nbd ; i++)
-		bd[i].TimeStepInitialization();
+        bd[i].resetForceAndMomentum();
 	for(int i = 0 ; i < Nct ; i++)
 		ct[i].TimeStepInitialization();	
 	for(int i = 0 ; i < Npl ; i++)
@@ -40,7 +40,7 @@ void ComputeForce::InitForTimeStepOMP(const int & Nsph, const int & Nbd , const 
         sph[i].resetForceAndMomentum();
 	// Bodies
 	for(int i = 0 ; i < Nbd ; i++)
-		bd[i].TimeStepInitialization();
+        bd[i].resetForceAndMomentum();
 	// Ct
 	for(int i = 0 ; i < Nct ; i++)
 		ct[i].TimeStepInitialization();	

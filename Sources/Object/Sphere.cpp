@@ -19,8 +19,8 @@ Sphere::Sphere() noexcept : MechanicalPoint() {
 	NhollowBall = -9;
 	autoIntegrate = true;
     isHollowBall = false;
-	b = NULL;
-	tdl = NULL;
+	b = nullptr;
+	tdl = nullptr;
 	num = -9;
 	ct_pl = 0;
 	// Elongation
