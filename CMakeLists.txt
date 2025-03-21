@@ -25,6 +25,8 @@ set(SOURCES_FILES
 		Sources/Contact/ContactDetection.cpp	
 		Sources/Contact/Elongation.cpp
 		Sources/Contact/ComputingForce.cpp
+		Sources/Contact/ElongationManager.cpp
+		Sources/Contact/ContactIdentifier.cpp
 
 		Sources/Dynamic/Move.cpp
 		Sources/Dynamic/Compaction.cpp
@@ -60,6 +62,8 @@ set(INCLUDES_FILES
 		Includes/Contact/ContactDetection.h	
 		Includes/Contact/Elongation.h
 		Includes/Contact/ComputingForce.h
+		Includes/Contact/ElongationManager.h
+		Includes/Contact/ContactIdentifier.h
 
 		Includes/Dynamic/Move.h
 		Includes/Dynamic/Compaction.h

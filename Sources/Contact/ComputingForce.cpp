@@ -9,6 +9,7 @@
 #include "../../Includes/Object/Sphere.h"
 #include "../../Includes/Object/Body.h"
 #include "../../Includes/Contact/Contact.h"
+#include "../../Includes/Contact/ContactIdentifier.h"
 #include "../../Includes/Repository/ReadWrite.h"
 #include "../../Includes/Contact/ContactDetection.h"
 #include "../../Includes/Contact/Elongation.h"
@@ -136,12 +137,15 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 					// Statique
 					else{
 						// Recherche de l'ancien xsi
-						xsi = a->FoundIt(b->Num(),0,-9);
+						//xsi = a->FoundIt(b->Num(),0,-9);
+                        xsi = a->FoundIt(ContactIdentifier::computeIdentifier(CONTACT_TYPE::SPHERE_VS_SPHERE, b->Num()));
 						// Calcul de N, T et Xsi 
 						computeContactForceStatic(ctl, xsi, N, T, tx, ty, tz, Vn, Vt, Vtx, Vty, Vtz, h, k, g0, dat.muS,dat.muD);
 						// Enregistrement du nouveau Xsi
-						a->AddXsi(xsi,b->Num(),0,-9);
-						b->AddXsi(xsi,a->Num(),0,-9);
+                        a->AddXsi(xsi, ContactIdentifier::computeIdentifier(CONTACT_TYPE::SPHERE_VS_SPHERE, b->Num()));
+						//a->AddXsi(xsi,b->Num(),0,-9);
+                        b->AddXsi(xsi, ContactIdentifier::computeIdentifier(CONTACT_TYPE::SPHERE_VS_SPHERE, a->Num()));
+                        //b->AddXsi(xsi,a->Num(),0,-9);
 					}
 				}
 			       
@@ -214,11 +218,13 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 					// Statique
 					else{
 						// Recherche de l'ancien xsi
-						xsi = bb->FoundIt(a->Num(),10,nb,-9);
+						//xsi = bb->FoundIt(a->Num(),10,nb,-9);
+                        xsi = a->FoundIt(ContactIdentifier::computeIdentifier(CONTACT_TYPE::SPHERE_VS_BODY, bb->Num(), nb));
 						// Calcul de N, T et Xsi 
 						computeContactForceStatic(ctl, xsi, N, T, tx, ty, tz, Vn, Vt, Vtx, Vty, Vtz, h, k, g0, dat.muS,dat.muD);
 						// Enregistrement du nouveau Xsi
-						a->AddXsi(xsi,bb->Num(),10,nb);
+						//a->AddXsi(xsi,bb->Num(),10,nb);
+                        a->AddXsi(xsi, ContactIdentifier::computeIdentifier(CONTACT_TYPE::SPHERE_VS_BODY, bb->Num(), nb));
 						bb->AddXsi(xsi,a->Num(),10,nb,-9);
 					}
 				}
@@ -360,9 +366,11 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 					}
 					// Statique
 					else{
-						xsi = a->FoundIt(p->numero,1,-9);		
+						//xsi = a->FoundIt(p->numero,1,-9);
+                        xsi = a->FoundIt(ContactIdentifier::computeIdentifier(CONTACT_TYPE::SPHERE_VS_PLAN, p->numero));
 						computeContactForceStatic(ctl, xsi, N, T, tx, ty, tz, Vn, Vt, Vtx, Vty, Vtz, h, k, g0, dat.muS,dat.muD);			
-						a->AddXsi(xsi,p->numero,1,-9);
+						//a->AddXsi(xsi,p->numero,1,-9);
+                        a->AddXsi(xsi, ContactIdentifier::computeIdentifier(CONTACT_TYPE::SPHERE_VS_PLAN, p->numero));
 					}
 				}
 				ComputeContactForce(ctl, tx, ty, tz, T, N, Fx, Fy, Fz);				
@@ -507,10 +515,13 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 					}
 					// Statique
 					else{
-						xsi = a->FoundIt(pr->numero,2,-9);	
+						//xsi = a->FoundIt(pr->numero,2,-9);
+                        xsi = a->FoundIt(ContactIdentifier::computeIdentifier(CONTACT_TYPE::SPHERE_VS_PLANR, pr->numero));
 						computeContactForceStatic(ctl, xsi, N, T, tx, ty, tz, Vn, Vt, Vtx, Vty, Vtz, h, k, g0, dat.muS,dat.muD);			
-						a->AddXsi(xsi,pr->numero,2,-9);
-					}					
+						//a->AddXsi(xsi,pr->numero,2,-9);
+                        a->AddXsi(xsi, ContactIdentifier::computeIdentifier(CONTACT_TYPE::SPHERE_VS_PLANR, pr->numero));
+
+                    }
 				}
 				ComputeContactForce(ctl, tx, ty, tz, T, N, Fx, Fy, Fz);
 
@@ -647,10 +658,12 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				else{
 					N = k*(-ctl->delta)-g0*Vn;
 					if(N < 0) N = 0;
-					xsi = a->FoundIt(cne->numero,3,-9);					
+					//xsi = a->FoundIt(cne->numero,3,-9);
+                    xsi = a->FoundIt(ContactIdentifier::computeIdentifier(CONTACT_TYPE::SPHERE_VS_CONE, cne->numero));
 					computeContactForceStatic(ctl, xsi, N, T, tx, ty, tz, Vn, Vt, Vtx, Vty, Vtz, h, k, g0, dat.muS,dat.muD);
-					a->AddXsi(xsi,cne->numero,3,-9);
-				}			
+					//a->AddXsi(xsi,cne->numero,3,-9);
+                    a->AddXsi(xsi, ContactIdentifier::computeIdentifier(CONTACT_TYPE::SPHERE_VS_CONE, cne->numero));
+                }
 							
 				ComputeContactForce(ctl, tx, ty, tz, T, N, Fx, Fy, Fz);
 				
@@ -785,10 +798,12 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				}
 				// Statique
 				else{
-					xsi = a->FoundIt(elw->numero,4,-9);
+					//xsi = a->FoundIt(elw->numero,4,-9);
+                    xsi = a->FoundIt(ContactIdentifier::computeIdentifier(CONTACT_TYPE::SPHERE_VS_ELBOW, elw->numero));
 					computeContactForceStatic(ctl, xsi, N, T, tx, ty, tz, Vn, Vt, Vtx, Vty, Vtz, h, k, g0, dat.muS,dat.muD);
-					a->AddXsi(xsi,elw->numero,4,-9);
-				}		
+					//a->AddXsi(xsi,elw->numero,4,-9);
+                    a->AddXsi(xsi, ContactIdentifier::computeIdentifier(CONTACT_TYPE::SPHERE_VS_ELBOW, elw->numero));
+                }
 				
 				ComputeContactForce(ctl, tx, ty, tz, T, N, Fx, Fy, Fz);
 

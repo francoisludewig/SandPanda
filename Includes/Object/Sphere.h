@@ -1,6 +1,8 @@
 #pragma once
 
 #include "MechanicalPoint.h"
+#include "../Contact/ElongationManager.h"
+#include "../Contact/ContactIdentifier.h"
 #include <vector>
 
 class Contact;
@@ -24,11 +26,14 @@ public:
 	bool autoIntegrate;
 	Sphere *tdl;
 	// Data contact statique
+    ElongationManager elongationManager{maxContact};
+
     std::vector<Elongation> xsi, tp_xsi;
     std::vector<int> neighbourNumber, tp_neighbourNumber;
     std::vector<int> type, tp_type;
     std::vector<int> bodyNumber, tp_bodyNumber;
 	int Nneighbour,Nneighbour2;
+
 
     //Contact avec plan
 	double ct_pl_nx,ct_pl_ny,ct_pl_nz;
@@ -57,8 +62,10 @@ public:
 	void move(double dt) noexcept override;
 	
 	void InitXsi() noexcept;
-	void AddXsi(Elongation& e, int n, int t, int nob) noexcept;
-	Elongation FoundIt(int n, int t, int nob) const noexcept;
+    void AddXsi(Elongation& e, uint64_t contactIdentifier) noexcept;
+    void AddXsi(Elongation& e, int n, int t, int nob) noexcept;
+    Elongation FoundIt(uint64_t contactIdentifier) const noexcept;
+    Elongation FoundIt(int n, int t, int nob) const noexcept;
 	double radius() const noexcept;
 	void setRadius(double alpha) noexcept;
 	int NoBodies() const noexcept;

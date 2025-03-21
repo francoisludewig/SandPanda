@@ -25,6 +25,8 @@ set(SOURCES_FILES
         Object/TestBodySpecie.cpp
         Object/TestMechanicalPoint.cpp
         Object/TestHollowBall.cpp
+        Object/TestContactIdentifier.cpp
+        Object/TestElongationManager.cpp
         main.cpp
 )
 
@@ -48,7 +50,9 @@ add_executable(
         ${SandPanda_SOURCE_DIR}/Sources/Object/BodySpecie.cpp
         ${SandPanda_SOURCE_DIR}/Sources/Configuration/Gravity.cpp
         ${SandPanda_SOURCE_DIR}/Sources/Contact/Elongation.cpp
+        ${SandPanda_SOURCE_DIR}/Sources/Contact/ElongationManager.cpp
         ${SandPanda_SOURCE_DIR}/Sources/Contact/Contact.cpp
+        ${SandPanda_SOURCE_DIR}/Sources/Contact/ContactIdentifier.cpp
         ${SandPanda_SOURCE_DIR}/Sources/Contact/ContactDetection.cpp
         ${tests_files}
 )
