@@ -10,14 +10,16 @@ ElongationManager::ElongationManager(int maxContact) noexcept {
     id.reserve(maxContact);
     tp_id.reserve(maxContact);
 
-    std::fill(id.begin(), id.end(), 0);
-    std::fill(tp_id.begin(), tp_id.end(), 0);
+    //std::fill(id.begin(), id.end(), 0);
+    //std::fill(tp_id.begin(), tp_id.end(), 0);
 
     for (int i = 0; i < maxContact; i++) {
         Elongation elongation;
         xsi.push_back(elongation);
         Elongation tp_elongation;
         tp_xsi.push_back(tp_elongation);
+        id.push_back(0);
+        tp_id.push_back(0);
     }
     count = 0;
     tp_count = 0;
