@@ -20,5 +20,7 @@ public:
     void InitXsi() noexcept;
     bool AddXsi(Elongation& e, uint64_t contact_id) noexcept;
     [[nodiscard]] Elongation FoundIt(uint64_t contact_id) const noexcept;
+    void writeToFile(FILE *ft) const noexcept;
+    void readFromFile(FILE *ft) noexcept;
 };
 

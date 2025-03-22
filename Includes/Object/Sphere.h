@@ -28,12 +28,13 @@ public:
 	// Data contact statique
     ElongationManager elongationManager{maxContact};
 
+    /*
     std::vector<Elongation> xsi, tp_xsi;
     std::vector<int> neighbourNumber, tp_neighbourNumber;
     std::vector<int> type, tp_type;
     std::vector<int> bodyNumber, tp_bodyNumber;
 	int Nneighbour,Nneighbour2;
-
+    */
 
     //Contact avec plan
 	double ct_pl_nx,ct_pl_ny,ct_pl_nz;

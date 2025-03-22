@@ -51,3 +51,15 @@ Elongation ElongationManager::FoundIt(uint64_t contact_id) const noexcept {
     }
     return {};
 }
+
+void ElongationManager::writeToFile(FILE *ft) const noexcept {
+    fprintf(ft,"%d\n",tp_count);
+    for(int i = 0 ; i < tp_count ; i++)
+        fprintf(ft,"%I64d\t%e\t%e\t%e\n",tp_id[i],tp_xsi[i].x,tp_xsi[i].y,tp_xsi[i].z);
+}
+
+void ElongationManager::readFromFile(FILE *ft) noexcept {
+    fscanf(ft, "%d\n", &tp_count);
+    for(int i = 0 ; i < tp_count ; i++)
+        fscanf(ft,"%I64d\t%lf\t%lf\t%lf\n",&tp_id[i],&tp_xsi[i].x,&tp_xsi[i].y,&tp_xsi[i].z);
+}

@@ -25,6 +25,7 @@ Sphere::Sphere() noexcept : MechanicalPoint() {
 	num = -9;
 	ct_pl = 0;
 	// Elongation
+    /*
     xsi.reserve(maxContact);
     tp_xsi.reserve(maxContact);
     type.reserve(maxContact);
@@ -48,6 +49,7 @@ Sphere::Sphere() noexcept : MechanicalPoint() {
 
 	Nneighbour = 0;
 	Nneighbour2 = 0;
+     */
 }
 
 Sphere::~Sphere() noexcept {
@@ -93,9 +95,12 @@ void Sphere::writeToFile(FILE *ft) const noexcept {
 		fprintf(ft,"%e\t%e\t%e\n",vx,vy,vz);
 		fprintf(ft,"%e\t%e\t%e\n",wx,wy,wz);
 		fprintf(ft,"%e\t%e\t%e\t%d\t%d\n",r,m,I,sp,NhollowBall);
+        elongationManager.writeToFile(ft);
+        /*
 		fprintf(ft,"%d\n",Nneighbour);
 		for(int i = 0 ; i < Nneighbour ; i++)
 			fprintf(ft,"%d\t%d\t%e\t%e\t%e\n",neighbourNumber[i],type[i],xsi[i].x,xsi[i].y,xsi[i].z);
+        */
 	}
 }
 
@@ -108,11 +113,13 @@ void Sphere::readStartStop(FILE *ft) noexcept {
 	if(bodies == -9){
 		rho = m/(4./3.*M_PI*r*r*r);
 	}
-	
+	elongationManager.readFromFile(ft);
+    /*
 	fscanf(ft,"%d\n",&Nneighbour2);
 	//tp_count+=maxContact;
 	for(int i = 0 ; i < Nneighbour2 ; i++)
 		fscanf(ft,"%d\t%d\t%lf\t%lf\t%lf\n",&neighbourNumber[i],&type[i],&xsi[i].x,&xsi[i].y,&xsi[i].z);
+    */
     r0 = r;
 }
 
@@ -238,14 +245,14 @@ int Sphere::Num() const noexcept {
 // TODO Implement swapable container with RAII
 void Sphere::InitXsi() noexcept {
     elongationManager.InitXsi();
-
+    /*
     std::swap(xsi, tp_xsi);
     std::swap(neighbourNumber, tp_neighbourNumber);
     std::swap(type, tp_type);
     std::swap(bodyNumber, tp_bodyNumber);
 	Nneighbour = Nneighbour2;
 	Nneighbour2 = 0;
-
+    */
 }
 
 void Sphere::AddXsi(Elongation& e, uint64_t contactIdentifier) noexcept {
@@ -260,11 +267,13 @@ void Sphere::AddXsi(Elongation& e, int n , int t, int nob) noexcept {
     else if(t != 0 && nob != 0)
         elongationManager.AddXsi(e, ContactIdentifier::computeIdentifier(n, t, nob));
 */
+    /*
     tp_xsi[Nneighbour2] = e;
 	tp_neighbourNumber[Nneighbour2] = n;
 	tp_type[Nneighbour2] = t;
 	tp_bodyNumber[Nneighbour2] = nob;
 	Nneighbour2++;
+     */
 }
 
 Elongation Sphere::FoundIt(uint64_t contactIdentifier) const noexcept {
@@ -273,7 +282,9 @@ Elongation Sphere::FoundIt(uint64_t contactIdentifier) const noexcept {
 
 Elongation Sphere::FoundIt(int n, int t, int nob) const noexcept {
 	static Elongation e;
-	for(int i = 0 ; i < Nneighbour ; i++){
+	/*
+
+    for(int i = 0 ; i < Nneighbour ; i++){
 		if(neighbourNumber[i] == n && type[i] == t){
 			if(type[i] != 10){
 				return xsi[i];
@@ -284,6 +295,7 @@ Elongation Sphere::FoundIt(int n, int t, int nob) const noexcept {
 			}
         }
 	}
+	 */
 	return(e);
 }
 
