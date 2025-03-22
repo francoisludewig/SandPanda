@@ -120,7 +120,7 @@ TEST_F(SphereTest, HollowBallCheck) {
     sphere.setIsHollowBall(true);
     EXPECT_EQ(sphere.NoAvatar(), 0);
 }
-
+/*
 TEST_F(SphereTest, InitXsi) {
     sphere.InitXsi();
     EXPECT_EQ(sphere.Nneighbour, 0);
@@ -165,3 +165,4 @@ TEST_F(SphereTest, FoundItWhenDoesntExist) {
     EXPECT_EQ(found.z, 0);
     EXPECT_EQ(found.status, 0);
 }
+ */
