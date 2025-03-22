@@ -56,7 +56,7 @@ int main(int argc,char **argv){
 	//double dila = 0;
 	bool record = true;
 	int Nthreshold = 0;
-	
+    clock_t start = clock();
 	vector<Plan> pl;
 	vector<PlanR> plr;
 	vector<Cone> co;
@@ -348,6 +348,8 @@ int main(int argc,char **argv){
 		//sprintf(commande,"rm -rf %s/Out %s/Start_stop %s/Export",opt.directory,opt.directory,opt.directory);
 		//system(commande);
 	}
-	
+    clock_t stop = clock();
+    double elapsed = (double) (stop - start) / CLOCKS_PER_SEC;
+    printf("\nTime elapsed: %.5f\n", elapsed);
 	return 0;
 }
