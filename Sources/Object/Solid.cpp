@@ -3,7 +3,7 @@
 
 #include <cmath>
 
-Solid::Solid() noexcept /*: MechanicalPoint()*/ {
+Solid::Solid() noexcept : MechanicalPoint() {
     x0 = x;
     y0 = y;
     z0 = z;
@@ -232,6 +232,7 @@ void Solid::MoveGravity(double dt, Gravity& gt) noexcept {
 
 void Solid::move(double dt) noexcept {
     MechanicalPoint::move(dt);
+    /*
     double lx,ly,lz;
     lx = (x0-V.ox);
     ly = (y0-V.oy);
@@ -240,6 +241,7 @@ void Solid::move(double dt) noexcept {
     x += ((1 - 2*q2*q2 - 2*q3*q3)*lx + (2*q1*q2 - 2*q3*q0)*ly     + (2*q1*q3 + 2*q2*q0)*lz)     + V.ox;
     y += ((2*q1*q2 + 2*q3*q0)*lx     + (1 - 2*q1*q1 - 2*q3*q3)*ly + (2*q2*q3 - 2*q1*q0)*lz)     + V.oy;
     z += ((2*q1*q3 - 2*q2*q0)*lx     + (2*q2*q3 + 2*q1*q0)*ly     + (1 - 2*q1*q1 - 2*q2*q2)*lz) + V.oz;
+     */
 }
 
 void Solid::OnOffGravity(bool OnOff) noexcept {
