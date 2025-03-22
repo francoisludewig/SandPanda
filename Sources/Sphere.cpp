@@ -99,9 +99,9 @@ void Sphere::writeToFile(FILE *ft) const noexcept {
 		fprintf(ft,"%e\t%e\t%e\n",vx,vy,vz);
 		fprintf(ft,"%e\t%e\t%e\n",wx,wy,wz);
 		fprintf(ft,"%e\t%e\t%e\t%d\t%d\n",r,m,I,sp,NhollowBall);
-		fprintf(ft,"%d\n",Nneighbour);
+		fprintf(ft,"%d\n",Nneighbour2);
 		for(int i = 0 ; i < Nneighbour ; i++)
-			fprintf(ft,"%d\t%d\t%e\t%e\t%e\n",NumNeighbour[i],type[i],xsi[i].x,xsi[i].y,xsi[i].z);
+			fprintf(ft,"%d\t%d\t%e\t%e\t%e\n",NumNeighbour2[i],type2[i],xsi2[i].x,xsi2[i].y,xsi2[i].z);
 	}
 }
 
@@ -118,7 +118,7 @@ void Sphere::readStartStop(FILE *ft) noexcept {
 	fscanf(ft,"%d\n",&Nneighbour2);
 	//Nneighbour2+=maxContact;
 	for(int i = 0 ; i < Nneighbour2 ; i++)
-		fscanf(ft,"%d\t%d\t%lf\t%lf\t%lf\n",&NumNeighbour[i],&type[i],&xsi[i].x,&xsi[i].y,&xsi[i].z);
+		fscanf(ft,"%d\t%d\t%lf\t%lf\t%lf\n",&NumNeighbour2[i],&type2[i],&xsi2[i].x,&xsi2[i].y,&xsi2[i].z);
     r0 = r;
 }
 
