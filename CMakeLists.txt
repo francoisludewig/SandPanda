@@ -36,6 +36,7 @@ set(SOURCES_FILES
 		Sources/Repository/ReadWrite.cpp
 		
 		Sources/main.cpp
+		Sources/Configuration/Monitoring.cpp
 )
 
 set(INCLUDES_FILES
@@ -71,6 +72,7 @@ set(INCLUDES_FILES
 		Includes/Dynamic/Evolution.h
 			
 		Includes/Repository/ReadWrite.h
+		Includes/Configuration/Monitoring.h
 )
 
 set(SandPanda_FILES
