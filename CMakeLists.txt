@@ -30,6 +30,7 @@ set(SOURCES_FILES
  Sources/Velocity.cpp	
  Sources/Sinusoid.cpp	
  Sources/main.cpp
+        Sources/Monitoring.cpp
 )
 
 set(INCLUDES_FILES
@@ -59,6 +60,7 @@ set(INCLUDES_FILES
  Includes/Gravity.h	
  Includes/Velocity.h
  Includes/Sinusoid.h
+        Includes/Monitoring.h
 )
 
 set(SandPanda_FILES
