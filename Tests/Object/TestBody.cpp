@@ -36,16 +36,6 @@ TEST_F(BodyTest, ConstructorInitializesCorrectly) {
     EXPECT_EQ(body->m, 0);
     EXPECT_EQ(body->sp, 0);
     EXPECT_EQ(body->ActiveRotation, 0);
-
-    for (int i = 0; i < 250; ++i) {
-        EXPECT_EQ(body->NumNeighbour[i], -9);
-        EXPECT_EQ(body->type[i], -1);
-        EXPECT_EQ(body->NumFromBody[i], -9);
-        EXPECT_EQ(body->SelfNumFromBody[i], -9);
-    }
-
-    EXPECT_EQ(body->Nneighbour, 0);
-    EXPECT_EQ(body->Nneighbour2, 50);
 }
 
 /**
@@ -182,15 +172,7 @@ TEST_F(BodyTest, AddXsi) {
     e.x = 0.5;
     e.y = -0.5;
     e.z = 1.0;
-    body->AddXsi(e, 10, 2, 5, 8);
-
-    EXPECT_EQ(body->NumNeighbour[body->Nneighbour2 - 1], 10);
-    EXPECT_EQ(body->type[body->Nneighbour2 - 1], 2);
-    EXPECT_EQ(body->SelfNumFromBody[body->Nneighbour2 - 1], 5);
-    EXPECT_EQ(body->NumFromBody[body->Nneighbour2 - 1], 8);
-    EXPECT_DOUBLE_EQ(body->xsi[body->Nneighbour2 - 1].x, 0.5);
-    EXPECT_DOUBLE_EQ(body->xsi[body->Nneighbour2 - 1].y, -0.5);
-    EXPECT_DOUBLE_EQ(body->xsi[body->Nneighbour2 - 1].z, 1.0);
+    EXPECT_NO_THROW(body->AddXsi(e, 128));
 }
 
 /**
@@ -201,9 +183,9 @@ TEST_F(BodyTest, FoundIt) {
     e.x = 1.1;
     e.y = 2.2;
     e.z = 3.3;
-    body->AddXsi(e, 20, 3, 6, 9);
+    body->AddXsi(e, 128);
     body->InitXsi();
-    Elongation found = body->FoundIt(20, 3, 6, 9);
+    Elongation found = body->FoundIt(128);
 
     EXPECT_DOUBLE_EQ(found.x, 1.1);
     EXPECT_DOUBLE_EQ(found.y, 2.2);
@@ -214,7 +196,7 @@ TEST_F(BodyTest, FoundIt) {
  * @brief Test edge case of FoundIt when no match is found.
  */
 TEST_F(BodyTest, FoundItNoMatch) {
-    Elongation found = body->FoundIt(99, 99, 99, 99);
+    Elongation found = body->FoundIt(501);
     EXPECT_DOUBLE_EQ(found.x, 0);
     EXPECT_DOUBLE_EQ(found.y, 0);
     EXPECT_DOUBLE_EQ(found.z, 0);
