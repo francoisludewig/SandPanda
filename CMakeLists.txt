@@ -20,6 +20,7 @@ set(SOURCES_FILES
 		Sources/Configuration/Option.cpp
 		Sources/Configuration/Data.cpp
 		Sources/Configuration/Gravity.cpp
+		Sources/Configuration/Monitoring.cpp
 		
 		Sources/Contact/Contact.cpp		
 		Sources/Contact/ContactDetection.cpp	
@@ -36,7 +37,6 @@ set(SOURCES_FILES
 		Sources/Repository/ReadWrite.cpp
 		
 		Sources/main.cpp
-		Sources/Configuration/Monitoring.cpp
 )
 
 set(INCLUDES_FILES
@@ -57,7 +57,8 @@ set(INCLUDES_FILES
 
 		Includes/Configuration/Gravity.h
 		Includes/Configuration/Option.h
-		Includes/Configuration/Data.h	
+		Includes/Configuration/Data.h
+		Includes/Configuration/Monitoring.h
 		
 		Includes/Contact/Contact.h
 		Includes/Contact/ContactDetection.h	
@@ -72,7 +73,6 @@ set(INCLUDES_FILES
 		Includes/Dynamic/Evolution.h
 			
 		Includes/Repository/ReadWrite.h
-		Includes/Configuration/Monitoring.h
 )
 
 set(SandPanda_FILES
@@ -91,7 +91,6 @@ target_link_libraries(
 		SandPanda
 		${GTEST_LIBRARIES}
 )
-
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_CXX_FLAGS "-O0 -g")
