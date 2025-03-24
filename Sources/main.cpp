@@ -12,6 +12,7 @@
 #include "../Includes/Dynamic/Compaction.h"
 #include "../Includes/Dynamic/PowderPaQ.h"
 #include "../Includes/Configuration/Option.h"
+#include "../Includes/Configuration/Monitoring.h"
 #include <iostream>
 #include <vector>
 #include <filesystem>
@@ -141,11 +142,14 @@ int main(int argc,char **argv){
 	for(int i = 0 ; i < Nhb ; i++){
 		hb[i].LinkInSph(sph,Nsph,i);
 	}
-	
+
+    for(auto& plan : pl)
+        plan.InitList(Nsph);
+
 	for(int i = 0 ; i < Npl ; i++){
 		pl[i].InitList(Nsph);
 	}
-	
+
 	printf("Nsph0 = %d & Nsph = %d\n",Nsph0,Nsph);
 	
 	printf("NctMax = %d\n",18*Nsph+75*Nbd);
@@ -259,21 +263,25 @@ int main(int argc,char **argv){
 			Ntp++;
 		}
 	}
+
+    if(opt.isMonitoringActivated)
+        Monitoring::getInstance().initialize(reinterpret_cast<string &>(opt.processName));
+
 	printf("Time Path = %e\n\n",dat.dt);
-	
+
 	switch(opt.mode){
 		case 0:
 			if(opt.parallel == 1)
-				Ntp = Evolution::EvolveOMP(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,Ncta,Nctb,Nctc,pl,plr,co,elb,sph,bd,hb,ct,cta,ctb,ctc,dat,gf,cell,Ntp, opt.directory,record,Nthreshold);
+				Ntp = Evolution::EvolveOMP(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,Ncta,Nctb,Nctc,pl,plr,co,elb,sph,bd,hb,ct,cta,ctb,ctc,dat,gf,cell,Ntp, opt.directory,record,Nthreshold, opt.isMonitoringActivated);
 			else
-				Ntp = Evolution::Evolve(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,               pl,plr,co,elb,sph,bd,hb,ct,            dat,gf,cell,Ntp, opt.directory,record,Nthreshold);
+				Ntp = Evolution::Evolve(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,               pl,plr,co,elb,sph,bd,hb,ct,            dat,gf,cell,Ntp, opt.directory,record,Nthreshold, opt.isMonitoringActivated);
 			break;
 		case 1:
             dat.Total = dat.TIME;
 			if(opt.parallel == 0)
-				Ntp = Compaction::Run(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct               ,pl,plr,co,elb,sph,bd,hb,ct            ,dat,gf,cell,Ntp, opt.directory,record,opt.NtapMin,opt.NtapMax,opt.Gamma,opt.Freq,Nthreshold);
+				Ntp = Compaction::Run(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct               ,pl,plr,co,elb,sph,bd,hb,ct            ,dat,gf,cell,Ntp, opt.directory,record,opt.NtapMin,opt.NtapMax,opt.Gamma,opt.Freq,Nthreshold, opt.isMonitoringActivated);
 			else
-				Ntp = Compaction::RunOMP(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,Ncta,Nctb,Nctc,pl,plr,co,elb,sph,bd,hb,ct,cta,ctb,ctc,dat,gf,cell,Ntp, opt.directory,record,opt.NtapMin,opt.NtapMax,opt.Gamma,opt.Freq,Nthreshold);
+				Ntp = Compaction::RunOMP(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,Ncta,Nctb,Nctc,pl,plr,co,elb,sph,bd,hb,ct,cta,ctb,ctc,dat,gf,cell,Ntp, opt.directory,record,opt.NtapMin,opt.NtapMax,opt.Gamma,opt.Freq,Nthreshold, opt.isMonitoringActivated);
 			
 			break;
 		case 2:

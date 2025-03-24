@@ -5,7 +5,6 @@
 #include <sys/stat.h>
 #include <filesystem>
 
-
 Option::Option() noexcept {
 	NoRotation = 0;
 	Vrdm = 0.0;
@@ -96,7 +95,8 @@ int Option::Management(char **argv, int argc) noexcept {
 						printf("\t-e or -evolution for simple evolution of the original data (default option) in opposition to compaction option\n\n");
 						printf("\t-mpq or -modepowderpaq for compaction mode with PowderPaQ way, followed by compaction data : Numbers of first and last tap, freefall height and upward velocity\n\t\t\texample : -mpq 0 1000 0.01 0.001\n\n");
 						printf("\t-tgz to archive of all directories after simulation\n\n");
-						printf("\t-nr or -norotation to lock all dergrees of freedom of rotation\n\n");
+                        printf("\t-m to activate monitoring following by the nameID of the process\n\n");
+                        printf("\t-nr or -norotation to lock all dergrees of freedom of rotation\n\n");
 						printf("\t-r or -restart for restart simulation at the last saved state\n");
 						printf("\t-N for cut off the number of spheres and particles (works only without GrainBorders)\n");
 						printf("\t\tThe wanted number of spheres\n");
@@ -113,7 +113,8 @@ int Option::Management(char **argv, int argc) noexcept {
 						printf("\t-s or -sequential for sequential contact detection (default option)\n");
 						printf("\t-d or -directory to indicate the current directory of the simulation (default option is the current directory)\n");
 						printf("\t-a or -affinitycache for active affinity cache memory followed by a tag (integer)\n\t\t\texample : -a 1\n");
-						printf("\t-mc or modecompaction for compaction mode followed by compaction data : Numbers of first and last tap, Reduce Acceleration, Frequency\n\t\t\texample : -c 0 1000 4 25\n");
+                        printf("\t-m to activate monitoring following by the nameID of the process\n\n");
+                        printf("\t-mc or modecompaction for compaction mode followed by compaction data : Numbers of first and last tap, Reduce Acceleration, Frequency\n\t\t\texample : -c 0 1000 4 25\n");
 						printf("\t-e or -evolution for simple evolution of the original data (default option) in opposition to compaction option\n\n");
 						printf("\t-mpq or -modepowderpaq for compaction mode with PowderPaQ way, followed by compaction data : Numbers of first and last tap, freefall height and upward velocity\n\t\t\texample : -mpq 0 1000 0.01 0.001\n\n");
 						printf("\t-tgz to archive of all directories after simulation\n\n");
@@ -186,7 +187,12 @@ int Option::Management(char **argv, int argc) noexcept {
 						cancelG = true;
 					break;
 				case 'm':
-					if(!strcmp(argv[i], "-mu")){
+                    if(!strcmp(argv[i], "-m")) {
+                        isMonitoringActivated = true;
+                        sscanf(argv[i+1],"%31[^n]",&processName);
+                        i++;
+                    }
+                    if(!strcmp(argv[i], "-mu")){
 						sscanf(argv[i+1],"%lf",&tune_mu);
 						i+=1;
 					}
