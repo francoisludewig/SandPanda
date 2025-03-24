@@ -264,9 +264,10 @@ int main(int argc,char **argv){
 		}
 	}
 
-    if(opt.isMonitoringActivated)
-        Monitoring::getInstance().initialize(reinterpret_cast<string &>(opt.processName));
-
+    if(opt.isMonitoringActivated) {
+        auto name = std::string(opt.processName);
+        Monitoring::getInstance().initialize(name);
+    }
 	printf("Time Path = %e\n\n",dat.dt);
 
 	switch(opt.mode){
