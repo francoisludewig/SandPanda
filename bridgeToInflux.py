@@ -4,6 +4,7 @@ from influxdb_client.client.write_api import SYNCHRONOUS
 
 import os
 import sys
+import subsprocess
 
 token = "ODOAfu91GCSOA7vpeNLMKsZGtZQQsMM2mI9YHIhxm_WmX4xLFTJzOADtY3C-nbysbaDtQVdOohpYkQjeMPKFcA=="
 org = "FiFr"
