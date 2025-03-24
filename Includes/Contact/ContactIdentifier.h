@@ -17,7 +17,9 @@ enum CONTACT_TYPE {
     BODY_VS_PLAN,
     BODY_VS_PLANR,
     BODY_VS_CONE,
-    BODY_VS_ELBOW
+    BODY_VS_ELBOW,
+    SPHERE_VS_HOLLOWBALL,
+    BODY_VS_HOLLOWBALL
 };
 
 class ContactIdentifier {

@@ -3,10 +3,12 @@
 #include "BodySpecie.h"
 #include "../Configuration/Gravity.h"
 #include "../Contact/Elongation.h"
+#include "../Contact/ElongationManager.h"
 #include "HollowBall.h"
 #include "../Contact/ComputingForce.h"
 #include "MechanicalPoint.h"
 #include "../Contact/ContactDetection.h"
+#include "../Contact/ContactIdentifier.h"
 #include <vector>
 #include <array>
 
@@ -21,7 +23,9 @@ class Elbow;
 
 class Body : public MechanicalPoint{
 public:
-	Body() noexcept;
+    static const int maxContact = 250;
+
+    Body() noexcept;
 	~Body() noexcept;
 	void LoadFromFile(FILE *ft) noexcept;
 	void ReadStartStopFile(FILE *ft) noexcept;
@@ -37,9 +41,13 @@ public:
 	int Num() const noexcept;
 	double GetRmax() const noexcept;
 	void InitXsi() noexcept;
-	void AddXsi(Elongation e, int n, int t, int selfn, int nob) noexcept;
-	Elongation FoundIt(int n, int t, int selfn, int nob) const noexcept;
-	void SetActiveRotation(int na) noexcept;
+	//void AddXsi(Elongation e, int n, int t, int selfn, int nob) noexcept;
+	//Elongation FoundIt(int n, int t, int selfn, int nob) const noexcept;
+
+    void AddXsi(Elongation& e, uint64_t contactIdentifier) noexcept;
+    Elongation FoundIt(uint64_t contactIdentifier) const noexcept;
+
+    void SetActiveRotation(int na) noexcept;
 	
 public:
 	int sp;
@@ -60,12 +68,16 @@ public:
 	std::vector<double> xg;
 	std::vector<double> yg;
 	std::vector<double> zg;
-	std::array<Elongation, 250> xsi;
-	std::array<int, 250> NumNeighbour;
-	std::array<int, 250> type;
-	std::array<int, 250> NumFromBody;
-	std::array<int, 250> SelfNumFromBody;
+
+    ElongationManager elongationManager{maxContact};
+/*
+    std::array<Elongation, maxContact> xsi;
+	std::array<int, maxContact> NumNeighbour;
+	std::array<int, maxContact> type;
+	std::array<int, maxContact> NumFromBody;
+	std::array<int, maxContact> SelfNumFromBody;
 	int Nneighbour,Nneighbour2;
+ */
 	int ActiveRotation;
 	
 private:

@@ -245,58 +245,13 @@ int Sphere::Num() const noexcept {
 // TODO Implement swapable container with RAII
 void Sphere::InitXsi() noexcept {
     elongationManager.InitXsi();
-    /*
-    std::swap(xsi, tp_xsi);
-    std::swap(neighbourNumber, tp_neighbourNumber);
-    std::swap(type, tp_type);
-    std::swap(bodyNumber, tp_bodyNumber);
-	Nneighbour = Nneighbour2;
-	Nneighbour2 = 0;
-    */
 }
 
 void Sphere::AddXsi(Elongation& e, uint64_t contactIdentifier) noexcept {
     elongationManager.AddXsi(e, contactIdentifier);
 }
-
-void Sphere::AddXsi(Elongation& e, int n , int t, int nob) noexcept {
-    /*if(t==0 && nob == -9) // SPH SPH
-        elongationManager.AddXsi(e, ContactIdentifier::computeIdentifier(n));
-    else if(t != 0 && nob == -9) // SPH SOLID
-        elongationManager.AddXsi(e, ContactIdentifier::computeIdentifier(n, t));
-    else if(t != 0 && nob != 0)
-        elongationManager.AddXsi(e, ContactIdentifier::computeIdentifier(n, t, nob));
-*/
-    /*
-    tp_xsi[Nneighbour2] = e;
-	tp_neighbourNumber[Nneighbour2] = n;
-	tp_type[Nneighbour2] = t;
-	tp_bodyNumber[Nneighbour2] = nob;
-	Nneighbour2++;
-     */
-}
-
 Elongation Sphere::FoundIt(uint64_t contactIdentifier) const noexcept {
     return elongationManager.FoundIt(contactIdentifier);
-}
-
-Elongation Sphere::FoundIt(int n, int t, int nob) const noexcept {
-	static Elongation e;
-	/*
-
-    for(int i = 0 ; i < Nneighbour ; i++){
-		if(neighbourNumber[i] == n && type[i] == t){
-			if(type[i] != 10){
-				return xsi[i];
-			}
-			else{
-				if(nob == bodyNumber[i])
-					return xsi[i];
-			}
-        }
-	}
-	 */
-	return(e);
 }
 
 void Sphere::ComputeCTD(double R, double w, double t) noexcept {

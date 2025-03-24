@@ -225,7 +225,8 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 						// Enregistrement du nouveau Xsi
 						//a->AddXsi(xsi,bb->Num(),10,nb);
                         a->AddXsi(xsi, ContactIdentifier::computeIdentifier(CONTACT_TYPE::SPHERE_VS_BODY, bb->Num(), nb));
-						bb->AddXsi(xsi,a->Num(),10,nb,-9);
+                        bb->AddXsi(xsi, ContactIdentifier::computeIdentifier(CONTACT_TYPE::SPHERE_VS_BODY, a->num, 10));
+						//bb->AddXsi(xsi,a->Num(),10,nb,-9);
 					}
 				}
 				
@@ -289,10 +290,13 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 					}
 					// Statique
 					else{
-						xsi = ba->FoundIt(bb->Num(),20,na,nb);
+						//xsi = ba->FoundIt(bb->Num(),20,na,nb);
+                        xsi = ba->FoundIt(ContactIdentifier::computeIdentifier(CONTACT_TYPE::BODY_VS_BODY, bb->Num(),na,nb));
 						computeContactForceStatic(ctl, xsi, N, T, tx, ty, tz, Vn, Vt, Vtx, Vty, Vtz, h, k, g0, dat.muS,dat.muD);
-						ba->AddXsi(xsi,bb->Num(),20,na,nb);
-						bb->AddXsi(xsi,ba->Num(),20,nb,na);
+                        ba->AddXsi(xsi, ContactIdentifier::computeIdentifier(CONTACT_TYPE::BODY_VS_BODY, bb->Num(),na,nb));
+                        bb->AddXsi(xsi, ContactIdentifier::computeIdentifier(CONTACT_TYPE::BODY_VS_BODY, bb->Num(),nb,na));
+                        //ba->AddXsi(xsi,bb->Num(),20,na,nb);
+						//bb->AddXsi(xsi,ba->Num(),20,nb,na);
 					}
 				}
 				
@@ -450,9 +454,11 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 					}
 					// Statique
 					else{
-						xsi = ba->FoundIt(p->numero,11,na,-9);	
+						//xsi = ba->FoundIt(p->numero,11,na,-9);
+                        xsi = ba->FoundIt(ContactIdentifier::computeIdentifier(CONTACT_TYPE::BODY_VS_PLAN, p->numero, na));
 						computeContactForceStatic(ctl, xsi, N, T, tx, ty, tz, Vn, Vt, Vtx, Vty, Vtz, h, k, g0, dat.muS,dat.muD);		
-						ba->AddXsi(xsi,p->numero,11,na,-9);
+						ba->AddXsi(xsi, ContactIdentifier::computeIdentifier(CONTACT_TYPE::BODY_VS_PLAN, p->numero, na));
+                        //ba->AddXsi(xsi,p->numero,11,na,-9);
 					}
 				}
 								
@@ -592,9 +598,11 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 					}
 					// Statique
 					else{
-						xsi = ba->FoundIt(pr->numero,12,na,-9);	
+						//xsi = ba->FoundIt(pr->numero,12,na,-9);
+                        xsi = ba->FoundIt(ContactIdentifier::computeIdentifier(CONTACT_TYPE::BODY_VS_PLANR, pr->numero, na));
 						computeContactForceStatic(ctl, xsi, N, T, tx, ty, tz, Vn, Vt, Vtx, Vty, Vtz, h, k, g0, dat.muS,dat.muD);
-						ba->AddXsi(xsi,pr->numero,12,na,-9);
+						//ba->AddXsi(xsi,pr->numero,12,na,-9);
+                        ba->AddXsi(xsi, ContactIdentifier::computeIdentifier(CONTACT_TYPE::BODY_VS_PLANR, pr->numero, na));
 					}					
 				}
 				
@@ -736,9 +744,11 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 					N = k*(-ctl->delta)-g0*Vn;
 					if(N < 0) N = 0;
 
-					xsi = ba->FoundIt(cne->numero,13,na,-9);					
+                    xsi = ba->FoundIt(ContactIdentifier::computeIdentifier(CONTACT_TYPE::BODY_VS_CONE, cne->numero, na));
+                    //xsi = ba->FoundIt(cne->numero,13,na,-9);
 					computeContactForceStatic(ctl, xsi, N, T, tx, ty, tz, Vn, Vt, Vtx, Vty, Vtz, h, k, g0, dat.muS,dat.muD);
-					ba->AddXsi(xsi,cne->numero,13,na,-9);
+					//ba->AddXsi(xsi,cne->numero,13,na,-9);
+                    ba->AddXsi(xsi, ContactIdentifier::computeIdentifier(CONTACT_TYPE::BODY_VS_CONE, cne->numero, na));
 				}
 				
 				ComputeContactForce(ctl, tx, ty, tz, T, N, Fx, Fy, Fz);
@@ -857,9 +867,11 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 				}
 				// Statique
 				else{
-					xsi = ba->FoundIt(elw->numero,14,na,-9);
+                    xsi = ba->FoundIt(ContactIdentifier::computeIdentifier(CONTACT_TYPE::BODY_VS_ELBOW, elw->numero, na));
+                    //xsi = ba->FoundIt(elw->numero,14,na,-9);
 					computeContactForceStatic(ctl, xsi, N, T, tx, ty, tz, Vn, Vt, Vtx, Vty, Vtz, h, k, g0, dat.muS,dat.muD);
-					ba->AddXsi(xsi,elw->numero,4,na,-9);
+					//ba->AddXsi(xsi,elw->numero,4,na,-9);
+                    ba->AddXsi(xsi, ContactIdentifier::computeIdentifier(CONTACT_TYPE::BODY_VS_ELBOW, elw->numero, na));
 				}					
 				
 				ComputeContactForce(ctl, tx, ty, tz, T, N, Fx, Fy, Fz);
@@ -914,12 +926,12 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 					// Statique
 					else{
 						// Recherche de l'ancien xsi
-						xsi = a->FoundIt(b->Num(),0,-9);
+						xsi = a->FoundIt(ContactIdentifier::computeIdentifier(CONTACT_TYPE::SPHERE_VS_HOLLOWBALL,b->Num()));
 						// Calcul de N, T et Xsi
 						computeContactForceStatic(ctl, xsi, N, T, tx, ty, tz, Vn, Vt, Vtx, Vty, Vtz, h, k, g0, dat.muS,dat.muD);
 						// Enregistrement du nouveau Xsi
-						a->AddXsi(xsi,b->Num(),0,-9);
-						b->AddXsi(xsi,a->Num(),0,-9);
+                        a->AddXsi(xsi, ContactIdentifier::computeIdentifier(CONTACT_TYPE::SPHERE_VS_HOLLOWBALL,b->Num()));
+                        b->AddXsi(xsi, ContactIdentifier::computeIdentifier(CONTACT_TYPE::SPHERE_VS_HOLLOWBALL,a->Num()));
 					}
 				}
 				// Calcul de la force de contact
@@ -983,13 +995,15 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Data & dat) noexcept {
 					// Statique
 					else{
 						// Recherche de l'ancien xsi
-						xsi = bb->FoundIt(a->Num(),10,nb,-9);
+
+
+						xsi = bb->FoundIt(ContactIdentifier::computeIdentifier(BODY_VS_HOLLOWBALL,a->Num(),10));
 						// Calcul de N, T et Xsi
 						computeContactForceStatic(ctl, xsi, N, T, tx, ty, tz, Vn, Vt, Vtx, Vty, Vtz, h, k, g0, dat.muS,dat.muD);
 						// Enregistrement du nouveau Xsi
-						a->AddXsi(xsi,bb->Num(),10,nb);
-						bb->AddXsi(xsi,a->Num(),10,nb,-9);
-					}
+                        a->AddXsi(xsi, ContactIdentifier::computeIdentifier(BODY_VS_HOLLOWBALL,bb->Num(),10));
+                        bb->AddXsi(xsi, ContactIdentifier::computeIdentifier(BODY_VS_HOLLOWBALL,a->Num(),10));
+                    }
 				}
 				
 				// Calcul de la force de contact

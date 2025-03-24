@@ -26,6 +26,7 @@ Body::Body() noexcept {
 
     sp = 0;
     ActiveRotation = 0;
+    /*
     for (int i = 0; i < 250; i++) {
         NumNeighbour[i] = -9;
         type[i] = -1;
@@ -35,6 +36,7 @@ Body::Body() noexcept {
     }
     Nneighbour = 0;
     Nneighbour2 = 50;
+     */
 }
 
 Body::~Body() noexcept {}
@@ -56,11 +58,14 @@ void Body::ReadStartStopFile(FILE *ft) noexcept {
     fscanf(ft, "%lf\t%lf\t%lf\t%lf\t", &q0, &q1, &q2, &q3);
     fscanf(ft, "%lf\t%lf\t%lf\t", &vx, &vy, &vz);
     fscanf(ft, "%lf\t%lf\t%lf\n", &wx, &wy, &wz);
+    elongationManager.readFromFile(ft);
+    /*
     fscanf(ft, "%d\n", &Nneighbour2);
     Nneighbour2 += 50;
     for (int i = 50; i < Nneighbour2; i++)
         fscanf(ft, "%d\t%d\t%d\t%d\t%lf\t%lf\t%lf\n", &NumNeighbour[i], &type[i], &SelfNumFromBody[i], &NumFromBody[i],
                &xsi[i].x, &xsi[i].y, &xsi[i].z);
+               */
     //q Ecriture de la base locale via le quaternion
     QuaternionToBase();
 }
@@ -71,10 +76,13 @@ void Body::WriteToFile(FILE *ft) const noexcept {
     fprintf(ft, "%e\t%e\t%e\t%e\t", q0, q1, q2, q3);
     fprintf(ft, "%e\t%e\t%e\t", vx, vy, vz);
     fprintf(ft, "%e\t%e\t%e\n", wx, wy, wz);
+    elongationManager.writeToFile(ft);
+    /*
     fprintf(ft, "%d\n", Nneighbour);
     for (int i = 0; i < Nneighbour; i++)
         fprintf(ft, "%d\t%d\t%d\t%d\t%e\t%e\t%e\n", NumNeighbour[i], type[i], SelfNumFromBody[i], NumFromBody[i],
                 xsi[i].x, xsi[i].y, xsi[i].z);
+                */
 }
 
 void Body::WriteOutFile(FILE *ft, int mode) const noexcept {
@@ -230,6 +238,8 @@ void Body::UploadSpecies(vector<BodySpecie> &bdsp, vector<Sphere> &sph, int &Nsp
 }
 
 void Body::InitXsi() noexcept {
+    elongationManager.InitXsi();
+/*
     for (int i = 50; i < Nneighbour2; i++) {
         xsi[i - 50] = xsi[i];
         NumNeighbour[i - 50] = NumNeighbour[i];
@@ -244,8 +254,9 @@ void Body::InitXsi() noexcept {
     }
     Nneighbour = Nneighbour2 - 50;
     Nneighbour2 = 50;
+    */
 }
-
+/*
 void Body::AddXsi(Elongation e, int n, int t, int selfn, int nob) noexcept {
     xsi[Nneighbour2] = e;
     NumNeighbour[Nneighbour2] = n;
@@ -266,6 +277,14 @@ Elongation Body::FoundIt(int n, int t, int selfn, int nob) const noexcept {
     Elongation e;
     e.Reset();
     return (e);
+}
+*/
+
+void Body::AddXsi(Elongation& e, uint64_t contactIdentifier) noexcept {
+    elongationManager.AddXsi(e, contactIdentifier);
+}
+Elongation Body::FoundIt(uint64_t contactIdentifier) const noexcept {
+    return elongationManager.FoundIt(contactIdentifier);
 }
 
 int Body::NumberOfSphere() const noexcept {

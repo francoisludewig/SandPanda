@@ -120,37 +120,15 @@ TEST_F(SphereTest, HollowBallCheck) {
     sphere.setIsHollowBall(true);
     EXPECT_EQ(sphere.NoAvatar(), 0);
 }
-/*
-TEST_F(SphereTest, InitXsi) {
-    sphere.InitXsi();
-    EXPECT_EQ(sphere.Nneighbour, 0);
-}
-
-TEST_F(SphereTest, AddXsi) {
-    Elongation elong;
-    sphere.AddXsi(elong, 1, 2, 3);
-    EXPECT_EQ(sphere.Nneighbour2, 1);
-    EXPECT_EQ(sphere.Nneighbour, 0);
-}
-
-TEST_F(SphereTest, AddXsiAndInitXsi) {
-    Elongation elong;
-    sphere.AddXsi(elong, 1, 2, 3);
-    EXPECT_EQ(sphere.Nneighbour2, 1);
-    EXPECT_EQ(sphere.Nneighbour, 0);
-    sphere.InitXsi();
-    EXPECT_EQ(sphere.Nneighbour2, 0);
-    EXPECT_EQ(sphere.Nneighbour, 1);
-}
 
 TEST_F(SphereTest, FoundIt) {
     Elongation elong;
     elong.x = 0.00000125896;
     elong.y = 0.00000006548;
     elong.z = 0.00000000112321;
-    sphere.AddXsi(elong, 1, 2, 3);
+    sphere.AddXsi(elong, 17);
     sphere.InitXsi();
-    Elongation found = sphere.FoundIt(1, 2, 3);
+    Elongation found = sphere.FoundIt(17);
     EXPECT_EQ(found.x, elong.x);
     EXPECT_EQ(found.y, elong.y);
     EXPECT_EQ(found.z, elong.z);
@@ -159,10 +137,9 @@ TEST_F(SphereTest, FoundIt) {
 
 TEST_F(SphereTest, FoundItWhenDoesntExist) {
     sphere.InitXsi();
-    Elongation found = sphere.FoundIt(1, 2, 3);
+    Elongation found = sphere.FoundIt(17);
     EXPECT_EQ(found.x, 0);
     EXPECT_EQ(found.y, 0);
     EXPECT_EQ(found.z, 0);
     EXPECT_EQ(found.status, 0);
 }
- */

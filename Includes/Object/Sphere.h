@@ -27,15 +27,6 @@ public:
 	Sphere *tdl;
 	// Data contact statique
     ElongationManager elongationManager{maxContact};
-
-    /*
-    std::vector<Elongation> xsi, tp_xsi;
-    std::vector<int> neighbourNumber, tp_neighbourNumber;
-    std::vector<int> type, tp_type;
-    std::vector<int> bodyNumber, tp_bodyNumber;
-	int Nneighbour,Nneighbour2;
-    */
-
     //Contact avec plan
 	double ct_pl_nx,ct_pl_ny,ct_pl_nz;
 	int ct_pl;
@@ -64,9 +55,7 @@ public:
 	
 	void InitXsi() noexcept;
     void AddXsi(Elongation& e, uint64_t contactIdentifier) noexcept;
-    void AddXsi(Elongation& e, int n, int t, int nob) noexcept;
     Elongation FoundIt(uint64_t contactIdentifier) const noexcept;
-    Elongation FoundIt(int n, int t, int nob) const noexcept;
 	double radius() const noexcept;
 	void setRadius(double alpha) noexcept;
 	int NoBodies() const noexcept;
