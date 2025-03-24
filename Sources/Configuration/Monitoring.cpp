@@ -3,8 +3,8 @@
 //
 
 #include "../../Includes/Configuration/Monitoring.h"
-
 #include <iostream>
+#include <unistd.h>
 
 void Monitoring::initialize(std::string& idName) {
     this->id = idName;
