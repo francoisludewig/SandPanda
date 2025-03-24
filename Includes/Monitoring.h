@@ -17,4 +17,5 @@ public:
 private:
     std::string id;
     std::string filename;
+    int pid;
 };
