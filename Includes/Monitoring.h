@@ -11,10 +11,21 @@
 
 class Monitoring {
 public:
-    explicit Monitoring(std::string id, std::string filename);
+    Monitoring(const Monitoring& other) noexcept = default;
+    Monitoring(Monitoring&& other) noexcept = default;
+    Monitoring& operator=(const Monitoring& other) noexcept = default;
+    Monitoring& operator=(Monitoring&& other) noexcept = default;
+
+    static Monitoring& getInstance() {
+        static Monitoring monitoring{};
+        return monitoring;
+    }
+
+    void initialize(std::string& idName);
     void metrics(const double current, const double final) const;
 
 private:
+    Monitoring() noexcept = default;
     std::string id;
-    std::string filename;
+    int pid;
 };

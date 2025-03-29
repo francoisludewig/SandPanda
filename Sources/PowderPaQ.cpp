@@ -87,10 +87,10 @@ int PowderPaQ::PowderPaQRun(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph
 	for(int nt = ntpi  ; nt <= ntpf ; nt++){
 		//Secousse
 		PowderPaQsecousseUpward(pl,plr,co,Npl,Nplr,Nco,dat,PQheight,PQVel);
-		Ntp = Evolution::Evolve(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,pl,plr,co,elb,sph,bd,hb,ct,dat,gf,cell,Ntp, name,record,Nthreshold);
+		Ntp = Evolution::Evolve(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,pl,plr,co,elb,sph,bd,hb,ct,dat,gf,cell,Ntp, name,record,Nthreshold, false);
 		
 		PowderPaQsecousseDownward(pl,plr,co,Npl,Nplr,Nco,dat,PQheight);
-		Ntp = Evolution::Evolve(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,pl,plr,co,elb,sph,bd,hb,ct,dat,gf,cell,Ntp, name,record,Nthreshold);
+		Ntp = Evolution::Evolve(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,pl,plr,co,elb,sph,bd,hb,ct,dat,gf,cell,Ntp, name,record,Nthreshold, false);
 		
 		// Relaxation
 		if(nt < 100)
@@ -98,7 +98,7 @@ int PowderPaQ::PowderPaQRun(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph
 			else
 				PowderPaQrelaxation(pl,plr,co,Npl,Nplr,Nco,dat,0.25,PQheight,PQVel);
 				
-				Ntp = Evolution::Evolve(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,pl,plr,co,elb,sph,bd,hb,ct,dat,gf,cell,Ntp, name,record,Nthreshold);
+				Ntp = Evolution::Evolve(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,pl,plr,co,elb,sph,bd,hb,ct,dat,gf,cell,Ntp, name,record,Nthreshold, false);
 				// Enregistrement		
 				ReadWrite::writeStartStopContainer(name,Npl,Nplr,Nco,Nelb,pl,plr,co,elb);
 		ReadWrite::writeStartStopSphere(name,Nsph,sph);
@@ -126,10 +126,10 @@ int PowderPaQ::PowderPaQOMP(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph
 		//Secousse
 		PowderPaQsecousseUpward(pl,plr,co,Npl,Nplr,Nco,dat,PQheight,PQVel);
 		printf("Total = %e\n",dat.Total);
-		Ntp = Evolution::EvolveOMP(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,Ncta,Nctb,Nctc,pl,plr,co,elb,sph,bd,hb,ct,cta,ctb,ctc,dat,gf,cell,Ntp, name,record,Nthreshold);
+		Ntp = Evolution::EvolveOMP(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,Ncta,Nctb,Nctc,pl,plr,co,elb,sph,bd,hb,ct,cta,ctb,ctc,dat,gf,cell,Ntp, name,record,Nthreshold, false);
 		PowderPaQsecousseDownward(pl,plr,co,Npl,Nplr,Nco,dat,PQheight);
 		printf("Total = %e\n",dat.Total);
-		Ntp = Evolution::EvolveOMP(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,Ncta,Nctb,Nctc,pl,plr,co,elb,sph,bd,hb,ct,cta,ctb,ctc,dat,gf,cell,Ntp, name,record,Nthreshold);
+		Ntp = Evolution::EvolveOMP(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,Ncta,Nctb,Nctc,pl,plr,co,elb,sph,bd,hb,ct,cta,ctb,ctc,dat,gf,cell,Ntp, name,record,Nthreshold, false);
 		// Relaxation		
 		if(nt < 100)
 			PowderPaQrelaxation(pl,plr,co,Npl,Nplr,Nco,dat,0.5,PQheight,PQVel);
@@ -137,7 +137,7 @@ int PowderPaQ::PowderPaQOMP(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph
 				PowderPaQrelaxation(pl,plr,co,Npl,Nplr,Nco,dat,0.25,PQheight,PQVel);
 				
 				printf("Total = %e\n",dat.Total);
-				Ntp = Evolution::EvolveOMP(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,Ncta,Nctb,Nctc,pl,plr,co,elb,sph,bd,hb,ct,cta,ctb,ctc,dat,gf,cell,Ntp, name,record,Nthreshold);
+				Ntp = Evolution::EvolveOMP(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,Ncta,Nctb,Nctc,pl,plr,co,elb,sph,bd,hb,ct,cta,ctb,ctc,dat,gf,cell,Ntp, name,record,Nthreshold, false);
 				// Enregistrement		
 				ReadWrite::writeStartStopContainer(name,Npl,Nplr,Nco,Nelb,pl,plr,co,elb);
 		ReadWrite::writeStartStopSphere(name,Nsph,sph);

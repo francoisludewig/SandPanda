@@ -25,6 +25,9 @@ public:
 	int Npl_nn;
 	double angle_nn;
 
+	bool isMonitoringActivated {false};
+	char processName[32];
+
 	Option() noexcept;
 	int Management(char **argv, int argc) noexcept;
 	int DirectoryManagement() noexcept;

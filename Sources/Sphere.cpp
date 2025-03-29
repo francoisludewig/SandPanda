@@ -35,9 +35,11 @@ Sphere::Sphere() noexcept {
 	
 	for(int i = 0 ; i < maxContact ; i++){
 		NumNeighbour[i] = -9;
+		NumFromBody[i] = -9;
 		type[i] = -1;
 		xsi[i].Reset();
 		NumNeighbour2[i] = -9;
+		NumFromBody2[i] = -9;
 		type2[i] = -1;
 		xsi2[i].Reset();
 	}
@@ -100,7 +102,7 @@ void Sphere::writeToFile(FILE *ft) const noexcept {
 		fprintf(ft,"%e\t%e\t%e\n",wx,wy,wz);
 		fprintf(ft,"%e\t%e\t%e\t%d\t%d\n",r,m,I,sp,NhollowBall);
 		fprintf(ft,"%d\n",Nneighbour2);
-		for(int i = 0 ; i < Nneighbour ; i++)
+		for(int i = 0 ; i < Nneighbour2 ; i++)
 			fprintf(ft,"%d\t%d\t%e\t%e\t%e\n",NumNeighbour2[i],type2[i],xsi2[i].x,xsi2[i].y,xsi2[i].z);
 	}
 }
@@ -297,14 +299,11 @@ int Sphere::Num() const noexcept {
 
 // TODO Implement swapable container with RAII
 void Sphere::InitXsi() noexcept {
-	Elongation *tpe;
-	int *tpi;
-	
-	tpe = xsi;
+	Elongation *tpe = xsi;
 	xsi = xsi2;
 	xsi2 = tpe;
 	
-	tpi = NumNeighbour;
+	int *tpi = NumNeighbour;
 	NumNeighbour = NumNeighbour2;
 	NumNeighbour2 = tpi;
 	

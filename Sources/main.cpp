@@ -12,6 +12,7 @@
 #include "../Includes/Compaction.h"
 #include "../Includes/PowderPaQ.h"
 #include "../Includes/Option.h"
+#include "../Includes/Monitoring.h"
 #include <iostream>
 #include <vector>
 #include <filesystem>
@@ -232,7 +233,8 @@ int main(int argc,char **argv){
 		Ntp = (int)((dat.TIME-dat.t0)/(dat.dts))+1;
 	else
 		Ntp = 0;
-	
+
+
 	if(opt.mode == 0){
 		if(Ntp == 0 && dat.t0 <= dat.TIME){
 			ReadWrite::writeStartStopContainer(opt.directory,Npl,Nplr,Nco,Nelb,pl,plr,co,elb);
@@ -267,20 +269,24 @@ int main(int argc,char **argv){
 		}
 	}
 	printf("Time Path = %e\n\n",dat.dt);
-	
+	if(opt.isMonitoringActivated) {
+		auto name = std::string(opt.processName);
+		Monitoring::getInstance().initialize(name);
+	}
+
 	switch(opt.mode){
 		case 0:
 			if(opt.parallel == 1)
-				Ntp = Evolution::EvolveOMP(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,Ncta,Nctb,Nctc,pl,plr,co,elb,sph,bd,hb,ct,cta,ctb,ctc,dat,gf,cell,Ntp, opt.directory,record,Nthreshold);
+				Ntp = Evolution::EvolveOMP(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,Ncta,Nctb,Nctc,pl,plr,co,elb,sph,bd,hb,ct,cta,ctb,ctc,dat,gf,cell,Ntp, opt.directory,record,Nthreshold, opt.isMonitoringActivated);
 			else
-				Ntp = Evolution::Evolve(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,               pl,plr,co,elb,sph,bd,hb,ct,            dat,gf,cell,Ntp, opt.directory,record,Nthreshold);
+				Ntp = Evolution::Evolve(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,               pl,plr,co,elb,sph,bd,hb,ct,            dat,gf,cell,Ntp, opt.directory,record,Nthreshold, opt.isMonitoringActivated);
 			break;
 		case 1:
             dat.Total = dat.TIME;
 			if(opt.parallel == 0)
-				Ntp = Compaction::Run(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct               ,pl,plr,co,elb,sph,bd,hb,ct            ,dat,gf,cell,Ntp, opt.directory,record,opt.NtapMin,opt.NtapMax,opt.Gamma,opt.Freq,Nthreshold);
+				Ntp = Compaction::Run(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct               ,pl,plr,co,elb,sph,bd,hb,ct            ,dat,gf,cell,Ntp, opt.directory,record,opt.NtapMin,opt.NtapMax,opt.Gamma,opt.Freq,Nthreshold, opt.isMonitoringActivated);
 			else
-				Ntp = Compaction::RunOMP(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,Ncta,Nctb,Nctc,pl,plr,co,elb,sph,bd,hb,ct,cta,ctb,ctc,dat,gf,cell,Ntp, opt.directory,record,opt.NtapMin,opt.NtapMax,opt.Gamma,opt.Freq,Nthreshold);
+				Ntp = Compaction::RunOMP(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,Ncta,Nctb,Nctc,pl,plr,co,elb,sph,bd,hb,ct,cta,ctb,ctc,dat,gf,cell,Ntp, opt.directory,record,opt.NtapMin,opt.NtapMax,opt.Gamma,opt.Freq,Nthreshold, opt.isMonitoringActivated);
 			
 			break;
 		case 2:

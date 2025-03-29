@@ -12,7 +12,7 @@
 #include "../Includes/ReadWrite.h"
 #include "../Includes/ContactDetection.h"
 #include "../Includes/ComputingForce.h"
-#include "../Includes/Move.h"
+#include "../Includes/Monitoring.h"
 #include "../Includes/Evolution.h"
 #include "../Includes/Data.h"
 #include "../Includes/HollowBall.h"
@@ -57,17 +57,17 @@ void Compaction::Relaxation(vector<Plan> & pl,vector<PlanR> & plr,vector<Cone> &
 
 int Compaction::Run(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,int & Nsph0,int & Nbd,int & Nhb,int & Nct,
 										vector<Plan> & pl,vector<PlanR> & plr,vector<Cone> & co,vector<Elbow> & elb,vector<Sphere> & sph,vector<Body> & bd,vector<HollowBall> & hb,Contact *ct,Data & dat,Gravity & gf,
-										Sphere *cell[], int & Ntp, char *name,bool record,int ntpi, int ntpf, double Gamma, double f, int Nthreshold) noexcept {
+										Sphere *cell[], int & Ntp, char *name,bool record,int ntpi, int ntpf, double Gamma, double f, int Nthreshold, bool isMonitoringActivated) noexcept {
 	record = 0;
 	for(int nt = ntpi  ; nt <= ntpf ; nt++){
 		//Secousse
 		Secousse(pl,plr,co,Npl,Nplr,Nco,Gamma,f,dat);
 		printf("Total = %e\n",dat.Total);
-		Ntp = Evolution::Evolve(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,pl,plr,co,elb,sph,bd,hb,ct,dat,gf,cell,Ntp, name,record,Nthreshold);
+		Ntp = Evolution::Evolve(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,pl,plr,co,elb,sph,bd,hb,ct,dat,gf,cell,Ntp, name,record,Nthreshold, false);
 		// Relaxation
 		Relaxation(pl,plr,co,Npl,Nplr,Nco,0,0,dat);
 		printf("Relaxation\nTotal = %e\n",dat.Total);
-		Ntp = Evolution::Evolve(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,pl,plr,co,elb,sph,bd,hb,ct,dat,gf,cell,Ntp, name,record,Nthreshold);
+		Ntp = Evolution::Evolve(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,pl,plr,co,elb,sph,bd,hb,ct,dat,gf,cell,Ntp, name,record,Nthreshold, false);
 		
 		if(record == 0){
 			// Enregistrement
@@ -84,6 +84,9 @@ int Compaction::Run(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,int & N
 			ReadWrite::writeOutHollowBall(name, Ntp, Nhb, hb);
 			printf("Ntp = %d\n",nt);
 			Ntp++;
+			if(isMonitoringActivated) {
+				Monitoring::getInstance().metrics(nt, ntpf);
+			}
 		}
 	}
 	return Ntp;
@@ -92,17 +95,17 @@ int Compaction::Run(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,int & N
 
 int Compaction::RunOMP(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,int & Nsph0,int & Nbd,int & Nhb,int & Nct,int & Ncta,int & Nctb,int & Nctc,
 											 vector<Plan> & pl,vector<PlanR> & plr,vector<Cone> & co,vector<Elbow> & elb,vector<Sphere> & sph,vector<Body> & bd,vector<HollowBall> & hb,Contact *ct,Contact *cta,Contact *ctb,Contact *ctc,Data & dat,Gravity & gf,
-											 Sphere *cell[], int & Ntp, char *name,bool record,int ntpi, int ntpf, double Gamma, double f, int Nthreshold) noexcept {
+											 Sphere *cell[], int & Ntp, char *name,bool record,int ntpi, int ntpf, double Gamma, double f, int Nthreshold, bool isMonitoringActivated) noexcept {
 	record = 0;
 	for(int nt = ntpi  ; nt <= ntpf ; nt++){
 		//Secousse
 		Secousse(pl,plr,co,Npl,Nplr,Nco,Gamma,f,dat);
 		printf("Total = %e\n",dat.Total);
-		Ntp = Evolution::EvolveOMP(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,Ncta,Nctb,Nctc,pl,plr,co,elb,sph,bd,hb,ct,cta,ctb,ctc,dat,gf,cell,Ntp, name,record,Nthreshold);
+		Ntp = Evolution::EvolveOMP(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,Ncta,Nctb,Nctc,pl,plr,co,elb,sph,bd,hb,ct,cta,ctb,ctc,dat,gf,cell,Ntp, name,record,Nthreshold, false);
 		// Relaxation
 		Relaxation(pl,plr,co,Npl,Nplr,Nco,0,0,dat);
 		printf("Total = %e\n",dat.Total);
-		Ntp = Evolution::EvolveOMP(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,Ncta,Nctb,Nctc,pl,plr,co,elb,sph,bd,hb,ct,cta,ctb,ctc,dat,gf,cell,Ntp, name,record,Nthreshold);
+		Ntp = Evolution::EvolveOMP(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,Ncta,Nctb,Nctc,pl,plr,co,elb,sph,bd,hb,ct,cta,ctb,ctc,dat,gf,cell,Ntp, name,record,Nthreshold, false);
 		if(record == 0){
 			// Enregistrement
 			ReadWrite::writeStartStopContainer(name,Npl,Nplr,Nco,Nelb,pl,plr,co,elb);
@@ -118,6 +121,9 @@ int Compaction::RunOMP(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,int 
 			ReadWrite::writeOutHollowBall(name, Ntp, Nhb, hb);
 			printf("Ntp = %d\n",nt);
 			Ntp++;
+			if(isMonitoringActivated) {
+				Monitoring::getInstance().metrics(nt, ntpf);
+			}
 		}
 	}
 	return Ntp;

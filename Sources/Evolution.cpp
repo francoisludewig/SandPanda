@@ -16,11 +16,12 @@
 #include "../Includes/ComputingForce.h"
 #include "../Includes/Data.h"
 #include "../Includes/Move.h"
+#include "../Includes/Monitoring.h"
 #include "../Includes/HollowBall.h"
 
 int Evolution::Evolve(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,int & Nsph0,int & Nbd,int & Nhb,int & Nct,
 											vector<Plan> & pl,vector<PlanR> & plr,vector<Cone> & co,vector<Elbow> & elb,vector<Sphere> & sph,vector<Body> & bd,vector<HollowBall> & hb,Contact *ct,Data & dat,Gravity & gf,
-											Sphere *cell[], int & Ntp, char *name,bool record, int Nthreshold) noexcept {
+											Sphere *cell[], int & Ntp, char *name,bool record, int Nthreshold, bool isMonitoringActivated) noexcept {
 	// Sequential Version
 	printf("Evolution\n");
 	do{
@@ -96,6 +97,9 @@ int Evolution::Evolve(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,int &
 						printf("Save File %d\t\ttime = %e\r",Ntp,dat.TIME);
 						fflush(stdout);
 						Ntp++;
+				if(isMonitoringActivated) {
+					Monitoring::getInstance().metrics(dat.TIME, dat.Total);
+				}
 			}
 		}
 	}while(dat.TIME <= dat.Total-dat.dt*0.99);
@@ -107,7 +111,7 @@ int Evolution::Evolve(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,int &
 
 int Evolution::EvolveOMP(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,int & Nsph0,int & Nbd,int & Nhb,int & Nct,int & Ncta,int & Nctb,int & Nctc,
 												 vector<Plan> & pl,vector<PlanR> & plr,vector<Cone> & co,vector<Elbow> & elb,vector<Sphere> & sph,vector<Body> & bd,vector<HollowBall> & hb,Contact *ct,Contact *cta,Contact *ctb,Contact *ctc,Data & dat,Gravity & gf,
-												 Sphere *cell[], int & Ntp, char *name,bool record, int Nthreshold) noexcept {
+												 Sphere *cell[], int & Ntp, char *name,bool record, int Nthreshold, bool isMonitoringActivated) noexcept {
 	int Nprocess = 2;
 	if(ctb != NULL)
 		Nprocess = 4;
@@ -244,6 +248,9 @@ int Evolution::EvolveOMP(int & Npl,int & Nplr,int & Nco,int & Nelb,int & Nsph,in
 							printf("Save File %d\t\ttime = %e\r",Ntp,dat.TIME);
 							fflush(stdout);
 							Ntp++;
+					if(isMonitoringActivated) {
+						Monitoring::getInstance().metrics(dat.TIME, dat.Total);
+					}
 				}
 			}
 		}while(dat.TIME <= dat.Total-dat.dt);
