@@ -82,7 +82,7 @@ ${GTEST_LIBRARIES}
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_CXX_FLAGS "-O0 -g")
 else()
-    set(CMAKE_CXX_FLAGS "-O3")
+    set(CMAKE_CXX_FLAGS "-O3 -ftree-vectorize -fforward-propagate -m64")
 endif()
 
 enable_testing()

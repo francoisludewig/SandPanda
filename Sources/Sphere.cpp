@@ -96,14 +96,14 @@ void Sphere::readFromFile(FILE *ft) noexcept {
 
 void Sphere::writeToFile(FILE *ft) const noexcept {
 	if(bodies == -9 && !isHollowBall){
-		fprintf(ft,"%.15f\t%.15f\t%.15f\n",x,y,z);
-		fprintf(ft,"%e\t%e\t%e\t%e\n",q0,q1,q2,q3);
-		fprintf(ft,"%e\t%e\t%e\n",vx,vy,vz);
-		fprintf(ft,"%e\t%e\t%e\n",wx,wy,wz);
+		fprintf(ft,"%.16e\t%.16e\t%.16e\n",x,y,z);
+		fprintf(ft,"%.16e\t%.16e\t%.16e\t%.16e\n",q0,q1,q2,q3);
+		fprintf(ft,"%.16e\t%.16e\t%.16e\n",vx,vy,vz);
+		fprintf(ft,"%.16e\t%.16e\t%.16e\n",wx,wy,wz);
 		fprintf(ft,"%e\t%e\t%e\t%d\t%d\n",r,m,I,sp,NhollowBall);
 		fprintf(ft,"%d\n",Nneighbour2);
 		for(int i = 0 ; i < Nneighbour2 ; i++)
-			fprintf(ft,"%d\t%d\t%e\t%e\t%e\n",NumNeighbour2[i],type2[i],xsi2[i].x,xsi2[i].y,xsi2[i].z);
+			fprintf(ft,"%d\t%d\t%d\t%.16e\t%.16e\t%.16e\n",NumNeighbour2[i],type2[i], xsi2[i].status,xsi2[i].x,xsi2[i].y,xsi2[i].z);
 	}
 }
 
@@ -120,7 +120,7 @@ void Sphere::readStartStop(FILE *ft) noexcept {
 	fscanf(ft,"%d\n",&Nneighbour2);
 	//Nneighbour2+=maxContact;
 	for(int i = 0 ; i < Nneighbour2 ; i++)
-		fscanf(ft,"%d\t%d\t%lf\t%lf\t%lf\n",&NumNeighbour2[i],&type2[i],&xsi2[i].x,&xsi2[i].y,&xsi2[i].z);
+		fscanf(ft,"%d\t%d\t%d\t%lf\t%lf\t%lf\n",&NumNeighbour2[i],&type2[i],&xsi2[i].status,&xsi2[i].x,&xsi2[i].y,&xsi2[i].z);
     r0 = r;
 }
 
@@ -204,7 +204,7 @@ void Sphere::Melt(double dt, double vr) noexcept {
 }
 
 void Sphere::Freeze(double dt, double vr) noexcept {
-    // printf("r = %.15e -> %.15e  (dr = %e)\n",r,r+r0*vr*dt,r0*vr);
+    // printf("r = %.16e -> %.16e  (dr = %e)\n",r,r+r0*vr*dt,r0*vr);
     r += r0*vr*dt;
     I = 2./5.*m*r*r;
 }
