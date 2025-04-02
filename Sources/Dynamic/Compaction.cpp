@@ -92,6 +92,9 @@ int Compaction::Run(int &Npl, int &Nplr, int &Nco, int &Nelb, int &Nsph, int &Ns
             ReadWrite::writeOutHollowBall(name, Ntp, Nhb, hb);
             printf("Ntp = %d\n", nt);
             Ntp++;
+            if(isMonitoringActivated) {
+                Monitoring::getInstance().metrics(nt, ntpf);
+            }
         }
     }
     return Ntp;
@@ -132,9 +135,9 @@ int Compaction::RunOMP(int &Npl, int &Nplr, int &Nco, int &Nelb, int &Nsph, int 
             ReadWrite::writeOutHollowBall(name, Ntp, Nhb, hb);
             printf("Ntp = %d\n", nt);
             Ntp++;
-        }
-        if(isMonitoringActivated) {
-            Monitoring::getInstance().metrics(nt, ntpf);
+            if(isMonitoringActivated) {
+                Monitoring::getInstance().metrics(nt, ntpf);
+            }
         }
     }
     return Ntp;

@@ -4,6 +4,7 @@ from influxdb_client.client.write_api import SYNCHRONOUS
 
 import os
 import sys
+import subprocess
 
 token = "ODOAfu91GCSOA7vpeNLMKsZGtZQQsMM2mI9YHIhxm_WmX4xLFTJzOADtY3C-nbysbaDtQVdOohpYkQjeMPKFcA=="
 org = "FiFr"
@@ -36,13 +37,13 @@ def lire_et_encoder(nom, niveau_actuel, niveau_max, ram):
         .field("ram", ram)
         )
         write_api.write(bucket=bucket, org="FiFr", record=point)
-        print(f"Donnée insérée: {nom, niveau_actuel, niveau_max}")
+        #print(f"Donnée insérée: {nom, niveau_actuel, niveau_max}")
 
         # Fermer la connexion
 
         client.close()
 
-        print("Données insérées")
+        #print("Données insérées")
 
     except Exception as e:
         print(f"Erreur: {e}")

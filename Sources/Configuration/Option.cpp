@@ -189,7 +189,7 @@ int Option::Management(char **argv, int argc) noexcept {
 				case 'm':
                     if(!strcmp(argv[i], "-m")) {
                         isMonitoringActivated = true;
-                        sscanf(argv[i+1],"%31[^n]",&processName);
+                        sscanf(argv[i+1],"%31[^\n]", processName);
                         i++;
                     }
                     if(!strcmp(argv[i], "-mu")){
@@ -414,7 +414,7 @@ int Option::DirectoryManagement() noexcept {
 void Option::Record() noexcept {
 	// Enregistrement des options
 	FILE *ft;
-	char FileName[1024];
+	char FileName[2048];
 	sprintf(FileName,"%s/option.txt",directory);
 	ft =fopen(FileName,"w");
 	for(int i = 1 ; i < Nlist ; i++){
