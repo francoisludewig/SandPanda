@@ -90,10 +90,10 @@ void Sphere::readFromFile(FILE *ft) noexcept {
 
 void Sphere::writeToFile(FILE *ft) const noexcept {
 	if(bodies == -9 && !isHollowBall){
-		fprintf(ft,"%.15f\t%.15f\t%.15f\n",x,y,z);
-		fprintf(ft,"%e\t%e\t%e\t%e\n",q0,q1,q2,q3);
-		fprintf(ft,"%e\t%e\t%e\n",vx,vy,vz);
-		fprintf(ft,"%e\t%e\t%e\n",wx,wy,wz);
+		fprintf(ft,"%.16e\t%.16e\t%.16e\n",x,y,z);
+		fprintf(ft,"%.16e\t%.16e\t%.16e\t%.16e\n",q0,q1,q2,q3);
+		fprintf(ft,"%.16e\t%.16e\t%.16e\n",vx,vy,vz);
+		fprintf(ft,"%.16e\t%.16e\t%.16e\n",wx,wy,wz);
 		fprintf(ft,"%e\t%e\t%e\t%d\t%d\n",r,m,I,sp,NhollowBall);
         elongationManager.writeToFile(ft);
         /*
@@ -179,7 +179,7 @@ void Sphere::RandomVelocity(double V, double W) noexcept {
 }
 
 void Sphere::Freeze(double dt, double vr) noexcept {
-    // printf("r = %.15e -> %.15e  (dr = %e)\n",r,r+r0*vr*dt,r0*vr);
+    // printf("r = %.16e -> %.16e  (dr = %e)\n",r,r+r0*vr*dt,r0*vr);
     r += r0*vr*dt;
     I = 2./5.*m*r*r;
 }
