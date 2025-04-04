@@ -194,8 +194,7 @@ int main(int argc,char **argv){
     // TODO Remettre dans la stack au lieu du heap pour gagner en performance !!!
     Sphere **cell = (Sphere**)malloc(sizeof(Sphere*)*Ncell);
 	//Sphere *cell[Ncell];
-	
-	
+
 	printf("List of Linking Cell for Solid\n");
 	printf("------------------------------\n\n");
     fflush(stdout);
@@ -204,27 +203,7 @@ int main(int argc,char **argv){
 	ContactDetection::listCellForPlanR(&dat, plr, Nplr, gf);
 	ContactDetection::listCellForCone(&dat, co, Nco, gf);
 	ContactDetection::listCellForElbow(&dat, elb, Nelb);
-	printf("\n");
-	// Control taille de la memoire demandee
-	printf("Etat de la memoire\n");
-	printf("------------------\n\n");
-	int All = 0;
-	All += Nsph*static_cast<int>(sizeof(Sphere));
-	All += Nbdsp*static_cast<int>(sizeof(BodySpecie));
-	All += Nbd*static_cast<int>(sizeof(Body));
-	All += Npl*static_cast<int>(sizeof(Plan));
-	All += Nplr*static_cast<int>(sizeof(PlanR));
-	All += Nco*static_cast<int>(sizeof(Cone));
-	All += Nelb*static_cast<int>(sizeof(Elbow));
-	All += Nhb*static_cast<int>(sizeof(HollowBall));
-	All += (18*Nsph+75*Nbd)*static_cast<int>(sizeof(Contact));
-	All += static_cast<int>(sizeof(cell));
-	All += static_cast<int>(sizeof(dat));
-	All += static_cast<int>(sizeof(Gravity));
-	
-	printf("Le programme a alloue %f ko\n",All/1000.);
-	printf("Le programme a alloue %f Mo\n",All/1000./1000.);
-	
+
 	if(dat.TIME != 0)
 		Ntp = (int)((dat.TIME-dat.t0)/(dat.dts))+1;
 	else
@@ -266,7 +245,8 @@ int main(int argc,char **argv){
 
     if(opt.isMonitoringActivated) {
         auto name = std::string(opt.processName);
-        Monitoring::getInstance().initialize(name);
+        auto path = std::string(opt.scriptPath);
+        Monitoring::getInstance().initialize(name, path);
     }
 	printf("Time Path = %e\n\n",dat.dt);
 
@@ -284,13 +264,6 @@ int main(int argc,char **argv){
 			else
 				Ntp = Compaction::RunOMP(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,Ncta,Nctb,Nctc,pl,plr,co,elb,sph,bd,hb,ct,cta,ctb,ctc,dat,gf,cell,Ntp, opt.directory,record,opt.NtapMin,opt.NtapMax,opt.Gamma,opt.Freq,Nthreshold, opt.isMonitoringActivated);
 			
-			break;
-		case 2:
-			dat.Total = dat.TIME;
-			if(opt.parallel == 0)
-				Ntp = PowderPaQ::PowderPaQRun(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct               ,pl,plr,co,elb,sph,bd,hb,ct            ,dat,gf,cell,Ntp, opt.directory,record,opt.NtapMin,opt.NtapMax,Nthreshold,opt.PQheight,opt.PQVel);
-			else
-				Ntp = PowderPaQ::PowderPaQOMP(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,Ncta,Nctb,Nctc,pl,plr,co,elb,sph,bd,hb,ct,cta,ctb,ctc,dat,gf,cell,Ntp, opt.directory,record,opt.NtapMin,opt.NtapMax,Nthreshold,opt.PQheight,opt.PQVel);
 			break;
 	}
 	

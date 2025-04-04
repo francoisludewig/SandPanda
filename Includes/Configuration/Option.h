@@ -27,6 +27,7 @@ public:
 
     bool isMonitoringActivated {false};
     char processName[32];
+	char scriptPath[2048];
 
 	Option() noexcept;
 	int Management(char **argv, int argc) noexcept;

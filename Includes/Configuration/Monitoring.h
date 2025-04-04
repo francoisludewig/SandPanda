@@ -21,11 +21,12 @@ public:
         return monitoring;
     }
 
-    void initialize(std::string& idName);
+    void initialize(std::string& idName, std::string &path);
     void metrics(const double current, const double final) const;
 
 private:
     Monitoring() noexcept = default;
     std::string id;
+    std::string scriptPath;
     int pid;
 };
