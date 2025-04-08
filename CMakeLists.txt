@@ -37,7 +37,7 @@ set(SOURCES_FILES
  Sources/LinkedCells/LinkedCellFiller.cpp
  Sources/LinkedCells/SolidCellsBuilder.cpp	
 
- Sources/AffinityCache.cpp
+# Sources/AffinityCache.cpp
  Sources/Move.cpp
  Sources/Option.cpp
  Sources/Compaction.cpp		
@@ -89,7 +89,7 @@ set(INCLUDES_FILES
  Includes/LinkedCells/LinkedCellFiller.h
  Includes/LinkedCells/SolidCellsBuilder.h	
 
- Includes/AffinityCache.h
+ #Includes/AffinityCache.h
  Includes/Move.h
  Includes/Compaction.h		
  Includes/Option.h
@@ -109,7 +109,7 @@ set(SandPanda_FILES
  ${SOURCES_FILES}
 )
 
-set (CMAKE_CXX_STANDARD 11)
+set (CMAKE_CXX_STANDARD 20)
 
 add_executable(
  SandPanda
@@ -120,6 +120,12 @@ target_link_libraries(
 SandPanda
 ${GTEST_LIBRARIES}
 )
+
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(CMAKE_CXX_FLAGS "-O0 -g")
+else()
+    set(CMAKE_CXX_FLAGS "-O3 -std=c++11")
+endif()
 
 
 enable_testing()

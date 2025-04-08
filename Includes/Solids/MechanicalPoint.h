@@ -1,6 +1,7 @@
 #pragma once
 
 #include <mutex>
+#include <memory>
 
 class MechanicalPoint {
 public:

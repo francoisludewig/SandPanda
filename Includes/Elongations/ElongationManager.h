@@ -36,9 +36,10 @@ public:
 		void WriteToFileForSphere(FILE *ft) const {
 			fprintf(ft,"%d\n",neighbourCount);
 				for(int i = 0 ; i < neighbourCount ; i++)
-					fprintf(ft,"%d\t%d\t%e\t%e\t%e\n",
+					fprintf(ft,"%d\t%d\t%d\t%.16e\t%.16e\t%.16e\n",
 							neighbourNumber[i],
 							static_cast<int>(type[i]),
+							elongations[i].status,
 							elongations[i].x,
 							elongations[i].y,
 							elongations[i].z);
@@ -48,13 +49,13 @@ public:
 	    void WriteToFileForBody(FILE *ft) const {
 	    	fprintf(ft,"%d\n",neighbourCount);
 	    		for(int i = 0 ; i < neighbourCount ; i++)
-	    			fprintf(ft,"%d\t%d\t%d\t%d\t%e\t%e\t%e\n",neighbourNumber[i],type[i],selfBodyNumber[i],bodyNumber[i],elongations[i].x,elongations[i].y,elongations[i].z);
+	    			fprintf(ft,"%d\t%d\t%d\t%d\t%.15e\t%.15e\t%.15e\n",neighbourNumber[i],type[i],selfBodyNumber[i],bodyNumber[i],elongations[i].x,elongations[i].y,elongations[i].z);
 	    }
 
 		void ReadFromFileForSphere(FILE *ft) {
 			fscanf(ft,"%d\n",&neighbourCount);
 			for(int i = 0 ; i < neighbourCount ; i++)
-				fscanf(ft,"%d\t%d\t%lf\t%lf\t%lf\n",&neighbourNumber[i],&type[i],&elongations[i].x,&elongations[i].y,&elongations[i].z);
+				fscanf(ft,"%d\t%d\t%d\t%lf\t%lf\t%lf\n",&neighbourNumber[i],&type[i],&elongations[i].status,&elongations[i].x,&elongations[i].y,&elongations[i].z);
 
 		}
 
@@ -160,12 +161,12 @@ public:
 		write->Reset();
 	}
 	// TODO use write->
-	void WriteToFileForSphere(FILE *ft) const { read->WriteToFileForSphere(ft); }
+	void WriteToFileForSphere(FILE *ft) const { write->WriteToFileForSphere(ft); }
 	// TODO use write->
-	void WriteToFileForBody(FILE *ft) const { read->WriteToFileForBody(ft); }
+	void WriteToFileForBody(FILE *ft) const { write->WriteToFileForBody(ft); }
 
-    void ReadFromFileForSphere(FILE *ft) { read->ReadFromFileForSphere(ft); }
-    void ReadFromFileForBody(FILE *ft) { read->ReadFromFileForBody(ft); }
+    void ReadFromFileForSphere(FILE *ft) { write->ReadFromFileForSphere(ft); }
+    void ReadFromFileForBody(FILE *ft) { write->ReadFromFileForBody(ft); }
 
 private:
 	std::unique_ptr<std::mutex> mutex {nullptr};
