@@ -29,15 +29,15 @@ public:
 	int Nx,Ny,Nz;
 	double en,mu,k,muS,muD;
 	double dts,t0;
-	int modelTg;
-	double Rmax;
-	double Rthreshold;
-	int Ncellmax;
+	int modelTg{};
+	double Rmax{};
+	double Rthreshold{};
+	int Ncellmax{};
 	
-	MasterSolid *mas;
+	MasterSolid *mas{};
 	// Donnee relative aux options de la simulation
 	int outContact;
 	int outMode;
 
-	bool record;
+	bool record{};
 };

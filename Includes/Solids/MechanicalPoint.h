@@ -1,7 +1,7 @@
 #pragma once
 
-#include <mutex>
 #include <memory>
+#include <mutex>
 
 class MechanicalPoint {
 public:
@@ -12,8 +12,8 @@ public:
 	wx(0), wy(0), wz(0),
 	Fx(0), Fy(0), Fz(0),
 	Mx(0), My(0), Mz(0) {
-		forceMutex = std::unique_ptr<std::mutex>(new std::mutex());
-		momentumMutex = std::unique_ptr<std::mutex>(new std::mutex());
+		forceMutex = std::make_unique<std::mutex>();
+		momentumMutex = std::make_unique<std::mutex>();
 	}
 
 	MechanicalPoint(const MechanicalPoint& other) = delete;
@@ -21,9 +21,9 @@ public:
 	MechanicalPoint& operator=(const MechanicalPoint& other) = delete;
 	MechanicalPoint& operator=(MechanicalPoint&& other) = default;
 
-	const double& X() const noexcept { return x; }
-	const double& Y() const noexcept { return y; }
-	const double& Z() const noexcept { return z; }
+	[[nodiscard]] const double& X() const noexcept { return x; }
+	[[nodiscard]] const double& Y() const noexcept { return y; }
+	[[nodiscard]] const double& Z() const noexcept { return z; }
 	
 	void X(const double& lhs) noexcept { this->x = lhs; }
 	void Y(const double& lhs) noexcept { this->y = lhs; }
@@ -34,31 +34,31 @@ public:
 	void Q2(const double& lhs) noexcept { this->q2 = lhs; }
 	void Q3(const double& lhs) noexcept { this->q3 = lhs; }
 	
-	const double& Vx() const noexcept { return vx; }
-	const double& Vy() const noexcept { return vy; }
-	const double& Vz() const noexcept { return vz; }
+	[[nodiscard]] const double& Vx() const noexcept { return vx; }
+	[[nodiscard]] const double& Vy() const noexcept { return vy; }
+	[[nodiscard]] const double& Vz() const noexcept { return vz; }
 	
 	void Vx(const double& lhs) noexcept { this->vx = lhs; }
 	void Vy(const double& lhs) noexcept { this->vy = lhs; }
 	void Vz(const double& lhs) noexcept { this->vz = lhs; }
 	
 
-	const double& Wx() const noexcept { return wx; }
-	const double& Wy() const noexcept { return wy; }
-	const double& Wz() const noexcept { return wz; }
+	[[nodiscard]] const double& Wx() const noexcept { return wx; }
+	[[nodiscard]] const double& Wy() const noexcept { return wy; }
+	[[nodiscard]] const double& Wz() const noexcept { return wz; }
 
 	void Wx(const double& lhs) noexcept { this->wx = lhs; }
 	void Wy(const double& lhs) noexcept { this->wy = lhs; }
 	void Wz(const double& lhs) noexcept { this->wz = lhs; }
 
-	const double& GetFx() const noexcept { return Fx; }
-	const double& GetFy() const noexcept { return Fy; }
-	const double& GetFz() const noexcept { return Fz; }
+	[[nodiscard]] const double& GetFx() const noexcept { return Fx; }
+	[[nodiscard]] const double& GetFy() const noexcept { return Fy; }
+	[[nodiscard]] const double& GetFz() const noexcept { return Fz; }
 
 
-	const double& GetMx() const noexcept { return Mx; }
-	const double& GetMy() const noexcept { return My; }
-	const double& GetMz() const noexcept { return Mz; }
+	[[nodiscard]] const double& GetMx() const noexcept { return Mx; }
+	[[nodiscard]] const double& GetMy() const noexcept { return My; }
+	[[nodiscard]] const double& GetMz() const noexcept { return Mz; }
 
 	void AddForce(const double fx, const double fy, const double fz) noexcept {
 		Fx += fx;
@@ -126,15 +126,15 @@ public:
 	MechanicalPointWithBase& operator=(const MechanicalPointWithBase& other) = delete;
 	MechanicalPointWithBase& operator=(MechanicalPointWithBase&& other) = default;
 
-	double Nx() const noexcept { return nx; }
-	double Ny() const noexcept { return ny; }
-	double Nz() const noexcept { return nz; }
-	double Tx() const noexcept { return tx; }
-	double Ty() const noexcept { return ty; }
-	double Tz() const noexcept { return tz; }
-	double Sx() const noexcept { return sx; }
-	double Sy() const noexcept { return sy; }
-	double Sz() const noexcept { return sz; }
+	[[nodiscard]] double Nx() const noexcept { return nx; }
+	[[nodiscard]] double Ny() const noexcept { return ny; }
+	[[nodiscard]] double Nz() const noexcept { return nz; }
+	[[nodiscard]] double Tx() const noexcept { return tx; }
+	[[nodiscard]] double Ty() const noexcept { return ty; }
+	[[nodiscard]] double Tz() const noexcept { return tz; }
+	[[nodiscard]] double Sx() const noexcept { return sx; }
+	[[nodiscard]] double Sy() const noexcept { return sy; }
+	[[nodiscard]] double Sz() const noexcept { return sz; }
 
 protected:
 	double nx, ny, nz;

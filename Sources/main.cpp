@@ -214,7 +214,7 @@ int main(int argc,char **argv){
 	}
 
 	if(opt.compression == 1){
-		char commande[1024];
+		char commande[4096];
 		sprintf(commande,"tar -zcvmf %s/Out.tgz %s/Out",opt.directory,opt.directory);
 		system(commande);
 		sprintf(commande,"tar -zcvmf %s/Start_stop.tgz %s/Start_stop",opt.directory,opt.directory);

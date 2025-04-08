@@ -15,9 +15,9 @@ public:
 	class ElongationData {
    	public:
 		ElongationData() = default;
-		~ElongationData() noexcept {}
+		~ElongationData() noexcept = default;
 
-		ElongationData(int maxElongationCount) noexcept {
+		explicit ElongationData(const int maxElongationCount) noexcept {
 				elongations.resize(maxElongationCount);
 				neighbourNumber.resize(maxElongationCount);
 				neighbourCount = 0;
@@ -49,7 +49,7 @@ public:
 	    void WriteToFileForBody(FILE *ft) const {
 	    	fprintf(ft,"%d\n",neighbourCount);
 	    		for(int i = 0 ; i < neighbourCount ; i++)
-	    			fprintf(ft,"%d\t%d\t%d\t%d\t%.15e\t%.15e\t%.15e\n",neighbourNumber[i],type[i],selfBodyNumber[i],bodyNumber[i],elongations[i].x,elongations[i].y,elongations[i].z);
+	    			fprintf(ft,"%d\t%d\t%d\t%d\t%.15e\t%.15e\t%.15e\n",neighbourNumber[i],static_cast<int>(type[i]),selfBodyNumber[i],bodyNumber[i],elongations[i].x,elongations[i].y,elongations[i].z);
 	    }
 
 		void ReadFromFileForSphere(FILE *ft) {

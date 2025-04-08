@@ -5,7 +5,7 @@ Configuration::Configuration() noexcept :
 	xmax(0), ymax(0), zmax(0), ax(0), ay(0), az(0), Nx(0), Ny(0), Nz(0),
   en(0), mu(0), k(0), muS(0), muD(0), dts(0), t0(0), outContact(0), outMode(0) {}
 
-Configuration::~Configuration() noexcept {}
+Configuration::~Configuration() noexcept = default;
 
 void Configuration::LoadFromFile(FILE *ft) noexcept{
 	fscanf(ft,"%lf\t%lf\t%lf\n",&dt,&TIME,&Total);
