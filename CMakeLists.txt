@@ -36,7 +36,6 @@ set(SOURCES_FILES
         Sources/LinkedCells/LinkedCellFiller.cpp
         Sources/LinkedCells/SolidCellsBuilder.cpp
 
-        # Sources/AffinityCache.cpp
         Sources/Dynamic/Move.cpp
         Sources/Configuration/Option.cpp
         Sources/Dynamic/Compaction.cpp
@@ -88,7 +87,6 @@ set(INCLUDES_FILES
         Includes/LinkedCells/LinkedCellFiller.h
         Includes/LinkedCells/SolidCellsBuilder.h
 
-        #Includes/AffinityCache.h
         Includes/Dynamic/Move.h
         Includes/Dynamic/Compaction.h
         Includes/Configuration/Option.h
