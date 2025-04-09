@@ -5,7 +5,7 @@
 #include "../../Includes/Solids/Body.h"
 #include "../../Includes/Solids/Sphere.h"
 #include "../../Includes/Solids/BodySpecie.h"
-#include "../../Includes/Gravity.h"
+#include "../../Includes/Configuration/Gravity.h"
 #include "../../Includes/Solids/HollowBall.h"
 #include "../../Includes/ComputingForce.h"
 #include "../../Includes/Contact/ContactDetection.h"

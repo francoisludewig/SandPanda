@@ -3,11 +3,11 @@
 
 #include <cmath>
 
-#include "../../Includes/Configuration.h"
+#include "../../Includes/Configuration/Configuration.h"
 #include "../../Includes/LinkedCells/SolidCells.h"
 #include "../../Includes/LinkedCells/CellBounds.h"
 #include "../../Includes/Solids/Velocity.h"
-#include "../../Includes/Gravity.h"
+#include "../../Includes/Configuration/Gravity.h"
 #include "../../Includes/Solids/Plan.h"
 #include "../../Includes/Solids/PlanR.h"
 #include "../../Includes/Solids/Cone.h"

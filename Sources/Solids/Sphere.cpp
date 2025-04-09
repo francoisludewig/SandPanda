@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "../../Includes/Solids/Sphere.h"
-#include "../../Includes/Gravity.h"
+#include "../../Includes/Configuration/Gravity.h"
 #include "../../Includes/Elongations/Elongation.h"
 #include "../../Includes/Solids/Body.h"
 

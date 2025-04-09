@@ -1,15 +1,15 @@
 #pragma once
 
-#include "Sphere.h"
-#include "Body.h"
-#include "Plan.h"
-#include "PlanR.h"
-#include "Cone.h"
-#include "Elbow.h"
-#include "BodySpecie.h"
-#include "HollowBall.h"
-#include "../Configuration.h"
-#include "../Gravity.h"
+#include "../Solids/Sphere.h"
+#include "../Solids/Body.h"
+#include "../Solids/Plan.h"
+#include "../Solids/PlanR.h"
+#include "../Solids/Cone.h"
+#include "../Solids/Elbow.h"
+#include "../Solids/BodySpecie.h"
+#include "../Solids/HollowBall.h"
+#include "../Configuration/Configuration.h"
+#include "../Configuration/Gravity.h"
 
 class SimulationData {
 public:

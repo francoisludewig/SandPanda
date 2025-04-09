@@ -1,16 +1,16 @@
 #include <ctime>
 
-#include "../Includes/Evolution.h"
-#include "../Includes/ComputingForce.h"
-#include "../Includes/Configuration.h"
-#include "../Includes/Move.h"
-#include "../Includes/ReadWrite.h"
-#include "../Includes/Contact/ContactDetection.h"
-#include "../Includes/Periodicity.h"
-#include "../Includes/Gravity.h"
-#include "../Includes/Solids/Sphere.h"
-#include "../Includes/Solids/Body.h"
-#include "../Includes/LinkedCells/LinkedCellFiller.h"
+#include "../../Includes/Dynamic/Evolution.h"
+#include "../../Includes/ComputingForce.h"
+#include "../../Includes/Configuration/Configuration.h"
+#include "../../Includes/Dynamic/Move.h"
+#include "../../Includes/Repository/ReadWrite.h"
+#include "../../Includes/Contact/ContactDetection.h"
+#include "../../Includes/Dynamic/Periodicity.h"
+#include "../../Includes/Configuration/Gravity.h"
+#include "../../Includes/Solids/Sphere.h"
+#include "../../Includes/Solids/Body.h"
+#include "../../Includes/LinkedCells/LinkedCellFiller.h"
 
 int Evolution::Evolve(std::vector<Sphere*>& cell, int & Ntp, char *name, int Nthreshold) noexcept {
 	double dt = solids->configuration.dt;

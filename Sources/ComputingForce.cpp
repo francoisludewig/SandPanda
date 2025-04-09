@@ -1,8 +1,8 @@
 #include "../Includes/ComputingForce.h"
 
-#include "../Includes/Configuration.h"
+#include "../Includes/Configuration/Configuration.h"
 #include "../Includes/Solids/Velocity.h"
-#include "../Includes/Gravity.h"
+#include "../Includes/Configuration/Gravity.h"
 #include "../Includes/Solids/Plan.h"
 #include "../Includes/Solids/PlanR.h"
 #include "../Includes/Solids/Cone.h"
@@ -10,7 +10,7 @@
 #include "../Includes/Solids/Sphere.h"
 #include "../Includes/Solids/Body.h"
 #include "../Includes/Contact/Contact.h"
-#include "../Includes/ReadWrite.h"
+#include "../Includes/Repository/ReadWrite.h"
 #include "../Includes/Contact/ContactDetection.h"
 #include "../Includes/Elongations/Elongation.h"
 

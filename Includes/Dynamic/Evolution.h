@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Contact/Contact.h"
+#include "../Contact/Contact.h"
 
-#include "LinkedCells/SolidCells.h"
-#include "LinkedCells/Cells.h"
-#include "LinkedCells/SolidCellsBuilder.h"
-#include "LinkedCells/CellBounds.h"
-#include "Solids/SimulationData.h"
+#include "../LinkedCells/SolidCells.h"
+#include "../LinkedCells/Cells.h"
+#include "../LinkedCells/SolidCellsBuilder.h"
+#include "../LinkedCells/CellBounds.h"
+#include "../Repository//SimulationData.h"
 
 #include <vector>
 #include <memory>

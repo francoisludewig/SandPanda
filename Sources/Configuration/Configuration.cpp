@@ -1,4 +1,4 @@
-#include "../Includes/Configuration.h"
+#include "../../Includes/Configuration/Configuration.h"
 
 Configuration::Configuration() noexcept :
 	dt(0), TIME(0), Total(0), Nsp(0), xmin(0), ymin(0), zmin(0),

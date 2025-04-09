@@ -1,4 +1,4 @@
-#include "../Includes/Gravity.h"
+#include "../../Includes/Configuration/Gravity.h"
 
 Gravity::Gravity() noexcept :
 G(9.81), ngx(0), ngy(0),	ngz(-1), ngx0(0), ngy0(0),

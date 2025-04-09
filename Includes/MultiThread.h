@@ -3,8 +3,8 @@
 #include <vector>
 #include <thread>
 
-#include "Configuration.h"
-#include "Evolution.h"
+#include "Configuration/Configuration.h"
+#include "Dynamic/Evolution.h"
 
 #include "Solids/Plan.h"
 #include "Solids/PlanR.h"

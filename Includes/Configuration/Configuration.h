@@ -1,8 +1,8 @@
 #pragma once
 
 #include <vector>
-#include "Solids/Sphere.h"
-#include "Solids/MasterSolid.h"
+#include "../Solids/Sphere.h"
+#include "../Solids/MasterSolid.h"
 
 class Configuration{
 public:

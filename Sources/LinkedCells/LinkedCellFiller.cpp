@@ -1,6 +1,6 @@
 #include "../../Includes/LinkedCells/LinkedCellFiller.h"
 
-#include "../../Includes/Configuration.h"
+#include "../../Includes/Configuration/Configuration.h"
 #include "../../Includes/Solids/Sphere.h"
 
 void LinkedCellFiller::Fill(std::vector<Sphere> & sph, const Configuration& dat, std::vector<Sphere*>& cell) noexcept {

@@ -1,6 +1,6 @@
 #include <vector>
 #include "../../Includes/LinkedCells/SolidCells.h"
-#include "../../Includes/Configuration.h"
+#include "../../Includes/Configuration/Configuration.h"
 #include "../../Includes/LinkedCells/SolidCellsBuilder.h"
 #include "../../Includes/Solids/Plan.h"
 #include "../../Includes/Solids/PlanR.h"

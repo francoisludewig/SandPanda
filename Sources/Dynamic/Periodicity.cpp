@@ -1,8 +1,8 @@
-#include "../Includes/Periodicity.h"
+#include "../../Includes/Dynamic/Periodicity.h"
 
-#include "../Includes/Solids/Plan.h"
-#include "../Includes/Solids/Sphere.h"
-#include "../Includes/Solids/Body.h"
+#include "../../Includes/Solids/Plan.h"
+#include "../../Includes/Solids/Sphere.h"
+#include "../../Includes/Solids/Body.h"
 
 void PeriodicityPL(std::vector<Sphere> & sph, std::vector<Plan> & pl) noexcept {
 	int plp;

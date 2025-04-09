@@ -1,8 +1,8 @@
-#include "../Includes/SimulationDataManager.h"
-#include "../Includes/Solids/SimulationData.h"
-#include "../Includes/ReadWrite.h"
-#include "../Includes/Solids/Body.h"
-#include "../Includes/Option.h"
+#include "../../Includes/Repository/SimulationDataManager.h"
+#include "../../Includes/Repository/SimulationData.h"
+#include "../../Includes/Repository/ReadWrite.h"
+#include "../../Includes/Solids/Body.h"
+#include "../../Includes/Configuration/Option.h"
 
 std::shared_ptr<SimulationData> SimulationDataManager::FromExport(Option& opt) noexcept {
 	auto solids = std::shared_ptr<SimulationData>(new SimulationData());

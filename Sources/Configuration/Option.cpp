@@ -1,7 +1,7 @@
-#include "../Includes/Option.h"
+#include "../../Includes/Configuration/Option.h"
 
-#include "../Includes/Solids/Plan.h"
-#include "../Includes/Solids/PlanR.h"
+#include "../../Includes/Solids/Plan.h"
+#include "../../Includes/Solids/PlanR.h"
 
 #include <cstring>
 #include <iostream>
