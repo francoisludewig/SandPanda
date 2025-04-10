@@ -16,10 +16,10 @@ public:
 	void AddConeCells(Cells&& cells) { coneCells.push_back(std::move(cells)); }
 	void AddElbowCells(Cells&& cells) { elbowCells.push_back(std::move(cells)); }
 
-	const Cells& PlanCells(std::size_t index) const { return planCells[index]; }
-	const Cells& PlanRCells(std::size_t index) const { return planRCells[index]; }
-	const Cells& ConeCells(std::size_t index) const { return coneCells[index]; }
-	const Cells& ElbowCells(std::size_t index) const { return elbowCells[index]; }
+	[[nodiscard]] const Cells& PlanCells(std::size_t index) const { return planCells[index]; }
+	[[nodiscard]] const Cells& PlanRCells(std::size_t index) const { return planRCells[index]; }
+	[[nodiscard]] const Cells& ConeCells(std::size_t index) const { return coneCells[index]; }
+	[[nodiscard]] const Cells& ElbowCells(std::size_t index) const { return elbowCells[index]; }
 
 private:
 	std::vector<Cells> planCells;
