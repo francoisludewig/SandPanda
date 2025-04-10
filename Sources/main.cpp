@@ -1,30 +1,20 @@
 #include "../Includes/Solids/Velocity.h"
-#include "../Includes/Configuration/Gravity.h"
 #include "../Includes/Solids/Plan.h"
-#include "../Includes/Solids/PlanR.h"
 #include "../Includes/Solids/Cone.h"
-#include "../Includes/Solids/Elbow.h"
 #include "../Includes/Solids/Sphere.h"
 #include "../Includes/Solids/Body.h"
-#include "../Includes/Repository/ReadWrite.h"
 #include "../Includes/ComputingForce.h"
 #include "../Includes/Configuration/Configuration.h"
-#include "../Includes/Dynamic/Move.h"
 #include "../Includes/Dynamic/Evolution.h"
 #include "../Includes/MultiThread.h"
 #include "../Includes/Dynamic/Compaction.h"
-#include "../Includes/Solids/BodySpecie.h"
 #include "../Includes/Dynamic/PowderPaQ.h"
 #include "../Includes/Solids/HollowBall.h"
 #include "../Includes/Repository/SimulationData.h"
 #include "../Includes/Repository/SimulationDataManager.h"
 #include "../Includes/Configuration/Option.h"
-#include "../Includes/Contact/ContactDetection.h"
-#include "../Includes/LinkedCells/SolidCellsBuilder.h"
-#include <iostream>
 #include <vector>
 #include <memory>
-//#include <omp.h>
 #include <sys/stat.h>
 #include <chrono>
 
@@ -34,7 +24,7 @@ class TimeDurationMeasure {
 public:
 	const uint64_t nanoInMinute = 60L*1000000000L;
 	const uint64_t nanoInSecond = 1000000000L;
-	TimeDurationMeasure() {}
+	TimeDurationMeasure() = default;
 	~TimeDurationMeasure() = default;
 
 	void Start() { t1 = std::chrono::high_resolution_clock::now(); }
@@ -43,8 +33,8 @@ public:
 		delay = std::chrono::duration_cast<std::chrono::nanoseconds>( t2 - t1 ).count();
 	}
 
-	std::string Nanosecond() { return std::to_string(delay); }
-	std::string Minutes() { return std::to_string(delay/nanoInMinute) + "m" + std::to_string((delay%nanoInMinute)/nanoInSecond) + "s" + std::to_string(delay%nanoInSecond) + "ns"; }
+	[[nodiscard]] std::string Nanosecond() const { return std::to_string(delay); }
+	[[nodiscard]] std::string Minutes() const { return std::to_string(delay/nanoInMinute) + "m" + std::to_string((delay%nanoInMinute)/nanoInSecond) + "s" + std::to_string(delay%nanoInSecond) + "ns"; }
 
 private:
 
@@ -145,7 +135,7 @@ int main(int argc,char **argv){
 
 
 	for(auto& plan : solids->plans)
-		plan.InitList(solids->spheres.size());
+		plan.InitList(static_cast<int>(solids->spheres.size()));
 
 
 	//printf("Nsph0 = %d & Nsph = %d\n",Nsph0,static_cast<int>(sph.size()));
@@ -169,7 +159,7 @@ int main(int argc,char **argv){
 	solids->configuration.record = true;
 
 	if(solids->configuration.TIME != 0)
-		Ntp = (int)((solids->configuration.TIME-solids->configuration.t0)/(solids->configuration.dts))+1;
+		Ntp = static_cast<int>((solids->configuration.TIME - solids->configuration.t0) / (solids->configuration.dts))+1;
 	else
 		Ntp = 0;
 
@@ -210,6 +200,8 @@ int main(int argc,char **argv){
 		solids->configuration.Total = 0.0;
 		Ntp = PowderPaQ::PowderPaQRun(solids,cell,Ntp, opt.directory,opt.NtapMin,opt.NtapMax,Nthreshold,opt.PQheight,opt.PQVel, cellBounds);
 		break;
+	default:
+		printf("Error mode selected doesn't exist.\n");
 	}
 
 	if(opt.compression == 1){

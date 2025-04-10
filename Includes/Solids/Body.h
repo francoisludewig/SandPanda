@@ -33,7 +33,7 @@ public:
 	void WriteToFile(FILE *ft,std::vector<Sphere> & sph) const noexcept;
 	void WriteOutFile(FILE *ft, int mode) const noexcept;
 	void TimeStepInitialization() noexcept;
-	void UpDateVelocity(double dt, Gravity & g) noexcept;
+	void UpDateVelocity(double dt, const Gravity & g) noexcept;
 	void Move(double dt) noexcept;
 	void UpDateLinkedSphere(std::vector<Sphere> & sph) noexcept;
 	void UpDateLinkedSphereTp() noexcept;

@@ -1,14 +1,11 @@
 #include <iostream>
 #include <math.h>
-#include <stdlib.h>
 #include <stdio.h>
 #include "../../Includes/Solids/Body.h"
 #include "../../Includes/Solids/Sphere.h"
 #include "../../Includes/Solids/BodySpecie.h"
 #include "../../Includes/Configuration/Gravity.h"
-#include "../../Includes/Solids/HollowBall.h"
 #include "../../Includes/ComputingForce.h"
-#include "../../Includes/Contact/ContactDetection.h"
 
 Body::Body() :
 sp(0), Ng(0), numl(0), Rmax(0), m(0), NhollowBall(0),ActiveRotation(0) {
@@ -48,7 +45,7 @@ void Body::ReadStartStopFile(FILE *ft) noexcept {
 		QuaternionToBase();
 }
 
-void Body::WriteToFile(FILE *ft,vector<Sphere> & sph) const noexcept {
+void Body::WriteToFile(FILE *ft,std::vector<Sphere> & sph) const noexcept {
 	fprintf(ft,"%d\t%d\t",sp,NhollowBall);
 	fprintf(ft,"%.15f\t%.15f\t%.15f\t",x,y,z);
 	fprintf(ft,"%e\t%e\t%e\t%e\t",q0,q1,q2,q3);
@@ -57,7 +54,7 @@ void Body::WriteToFile(FILE *ft,vector<Sphere> & sph) const noexcept {
 	elongationManager.WriteToFileForBody(ft);
 }
 
-void Body::WriteOutFile(FILE *ft, int mode) const noexcept {
+void Body::WriteOutFile(FILE *ft, const int mode) const noexcept {
 	if(mode == 0){
 		fprintf(ft,"%d\t",sp);
 		fprintf(ft,"%e\t%e\t%e\t",x,y,z);
@@ -96,7 +93,7 @@ void Body::TimeStepInitialization() noexcept {
 	Mz = 0;
 }
 
-void Body::UpDateVelocity(double dt, Gravity & g) noexcept {
+void Body::UpDateVelocity(const double dt, const Gravity & g) noexcept {
 	double Mn,Mt,Ms,wn,wt,ws;
 	Fx += m*g.ngx*g.G;
 	Fy += m*g.ngy*g.G;
@@ -123,7 +120,7 @@ void Body::UpDateVelocity(double dt, Gravity & g) noexcept {
 	}
 }
 
-void Body::Move(double dt) noexcept {
+void Body::Move(const double dt) noexcept {
 	double p0,p1,p2,p3;
 	double ql0,ql1,ql2,ql3;
 	double a,sa,ca;
@@ -163,7 +160,7 @@ void Body::Move(double dt) noexcept {
 	}
 }
 
-void Body::UpDateLinkedSphere(vector<Sphere> & sph) noexcept {
+void Body::UpDateLinkedSphere(std::vector<Sphere> & sph) noexcept {
 	UpDateLinkedSphereTp();
 	sph[numl].X(x);
 	sph[numl].Y(y);
@@ -187,7 +184,7 @@ void Body::CancelVelocity() noexcept {
 	wz = 0;
 }
 
-void Body::RandomVelocity(double V, double W) noexcept {
+void Body::RandomVelocity(const double V, const double W) noexcept {
 	double beta,alpha,rdm,Norme;
 	beta=2*M_PI*(double)(rand()%RAND_MAX)/RAND_MAX;
 	rdm=(double)(rand()%RAND_MAX)/RAND_MAX;
@@ -212,7 +209,7 @@ void Body::RandomVelocity(double V, double W) noexcept {
 	wz = wz/Norme*W;
 }
 
-void Body::UploadSpecies(vector<BodySpecie> bdsp,vector<Sphere> & sph, int numero) noexcept {
+void Body::UploadSpecies(std::vector<BodySpecie> bdsp, std::vector<Sphere> & sph, int numero) noexcept {
 	Ng = bdsp[sp].SphereCount();
 	
 	for(int j = 0 ; j < Ng ; j++){
