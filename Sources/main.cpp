@@ -13,6 +13,7 @@
 #include "../Includes/Repository/SimulationData.h"
 #include "../Includes/Repository/SimulationDataManager.h"
 #include "../Includes/Configuration/Option.h"
+#include "../Includes/Configuration/Monitoring.h"
 #include <vector>
 #include <memory>
 #include <sys/stat.h>
@@ -176,6 +177,12 @@ int main(int argc,char **argv){
 			Ntp++;
 		}
 	}
+
+	if(opt.isMonitoringActivated) {
+		auto name = std::string(opt.processName);
+		auto path = std::string(opt.scriptPath);
+		Monitoring::getInstance().initialize(name, path);
+	}
 	printf("Time Path = %e\n\n",solids->configuration.dt);
 
 
@@ -189,16 +196,16 @@ int main(int argc,char **argv){
 	case 0:
 	{
 		Evolution evolution(solids, cellBounds, false);
-		Ntp = evolution.Evolve(cell,Ntp, opt.directory,Nthreshold);
+		Ntp = evolution.Evolve(cell,Ntp, opt.directory,opt.isMonitoringActivated);
 		break;
 	}
 	case 1:
 		solids->configuration.Total = 0;
-		Ntp = Compaction::Run(solids,cell,Ntp, opt.directory,opt.NtapMin,opt.NtapMax,opt.Gamma,opt.Freq,Nthreshold, cellBounds);
+		Ntp = Compaction::Run(solids,cell,Ntp, opt.directory,opt.NtapMin,opt.NtapMax,opt.Gamma,opt.Freq,cellBounds, opt.isMonitoringActivated);
 		break;
 	case 2:
 		solids->configuration.Total = 0.0;
-		Ntp = PowderPaQ::PowderPaQRun(solids,cell,Ntp, opt.directory,opt.NtapMin,opt.NtapMax,Nthreshold,opt.PQheight,opt.PQVel, cellBounds);
+		Ntp = PowderPaQ::PowderPaQRun(solids,cell,Ntp, opt.directory,opt.NtapMin,opt.NtapMax,opt.PQheight,opt.PQVel,cellBounds, opt.isMonitoringActivated);
 		break;
 	default:
 		printf("Error mode selected doesn't exist.\n");

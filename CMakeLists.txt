@@ -44,6 +44,7 @@ set(SOURCES_FILES
         Sources/Dynamic/PowderPaQ.cpp
         Sources/Repository/ReadWrite.cpp
         Sources/Configuration/Configuration.cpp
+        Sources/Configuration/Monitoring.cpp
         Sources/Dynamic/Evolution.cpp
         Sources/MultiThread.cpp
         Sources/Configuration/Gravity.cpp
@@ -90,6 +91,7 @@ set(INCLUDES_FILES
         Includes/Dynamic/Move.h
         Includes/Dynamic/Compaction.h
         Includes/Configuration/Option.h
+        Includes/Configuration/Monitoring.h
         Includes/ComputingForce.h
         Includes/Dynamic/Periodicity.h
         Includes/Dynamic/PowderPaQ.h

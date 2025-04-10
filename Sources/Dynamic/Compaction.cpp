@@ -1,23 +1,16 @@
 #include "../../Includes/Dynamic/Compaction.h"
 
-#include "../../Includes/Solids/Velocity.h"
-#include "../../Includes/Configuration/Gravity.h"
 #include "../../Includes/Solids/Plan.h"
 #include "../../Includes/Solids/PlanR.h"
 #include "../../Includes/Solids/Cone.h"
-#include "../../Includes/Solids/Elbow.h"
 #include "../../Includes/Solids/Sphere.h"
 #include "../../Includes/Solids/Body.h"
 #include "../../Includes/Repository/SimulationData.h"
-#include "../../Includes/Contact/Contact.h"
 #include "../../Includes/Repository/ReadWrite.h"
-#include "../../Includes/Contact/ContactDetection.h"
 #include "../../Includes/ComputingForce.h"
 #include "../../Includes/Configuration/Configuration.h"
-#include "../../Includes/Dynamic/Move.h"
+#include "../../Includes/Configuration/Monitoring.h"
 #include "../../Includes/Dynamic/Evolution.h"
-#include "../../Includes/Solids/HollowBall.h"
-#include "../../Includes/LinkedCells/CellBounds.h"
 
 void Compaction::Secousse(vector<Plan> & pl,vector<PlanR> & plr,vector<Cone> & co, double Gamma, double f, Configuration & dat) noexcept {
 	double w = 2*M_PI*f;
@@ -55,7 +48,8 @@ void Compaction::Relaxation(std::vector<Plan> & pl,std::vector<PlanR> & plr,std:
 }
 
 
-int Compaction::Run(std::shared_ptr<SimulationData>& solids,std::vector<Sphere*>& cell, int & Ntp, char *name,int ntpi, int ntpf, double Gamma, double f, int Nthreshold, const CellBounds& cellBounds) noexcept {
+int Compaction::Run(std::shared_ptr<SimulationData>& solids, std::vector<Sphere*>& cell, int & Ntp, char *name, int ntpi, int ntpf, double Gamma, double f, const CellBounds& cellBounds, bool
+                    isMonitoringActivated) noexcept {
 
 	Evolution evolution(solids, cellBounds, false);
 	solids->configuration.record = 0;
@@ -63,11 +57,11 @@ int Compaction::Run(std::shared_ptr<SimulationData>& solids,std::vector<Sphere*>
 		//Secousse
 		Secousse(solids->plans,solids->disks,solids->cones,Gamma,f,solids->configuration);
 		printf("Total = %e\n",solids->configuration.Total);
-		Ntp = evolution.Evolve(cell,Ntp, name,Nthreshold);
+		Ntp = evolution.Evolve(cell,Ntp, name, false);
 		// Relaxation
 		Relaxation(solids->plans,solids->disks,solids->cones,solids->configuration);
 		printf("Total = %e\n",solids->configuration.Total);
-		Ntp = evolution.Evolve(cell,Ntp, name,Nthreshold);
+		Ntp = evolution.Evolve(cell,Ntp, name, false);
 
 		if(solids->configuration.record == 0){
 			// Enregistrement
@@ -84,6 +78,9 @@ int Compaction::Run(std::shared_ptr<SimulationData>& solids,std::vector<Sphere*>
 			ReadWrite::writeOutHollowBall(name, Ntp, solids->hollowBalls);
 			printf("Ntp = %d\n",nt);
 			Ntp++;
+			if (isMonitoringActivated) {
+                Monitoring::getInstance().metrics(nt, ntpf);
+			}
 		}
 	}
 	return Ntp;

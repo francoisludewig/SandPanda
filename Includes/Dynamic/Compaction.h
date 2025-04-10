@@ -22,5 +22,6 @@ public:
 	
 	static void Relaxation(std::vector<Plan> & pl,std::vector<PlanR> & plr,std::vector<Cone> & co, Configuration & dat) noexcept;
 	
-	static int Run(std::shared_ptr<SimulationData>& solids, std::vector<Sphere*>& cell, int & Ntp, char *name,int ntpi, int ntpf, double Gamma, double f, int Nthreshold, const CellBounds& cellBounds) noexcept;
+	static int Run(std::shared_ptr<SimulationData>& solids, std::vector<Sphere*>& cell, int & Ntp, char *name, int ntpi, int ntpf, double Gamma, double f, const CellBounds& cellBounds, bool
+	               isMonitoringActivated) noexcept;
 };

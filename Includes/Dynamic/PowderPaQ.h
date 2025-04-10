@@ -20,7 +20,8 @@ class SimulationData;
 
 class PowderPaQ {
 public:
-	static int PowderPaQRun(std::shared_ptr<SimulationData>& solids, std::vector<Sphere*>& cell, int & Ntp, char *name,int ntpi, int ntpf, int Nthreshold, double PQheight, double PQVel, const CellBounds& cellBounds) noexcept;
+	static int PowderPaQRun(std::shared_ptr<SimulationData>& solids, std::vector<Sphere*>& cell, int & Ntp, char *name, int ntpi, int ntpf, double PQheight, double PQVel, const CellBounds& cellBounds, bool
+	                        isMonitoringActivated) noexcept;
 private:
 	static void PowderPaQsecousseUpward(std::vector<Plan> & pl,std::vector<PlanR> & plr,std::vector<Cone> & co, Configuration & dat, double PQheight, double PQVel) noexcept;
 	static void PowderPaQsecousseDownward(std::vector<Plan> & pl,std::vector<PlanR> & plr,std::vector<Cone> & co, Configuration & dat, double PQheight) noexcept;

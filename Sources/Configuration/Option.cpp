@@ -192,6 +192,12 @@ int Option::Management(char **argv, int argc) noexcept {
 						cancelG = true;
 					break;
 				case 'm':
+					if(!strcmp(argv[i], "-m")) {
+						isMonitoringActivated = true;
+						sscanf(argv[i+1],"%31[^\n]", processName);
+						sscanf(argv[i+2],"%2047[^\n]", scriptPath);
+						i++;
+					}
 					if(!strcmp(argv[i], "-mu")){
 						sscanf(argv[i+1],"%lf",&tune_mu);
 						i+=1;

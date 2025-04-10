@@ -39,9 +39,9 @@ public:
 	Contact* GetContacts() noexcept { return ct; }
 	int ContactCount() const noexcept { return Nct; }
 
-    int Evolve(std::vector<Sphere*>& cell, int & Ntp, char *name, int Nthreshold) noexcept;
+    int Evolve(std::vector<Sphere*>& cell, int & Ntp, char *name, bool isMonitoringActivated) noexcept;
 	
-    int EvolveMelt(std::vector<Sphere*> cell, int & Ntp, char *name, double vr, double delayVr, int Nthreshold) noexcept;
+    int EvolveMelt(std::vector<Sphere*> cell, int & Ntp, char *name, double vr, double delayVr, bool isMonitoringActivated) noexcept;
 
 private:
 	Contact *ct;

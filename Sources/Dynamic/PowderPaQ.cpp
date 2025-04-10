@@ -1,7 +1,6 @@
 #include "../../Includes/Dynamic/PowderPaQ.h"
 
 #include "../../Includes/Solids/Velocity.h"
-#include "../../Includes/Configuration/Gravity.h"
 #include "../../Includes/Solids/Plan.h"
 #include "../../Includes/Solids/PlanR.h"
 #include "../../Includes/Solids/Cone.h"
@@ -9,14 +8,11 @@
 #include "../../Includes/Solids/Sphere.h"
 #include "../../Includes/Solids/Body.h"
 #include "../../Includes/Repository/SimulationData.h"
-#include "../../Includes/Contact/Contact.h"
 #include "../../Includes/Repository/ReadWrite.h"
-#include "../../Includes/Contact/ContactDetection.h"
 #include "../../Includes/ComputingForce.h"
-#include "../../Includes/Dynamic/Move.h"
 #include "../../Includes/Dynamic/Evolution.h"
 #include "../../Includes/Configuration/Configuration.h"
-#include "../../Includes/LinkedCells/CellBounds.h"
+#include "../../Includes/Configuration/Monitoring.h"
 
 void PowderPaQ::PowderPaQsecousseUpward(std::vector<Plan> & pl,std::vector<PlanR> & plr,std::vector<Cone> & co, Configuration & dat, double PQheight, double PQVel) noexcept {
 	for(auto& plan : pl){
@@ -76,16 +72,17 @@ void PowderPaQ::PowderPaQrelaxation(std::vector<Plan> & pl,std::vector<PlanR> & 
 	dat.Total += (t-PQheight/PQVel-sqrt(2*PQheight/9.81));	
 }
 
-int PowderPaQ::PowderPaQRun(std::shared_ptr<SimulationData>& solids, std::vector<Sphere*>& cell, int & Ntp, char *name,int ntpi, int ntpf, int Nthreshold, double PQheight, double PQVel, const CellBounds& cellBounds) noexcept {
+int PowderPaQ::PowderPaQRun(std::shared_ptr<SimulationData>& solids, std::vector<Sphere*>& cell, int & Ntp, char *name, int ntpi, int ntpf, double PQheight, double PQVel, const CellBounds& cellBounds, bool
+                            isMonitoringActivated) noexcept {
 	Evolution evolution(solids, cellBounds, false);
 	solids->configuration.record = 0;
 	for(int nt = ntpi  ; nt <= ntpf ; nt++){
 		//Secousse
 		PowderPaQsecousseUpward(solids->plans,solids->disks,solids->cones,solids->configuration,PQheight,PQVel);
-		Ntp = evolution.Evolve(cell,Ntp, name,Nthreshold);
+		Ntp = evolution.Evolve(cell,Ntp, name, false);
 
 		PowderPaQsecousseDownward(solids->plans,solids->disks,solids->cones,solids->configuration,PQheight);
-		Ntp = evolution.Evolve(cell,Ntp, name,Nthreshold);
+		Ntp = evolution.Evolve(cell,Ntp, name, false);
 
 		// Relaxation
 		if(nt < 100)
@@ -93,7 +90,7 @@ int PowderPaQ::PowderPaQRun(std::shared_ptr<SimulationData>& solids, std::vector
 		else
 			PowderPaQrelaxation(solids->plans,solids->disks,solids->cones,solids->configuration,0.25,PQheight,PQVel);
 
-		Ntp = evolution.Evolve(cell,Ntp, name,Nthreshold);
+		Ntp = evolution.Evolve(cell,Ntp, name,false);
 		// Enregistrement
 		ReadWrite::writeStartStopContainer(name,solids->plans,solids->disks,solids->cones,solids->elbows);
 		ReadWrite::writeStartStopSphere(name,solids->spheres);
@@ -108,7 +105,9 @@ int PowderPaQ::PowderPaQRun(std::shared_ptr<SimulationData>& solids, std::vector
 		ReadWrite::writeOutContact(name,nt,evolution.ContactCount(),evolution.GetContacts(),solids->configuration);
 		ReadWrite::writeOutHollowBall(name, Ntp, solids->hollowBalls);
 		Ntp++;
-
+		if (isMonitoringActivated) {
+			Monitoring::getInstance().metrics(nt, ntpf);
+		}
 	}
 	return Ntp;
 }

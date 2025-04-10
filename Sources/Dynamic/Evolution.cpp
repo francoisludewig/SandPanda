@@ -8,11 +8,12 @@
 #include "../../Includes/Contact/ContactDetection.h"
 #include "../../Includes/Dynamic/Periodicity.h"
 #include "../../Includes/Configuration/Gravity.h"
+#include "../../Includes/Configuration/Monitoring.h"
 #include "../../Includes/Solids/Sphere.h"
 #include "../../Includes/Solids/Body.h"
 #include "../../Includes/LinkedCells/LinkedCellFiller.h"
 
-int Evolution::Evolve(std::vector<Sphere*>& cell, int & Ntp, char *name, int Nthreshold) noexcept {
+int Evolution::Evolve(std::vector<Sphere*>& cell, int & Ntp, char *name, const bool isMonitoringActivated) noexcept {
 	double dt = solids->configuration.dt;
 
 	// Sequential Version
@@ -96,6 +97,9 @@ int Evolution::Evolve(std::vector<Sphere*>& cell, int & Ntp, char *name, int Nth
 				printf("Save File %d\t\ttime = %e\r",Ntp,solids->configuration.TIME);
 				fflush(stdout);
 				Ntp++;
+				if (isMonitoringActivated) {
+					Monitoring::getInstance().metrics(solids->configuration.TIME, solids->configuration.Total);
+				}
 			}
 		}
 	}while(solids->configuration.TIME <= solids->configuration.Total-solids->configuration.dt*0.99);
@@ -104,7 +108,7 @@ int Evolution::Evolve(std::vector<Sphere*>& cell, int & Ntp, char *name, int Nth
 	return(Ntp);
 }
 
-int Evolution::EvolveMelt(std::vector<Sphere*> cell, int & Ntp, char *name, double vr,double delayVr, int Nthreshold) noexcept{
+int Evolution::EvolveMelt(std::vector<Sphere*> cell, int & Ntp, char *name, double vr, double delayVr, const bool isMonitoringActivated) noexcept{
 	double dt = solids->configuration.dt;
 	printf("Evolution\n");
 	double dtl;
@@ -193,6 +197,9 @@ int Evolution::EvolveMelt(std::vector<Sphere*> cell, int & Ntp, char *name, doub
 				printf("Save File %d\t\ttime = %e\r",Ntp,solids->configuration.TIME);
 				fflush(stdout);
 				Ntp++;
+				if (isMonitoringActivated) {
+					Monitoring::getInstance().metrics(solids->configuration.TIME, solids->configuration.Total);
+				}
 			}
 		}
 		r1 = solids->spheres[0].Radius();
