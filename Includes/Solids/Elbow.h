@@ -16,9 +16,9 @@ public:
 	void WriteToFile(FILE *ft) const noexcept;
 	void WriteOutFile(FILE *ft, int mode) const noexcept;
 	void Move(double time, double t) noexcept;
-	double Vmax() const noexcept;
-	double Wmax() const noexcept;
-	double Delay() const noexcept;
+	[[nodiscard]] double Vmax() const noexcept;
+	[[nodiscard]] double Wmax() const noexcept;
+	[[nodiscard]] double Delay() const noexcept;
 
 	int numero;
 public:

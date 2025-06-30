@@ -12,16 +12,16 @@ public:
 	Plan() noexcept;
 	~Plan() noexcept;
 
-	double Ds() const noexcept { return ds; }
-	double Dt() const noexcept { return dt; }
-    int Periodic() const noexcept { return periodic; }
-    int ListCount() const noexcept { return Nlist; }
-    double Sigma() const noexcept { return sigma; }
-    int List(int i) const { return list[i]; }
-    int InAndOut() const noexcept { return inAndOut; }
+	[[nodiscard]] double Ds() const noexcept { return ds; }
+	[[nodiscard]] double Dt() const noexcept { return dt; }
+    [[nodiscard]] int Periodic() const noexcept { return periodic; }
+    [[nodiscard]] int ListCount() const noexcept { return Nlist; }
+    [[nodiscard]] double Sigma() const noexcept { return sigma; }
+    [[nodiscard]] int List(const int i) const { return list[i]; }
+    [[nodiscard]] int InAndOut() const noexcept { return inAndOut; }
 
-    void ListCount(int rhs) noexcept {  this->Nlist = rhs; }
-    void List(int i, int rhs) const {  this->list[i] = rhs; }
+    void ListCount(const int rhs) noexcept {  this->Nlist = rhs; }
+    void List(const int i, const int rhs) const {  this->list[i] = rhs; }
 
 	void InitList(int N) noexcept;
 	void LoadFromFile(FILE *ft) noexcept;

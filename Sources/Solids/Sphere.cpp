@@ -1,12 +1,10 @@
 #include <iostream>
 #include <math.h>
-#include <stdlib.h>
 #include <stdio.h>
 #include <vector>
 
 #include "../../Includes/Solids/Sphere.h"
 #include "../../Includes/Configuration/Gravity.h"
-#include "../../Includes/Elongations/Elongation.h"
 #include "../../Includes/Solids/Body.h"
 
 Sphere::Sphere() noexcept {
@@ -26,14 +24,14 @@ Sphere::Sphere() noexcept {
 	ct_pl = 0;
 }
 
-Sphere::Sphere(int bodies, int nHollowBall, double radius) noexcept : Sphere() {
+Sphere::Sphere(const int bodies, const int nHollowBall, const double radius) noexcept : Sphere() {
 	this->bodies = bodies;
 	this->NhollowBall = nHollowBall;
 	this->r = radius;
 }
 
 
-Sphere::Sphere(double radius, double mass, double inertia) noexcept : Sphere() {
+Sphere::Sphere(const double radius, const double mass, const double inertia) noexcept : Sphere() {
 	this->r = radius;
 	this->m = mass;
 	this->I = inertia;
@@ -62,6 +60,8 @@ void Sphere::readFromFile(FILE *ft) noexcept {
 		rho = m/(4./3.*M_PI*r*r*r);
 	}
     r0 = r;
+	if (q0 == 0 && q1 ==0 && q2 == 0 && q3 == 0)
+		q0 = 1;
 }
 
 void Sphere::writeToFile(FILE *ft) const noexcept {
@@ -71,7 +71,7 @@ void Sphere::writeToFile(FILE *ft) const noexcept {
 		fprintf(ft,"%.16e\t%.16e\t%.16e\n",vx,vy,vz);
 		fprintf(ft,"%.16e\t%.16e\t%.16e\n",wx,wy,wz);
 		fprintf(ft,"%e\t%e\t%e\t%d\t%d\n",r,m,I,sp,NhollowBall);
-		elongationManager.WriteToFileForSphere(ft);
+		elongationManager.writeToFile(ft);
 	}
 }
 
@@ -85,11 +85,11 @@ void Sphere::readStartStop(FILE *ft) noexcept {
 		rho = m/(4./3.*M_PI*r*r*r);
 	}
 	
-	elongationManager.ReadFromFileForSphere(ft);
+	elongationManager.readFromFile(ft);
     r0 = r;
 }
 
-void Sphere::writeOutFile(FILE *ft, int n, int mode) const noexcept {
+void Sphere::writeOutFile(FILE *ft, const int n, const int mode) const noexcept {
 	if(bodies == -9 && !isHollowBall){
 		// La masse et l'inertie sont dans le fichiers Export/grain.txt
 		if(mode == 0){
@@ -126,28 +126,27 @@ void Sphere::CancelVelocity() noexcept {
 	wz = 0;
 }
 
-void Sphere::RandomVelocity(double V, double W) noexcept {
-	double beta,alpha,rdm,Norme;
-	beta=2*M_PI*(double)(rand()%RAND_MAX)/RAND_MAX;
-	rdm=(double)(rand()%RAND_MAX)/RAND_MAX;
-	alpha=acos(1-2*rdm);
+void Sphere::RandomVelocity(const double V, const double W) noexcept {
+	double beta = 2 * M_PI * static_cast<double>(rand() % RAND_MAX) / RAND_MAX;
+	double rdm = static_cast<double>(rand() % RAND_MAX) / RAND_MAX;
+	double alpha = acos(1 - 2 * rdm);
 	vz=cos(alpha);
 	vx=cos(beta)*sin(alpha);
 	vy=sin(beta)*sin(alpha);
-	beta=2*M_PI*(double)(rand()%RAND_MAX)/RAND_MAX;
-	rdm=(double)(rand()%RAND_MAX)/RAND_MAX;
+	beta=2*M_PI*static_cast<double>(rand() % RAND_MAX)/RAND_MAX;
+	rdm=static_cast<double>(rand() % RAND_MAX)/RAND_MAX;
 	alpha=acos(1-2*rdm);
 	wz=cos(alpha);
 	wx=cos(beta)*sin(alpha);
 	wy=sin(beta)*sin(alpha);
-	Norme = sqrt(vx*vx+vy*vy+vz*vz);
-	vx = vx/Norme*V;
-	vy = vy/Norme*V;
-	vz = vz/Norme*V;
-	Norme = sqrt(wx*wx+wy*wy+wz*wz);
-	wx = wx/Norme*W;
-	wy = wy/Norme*W;
-	wz = wz/Norme*W;
+	double Norm = sqrt(vx * vx + vy * vy + vz * vz);
+	vx = vx/Norm*V;
+	vy = vy/Norm*V;
+	vz = vz/Norm*V;
+	Norm = sqrt(wx*wx+wy*wy+wz*wz);
+	wx = wx/Norm*W;
+	wy = wy/Norm*W;
+	wz = wz/Norm*W;
 }
 
 
@@ -158,9 +157,10 @@ void Sphere::initTimeStep() noexcept {
 	Mx = 0.;
 	My = 0.;
 	Mz = 0.;
+	elongationManager.InitXsi();
 }
 
-void Sphere::Melt(double dt, double vr) noexcept {
+void Sphere::Melt(const double dt, const double vr) noexcept {
 	if(autoIntegrate){
 		r += r0*vr*dt;
 		//m = 4./3.*M_PI*r*r*r*rho;
@@ -168,13 +168,13 @@ void Sphere::Melt(double dt, double vr) noexcept {
 	}
 }
 
-void Sphere::Freeze(double dt, double vr) noexcept {
+void Sphere::Freeze(const double dt, const double vr) noexcept {
     // printf("r = %.15e -> %.15e  (dr = %e)\n",r,r+r0*vr*dt,r0*vr);
     r += r0*vr*dt;
     I = 2./5.*m*r*r;
 }
 
-void Sphere::upDateVelocity(double dt, Gravity & g, double g0) noexcept {
+void Sphere::upDateVelocity(const double dt, const Gravity &g, const double g0) noexcept {
 	double gammab = g0;
 	double gammabr = g0;
 	if(autoIntegrate){
@@ -190,26 +190,22 @@ void Sphere::upDateVelocity(double dt, Gravity & g, double g0) noexcept {
 	}
 }
 
-void Sphere::move(double dt) noexcept {
-	double a,sa;
-	double p0,p1,p2,p3;
-	double ql0,ql1,ql2,ql3;
+void Sphere::move(const double dt) noexcept {
 	if(autoIntegrate){
 		x += vx*dt;
 		y += vy*dt;
 		z += vz*dt;
-		a = sqrt(wx*wx+wy*wy+wz*wz);
-		if(a != 0){
-			sa = sin(dt*a/2);
-			p0 = cos(dt*a/2);
-			p1 = wx/a*sa;
-			p2 = wy/a*sa;
-			p3 = wz/a*sa;
-			
-			ql0 = q0;
-			ql1 = q1;
-			ql2 = q2;
-			ql3 = q3;
+		if(const double a = sqrt(wx*wx+wy*wy+wz*wz); a != 0){
+			const double sa = sin(dt * a / 2);
+			const double p0 = cos(dt * a / 2);
+			const double p1 = wx / a * sa;
+			const double p2 = wy / a * sa;
+			const double p3 = wz / a * sa;
+
+			const double ql0 = q0;
+			const double ql1 = q1;
+			const double ql2 = q2;
+			const double ql3 = q3;
 			q0 = ql0*p0 - ql1*p1 - ql2*p2 - ql3*p3;
 			q1 = ql0*p1 + ql1*p0 - ql2*p3 + ql3*p2;
 			q2 = ql0*p2 + ql1*p3 + ql2*p0 - ql3*p1;
@@ -231,17 +227,17 @@ void Sphere::sphereLinking(std::vector<Sphere> & sph,  std::vector<Body> & bd) n
 		sph[i].Num(i);
 		if(sph[i].Bodies() != -9){
 			sph[i].SetBody(&bd[sph[i].Bodies()]);
-			sph[i].autoIntegrate = 0;
+			sph[i].autoIntegrate = false;
 		}
 	}
 }
 
-void Sphere::ComputeCTD(double R, double w, double t) noexcept {
+void Sphere::ComputeCTD(const double R, const double w, const double t) noexcept {
     Fx += m*R*w*w*cos(w*t);
     Fy += m*R*w*w*sin(w*t);
 }
 
-void Sphere::ComputeRD(double R, double w, double t) noexcept {
+void Sphere::ComputeRD(const double R, const double w, const double t) noexcept {
     Fx += m * ( R*w*w*cos(w*t) + x*w*w + 2*(-w)*vy );
     Fy += m * ( R*w*w*sin(w*t) + y*w*w - 2*(-w)*vx );
 }

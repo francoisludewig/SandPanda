@@ -23,6 +23,9 @@ public:
 
 	static void ComputeMutex(Contact *ct, const int Nct,Configuration & dat) noexcept;
 
+	static void SumForceAndMomentum(Contact *ct, const int Nct) noexcept;
+
+
 private:
 	static inline double DampingCoefficient(const double& en, const double& meff, const double& k) {
 		if(en != 0)
@@ -53,19 +56,20 @@ private:
 			Fy += T*ty;
 			Fz += T*tz;
 		}
+		/*
 		// Ajout de la force et du moment
 		ctv->Fx = Fx;
 		ctv->Fy = Fy;
 		ctv->Fz = Fz;
+		*/
 	}
 	
 	/* Fonction qui calcul la vitesse de contact */
 	static inline void computeVelocity(const double Vax,const double Vay,const double Vaz,const double Vbx,const double Vby,const double Vbz, Contact *ctv,
 															double & Vn, double & Vt, double & Vtx, double & Vty, double & Vtz) noexcept {
-		double vx,vy,vz;
-		vx = Vax-Vbx;
-		vy = Vay-Vby;
-		vz = Vaz-Vbz;
+		const double vx = Vax - Vbx;
+		const double vy = Vay - Vby;
+		const double vz = Vaz - Vbz;
 		// Vn = produit scalaire de la vitesse relative et du vecteur normal au contact
 		Vn = vx*ctv->nx+ vy*ctv->ny+ vz*ctv->nz;
 		Vtx = vx - Vn*ctv->nx;

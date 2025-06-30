@@ -28,7 +28,7 @@ void Contact::TimeStepInitialization() noexcept {
 	par = nullptr;
 	cn = nullptr;
 	ew = nullptr;
-	xsil.Reset();
+	xsi.Reset();
 }
 
 void Contact::inFile(FILE *ft) noexcept {

@@ -15,14 +15,14 @@ public:
 	Sinusoid& operator=(const Sinusoid& other) noexcept = default;
 	Sinusoid& operator=(Sinusoid&& other) noexcept = default;
 	
-	double Value(double t) const noexcept { return (a0+a1*sin(w*t+phi)); }
+	[[nodiscard]] double Value(const double t) const noexcept { return (a0+a1*sin(w*t+phi)); }
 
 	void LoadFromFile(FILE *ft) noexcept;
 	void WriteToFile(FILE *ft, int mode) const noexcept;
 	void Display() const noexcept;
-	double Max() const noexcept;
-	double DelayTr() const noexcept;
-	double DelayRot() const noexcept;
+	[[nodiscard]] double Max() const noexcept;
+	[[nodiscard]] double DelayTr() const noexcept;
+	[[nodiscard]] double DelayRot() const noexcept;
 
 private:
 	double a0,a1,w,phi;

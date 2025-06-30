@@ -50,6 +50,7 @@ set(SOURCES_FILES
         Sources/Configuration/Gravity.cpp
         Sources/Repository/SimulationDataManager.cpp
         Sources/main.cpp
+        Sources/Elongations/ElongationManager.cpp
 )
 
 set(INCLUDES_FILES
@@ -101,14 +102,18 @@ set(INCLUDES_FILES
         Includes/MultiThread.h
         Includes/Configuration/Gravity.h
         Includes/Repository/SimulationDataManager.h
+        Includes/Contact/ContactIdentifier.h
 )
 
 set(SandPanda_FILES
         ${INCLUDES_FILES}
         ${SOURCES_FILES}
+        Sources/Contact/ContactIdentifier.cpp
 )
 
 set(CMAKE_CXX_STANDARD 20)
+
+find_package(OpenMP REQUIRED)
 
 add_executable(
         SandPanda
@@ -118,12 +123,19 @@ add_executable(
 target_link_libraries(
         SandPanda
         ${GTEST_LIBRARIES}
+        ${OpenMP_}
 )
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set(CMAKE_CXX_FLAGS "-O0 -g")
+    set(CMAKE_CXX_FLAGS "-O0 -g -pg -fopenmp -fno-omit-frame-pointer")
 else ()
-    set(CMAKE_CXX_FLAGS "-O3 -std=c++11")
+    set(CMAKE_CXX_FLAGS "-O3 -std=c++11 -fopenmp")
+endif ()
+
+if (OPENMP_FOUND)
+    message("OPENMP FOUND")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 endif ()
 
 

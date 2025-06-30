@@ -14,13 +14,13 @@ public:
 	Solid() noexcept;
 	~Solid() noexcept;
 	
-	double ValueOfVx(double t) noexcept { return(V.ValueOfVx(t)); }
-	double ValueOfVy(double t) noexcept { return(V.ValueOfVy(t)); }
-	double ValueOfVz(double t) noexcept { return(V.ValueOfVz(t));	}
-	double ValueOfWx(double t) noexcept { return(V.ValueOfWx(t)); }
-	double ValueOfWy(double t) noexcept { return(V.ValueOfWy(t)); }
-	double ValueOfWz(double t) noexcept { return(V.ValueOfWz(t)); }
-	void SetMass(double m) noexcept { Mass = m; }
+	[[nodiscard]] double ValueOfVx(const double t) const noexcept { return(V.ValueOfVx(t)); }
+	[[nodiscard]] double ValueOfVy(const double t) const noexcept { return(V.ValueOfVy(t)); }
+	[[nodiscard]] double ValueOfVz(const double t) const noexcept { return(V.ValueOfVz(t));	}
+	[[nodiscard]] double ValueOfWx(const double t) const noexcept { return(V.ValueOfWx(t)); }
+	[[nodiscard]] double ValueOfWy(const double t) const noexcept { return(V.ValueOfWy(t)); }
+	[[nodiscard]] double ValueOfWz(const double t) const noexcept { return(V.ValueOfWz(t)); }
+	void SetMass(const double m) noexcept { Mass = m; }
 
 	class Cell** getVcell() noexcept;
 	void LoadFromFile(FILE *ft) noexcept;
@@ -37,8 +37,8 @@ public:
 	void MoveGravity(double dt, Gravity& gt) noexcept;
 	void UpDateLinkedSphere(std::vector<Sphere> & sph, double time, Gravity& gt) noexcept;
 	void UpDateGravityLinkedSphere(std::vector<Sphere> & sph, double time, Gravity& gt) noexcept;
-	double Vmax() noexcept;
-	double Wmax() noexcept;
+	[[nodiscard]] double Vmax() noexcept;
+	[[nodiscard]] double Wmax() noexcept;
 	double Delay() noexcept;
 	void TimeStepInitialization() noexcept;
 	void OnOffGravity(bool OnOff) noexcept;
@@ -62,19 +62,19 @@ public:
 	void SetControlGB(int v,std::vector<Sphere> & sph) noexcept;
 	
 
-	double GetMass() const noexcept { return Mass; }
-	double GetFcx() const noexcept { return Fcx; }
-	double GetFcy() const noexcept { return Fcy; }
-	double GetFcz() const noexcept { return Fcz; }
+	[[nodiscard]] double GetMass() const noexcept { return Mass; }
+	[[nodiscard]] double GetFcx() const noexcept { return Fcx; }
+	[[nodiscard]] double GetFcy() const noexcept { return Fcy; }
+	[[nodiscard]] double GetFcz() const noexcept { return Fcz; }
 
-	const Velocity& GetV() const noexcept { return V; }
-	int Numero() const noexcept { return numero; }
-	void Numero(int rhs) noexcept { numero = rhs; }
+	[[nodiscard]] const Velocity& GetV() const noexcept { return V; }
+	[[nodiscard]] int Numero() const noexcept { return numero; }
+	void Numero(const int rhs) noexcept { numero = rhs; }
 
-	int GetForce() const noexcept { return Force; }
-	void SetForce(int rhs) noexcept { Force = rhs; }
+	[[nodiscard]] int GetForce() const noexcept { return Force; }
+	void SetForce(const int rhs) noexcept { Force = rhs; }
 
-	int GetNgb() const noexcept { return Ngb; }
+	[[nodiscard]] int GetNgb() const noexcept { return Ngb; }
 
 	// Linked cell
 	//int *Cell,NCell;

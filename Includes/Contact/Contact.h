@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 #include "../Elongations/Elongation.h"
 
 class Sphere;
@@ -47,7 +49,10 @@ public:
 	double tx,ty,tz;
 	double xi,yi,zi,xf,yf,zf;
 	double Fx,Fy,Fz;
-	
+	double Fax,Fay,Faz;
+	double Fbx,Fby,Fbz;
+	double Max, May, Maz;
+	double Mbx, Mby, Mbz;
 	Sphere *sa,*sb;
 	Body *ba,*bb;
 	int nba,nbb;
@@ -56,5 +61,6 @@ public:
 	PlanR *par;
 	Cone *cn;
 	Elbow *ew;
-	Elongation xsil;
+	Elongation xsi;
+	uint64_t id_a_xsi, id_b_xsi;
 };

@@ -18,10 +18,10 @@ public:
 	void LimitForce() noexcept;
 	void LimitUpdate() noexcept;
 
-	double BottomRadius() const noexcept { return r0; }
-	double TopRadius() const noexcept { return r1; }
-	double Height() const noexcept { return h; }
-	int In() const noexcept { return in; }
+	[[nodiscard]] double BottomRadius() const noexcept { return r0; }
+	[[nodiscard]] double TopRadius() const noexcept { return r1; }
+	[[nodiscard]] double Height() const noexcept { return h; }
+	[[nodiscard]] int In() const noexcept { return in; }
 
 private:
 	double r0,r1,h,dr;

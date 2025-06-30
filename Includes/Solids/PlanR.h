@@ -14,7 +14,7 @@ public:
 	void writeToFile(FILE *ft) const noexcept;
 	void writeOutFile(FILE *ft, int mode) const noexcept;
 
-	double Radius() const noexcept { return r; }
+	[[nodiscard]] double Radius() const noexcept { return r; }
 
 private:
 	double r,dn;

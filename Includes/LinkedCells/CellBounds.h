@@ -29,29 +29,29 @@ public:
 	CellBounds& operator=(const CellBounds& other) noexcept = default;
 	CellBounds& operator=(CellBounds&& other) noexcept = default;
 
-	~CellBounds() {}
+	~CellBounds() = default;
 
-	int MinX() const noexcept { return minX;}
-	int MinY() const noexcept { return minY;}
-	int MinZ() const noexcept { return minZ;}
-	int MaxX() const noexcept { return maxX;}
-	int MaxY() const noexcept { return maxY;}
-	int MaxZ() const noexcept { return maxZ;}
-	int StartX() const noexcept { return startX;}
-	int StartY() const noexcept { return startY;}
-	int StartZ() const noexcept { return startZ;}
-	int EndX() const noexcept { return endX;}
-	int EndY() const noexcept { return endY;}
-	int EndZ() const noexcept { return endZ;}
-	double Lx() const noexcept { return lx;}
-	double Ly() const noexcept { return ly;}
-	double Lz() const noexcept { return lz;}
-	double XMin() const noexcept { return xMin;}
-	double YMin() const noexcept { return yMin;}
-	double ZMin() const noexcept { return zMin;}
+	[[nodiscard]]int MinX() const noexcept { return minX;}
+	[[nodiscard]]int MinY() const noexcept { return minY;}
+	[[nodiscard]]int MinZ() const noexcept { return minZ;}
+	[[nodiscard]]int MaxX() const noexcept { return maxX;}
+	[[nodiscard]]int MaxY() const noexcept { return maxY;}
+	[[nodiscard]]int MaxZ() const noexcept { return maxZ;}
+	[[nodiscard]]int StartX() const noexcept { return startX;}
+	[[nodiscard]]int StartY() const noexcept { return startY;}
+	[[nodiscard]]int StartZ() const noexcept { return startZ;}
+	[[nodiscard]]int EndX() const noexcept { return endX;}
+	[[nodiscard]]int EndY() const noexcept { return endY;}
+	[[nodiscard]]int EndZ() const noexcept { return endZ;}
+	[[nodiscard]]double Lx() const noexcept { return lx;}
+	[[nodiscard]]double Ly() const noexcept { return ly;}
+	[[nodiscard]]double Lz() const noexcept { return lz;}
+	[[nodiscard]]double XMin() const noexcept { return xMin;}
+	[[nodiscard]]double YMin() const noexcept { return yMin;}
+	[[nodiscard]]double ZMin() const noexcept { return zMin;}
 
-	int CellCount() const noexcept {return (endX-startX)*(endY-startY)*(endZ-startZ);}
-	int Index(int xIndex, int yIndex, int zIndex) const noexcept { return (xIndex*maxY*maxZ+yIndex*maxZ+zIndex); }
+	[[nodiscard]] int CellCount() const noexcept {return (endX-startX)*(endY-startY)*(endZ-startZ);}
+	[[nodiscard]] int Index(const int xIndex, const int yIndex, const int zIndex) const noexcept { return (xIndex*maxY*maxZ+yIndex*maxZ+zIndex); }
 
 private:
 	int minX, minY, minZ;

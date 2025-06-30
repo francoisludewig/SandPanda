@@ -21,7 +21,7 @@ sp(0), Ng(0), numl(0), Rmax(0), m(0), NhollowBall(0),ActiveRotation(0) {
 	Ine_1[2][2] = 0;
 }
 
-Body::~Body() {}
+Body::~Body() = default;
 
 void Body::LoadFromFile(FILE *ft) noexcept {
 	fscanf(ft,"%d\t%d\t",&sp,&NhollowBall);
@@ -29,7 +29,9 @@ void Body::LoadFromFile(FILE *ft) noexcept {
 	fscanf(ft,"%lf\t%lf\t%lf\t%lf\t",&q0,&q1,&q2,&q3);
 	fscanf(ft,"%lf\t%lf\t%lf\t",&vx,&vy,&vz);
 	fscanf(ft,"%lf\t%lf\t%lf\n",&wx,&wy,&wz);
-	
+
+	if (q0 == 0 && q1 ==0 && q2 == 0 && q3 == 0)
+		q0 = 1;
 	//q Ecriture de la base locale via le quaternion
 	QuaternionToBase();
 }
@@ -40,7 +42,7 @@ void Body::ReadStartStopFile(FILE *ft) noexcept {
 	fscanf(ft,"%lf\t%lf\t%lf\t%lf\t",&q0,&q1,&q2,&q3);
 	fscanf(ft,"%lf\t%lf\t%lf\t",&vx,&vy,&vz);
 	fscanf(ft,"%lf\t%lf\t%lf\n",&wx,&wy,&wz);
-	elongationManager.ReadFromFileForBody(ft);
+	elongationManager.readFromFile(ft);
 		//q Ecriture de la base locale via le quaternion
 		QuaternionToBase();
 }
@@ -51,7 +53,7 @@ void Body::WriteToFile(FILE *ft,std::vector<Sphere> & sph) const noexcept {
 	fprintf(ft,"%e\t%e\t%e\t%e\t",q0,q1,q2,q3);
 	fprintf(ft,"%e\t%e\t%e\t",vx,vy,vz);
 	fprintf(ft,"%e\t%e\t%e\n",wx,wy,wz);
-	elongationManager.WriteToFileForBody(ft);
+	elongationManager.writeToFile(ft);
 }
 
 void Body::WriteOutFile(FILE *ft, const int mode) const noexcept {
@@ -91,10 +93,10 @@ void Body::TimeStepInitialization() noexcept {
 	Mx = 0;
 	My = 0;
 	Mz = 0;
+	elongationManager.InitXsi();
 }
 
 void Body::UpDateVelocity(const double dt, const Gravity & g) noexcept {
-	double Mn,Mt,Ms,wn,wt,ws;
 	Fx += m*g.ngx*g.G;
 	Fy += m*g.ngy*g.G;
 	Fz += m*g.ngz*g.G;
@@ -104,14 +106,14 @@ void Body::UpDateVelocity(const double dt, const Gravity & g) noexcept {
 	vz += Fz/m*dt;
 	if(ActiveRotation == 0){
 		// Projection local
-		Mn = Mx*nx+My*ny+Mz*nz;
-		Mt = Mx*tx+My*ty+Mz*tz;
-		Ms = Mx*sx+My*sy+Mz*sz;
+		const double Mn = Mx*nx+My*ny+Mz*nz;
+		const double Mt = Mx*tx+My*ty+Mz*tz;
+		const double Ms = Mx*sx+My*sy+Mz*sz;
 		
 		// Vitesse angulaire locale
-		wn = (Ine_1[0][0]*Mn + Ine_1[0][1]*Mt + Ine_1[0][2]*Ms)*dt;
-		wt = (Ine_1[1][0]*Mn + Ine_1[1][1]*Mt + Ine_1[1][2]*Ms)*dt;
-		ws = (Ine_1[2][0]*Mn + Ine_1[2][1]*Mt + Ine_1[2][2]*Ms)*dt;
+		const double wn = (Ine_1[0][0]*Mn + Ine_1[0][1]*Mt + Ine_1[0][2]*Ms)*dt;
+		const double wt = (Ine_1[1][0]*Mn + Ine_1[1][1]*Mt + Ine_1[1][2]*Ms)*dt;
+		const double ws = (Ine_1[2][0]*Mn + Ine_1[2][1]*Mt + Ine_1[2][2]*Ms)*dt;
 		
 		// Incrementation dans la base globale
 		wx += (wn*nx+wt*tx+ws*sx);
@@ -121,26 +123,22 @@ void Body::UpDateVelocity(const double dt, const Gravity & g) noexcept {
 }
 
 void Body::Move(const double dt) noexcept {
-	double p0,p1,p2,p3;
-	double ql0,ql1,ql2,ql3;
-	double a,sa,ca;
 	x += vx*dt;
 	y += vy*dt;
 	z += vz*dt;
 	if(ActiveRotation == 0){
-		a = sqrt(wx*wx+wy*wy+wz*wz)*dt;
-		if(a != 0){
-			sa = sin(a/2);
-			ca = cos(a/2);
-			p0 = ca;
-			p1 = dt*wx/a*sa;
-			p2 = dt*wy/a*sa;
-			p3 = dt*wz/a*sa;
+		if(const double a = sqrt(wx*wx+wy*wy+wz*wz)*dt; a != 0){
+			const double sa = sin(a/2);
+			const double ca = cos(a/2);
+			const double p0 = ca;
+			const double p1 = dt*wx/a*sa;
+			const double p2 = dt*wy/a*sa;
+			const double p3 = dt*wz/a*sa;
 			
-			ql0 = q0;
-			ql1 = q1;
-			ql2 = q2;
-			ql3 = q3;
+			const double ql0 = q0;
+			const double ql1 = q1;
+			const double ql2 = q2;
+			const double ql3 = q3;
 			
 			if(p0 != 0 && ql0 != 0){
 				q0 = ql0*p0 - ql1*p1 - ql2*p2 - ql3*p3;
@@ -185,28 +183,27 @@ void Body::CancelVelocity() noexcept {
 }
 
 void Body::RandomVelocity(const double V, const double W) noexcept {
-	double beta,alpha,rdm,Norme;
-	beta=2*M_PI*(double)(rand()%RAND_MAX)/RAND_MAX;
-	rdm=(double)(rand()%RAND_MAX)/RAND_MAX;
-	alpha=acos(1-2*rdm);
+	double beta = 2 * M_PI * static_cast<double>(rand() % RAND_MAX) / RAND_MAX;
+	double rdm = static_cast<double>(rand() % RAND_MAX) / RAND_MAX;
+	double alpha = acos(1 - 2 * rdm);
 	vz=cos(alpha);
 	vx=cos(beta)*sin(alpha);
 	vy=sin(beta)*sin(alpha);
-	beta=2*M_PI*(double)(rand()%RAND_MAX)/RAND_MAX;
-	rdm=(double)(rand()%RAND_MAX)/RAND_MAX;
+	beta=2*M_PI*static_cast<double>(rand() % RAND_MAX)/RAND_MAX;
+	rdm=static_cast<double>(rand() % RAND_MAX)/RAND_MAX;
 	//TODO cos(aplha) = 1-2*rdm & sin(aplha) = sqrt(1-(1-2*rdm)^2)
 	alpha=acos(1-2*rdm);
 	wz=cos(alpha);
 	wx=cos(beta)*sin(alpha);
 	wy=sin(beta)*sin(alpha);
-	Norme = sqrt(vx*vx+vy*vy+vz*vz);
-	vx = vx/Norme*V;
-	vy = vy/Norme*V;
-	vz = vz/Norme*V;
-	Norme = sqrt(wx*wx+wy*wy+wz*wz);
-	wx = wx/Norme*W;
-	wy = wy/Norme*W;
-	wz = wz/Norme*W;
+	double Norm = sqrt(vx * vx + vy * vy + vz * vz);
+	vx = vx/Norm*V;
+	vy = vy/Norm*V;
+	vz = vz/Norm*V;
+	Norm = sqrt(wx*wx+wy*wy+wz*wz);
+	wx = wx/Norm*W;
+	wy = wy/Norm*W;
+	wz = wz/Norm*W;
 }
 
 void Body::UploadSpecies(std::vector<BodySpecie> bdsp, std::vector<Sphere> & sph, int numero) noexcept {
@@ -227,8 +224,8 @@ void Body::UploadSpecies(std::vector<BodySpecie> bdsp, std::vector<Sphere> & sph
 	sphl.X(x);
 	sphl.Y(y);
 	sphl.Z(z);
-	sphl.Num(sph.size());
-	numl = sph.size();
+	sphl.Num(static_cast<int>(sph.size()));
+	numl = static_cast<int>(sph.size());
 	sph.emplace_back(std::move(sphl));
 	
 	//Correction de la densite 7700 -> 1000
@@ -241,7 +238,7 @@ void Body::UploadSpecies(std::vector<BodySpecie> bdsp, std::vector<Sphere> & sph
 	}
 }
 
-void Body::SetActiveRotation(int na) noexcept {
+void Body::SetActiveRotation(const int na) noexcept {
 	if(na == 0 || na == 1){
 		ActiveRotation = na;
 	}

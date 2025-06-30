@@ -21,7 +21,7 @@ private:
 	Sphere *tdl;
 	Body *b;
 
-	ElongationManager elongationManager {maxContact};
+	ElongationManager elongationManager {18};
 
 	double r0;
 
@@ -43,46 +43,46 @@ public:
 	Sphere(const Sphere& other) = delete;
 	Sphere& operator=(const Sphere& other) = delete;
 
-	int Num() const noexcept { return num; }
-	void Num(int rhs) noexcept { this->num = rhs; }
+	[[nodiscard]] int Num() const noexcept { return num; }
+	void Num(const int rhs) noexcept { this->num = rhs; }
 
-	double X2() const noexcept { return x2; }
-	void X2(double rhs) noexcept { this->x2 = rhs; }
-	double Y2() const noexcept { return y2; }
-	void Y2(double rhs) noexcept { this->y2 = rhs; }
-	double Z2() const noexcept { return z2; }
-	void Z2(double rhs) noexcept { this->z2 = rhs; }
+	[[nodiscard]] double X2() const noexcept { return x2; }
+	void X2(const double rhs) noexcept { this->x2 = rhs; }
+	[[nodiscard]] double Y2() const noexcept { return y2; }
+	void Y2(const double rhs) noexcept { this->y2 = rhs; }
+	[[nodiscard]] double Z2() const noexcept { return z2; }
+	void Z2(const double rhs) noexcept { this->z2 = rhs; }
 
-	int Bodies() const noexcept { return bodies; }
+	[[nodiscard]] int Bodies() const noexcept { return bodies; }
 
-	double Radius() const noexcept { return r; }
+	[[nodiscard]] double Radius() const noexcept { return r; }
 
-	int HollowballNum() const noexcept { return NhollowBall; }
-	double Rho() const noexcept { return rho; }
-	double Mass() const noexcept { return m; }
+	[[nodiscard]] int HollowballNum() const noexcept { return NhollowBall; }
+	[[nodiscard]] double Rho() const noexcept { return rho; }
+	[[nodiscard]] double Mass() const noexcept { return m; }
 
-	Sphere* TDL() const noexcept { return tdl; }
+	[[nodiscard]] Sphere* TDL() const noexcept { return tdl; }
 	void TDL(Sphere* rhs) noexcept { this->tdl = rhs; }
 
-	Body* GetBody() const noexcept { return b; }
+	[[nodiscard]] Body* GetBody() const noexcept { return b; }
 	void SetBody(Body* rhs) noexcept { this->b = rhs; }
 
 	void EnableIntegration() noexcept { this->autoIntegrate = true; }
 	void DisableIntegration() noexcept { this->autoIntegrate = false; }
-	bool IsIntergationDisabled() const noexcept { return !this->autoIntegrate; }
+	[[nodiscard]] bool IsIntergationDisabled() const noexcept { return !this->autoIntegrate; }
     void IsHollowBall() noexcept { this->isHollowBall = true; }
 
-    int Ct_pl() const noexcept { return ct_pl; }
-    void Ct_pl(int rhs) noexcept { ct_pl = rhs; }
+    [[nodiscard]] int Ct_pl() const noexcept { return ct_pl; }
+    void Ct_pl(const int rhs) noexcept { ct_pl = rhs; }
 
-    int Ct_pl_nx() const noexcept { return ct_pl_nx; }
-    void Ct_pl_nx(int rhs) noexcept { ct_pl_nx = rhs; }
+    [[nodiscard]] double Ct_pl_nx() const noexcept { return ct_pl_nx; }
+    void Ct_pl_nx(const int rhs) noexcept { ct_pl_nx = rhs; }
 
-    int Ct_pl_ny() const noexcept { return ct_pl_ny; }
-    void Ct_pl_ny(int rhs) noexcept { ct_pl_ny = rhs; }
+    [[nodiscard]] double Ct_pl_ny() const noexcept { return ct_pl_ny; }
+    void Ct_pl_ny(const int rhs) noexcept { ct_pl_ny = rhs; }
 
-    int Ct_pl_nz() const noexcept { return ct_pl_nz; }
-    void Ct_pl_nz(int rhs) noexcept { ct_pl_nz = rhs; }
+    [[nodiscard]] double Ct_pl_nz() const noexcept { return ct_pl_nz; }
+    void Ct_pl_nz(const int rhs) noexcept { ct_pl_nz = rhs; }
 
 	void affiche() const noexcept;
 	void readFromFile(FILE *ft) noexcept;
@@ -93,19 +93,19 @@ public:
 	void initTimeStep() noexcept;
 	void Melt(double dt, double vr) noexcept;
 	void Freeze(double dt, double vr) noexcept;
-	void upDateVelocity(double dt, Gravity & g, double g0) noexcept;
+	void upDateVelocity(double dt, const Gravity &g, double g0) noexcept;
 	
 	void move(double dt) noexcept;
 	
-	int NoBodies() const noexcept;
-	int NoAvatar() const noexcept;
+	[[nodiscard]] int NoBodies() const noexcept;
+	[[nodiscard]] int NoAvatar() const noexcept;
 	void CancelVelocity() noexcept;
 	void RandomVelocity(double V, double W) noexcept;
 	
-	bool Border() const noexcept;
+	[[nodiscard]] bool Border() const noexcept;
 	void ComputeCTD(double R, double w, double t) noexcept;
 	void ComputeRD(double R, double w, double t) noexcept;
-	int count() const noexcept;
+	[[nodiscard]] int count() const noexcept;
 	
 	ElongationManager& GetElongationManager() { return elongationManager; }
 

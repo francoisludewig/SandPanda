@@ -23,20 +23,20 @@ class Gravity;
 
 class Evolution{
 public:
-	Evolution(std::shared_ptr<SimulationData>& solids,
+	Evolution(const std::shared_ptr<SimulationData>& solids,
 			  const CellBounds& cellBounds,
 			  bool isMultiThreads) :
 		cellBounds(cellBounds),
 		isMultiThreads(isMultiThreads),
 		solids (solids){
-		ct = new Contact[18*solids->spheres.size()+75*solids->bodies.size()];
+		ct = nullptr;
 		solidCells = SolidCellsBuilder::Build(solids->configuration, solids->plans, solids->disks, solids->cones, solids->elbows, solids->gravity, cellBounds);
 		Nct = 0;
 	}
 
 	~Evolution() noexcept { delete[] ct;}
 
-	Contact* GetContacts() noexcept { return ct; }
+	[[nodiscard]] Contact* GetContacts() const noexcept { return ct; }
 	int ContactCount() const noexcept { return Nct; }
 
     int Evolve(std::vector<Sphere*>& cell, int & Ntp, char *name, bool isMonitoringActivated) noexcept;

@@ -24,9 +24,9 @@ public:
 	Body();
 	~Body();
 
-	int NumberOfSphere() const noexcept { return Ng; }
-	int Num() const noexcept { return numl; }
-	double GetRmax() const noexcept { return Rmax; }
+	[[nodiscard]] int NumberOfSphere() const noexcept { return Ng; }
+	[[nodiscard]] int Num() const noexcept { return numl; }
+	[[nodiscard]] double GetRmax() const noexcept { return Rmax; }
 
 	void LoadFromFile(FILE *ft) noexcept;
 	void ReadStartStopFile(FILE *ft) noexcept;
@@ -42,17 +42,17 @@ public:
 	void RandomVelocity(double V, double W) noexcept;
 	void SetActiveRotation(int na) noexcept;
 	
-	int SphereCount() const noexcept { return Ng; }
-	double SphereX(int i) const noexcept { return xg[i]; }
-	double SphereY(int i) const noexcept { return yg[i]; }
-	double SphereZ(int i) const noexcept { return zg[i]; }
-	double SphereRadius(int i) const noexcept { return r[i]; }
-	double Mass() const noexcept { return m; }
-    double MaximumRadius() const noexcept { return Rmax; }
+	[[nodiscard]] int SphereCount() const noexcept { return Ng; }
+	[[nodiscard]] double SphereX(const int i) const noexcept { return xg[i]; }
+	[[nodiscard]] double SphereY(const int i) const noexcept { return yg[i]; }
+	[[nodiscard]] double SphereZ(const int i) const noexcept { return zg[i]; }
+	[[nodiscard]] double SphereRadius(const int i) const noexcept { return r[i]; }
+	[[nodiscard]] double Mass() const noexcept { return m; }
+    [[nodiscard]] double MaximumRadius() const noexcept { return Rmax; }
 
 	ElongationManager& GetElongationManager() { return elongationManager; }
 
-	std::tuple<double, double, double> Lever(const double& cnx, const double& cny, const double& cnz, const int& na) const noexcept {
+	[[nodiscard]] std::tuple<double, double, double> Lever(const double& cnx, const double& cny, const double& cnz, const int& na) const noexcept {
 		return std::make_tuple( r[na]*cnx + (xg[na] - x),
 													  r[na]*cny + (yg[na] - y),
 													  r[na]*cnz + (zg[na] - z));
