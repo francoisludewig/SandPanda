@@ -72,22 +72,8 @@ public:
 		Mz += mz;
 	}
 
-	void AddForceMutex(const double fx, const double fy, const double fz) noexcept {
-		std::lock_guard<std::mutex> lock(*forceMutex);
-		Fx += fx;
-		Fy += fy;
-		Fz += fz;
-	}
-
-	void AddMomemtumMutex(const double mx, const double my, const double mz) noexcept {
-		std::lock_guard<std::mutex> lock(*momentumMutex);
-		Mx += mx;
-		My += my;
-		Mz += mz;
-	}
-
 	void PointVelocityMutex(double& vpx, double& vpy, double& vpz,
-			const double& lx, const double& ly, const double& lz) const noexcept{
+	                        const double& lx, const double& ly, const double& lz) const noexcept{
 		vpx = vx + wy*lz - wz*ly;
 		vpy = vy + wz*lx - wx*lz;
 		vpz = vz + wx*ly - wy*lx;

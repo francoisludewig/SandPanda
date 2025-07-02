@@ -25,7 +25,7 @@ class Evolution{
 public:
 	Evolution(const std::shared_ptr<SimulationData>& solids,
 			  const CellBounds& cellBounds,
-			  bool isMultiThreads) :
+			  const bool isMultiThreads) :
 		cellBounds(cellBounds),
 		isMultiThreads(isMultiThreads),
 		solids (solids){
@@ -37,11 +37,9 @@ public:
 	~Evolution() noexcept { delete[] ct;}
 
 	[[nodiscard]] Contact* GetContacts() const noexcept { return ct; }
-	int ContactCount() const noexcept { return Nct; }
+	[[nodiscard]] int ContactCount() const noexcept { return Nct; }
 
     int Evolve(std::vector<Sphere*>& cell, int & Ntp, char *name, bool isMonitoringActivated) noexcept;
-	
-    int EvolveMelt(std::vector<Sphere*> cell, int & Ntp, char *name, double vr, double delayVr, bool isMonitoringActivated) noexcept;
 
 private:
 	Contact *ct;

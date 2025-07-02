@@ -186,7 +186,7 @@ int main(int argc,char **argv){
 	printf("Time Path = %e\n\n",solids->configuration.dt);
 
 
-	CellBounds cellBounds(0, 0, 0, solids->configuration.Nx, solids->configuration.Ny, solids->configuration.Nz, 0, 0, 0, solids->configuration.Nx, solids->configuration.Ny, solids->configuration.Nz, solids->configuration.ax, solids->configuration.ay, solids->configuration.az, solids->configuration.xmin, solids->configuration.ymin, solids->configuration.zmin);
+	CellBounds cellBounds(0, 0, 0, solids->configuration.Nx, solids->configuration.Ny, solids->configuration.Nz, 0, 0, 0, solids->configuration.Nx, solids->configuration.Ny, solids->configuration.Nz, solids->configuration.ax, solids->configuration.ay, solids->configuration.az, solids->configuration.x_min, solids->configuration.y_min, solids->configuration.z_min);
 /*
 	MultiThread mutlithread(4, sph.size(), bd.size(), pl, plr, co, elb, dat, gf, cellBounds);
 	mutlithread.Run(pl,plr,co,elb,sph,bd,hb,dat,gf,cell,Ntp,opt.directory,Nthreshold);

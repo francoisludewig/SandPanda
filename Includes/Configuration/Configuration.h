@@ -21,8 +21,8 @@ public:
 	
 	double dt,TIME,Total;
 	int Nsp;
-	double xmin,ymin,zmin;
-	double xmax,ymax,zmax;
+	double x_min,y_min,z_min;
+	double x_max,y_max,z_max;
 	double ax,ay,az;
 	int Nx,Ny,Nz;
 	double en,mu,k,muS,muD;
