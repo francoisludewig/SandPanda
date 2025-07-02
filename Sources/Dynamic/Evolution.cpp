@@ -16,7 +16,7 @@
 #include "../../Includes/LinkedCells/LinkedCellFiller.h"
 
 int Evolution::Evolve(std::vector<Sphere *> &cell, int &Ntp, char *name, const bool isMonitoringActivated) noexcept {
-#pragma omp parallel shared(cell, Ntp, name, isMonitoringActivated) firstprivate(ct, cellBounds, Nct) num_threads(2)
+#pragma omp parallel shared(cell, Ntp, name, isMonitoringActivated) firstprivate(ct, cellBounds, Nct)
     {
         const double dt = solids->configuration.dt;
         ct = new Contact[18 * solids->spheres.size() + 75 * solids->bodies.size()];
@@ -50,7 +50,6 @@ int Evolution::Evolve(std::vector<Sphere *> &cell, int &Ntp, char *name, const b
 #pragma omp barrier
 #pragma omp single
             {
-                //printf("Start loop by : %d\n", nthrd);
                 solids->configuration.TIME += dt;
                 // Position anticipation
                 Move::moveContainer(solids->plans, solids->disks, solids->cones, solids->elbows,
@@ -61,7 +60,6 @@ int Evolution::Evolve(std::vector<Sphere *> &cell, int &Ntp, char *name, const b
                 Move::upDateHollowBall(solids->hollowBalls, dt);
 
                 solids->gravity.Move(solids->configuration.TIME, dt / 2);
-                //Doublon pour test
                 Move::moveBodies(solids->bodies, dt / 2, solids->spheres);
                 PeriodicityPL(solids->spheres, solids->plans);
 
@@ -70,34 +68,26 @@ int Evolution::Evolve(std::vector<Sphere *> &cell, int &Ntp, char *name, const b
                 // Initialization for the time step
                 ComputeForce::InitForTimeStep(Nct, solids->spheres, solids->bodies, ct, solids->plans, solids->disks,
                                               solids->cones, solids->elbows);
-
             }
             // Contact Detection
             Nct = 0;
             // Verison sequentiel normale
             ContactDetection::sphContact(thread_cellBounds, ct, Nct, cell);
-            //printf("%d contacts detected by %d\n", Nct, nthrd);
 #pragma omp single
             {
-                //printf("ContactDetection by : %d\n", nthrd);
-
                 ContactDetection::sphContainer(solids->spheres, solids->plans, solids->disks, solids->cones,
                                                solids->elbows, solids->hollowBalls, Nct, ct, cell, solidCells,
                                                solids->configuration.Rmax);
             }
             // Computing Force
             ComputeForce::Compute(ct, Nct, solids->configuration);
-            //printf("ComputeForce (%d) by %d\n", Nct, nthrd);
-
 #pragma omp critical
             {
                 ComputeForce::SumForceAndMomentum(ct, Nct);
-                //printf("SumForceAndMomentum (%d) by %d\n", Nct, nthrd);
             }
 #pragma omp barrier
 #pragma omp single
             {
-                //printf("End of loop by : %d\n", nthrd);
                 Move::UpDateForceContainer(solids->spheres, solids->plans, solids->disks, solids->cones,
                                            solids->configuration.TIME, dt, solids->gravity);
                 solids->configuration.mas->getForces();
@@ -139,7 +129,6 @@ int Evolution::Evolve(std::vector<Sphere *> &cell, int &Ntp, char *name, const b
                         ReadWrite::writeOutBodies(name, Ntp, solids->bodies, solids->configuration.outMode);
                         ReadWrite::writeOutHollowBall(name, Ntp, solids->hollowBalls);
 
-                        //writeOutData(name, Ntp, &gf, &dat);
                         if (solids->configuration.outContact == 1 || solids->configuration.outContact > 2)
                             ReadWrite::writeOutContact(name, Ntp, Nct, ct, solids->configuration);
                         if (solids->configuration.outContact >= 2)
@@ -154,10 +143,8 @@ int Evolution::Evolve(std::vector<Sphere *> &cell, int &Ntp, char *name, const b
                 }
             }
         } while (solids->configuration.TIME <= solids->configuration.Total - solids->configuration.dt * 0.99);
-        //printf("TIME = %.20lf > %.20lf = Total-dt\n",dat.TIME,dat.Total-dat.dt*0.9);
         printf("\n");
-
         delete[] ct;
     }
-    return (Ntp);
+    return Ntp;
 }

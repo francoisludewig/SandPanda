@@ -10,7 +10,6 @@
 #include "../Includes/Solids/Body.h"
 #include "../Includes/Contact/Contact.h"
 #include "../Includes/Elongations/Elongation.h"
-
 #include "../Includes/Contact/ContactIdentifier.h"
 
 #include <omp.h>
