@@ -166,7 +166,8 @@ void ContactDetection::sphContactAll(std::vector<Sphere> &sph, Contact *ctl, int
 }
 
 void ContactDetection::sphContact(const CellBounds &cellBounds, Contact *ctl, int &Nctl,
-                                  std::vector<Sphere *> &cell) noexcept {
+                                  const std::vector<Sphere *> &cell) noexcept {
+#pragma omp parallel shared(cellBounds, ctl, Nctl, cell) num_threads(2)
     {
         int l, m;
         Sphere *cand[5000], *anta;
@@ -182,7 +183,7 @@ void ContactDetection::sphContact(const CellBounds &cellBounds, Contact *ctl, in
         int maxx = cellBounds.MaxX();
         int maxy = cellBounds.MaxY();
         int maxz = cellBounds.MaxZ();
-
+#pragma omp for
         for (int i = startx; i < endx; i++) {
             for (int j = starty; j < endy; j++) {
                 for (int k = startz; k < endz; k++) {

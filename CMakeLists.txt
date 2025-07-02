@@ -46,7 +46,6 @@ set(SOURCES_FILES
         Sources/Configuration/Configuration.cpp
         Sources/Configuration/Monitoring.cpp
         Sources/Dynamic/Evolution.cpp
-        Sources/MultiThread.cpp
         Sources/Configuration/Gravity.cpp
         Sources/Repository/SimulationDataManager.cpp
         Sources/main.cpp
@@ -99,7 +98,6 @@ set(INCLUDES_FILES
         Includes/Configuration/Configuration.h
         Includes/Repository/ReadWrite.h
         Includes/Dynamic/Evolution.h
-        Includes/MultiThread.h
         Includes/Configuration/Gravity.h
         Includes/Repository/SimulationDataManager.h
         Includes/Contact/ContactIdentifier.h

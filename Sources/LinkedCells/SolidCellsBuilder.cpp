@@ -37,9 +37,9 @@ void SolidCellsBuilder::ListCellForPlan(SolidCells& solidCells, const Configurat
 	for(a = 0 ; a < pl.size() ; a++){
 		std::vector<int> cell;
 		if(pl[a].GetForce() == 0){
-			Vmax = pl[a].Vmax();
-			if(Vmax < pl[a].Wmax()*pl[a].Dt())Vmax = pl[a].Wmax()*pl[a].Dt();
-			if(Vmax < pl[a].Wmax()*pl[a].Ds())Vmax = pl[a].Wmax()*pl[a].Ds();
+			Vmax = pl[a].V_Max();
+			if(Vmax < pl[a].W_Max()*pl[a].Dt())Vmax = pl[a].W_Max()*pl[a].Dt();
+			if(Vmax < pl[a].W_Max()*pl[a].Ds())Vmax = pl[a].W_Max()*pl[a].Ds();
 
 			time = pl[a].Delay();
 
@@ -140,9 +140,9 @@ void SolidCellsBuilder::ListCellForPlanR(SolidCells& solidCells, const Configura
 		std::vector<int> cell;
 		if(plr[a].GetForce() == 0){
 
-			Vmax = plr[a].Vmax();
+			Vmax = plr[a].V_Max();
 
-			if(Vmax < plr[a].Wmax()*plr[a].Radius())Vmax = plr[a].Wmax()*plr[a].Radius();
+			if(Vmax < plr[a].W_Max()*plr[a].Radius())Vmax = plr[a].W_Max()*plr[a].Radius();
 			time = plr[a].Delay();
 
 			dist = cellBounds.Lx()/2;
@@ -235,8 +235,8 @@ void SolidCellsBuilder::ListCellForCone(SolidCells& solidCells, const Configurat
 		std::vector<int> cell;
 
 		if(co[numCone].GetForce() == 0) {
-			Vmax = co[numCone].Vmax();
-			if(Vmax < co[numCone].Wmax()*co[numCone].Height()/2.)Vmax = co[numCone].Wmax()*co[numCone].Height()/2.;
+			Vmax = co[numCone].V_Max();
+			if(Vmax < co[numCone].W_Max()*co[numCone].Height()/2.)Vmax = co[numCone].W_Max()*co[numCone].Height()/2.;
 			time = co[numCone].Delay();
 
 			dist = cellBounds.Lx()/2;

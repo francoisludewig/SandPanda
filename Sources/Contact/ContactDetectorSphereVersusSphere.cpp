@@ -18,18 +18,14 @@ int ContactDetectorSphereVersusSphere::Detect(Sphere *a, Sphere *b, Contact *ct,
     if (a->Bodies() != -9 && b->Bodies() != -9)
         return ContactDetectorBodyVersusBody::Detect(a->GetBody(), b->GetBody(), ct, Nct, a->Radius(), b->Radius());
 
-    double px = a->X() - b->X();
-    double py = a->Y() - b->Y();
-    double pz = a->Z() - b->Z();
-    double Q = (a->Radius() + b->Radius());
-    double P2 = px * px + py * py + pz * pz;
+    const double px = a->X() - b->X();
+    const double py = a->Y() - b->Y();
+    const double pz = a->Z() - b->Z();
+    const double Q = (a->Radius() + b->Radius());
 
-    if (P2 < Q * Q) {
-        Contact *local;
-//#pragma omp critical
-//        {
-            local = &ct[Nct++];
-//        }
+    if (double P2 = px * px + py * py + pz * pz; P2 < Q * Q) {
+        Contact *local = &ct[Nct++];
+
         P2 = sqrt(P2);
         local->type = Contact::Type::SphereSphere; // 0;
         local->delta = P2 - Q;

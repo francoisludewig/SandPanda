@@ -22,7 +22,7 @@ public:
 	[[nodiscard]] double ValueOfWz(const double t) const noexcept { return(V.ValueOfWz(t)); }
 	void SetMass(const double m) noexcept { Mass = m; }
 
-	class Cell** getVcell() noexcept;
+	class Cell** getVcell() const noexcept;
 	void LoadFromFile(FILE *ft) noexcept;
 	void LoadAccelerationFromFile(FILE *ft) noexcept;
 	void WriteAccelerationFromFile(FILE *ft) const noexcept;
@@ -31,22 +31,22 @@ public:
 	void ComputeBase() noexcept;
 	void Display() const noexcept;
 	void UpDateForce() noexcept;
-	void UpDateVelocity(double time, double dt, Gravity& gt) noexcept;
-	void UpDateGravityVelocity(double time, double dt, Gravity& gt) noexcept;
+	void UpDateVelocity(double time, double dt, const Gravity& gt) noexcept;
+	void UpDateGravityVelocity(double dt, const Gravity& gt) noexcept;
 	void Move(double dt) noexcept;
-	void MoveGravity(double dt, Gravity& gt) noexcept;
-	void UpDateLinkedSphere(std::vector<Sphere> & sph, double time, Gravity& gt) noexcept;
-	void UpDateGravityLinkedSphere(std::vector<Sphere> & sph, double time, Gravity& gt) noexcept;
-	[[nodiscard]] double Vmax() noexcept;
-	[[nodiscard]] double Wmax() noexcept;
-	double Delay() noexcept;
+	void MoveGravity(double dt, const Gravity& gt) noexcept;
+	void UpDateLinkedSphere(std::vector<Sphere> & sph, double time, const Gravity& gt) noexcept;
+	void UpDateGravityLinkedSphere(std::vector<Sphere> & sph, const Gravity& gt) const noexcept;
+	[[nodiscard]] double V_Max() const noexcept;
+	[[nodiscard]] double W_Max() const noexcept;
+	double Delay() const noexcept;
 	void TimeStepInitialization() noexcept;
 	void OnOffGravity(bool OnOff) noexcept;
 	void SetVelocityToZero() noexcept;
 	void SetMemoryPosition() noexcept;
 	void GetMemoryPosition() noexcept;
-	void UpdateForceFromGB(std::vector<Sphere> & sph) noexcept;
-	void UpdateGravityForceFromGB(int & Nsph,std::vector<Sphere> & sph, Gravity gt) noexcept;
+	void UpdateForceFromGB(const std::vector<Sphere> & sph) noexcept;
+	void UpdateGravityForceFromGB(const std::vector<Sphere> & sph, const Gravity &gt) noexcept;
 	void SetVx(double newA0, double newA1, double newW, double newPhi) noexcept;
 	void SetWx(double newA0, double newA1, double newW, double newPhi) noexcept;
 	void SetVy(double newA0, double newA1, double newW, double newPhi) noexcept;
@@ -54,7 +54,7 @@ public:
 	void SetVz(double newA0, double newA1, double newW, double newPhi) noexcept;
 	void SetWz(double newA0, double newA1, double newW, double newPhi) noexcept;
 	void UpDateVelocityLinkedSphere(std::vector<Sphere> & sph, double time) noexcept;
-	void UpDateGravityVelocityLinkedSphere(std::vector<Sphere> & sph, double time, Gravity& gt) noexcept;
+	void UpDateGravityVelocityLinkedSphere(std::vector<Sphere> & sph, double time, const Gravity& gt) noexcept;
 	void SetFcx(double fx) noexcept;
 	void SetFcy(double fy) noexcept;
 	void SetFcz(double fz) noexcept;

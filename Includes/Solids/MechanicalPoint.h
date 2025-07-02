@@ -12,8 +12,6 @@ public:
 	wx(0), wy(0), wz(0),
 	Fx(0), Fy(0), Fz(0),
 	Mx(0), My(0), Mz(0) {
-		forceMutex = std::make_unique<std::mutex>();
-		momentumMutex = std::make_unique<std::mutex>();
 	}
 
 	MechanicalPoint(const MechanicalPoint& other) = delete;
@@ -66,7 +64,7 @@ public:
 		Fz += fz;
 	}
 	
-	void AddMomemtum(const double mx, const double my, const double mz) noexcept {
+	void AddMomentum(const double mx, const double my, const double mz) noexcept {
 		Mx += mx;
 		My += my;
 		Mz += mz;
@@ -94,8 +92,6 @@ protected:
 	double wx, wy, wz;
 	double Fx, Fy, Fz;
 	double Mx, My, Mz;
-	std::unique_ptr<std::mutex> forceMutex {nullptr};
-	std::unique_ptr<std::mutex> momentumMutex {nullptr};
 };
 
 

@@ -4,7 +4,7 @@
 
 #include "../../Includes/Elongations/ElongationManager.h"
 
-ElongationManager::ElongationManager(int maxContact) noexcept {
+ElongationManager::ElongationManager(const int maxContact) noexcept {
     xsi.reserve(maxContact);
     tp_xsi.reserve(maxContact);
     id.reserve(maxContact);

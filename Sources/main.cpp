@@ -6,7 +6,6 @@
 #include "../Includes/ComputingForce.h"
 #include "../Includes/Configuration/Configuration.h"
 #include "../Includes/Dynamic/Evolution.h"
-#include "../Includes/MultiThread.h"
 #include "../Includes/Dynamic/Compaction.h"
 #include "../Includes/Dynamic/PowderPaQ.h"
 #include "../Includes/Solids/HollowBall.h"
@@ -16,7 +15,6 @@
 #include "../Includes/Configuration/Monitoring.h"
 #include <vector>
 #include <memory>
-#include <sys/stat.h>
 #include <chrono>
 
 using namespace std;
@@ -77,7 +75,6 @@ int main(int argc,char **argv){
 	tm.Start();
 	int Ntp;
 	double dila = 0;
-	int Nthreshold = 0;
 
 	Option opt;
 
@@ -139,24 +136,12 @@ int main(int argc,char **argv){
 		plan.InitList(static_cast<int>(solids->spheres.size()));
 
 
-	//printf("Nsph0 = %d & Nsph = %d\n",Nsph0,static_cast<int>(sph.size()));
-
-	//printf("NctMax = %d\n",18*static_cast<int>(sph.size())+75*static_cast<int>(bd.size()));
 
 	int Ncell = solids->configuration.Nx*solids->configuration.Ny*solids->configuration.Nz;
 	solids->configuration.Ncellmax = Ncell;
 	printf("Ncell = %d\n",Ncell);
 	std::vector<Sphere*> cell(Ncell, nullptr);
-/*
-	printf("List of Linking Cell for Solid\n");
-	printf("------------------------------\n\n");
-	// Making list of linking cell for each solid
-	LinkedCellSolidListBuilder::ListCellForPlan(dat, pl, gf);
-	LinkedCellSolidListBuilder::ListCellForPlanR(dat, plr, gf);
-	LinkedCellSolidListBuilder::ListCellForCone(dat, co, gf);
-	LinkedCellSolidListBuilder::ListCellForElbow(dat, elb);
-	printf("\n");
-*/
+
 	solids->configuration.record = true;
 
 	if(solids->configuration.TIME != 0)
@@ -187,10 +172,6 @@ int main(int argc,char **argv){
 
 
 	CellBounds cellBounds(0, 0, 0, solids->configuration.Nx, solids->configuration.Ny, solids->configuration.Nz, 0, 0, 0, solids->configuration.Nx, solids->configuration.Ny, solids->configuration.Nz, solids->configuration.ax, solids->configuration.ay, solids->configuration.az, solids->configuration.x_min, solids->configuration.y_min, solids->configuration.z_min);
-/*
-	MultiThread mutlithread(4, sph.size(), bd.size(), pl, plr, co, elb, dat, gf, cellBounds);
-	mutlithread.Run(pl,plr,co,elb,sph,bd,hb,dat,gf,cell,Ntp,opt.directory,Nthreshold);
-*/
 
 	switch(opt.mode){
 	case 0:
@@ -212,15 +193,15 @@ int main(int argc,char **argv){
 	}
 
 	if(opt.compression == 1){
-		char commande[4096];
-		sprintf(commande,"tar -zcvmf %s/Out.tgz %s/Out",opt.directory,opt.directory);
-		system(commande);
-		sprintf(commande,"tar -zcvmf %s/Start_stop.tgz %s/Start_stop",opt.directory,opt.directory);
-		system(commande);
-		sprintf(commande,"tar -zcvmf %s/Export.tgz %s/Export",opt.directory,opt.directory);
-		system(commande);
-		sprintf(commande,"rm -rf %s/Out %s/Start_stop %s/Export",opt.directory,opt.directory,opt.directory);
-		system(commande);
+		char command[4096];
+		sprintf(command,"tar -zcvmf %s/Out.tgz %s/Out",opt.directory,opt.directory);
+		system(command);
+		sprintf(command,"tar -zcvmf %s/Start_stop.tgz %s/Start_stop",opt.directory,opt.directory);
+		system(command);
+		sprintf(command,"tar -zcvmf %s/Export.tgz %s/Export",opt.directory,opt.directory);
+		system(command);
+		sprintf(command,"rm -rf %s/Out %s/Start_stop %s/Export",opt.directory,opt.directory,opt.directory);
+		system(command);
 	}
 
 	tm.Stop();

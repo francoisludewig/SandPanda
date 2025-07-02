@@ -1,6 +1,6 @@
 #include <iostream>
-#include <math.h>
-#include <stdio.h>
+#include <cmath>
+#include <cstdio>
 #include "../../Includes/Solids/Body.h"
 #include "../../Includes/Solids/Sphere.h"
 #include "../../Includes/Solids/BodySpecie.h"

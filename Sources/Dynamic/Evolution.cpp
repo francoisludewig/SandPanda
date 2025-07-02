@@ -16,7 +16,7 @@
 #include "../../Includes/LinkedCells/LinkedCellFiller.h"
 
 int Evolution::Evolve(std::vector<Sphere *> &cell, int &Ntp, char *name, const bool isMonitoringActivated) noexcept {
-#pragma omp parallel shared(cell, Ntp, name, isMonitoringActivated) firstprivate(ct, cellBounds, Nct)
+#pragma omp parallel shared(cell, Ntp, name, isMonitoringActivated) firstprivate(ct, cellBounds, Nct) num_threads(2)
     {
         const double dt = solids->configuration.dt;
         ct = new Contact[18 * solids->spheres.size() + 75 * solids->bodies.size()];

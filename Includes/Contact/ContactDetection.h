@@ -23,7 +23,7 @@ public:
 	static void ContactSphSphPeriodic(Sphere *a, Sphere *b, Contact *ct, int & Nct) noexcept;
 	static void ContactSphPlanPeriodic(std::vector<Sphere*>&llist, Plan & p, Plan & p2, Sphere *b, const double rmax) noexcept;
 
-	static void sphContact(const CellBounds& cellBounds, Contact *ctl, int & Nctl, std::vector<Sphere*>& cell) noexcept;
+	static void sphContact(const CellBounds& cellBounds, Contact *ctl, int & Nctl, const std::vector<Sphere*>& cell) noexcept;
 
 
 	static void sphContactAll(std::vector<Sphere> & sph, Contact *ctl, int & Nctl) noexcept;
