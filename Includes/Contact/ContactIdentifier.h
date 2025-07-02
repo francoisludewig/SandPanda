@@ -26,5 +26,5 @@ class ContactIdentifier {
 public:
     static uint64_t computeIdentifier(CONTACT_TYPE contactType, uint32_t other);
     static uint64_t computeIdentifier(CONTACT_TYPE contactType, uint32_t other, uint8_t other_sph);
-    static uint64_t computeIdentifier(CONTACT_TYPE contactType, uint32_t other, uint8_t other_sph,uint8_t sph);
+    static uint64_t computeIdentifier(CONTACT_TYPE contactType, uint32_t other, uint8_t other_sph, uint8_t sph);
 };

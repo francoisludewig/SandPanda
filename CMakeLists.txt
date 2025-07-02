@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.1.2)
 
-project(SandPanda VERSION 1.0.0)
+project(SandPanda VERSION 1.1.0)
 
 set(SOURCES_FILES
         Sources/Contact/ContactDetection.cpp
@@ -50,6 +50,7 @@ set(SOURCES_FILES
         Sources/Repository/SimulationDataManager.cpp
         Sources/main.cpp
         Sources/Elongations/ElongationManager.cpp
+        Sources/Contact/ContactIdentifier.cpp
 )
 
 set(INCLUDES_FILES
@@ -106,7 +107,6 @@ set(INCLUDES_FILES
 set(SandPanda_FILES
         ${INCLUDES_FILES}
         ${SOURCES_FILES}
-        Sources/Contact/ContactIdentifier.cpp
 )
 
 set(CMAKE_CXX_STANDARD 20)
