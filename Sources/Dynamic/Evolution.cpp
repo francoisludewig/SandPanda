@@ -20,6 +20,7 @@ int Evolution::Evolve(std::vector<Sphere *> &cell, int &Ntp, char *name, const b
     {
         const double dt = solids->configuration.dt;
         ct = new Contact[18 * solids->spheres.size() + 75 * solids->bodies.size()];
+#ifndef NOMP
         auto nthrd = omp_get_thread_num();
         auto thrd_start = omp_get_num_threads();
         int xstep = (cellBounds.EndX() - cellBounds.StartX()) / thrd_start;
@@ -44,6 +45,10 @@ int Evolution::Evolve(std::vector<Sphere *> &cell, int &Ntp, char *name, const b
         }
         printf("Thread %d/%d - cellbounds X : %d - %d [Step = %d]\n", nthrd+1, thrd_start, thread_cellBounds.StartX(),
                thread_cellBounds.EndX(), xstep);
+#else
+        CellBounds thread_cellBounds = this->cellBounds;
+#endif
+
         // Sequential Version
         printf("Evolution\n");
         do {

@@ -34,7 +34,7 @@ public:
 		Nct = 0;
 	}
 
-	~Evolution() noexcept { delete[] ct;}
+	~Evolution() noexcept = default;
 
 	[[nodiscard]] Contact* GetContacts() const noexcept { return ct; }
 	[[nodiscard]] int ContactCount() const noexcept { return Nct; }
