@@ -31,7 +31,6 @@ void Compaction::Secousse(vector<Plan> & pl,vector<PlanR> & plr,vector<Cone> & c
 	int Ntsp = (1./f)/(dat.dt) + 1;
 	dat.dt = (1./f)/(double)(Ntsp);
 	printf("dt = %e\n",dat.dt);
-
 }
 
 void Compaction::Relaxation(std::vector<Plan> & pl,std::vector<PlanR> & plr,std::vector<Cone> & co, Configuration & dat) noexcept {
@@ -52,7 +51,7 @@ int Compaction::Run(std::shared_ptr<SimulationData>& solids, std::vector<Sphere*
                     isMonitoringActivated) noexcept {
 
 	Evolution evolution(solids, cellBounds, false);
-	solids->configuration.record = 0;
+	solids->configuration.record = false;
 	for(int nt = ntpi  ; nt <= ntpf ; nt++){
 		//Secousse
 		Secousse(solids->plans,solids->disks,solids->cones,Gamma,f,solids->configuration);

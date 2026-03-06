@@ -427,7 +427,7 @@ int Option::DirectoryManagement() noexcept {
 void Option::Record() noexcept {
 	// Enregistrement des options
 	FILE *ft;
-	char FileName[1024];
+	char FileName[2048];
 	sprintf(FileName,"%s/option.txt",directory);
 	ft =fopen(FileName,"w");
 	for(int i = 1 ; i < Nlist ; i++){

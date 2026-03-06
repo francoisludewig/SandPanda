@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1.2)
+cmake_minimum_required(VERSION 3.5.0)
 
 project(SandPanda VERSION 1.1.0)
 
