@@ -118,24 +118,17 @@ add_executable(
         ${SandPanda_FILES}
 )
 
-target_link_libraries(
-        SandPanda
-        ${GTEST_LIBRARIES}
-        ${OpenMP_}
-)
-
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set(CMAKE_CXX_FLAGS "-O0 -g -pg -fno-omit-frame-pointer -DNOMP")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g -pg -fno-omit-frame-pointer -DNOMP")
+    target_link_libraries(SandPanda ${GTEST_LIBRARIES})
 elseif (CMAKE_BUILD_TYPE STREQUAL "Release")
-    set(CMAKE_CXX_FLAGS "-O3 -flto -march=native -DNOMP")
-else (CMAKE_BUILD_TYPE STREQUAL "OpenMP")
-    set(CMAKE_CXX_FLAGS "-O3 -flto -march=native")
-endif ()
-
-if (OPENMP_FOUND AND CMAKE_BUILD_TYPE STREQUAL "OpenMP")
-    message("OPENMP FOUND")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -flto -march=native -DNOMP")
+    target_link_libraries(SandPanda ${GTEST_LIBRARIES})
+elseif (CMAKE_BUILD_TYPE STREQUAL "OpenMP")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -flto -march=native ${OpenMP_CXX_FLAGS}")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+    target_link_libraries(SandPanda ${GTEST_LIBRARIES} OpenMP::OpenMP_CXX)
+    message("OPENMP FOUND - Parallel build enabled")
 endif ()
 
 

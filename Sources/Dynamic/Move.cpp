@@ -17,6 +17,8 @@
 #include "../../Includes/Solids/HollowBall.h"
 #include "../../Includes/LinkedCells/CellBounds.h"
 
+#include <omp.h>
+
 void Move::UpDateForceContainer(std::vector<Sphere> & sph, std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co, double time, double dt, Gravity& gt) noexcept {
 	for(auto& plan : pl)
 		plan.UpdateForceFromGB(sph);
@@ -72,8 +74,11 @@ void Move::upDateVelocityLinkedSphereContainer(std::vector<Plan> & pl, std::vect
 }
 
 void Move::upDateVelocitySphere(std::vector<Sphere> & sph, Gravity gt, double dt) noexcept {
-	for(auto& sphere : sph)
-		sphere.upDateVelocity(dt,gt,0.0);
+#ifndef NOMP
+#pragma omp parallel for schedule(static)
+#endif
+	for(int i = 0; i < static_cast<int>(sph.size()); ++i)
+		sph[i].upDateVelocity(dt,gt,0.0);
 }
 
 void Move::upDateVelocitySphere(std::vector<Sphere> & sph, std::vector<Sphere*> & cell, const CellBounds& cellBounds, Gravity& gt, double dt) noexcept {
@@ -110,8 +115,11 @@ void Move::MeltingSphere(std::vector<Sphere> & sph, double vr, double delayVr, d
 }
 
 void Move::moveSphere(std::vector<Sphere> & sph, double dt) noexcept {
-	for(auto& sphere : sph)
-		sphere.move(dt);
+#ifndef NOMP
+#pragma omp parallel for schedule(static)
+#endif
+	for(int i = 0; i < static_cast<int>(sph.size()); ++i)
+		sph[i].move(dt);
 }
 
 void Move::moveSphere(std::vector<Sphere*> & cell, const CellBounds& cellBounds, double dt) noexcept {
