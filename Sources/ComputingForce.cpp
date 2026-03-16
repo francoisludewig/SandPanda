@@ -18,11 +18,8 @@
 void ComputeForce::InitForTimeStep(const int &Nct, std::vector<Sphere> &sph, std::vector<Body> &bd, Contact *ct,
                                    std::vector<Plan> &pl, std::vector<PlanR> &plr, std::vector<Cone> &co,
                                    std::vector<Elbow> &elb) noexcept {
-#ifndef NOMP
-#pragma omp parallel for schedule(static)
-#endif
-    for (int i = 0; i < static_cast<int>(sph.size()); ++i)
-        sph[i].initTimeStep();
+    for (auto &sphere: sph)
+        sphere.initTimeStep();
     for (auto &body: bd)
         body.TimeStepInitialization();
     for (auto &plan: pl)
@@ -31,9 +28,6 @@ void ComputeForce::InitForTimeStep(const int &Nct, std::vector<Sphere> &sph, std
         disk.TimeStepInitialization();
     for (auto &cone: co)
         cone.TimeStepInitialization();
-#ifndef NOMP
-#pragma omp parallel for schedule(static)
-#endif
     for (int i = 0; i < Nct; ++i)
         ct[i].TimeStepInitialization();
 }
@@ -166,18 +160,6 @@ void ComputeForce::SumForceAndMomentum(Contact *ct, const int Nct) noexcept {
 /* Fonction qui calcul les forces pour l'ensemble des contacts du tableau ct */
 void ComputeForce::Compute(Contact *ct, const int Nct, Configuration &dat) noexcept {
     {
-        //Data from dat (shared read-only)
-        const double en = dat.en;
-        const double mu = dat.mu;
-        const double k = dat.k;
-        const double TIME = dat.TIME;
-        const double h = dat.dt;
-        const int ModelTg = dat.modelTg;
-
-#ifndef NOMP
-#pragma omp parallel for schedule(static)
-#endif
-        for (int i = 0; i < Nct; i++) {
         double lax, lay, laz, lbx, lby, lbz;
         double Vax, Vay, Vaz, Vbx, Vby, Vbz;
         double wbx, wby, wbz;
@@ -185,6 +167,13 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Configuration &dat) noexc
         double tx = 0, ty = 0, tz = 0;
         double meff, g0, N = 0, T = 0, gt;
         double Fx, Fy, Fz;
+        //Data from dat
+        double en = dat.en;
+        double mu = dat.mu;
+        double k = dat.k;
+        double TIME = dat.TIME;
+        double h = dat.dt;
+        int ModelTg = dat.modelTg;
         Sphere *a, *b;
         Body *ba, *bb;
         int na, nb;
@@ -193,6 +182,7 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Configuration &dat) noexc
         Cone *cne;
         Elbow *elw;
         Contact *ctl = nullptr;
+        for (int i = 0; i < Nct; i++) {
             ctl = &ct[i];
             N = 0;
             T = 0;

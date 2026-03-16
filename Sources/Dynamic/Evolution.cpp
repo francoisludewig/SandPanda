@@ -16,102 +16,140 @@
 #include "../../Includes/LinkedCells/LinkedCellFiller.h"
 
 int Evolution::Evolve(std::vector<Sphere *> &cell, int &Ntp, char *name, const bool isMonitoringActivated) noexcept {
-    const double dt = solids->configuration.dt;
-    ct = new Contact[18 * solids->spheres.size() + 75 * solids->bodies.size()];
+#pragma omp parallel shared(cell, Ntp, name, isMonitoringActivated) firstprivate(ct, cellBounds, Nct)
+    {
+        const double dt = solids->configuration.dt;
+        ct = new Contact[18 * solids->spheres.size() + 75 * solids->bodies.size()];
+#ifndef NOMP
+        auto nthrd = omp_get_thread_num();
+        auto thrd_start = omp_get_num_threads();
+        int xstep = (cellBounds.EndX() - cellBounds.StartX()) / thrd_start;
+        CellBounds thread_cellBounds;
+        if (nthrd != thrd_start - 1) {
+            thread_cellBounds = CellBounds(cellBounds.MinX(), cellBounds.MinY(), cellBounds.MinZ(),
+                                           cellBounds.MaxX(), cellBounds.MaxY(), cellBounds.MaxZ(),
+                                           cellBounds.StartX() + (nthrd) * xstep, cellBounds.StartY(),
+                                           cellBounds.StartZ(),
+                                           cellBounds.StartX() + (nthrd + 1) * xstep, cellBounds.EndY(),
+                                           cellBounds.EndZ(),
+                                           cellBounds.Lx(), cellBounds.Ly(), cellBounds.Lz(),
+                                           cellBounds.XMin(), cellBounds.YMin(), cellBounds.ZMin());
+        } else {
+            thread_cellBounds = CellBounds(cellBounds.MinX(), cellBounds.MinY(), cellBounds.MinZ(),
+                                           cellBounds.MaxX(), cellBounds.MaxY(), cellBounds.MaxZ(),
+                                           cellBounds.StartX() + (nthrd) * xstep, cellBounds.StartY(),
+                                           cellBounds.StartZ(),
+                                           cellBounds.EndX(), cellBounds.EndY(), cellBounds.EndZ(),
+                                           cellBounds.Lx(), cellBounds.Ly(), cellBounds.Lz(),
+                                           cellBounds.XMin(), cellBounds.YMin(), cellBounds.ZMin());
+        }
+        printf("Thread %d/%d - cellbounds X : %d - %d [Step = %d]\n", nthrd+1, thrd_start, thread_cellBounds.StartX(),
+               thread_cellBounds.EndX(), xstep);
+#else
+        CellBounds thread_cellBounds = this->cellBounds;
+#endif
 
-    printf("Evolution\n");
-    do {
-        solids->configuration.TIME += dt;
+        // Sequential Version
+        printf("Evolution\n");
+        do {
+#pragma omp barrier
+#pragma omp single
+            {
+                solids->configuration.TIME += dt;
+                // Position anticipation
+                Move::moveContainer(solids->plans, solids->disks, solids->cones, solids->elbows,
+                                    solids->configuration.TIME, dt / 2, solids->spheres, solids->gravity);
+                solids->configuration.mas->Move(dt / 2);
 
-        // === Phase 1: Position anticipation (containers are few, keep sequential) ===
-        Move::moveContainer(solids->plans, solids->disks, solids->cones, solids->elbows,
-                            solids->configuration.TIME, dt / 2, solids->spheres, solids->gravity);
-        solids->configuration.mas->Move(dt / 2);
+                Move::moveSphere(solids->spheres, dt / 2);
+                Move::upDateHollowBall(solids->hollowBalls, dt);
 
-        // Spheres and bodies: parallelized internally via OpenMP
-        Move::moveSphere(solids->spheres, dt / 2);
-        Move::upDateHollowBall(solids->hollowBalls, dt);
+                solids->gravity.Move(solids->configuration.TIME, dt / 2);
+                Move::moveBodies(solids->bodies, dt / 2, solids->spheres);
+                PeriodicityPL(solids->spheres, solids->plans);
 
-        solids->gravity.Move(solids->configuration.TIME, dt / 2);
-        Move::moveBodies(solids->bodies, dt / 2, solids->spheres);
-        PeriodicityPL(solids->spheres, solids->plans);
+                // Linked Cells
+                LinkedCellFiller::Fill(solids->spheres, solids->configuration, cell);
+                // Initialization for the time step
+                ComputeForce::InitForTimeStep(Nct, solids->spheres, solids->bodies, ct, solids->plans, solids->disks,
+                                              solids->cones, solids->elbows);
+            }
+            // Contact Detection
+            Nct = 0;
+            // Verison sequentiel normale
+            ContactDetection::sphContact(thread_cellBounds, ct, Nct, cell);
+#pragma omp single
+            {
+                ContactDetection::sphContainer(solids->spheres, solids->plans, solids->disks, solids->cones,
+                                               solids->elbows, solids->hollowBalls, Nct, ct, cell, solidCells,
+                                               solids->configuration.Rmax);
+            }
+            // Computing Force
+            ComputeForce::Compute(ct, Nct, solids->configuration);
+#pragma omp critical
+            {
+                ComputeForce::SumForceAndMomentum(ct, Nct);
+            }
+#pragma omp barrier
+#pragma omp single
+            {
+                Move::UpDateForceContainer(solids->spheres, solids->plans, solids->disks, solids->cones,
+                                           solids->configuration.TIME, dt, solids->gravity);
+                solids->configuration.mas->getForces();
+                // Update Velocities
+                Move::upDateVelocitySphere(solids->spheres, solids->gravity, dt);
+                Move::upDateVelocityBodies(solids->bodies, solids->gravity, dt, solids->spheres);
+                Move::upDateVelocityContainer(solids->plans, solids->disks, solids->cones, solids->elbows,
+                                              solids->configuration.TIME, dt, solids->gravity);
+                solids->configuration.mas->UpDateVelocity(dt);
 
-        // === Phase 2: Linked Cells (inherently sequential due to linked-list construction) ===
-        LinkedCellFiller::Fill(solids->spheres, solids->configuration, cell);
+                // Move
+                Move::moveContainer(solids->plans, solids->disks, solids->cones, solids->elbows,
+                                    solids->configuration.TIME, dt / 2, solids->spheres, solids->gravity);
+                solids->configuration.mas->Move(dt / 2);
+                Move::moveSphere(solids->spheres, dt / 2);
+                Move::moveBodies(solids->bodies, dt / 2, solids->spheres);
+                Move::upDateHollowBall(solids->hollowBalls, dt);
 
-        // === Phase 3: Initialization (parallelized internally) ===
-        ComputeForce::InitForTimeStep(Nct, solids->spheres, solids->bodies, ct, solids->plans, solids->disks,
-                                      solids->cones, solids->elbows);
+                solids->gravity.Move(solids->configuration.TIME, dt / 2);
 
-        // === Phase 4: Contact Detection (parallelized internally via thread-local buffers) ===
-        Nct = 0;
-        ContactDetection::sphContact(cellBounds, ct, Nct, cell);
-        ContactDetection::sphContainer(solids->spheres, solids->plans, solids->disks, solids->cones,
-                                       solids->elbows, solids->hollowBalls, Nct, ct, cell, solidCells,
-                                       solids->configuration.Rmax);
 
-        // === Phase 5: Force computation (parallelized internally) ===
-        ComputeForce::Compute(ct, Nct, solids->configuration);
+                PeriodicityPL(solids->spheres, solids->plans);
 
-        // === Phase 6: Sum forces (sequential - accumulates onto shared objects) ===
-        ComputeForce::SumForceAndMomentum(ct, Nct);
+                // Record data
+                if (solids->configuration.record) {
+                    if (fabs((solids->configuration.TIME - solids->configuration.t0) - Ntp * (solids->configuration.
+                                 dts)) < solids->configuration.dt * 0.99 && (
+                            solids->configuration.TIME - solids->configuration.t0 > 0.)) {
+                        ReadWrite::writeStartStopContainer(name, solids->plans, solids->disks, solids->cones,
+                                                           solids->elbows);
+                        ReadWrite::writeStartStopSphere(name, solids->spheres);
+                        ReadWrite::writeStartStopBodies(name, solids->bodies, solids->spheres);
+                        ReadWrite::writeStartStopData(name, solids->gravity, solids->configuration);
+                        ReadWrite::writeStartStopHollowBall(name, solids->hollowBalls);
 
-        // === Phase 7: Update forces and velocities ===
-        Move::UpDateForceContainer(solids->spheres, solids->plans, solids->disks, solids->cones,
-                                   solids->configuration.TIME, dt, solids->gravity);
-        solids->configuration.mas->getForces();
+                        ReadWrite::writeOutContainer(name, Ntp, solids->plans, solids->disks, solids->cones,
+                                                     solids->elbows, solids->configuration.outMode);
+                        ReadWrite::writeOutSphere(name, Ntp, solids->spheres, solids->configuration.outMode);
+                        ReadWrite::writeOutBodies(name, Ntp, solids->bodies, solids->configuration.outMode);
+                        ReadWrite::writeOutHollowBall(name, Ntp, solids->hollowBalls);
 
-        // Velocity updates: parallelized internally
-        Move::upDateVelocitySphere(solids->spheres, solids->gravity, dt);
-        Move::upDateVelocityBodies(solids->bodies, solids->gravity, dt, solids->spheres);
-        Move::upDateVelocityContainer(solids->plans, solids->disks, solids->cones, solids->elbows,
-                                      solids->configuration.TIME, dt, solids->gravity);
-        solids->configuration.mas->UpDateVelocity(dt);
-
-        // === Phase 8: Final position update ===
-        Move::moveContainer(solids->plans, solids->disks, solids->cones, solids->elbows,
-                            solids->configuration.TIME, dt / 2, solids->spheres, solids->gravity);
-        solids->configuration.mas->Move(dt / 2);
-        Move::moveSphere(solids->spheres, dt / 2);
-        Move::moveBodies(solids->bodies, dt / 2, solids->spheres);
-        Move::upDateHollowBall(solids->hollowBalls, dt);
-
-        solids->gravity.Move(solids->configuration.TIME, dt / 2);
-
-        PeriodicityPL(solids->spheres, solids->plans);
-
-        // === Phase 9: Record data ===
-        if (solids->configuration.record) {
-            if (fabs((solids->configuration.TIME - solids->configuration.t0) - Ntp * (solids->configuration.
-                         dts)) < solids->configuration.dt * 0.99 && (
-                    solids->configuration.TIME - solids->configuration.t0 > 0.)) {
-                ReadWrite::writeStartStopContainer(name, solids->plans, solids->disks, solids->cones,
-                                                   solids->elbows);
-                ReadWrite::writeStartStopSphere(name, solids->spheres);
-                ReadWrite::writeStartStopBodies(name, solids->bodies, solids->spheres);
-                ReadWrite::writeStartStopData(name, solids->gravity, solids->configuration);
-                ReadWrite::writeStartStopHollowBall(name, solids->hollowBalls);
-
-                ReadWrite::writeOutContainer(name, Ntp, solids->plans, solids->disks, solids->cones,
-                                             solids->elbows, solids->configuration.outMode);
-                ReadWrite::writeOutSphere(name, Ntp, solids->spheres, solids->configuration.outMode);
-                ReadWrite::writeOutBodies(name, Ntp, solids->bodies, solids->configuration.outMode);
-                ReadWrite::writeOutHollowBall(name, Ntp, solids->hollowBalls);
-
-                if (solids->configuration.outContact == 1 || solids->configuration.outContact > 2)
-                    ReadWrite::writeOutContact(name, Ntp, Nct, ct, solids->configuration);
-                if (solids->configuration.outContact >= 2)
-                    ReadWrite::writeOutContactDetails(name, Ntp, Nct, ct, solids->configuration);
-                printf("Save File %d\t\ttime = %e\r", Ntp, solids->configuration.TIME);
-                fflush(stdout);
-                Ntp++;
-                if (isMonitoringActivated) {
-                    Monitoring::getInstance().metrics(solids->configuration.TIME, solids->configuration.Total);
+                        if (solids->configuration.outContact == 1 || solids->configuration.outContact > 2)
+                            ReadWrite::writeOutContact(name, Ntp, Nct, ct, solids->configuration);
+                        if (solids->configuration.outContact >= 2)
+                            ReadWrite::writeOutContactDetails(name, Ntp, Nct, ct, solids->configuration);
+                        printf("Save File %d\t\ttime = %e\r", Ntp, solids->configuration.TIME);
+                        fflush(stdout);
+                        Ntp++;
+                        if (isMonitoringActivated) {
+                            Monitoring::getInstance().metrics(solids->configuration.TIME, solids->configuration.Total);
+                        }
+                    }
                 }
             }
-        }
-    } while (solids->configuration.TIME <= solids->configuration.Total - solids->configuration.dt * 0.99);
-    printf("\n");
-    delete[] ct;
+        } while (solids->configuration.TIME <= solids->configuration.Total - solids->configuration.dt * 0.99);
+        printf("\n");
+        delete[] ct;
+    }
     return Ntp;
 }
