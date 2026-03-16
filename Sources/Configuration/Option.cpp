@@ -45,6 +45,7 @@ int Option::Management(char **argv, int argc) noexcept {
 	list = argv;
 	Nlist = argc;
 	for(int i = 1 ; i < argc ; i++){
+		printf("%s\n",argv[i]);
 		if(argv[i][0] == 45){
 			switch(argv[i][1]){
 				case 'g':
