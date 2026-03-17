@@ -118,14 +118,17 @@ add_executable(
         ${SandPanda_FILES}
 )
 
+set(PERF_FLAGS "-funroll-loops -fomit-frame-pointer -falign-functions=32 -falign-loops=32 -fno-plt")
+set(SAFE_MATH_FLAGS "-fno-math-errno -fno-trapping-math -fno-signaling-nans")
+
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g -pg -fno-omit-frame-pointer -DNOMP")
     target_link_libraries(SandPanda ${GTEST_LIBRARIES})
 elseif (CMAKE_BUILD_TYPE STREQUAL "Release")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -flto -march=native -DNOMP")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -flto -march=native ${PERF_FLAGS} ${SAFE_MATH_FLAGS} -DNDEBUG -DNOMP")
     target_link_libraries(SandPanda ${GTEST_LIBRARIES})
 elseif (CMAKE_BUILD_TYPE STREQUAL "OpenMP")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -flto -march=native ${OpenMP_CXX_FLAGS}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -flto -march=native ${PERF_FLAGS} ${SAFE_MATH_FLAGS} -DNDEBUG ${OpenMP_CXX_FLAGS}")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
     target_link_libraries(SandPanda ${GTEST_LIBRARIES} OpenMP::OpenMP_CXX)
     message("OPENMP FOUND - Parallel build enabled")
