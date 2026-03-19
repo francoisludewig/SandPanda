@@ -138,6 +138,10 @@ if (OPENMP_FOUND AND CMAKE_BUILD_TYPE STREQUAL "OpenMP")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 endif ()
 
+install(TARGETS SandPanda
+        CONFIGURATIONS OpenMP
+        RUNTIME DESTINATION ~/.local/bin)
+
 
 enable_testing()
 
