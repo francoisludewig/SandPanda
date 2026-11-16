@@ -24,6 +24,11 @@ public:
 	static void ContactSphPlanPeriodic(std::vector<Sphere*>&llist, Plan & p, Plan & p2, Sphere *b, const double rmax) noexcept;
 
 	static void sphContact(const CellBounds& cellBounds, Contact *ctl, int & Nctl, const std::vector<Sphere*>& cell) noexcept;
+	// Detection sphere-sphere pour un seul plan X (i) de cellules ; sphContact les parcourt dans l'ordre croissant
+	static void sphContactPlane(const CellBounds& cellBounds, int i, Contact *ctl, int & Nctl, const std::vector<Sphere*>& cell) noexcept;
+	static void sphPlanRContactOne(int & Nct, PlanR & disk, Contact *ct, const std::vector<Sphere*>& cell, const SolidCells& solidCells) noexcept;
+	static void sphConeContactRange(int & Nct, Cone & cone, Contact *ct, const std::vector<Sphere*>& cell, const SolidCells& solidCells, int jStart, int jEnd) noexcept;
+	static void sphElbowContactOne(int & Nct, Elbow & elbow, Contact *ct, const std::vector<Sphere*>& cell, const SolidCells& solidCells) noexcept;
 
 
 	static void sphContactAll(std::vector<Sphere> & sph, Contact *ctl, int & Nctl) noexcept;

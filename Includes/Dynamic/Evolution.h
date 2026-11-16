@@ -42,6 +42,35 @@ public:
     int Evolve(std::vector<Sphere*>& cell, int & Ntp, char *name, bool isMonitoringActivated) noexcept;
 
 private:
+	/* Bloc de detection de contacts ; l'ordre des blocs est celui de la version sequentielle */
+	struct DetectionTask {
+		enum class Kind { SpherePlaneX, Plans, Disk, ConeRange, Elbow, HollowBalls };
+		Kind kind;
+		int index;   // plan X, disque, cone ou coude
+		int begin;   // tranche de cellules (cones)
+		int end;
+	};
+	/* Emplacement des contacts produits par un bloc : tampon du thread, debut et nombre */
+	struct TaskOutput {
+		int buffer{0};
+		int start{0};
+		int count{0};
+		// Contributions compactes (forces, elongations) de ce bloc, par thread proprietaire
+		int contributionBuffer{0};
+		std::vector<int> forceStart, forceCount, xsiStart, xsiCount;
+		void Resize(const int nOwners) {
+			forceStart.assign(nOwners, 0);
+			forceCount.assign(nOwners, 0);
+			xsiStart.assign(nOwners, 0);
+			xsiCount.assign(nOwners, 0);
+		}
+	};
+	static constexpr int coneCellsPerTask = 256;
+
+	void BuildDetectionTasks() noexcept;
+	void RunDetectionTask(const DetectionTask& task, Contact *ct, int & Nct, const std::vector<Sphere*>& cell) noexcept;
+
+	std::vector<DetectionTask> tasks;
 	Contact *ct;
 	SolidCells solidCells;
 	CellBounds cellBounds;

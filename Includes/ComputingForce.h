@@ -4,6 +4,8 @@
 #include <vector>
 #include <cmath>
 #include "Contact/Contact.h"
+#include "Elongations/ElongationManager.h"
+#include "Solids/MechanicalPoint.h"
 
 class Sphere;
 class Body;
@@ -25,13 +27,53 @@ public:
 
 	static void SumForceAndMomentum(Contact *ct, const int Nct) noexcept;
 
+	/* Contribution d'un contact a la force et au moment d'un objet */
+	struct ForceContribution {
+		MechanicalPoint *target;
+		double fx, fy, fz;
+		double mx, my, mz;
+	};
+	/* Elongation a enregistrer chez un objet */
+	struct XsiContribution {
+		ElongationManager *manager;
+		uint64_t id;
+		Elongation xsi;
+	};
+
+	/* Traduit les contacts en contributions compactes, dans l'ordre exact de SumForceAndMomentum.
+	 * Appliquer ensuite ces contributions dans l'ordre (ApplyContributions) donne exactement le
+	 * meme resultat que SumForceAndMomentum, mais en lisant un flux compact et contigu. */
+	/* Les contributions sont rangees par "proprietaire" : thread charge de l'objet cible.
+	 * sphereOwner[Num()] donne le proprietaire d'une sphere ; tous les autres objets (corps,
+	 * parois) appartiennent au proprietaire 0. Chaque objet n'a qu'un proprietaire : l'ordre des
+	 * contributions qu'il recoit est donc exactement celui de SumForceAndMomentum. */
+	static void BuildContributions(const Contact *ct, int Nct, const std::vector<int> &sphereOwner,
+	                               std::vector<std::vector<ForceContribution>> &forces,
+	                               std::vector<std::vector<XsiContribution>> &xsis) noexcept;
+	static void ApplyContributions(const ForceContribution *forces, int nForces,
+	                               const XsiContribution *xsis, int nXsis) noexcept;
+
 
 private:
-	static inline double DampingCoefficient(const double& en, const double& meff, const double& k) {
+	static inline double DampingCoefficientUncached(const double en, const double meff, const double k) {
 		if(en != 0)
 			return sqrt(4*meff*k/(1+(M_PI/log(en))*(M_PI/log(en))));
 
 		return sqrt(4*meff*k);
+	}
+
+	/* Coefficient d'amortissement normal. Il ne depend que de (en, meff, k) : on memorise le
+	 * dernier resultat (par thread). La valeur renvoyee est celle que renverrait le calcul complet,
+	 * bit a bit, puisque c'est le meme calcul sur les memes entrees. Dans un systeme monodisperse,
+	 * log() et sqrt() ne sont plus evalues qu'une fois au lieu d'une fois par contact et par pas. */
+	static inline double DampingCoefficient(const double& en, const double& meff, const double& k) {
+		struct Memo { double en, meff, k, value; bool valid; };
+		static thread_local Memo memo{0., 0., 0., 0., false};
+		if(memo.valid && memo.en == en && memo.meff == meff && memo.k == k)
+			return memo.value;
+		const double value = DampingCoefficientUncached(en, meff, k);
+		memo = {en, meff, k, value, true};
+		return value;
 	}
 
 	/* Fonction qui calcul la force globale au contact */

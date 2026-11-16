@@ -242,6 +242,103 @@ void ComputeForce::SumForceAndMomentum(Contact *ct, const int Nct) noexcept {
 }
 
 
+void ComputeForce::BuildContributions(const Contact *ct, const int Nct, const std::vector<int> &sphereOwner,
+                                      std::vector<std::vector<ForceContribution>> &forces,
+                                      std::vector<std::vector<XsiContribution>> &xsis) noexcept {
+    const int nSpheres = static_cast<int>(sphereOwner.size());
+    auto ownerOf = [&sphereOwner, nSpheres](const Sphere *sphere) {
+        const int num = sphere->Num();
+        return (num >= 0 && num < nSpheres) ? sphereOwner[num] : 0;
+    };
+    // Spheres : proprietaire selon leur indice ; corps et parois : proprietaire 0
+    auto force = [&forces](const int owner, MechanicalPoint *target, const double fx, const double fy,
+                           const double fz, const double mx, const double my, const double mz) {
+        forces[owner].push_back({target, fx, fy, fz, mx, my, mz});
+    };
+    auto xsi = [&xsis](const int owner, ElongationManager &manager, const uint64_t id, const Elongation &e) {
+        xsis[owner].push_back({&manager, id, e});
+    };
+    for (int i = 0; i < Nct; i++) {
+        const Contact *ctl = &ct[i];
+        switch (ctl->type) {
+            default:
+            case Contact::Type::None:
+                break;
+            case Contact::Type::SphereSphere:
+            case Contact::Type::SphereHollowBall:
+                xsi(ownerOf(ctl->sa), ctl->sa->GetElongationManager(), ctl->id_a_xsi, ctl->xsi);
+                xsi(ownerOf(ctl->sb), ctl->sb->GetElongationManager(), ctl->id_b_xsi, ctl->xsi.Opposite());
+                force(ownerOf(ctl->sa), ctl->sa, ctl->Fax, ctl->Fay, ctl->Faz, ctl->Max, ctl->May, ctl->Maz);
+                force(ownerOf(ctl->sb), ctl->sb, ctl->Fbx, ctl->Fby, ctl->Fbz, ctl->Mbx, ctl->Mby, ctl->Mbz);
+                break;
+            case Contact::Type::SphereBody:
+            case Contact::Type::BodyHollowBall:
+                xsi(ownerOf(ctl->sa), ctl->sa->GetElongationManager(), ctl->id_a_xsi, ctl->xsi);
+                xsi(0, ctl->bb->GetElongationManager(), ctl->id_b_xsi, ctl->xsi);
+                force(ownerOf(ctl->sa), ctl->sa, ctl->Fax, ctl->Fay, ctl->Faz, ctl->Max, ctl->May, ctl->Maz);
+                force(0, ctl->bb, ctl->Fbx, ctl->Fby, ctl->Fbz, ctl->Mbx, ctl->Mby, ctl->Mbz);
+                break;
+            case Contact::Type::BodyBody:
+                xsi(0, ctl->ba->GetElongationManager(), ctl->id_a_xsi, ctl->xsi);
+                xsi(0, ctl->bb->GetElongationManager(), ctl->id_b_xsi, ctl->xsi.Opposite());
+                force(0, ctl->ba, ctl->Fax, ctl->Fay, ctl->Faz, ctl->Max, ctl->May, ctl->Maz);
+                force(0, ctl->bb, ctl->Fbx, ctl->Fby, ctl->Fbz, ctl->Mbx, ctl->Mby, ctl->Mbz);
+                break;
+            case Contact::Type::SpherePlan:
+                force(ownerOf(ctl->sa), ctl->sa, ctl->Fax, ctl->Fay, ctl->Faz, ctl->Max, ctl->May, ctl->Maz);
+                force(0, ctl->pa, ctl->Fbx, ctl->Fby, ctl->Fbz, ctl->Mbx, ctl->Mby, ctl->Mbz);
+                xsi(ownerOf(ctl->sa), ctl->sa->GetElongationManager(), ctl->id_a_xsi, ctl->xsi);
+                break;
+            case Contact::Type::BodyPlan:
+                force(0, ctl->ba, ctl->Fax, ctl->Fay, ctl->Faz, ctl->Max, ctl->May, ctl->Maz);
+                force(0, ctl->pa, ctl->Fbx, ctl->Fby, ctl->Fbz, ctl->Mbx, ctl->Mby, ctl->Mbz);
+                xsi(0, ctl->ba->GetElongationManager(), ctl->id_a_xsi, ctl->xsi);
+                break;
+            case Contact::Type::SpherePlanR:
+                force(ownerOf(ctl->sa), ctl->sa, ctl->Fax, ctl->Fay, ctl->Faz, ctl->Max, ctl->May, ctl->Maz);
+                force(0, ctl->par, ctl->Fbx, ctl->Fby, ctl->Fbz, ctl->Mbx, ctl->Mby, ctl->Mbz);
+                xsi(ownerOf(ctl->sa), ctl->sa->GetElongationManager(), ctl->id_a_xsi, ctl->xsi);
+                break;
+            case Contact::Type::BodyPlanR:
+                force(0, ctl->ba, ctl->Fax, ctl->Fay, ctl->Faz, ctl->Max, ctl->May, ctl->Maz);
+                force(0, ctl->par, ctl->Fbx, ctl->Fby, ctl->Fbz, ctl->Mbx, ctl->Mby, ctl->Mbz);
+                break;
+            case Contact::Type::SphereCone:
+                force(ownerOf(ctl->sa), ctl->sa, ctl->Fax, ctl->Fay, ctl->Faz, ctl->Max, ctl->May, ctl->Maz);
+                force(0, ctl->cn, ctl->Fbx, ctl->Fby, ctl->Fbz, ctl->Mbx, ctl->Mby, ctl->Mbz);
+                xsi(ownerOf(ctl->sa), ctl->sa->GetElongationManager(), ctl->id_a_xsi, ctl->xsi);
+                break;
+            case Contact::Type::BodyCone:
+                force(0, ctl->ba, ctl->Fax, ctl->Fay, ctl->Faz, ctl->Max, ctl->May, ctl->Maz);
+                force(0, ctl->cn, ctl->Fbx, ctl->Fby, ctl->Fbz, ctl->Mbx, ctl->Mby, ctl->Mbz);
+                xsi(0, ctl->ba->GetElongationManager(), ctl->id_a_xsi, ctl->xsi);
+                break;
+            case Contact::Type::SphereElbow:
+                force(ownerOf(ctl->sa), ctl->sa, ctl->Fax, ctl->Fay, ctl->Faz, ctl->Max, ctl->May, ctl->Maz);
+                xsi(ownerOf(ctl->sa), ctl->sa->GetElongationManager(), ctl->id_a_xsi, ctl->xsi);
+                break;
+            case Contact::Type::BodyElbow:
+                force(0, ctl->ba, ctl->Fax, ctl->Fay, ctl->Faz, ctl->Max, ctl->May, ctl->Maz);
+                xsi(0, ctl->ba->GetElongationManager(), ctl->id_a_xsi, ctl->xsi);
+                break;
+        }
+    }
+}
+
+void ComputeForce::ApplyContributions(const ForceContribution *forces, const int nForces,
+                                      const XsiContribution *xsis, const int nXsis) noexcept {
+    for (int i = 0; i < nForces; i++) {
+        const ForceContribution &c = forces[i];
+        c.target->AddForce(c.fx, c.fy, c.fz);
+        c.target->AddMomentum(c.mx, c.my, c.mz);
+    }
+    for (int i = 0; i < nXsis; i++) {
+        Elongation e = xsis[i].xsi;
+        xsis[i].manager->AddXsi(e, xsis[i].id);
+    }
+}
+
+
 /* Fonction qui calcul les forces pour l'ensemble des contacts du tableau ct */
 void ComputeForce::Compute(Contact *ct, const int Nct, Configuration &dat) noexcept {
     {
