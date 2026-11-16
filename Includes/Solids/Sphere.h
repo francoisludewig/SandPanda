@@ -60,6 +60,7 @@ public:
 	[[nodiscard]] int HollowballNum() const noexcept { return NhollowBall; }
 	[[nodiscard]] double Rho() const noexcept { return rho; }
 	[[nodiscard]] double Mass() const noexcept { return m; }
+	[[nodiscard]] double Inertia() const noexcept { return I; }
 
 	[[nodiscard]] Sphere* TDL() const noexcept { return tdl; }
 	void TDL(Sphere* rhs) noexcept { this->tdl = rhs; }

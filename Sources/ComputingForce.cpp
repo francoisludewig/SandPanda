@@ -14,6 +14,83 @@
 
 #include <omp.h>
 
+namespace {
+    /* Resistance au roulement : modele a couple constant (type A, cf. Ai et al. 2011).
+     * Couple exerce sur le corps a (oppose pour le corps b) :
+     *     M_r = -muR * Reff * N * w_r / |w_r|
+     * ou w_r est la composante de roulement de la vitesse angulaire relative,
+     * c'est-a-dire w_a - w_b privee de sa composante selon la normale (le spin).
+     * Sans ce couple, un roulement sans glissement ne dissipe aucune energie :
+     * Vt = 0 au contact, le ressort tangentiel et les amortissements ne travaillent pas.
+     * Le couple est borne par Ieff*|w_r|/dt pour ne jamais inverser le roulement
+     * relatif en un pas de temps (pas d'oscillation numerique a l'arret). */
+    inline void RollingResistance(const double muR, const double Reff, const double Ieff, const double N,
+                                  const double dt,
+                                  const double wax, const double way, const double waz,
+                                  const double wbx, const double wby, const double wbz,
+                                  const Contact *ctv, double &Mrx, double &Mry, double &Mrz) noexcept {
+        Mrx = 0.;
+        Mry = 0.;
+        Mrz = 0.;
+        if (muR <= 0. || N <= 0.)
+            return;
+        double wrx = wax - wbx;
+        double wry = way - wby;
+        double wrz = waz - wbz;
+        const double wn = wrx * ctv->nx + wry * ctv->ny + wrz * ctv->nz;
+        wrx -= wn * ctv->nx;
+        wry -= wn * ctv->ny;
+        wrz -= wn * ctv->nz;
+        const double wr = sqrt(wrx * wrx + wry * wry + wrz * wrz);
+        if (wr == 0.)
+            return;
+        double M = muR * Reff * N;
+        if (const double Mmax = Ieff * wr / dt; M > Mmax)
+            M = Mmax;
+        Mrx = -M * wrx / wr;
+        Mry = -M * wry / wr;
+        Mrz = -M * wrz / wr;
+    }
+
+    /* Ajout de la resistance au roulement pour un contact sphere - sphere */
+    inline void AddRollingResistanceSphereSphere(Contact *ctl, const Sphere *a, const Sphere *b, const double muR,
+                                                 const double N, const double dt) noexcept {
+        if (muR <= 0.)
+            return;
+        double Mrx, Mry, Mrz;
+        const double Reff = a->Radius() * b->Radius() / (a->Radius() + b->Radius());
+        const double Ieff = a->Inertia() * b->Inertia() / (a->Inertia() + b->Inertia());
+        RollingResistance(muR, Reff, Ieff, N, dt, a->Wx(), a->Wy(), a->Wz(), b->Wx(), b->Wy(), b->Wz(), ctl,
+                          Mrx, Mry, Mrz);
+        ctl->Max += Mrx;
+        ctl->May += Mry;
+        ctl->Maz += Mrz;
+        ctl->Mbx -= Mrx;
+        ctl->Mby -= Mry;
+        ctl->Mbz -= Mrz;
+    }
+
+    /* Ajout de la resistance au roulement pour un contact sphere - paroi (plan, disque, cone, coude).
+     * w_b est la vitesse angulaire de la paroi, supposee d'inertie infinie. */
+    inline void AddRollingResistanceSphereWall(Contact *ctl, const Sphere *a, const double muR, const double N,
+                                               const double dt, const double wbx, const double wby,
+                                               const double wbz, const bool hasWallMomentum) noexcept {
+        if (muR <= 0.)
+            return;
+        double Mrx, Mry, Mrz;
+        RollingResistance(muR, a->Radius(), a->Inertia(), N, dt, a->Wx(), a->Wy(), a->Wz(), wbx, wby, wbz, ctl,
+                          Mrx, Mry, Mrz);
+        ctl->Max += Mrx;
+        ctl->May += Mry;
+        ctl->Maz += Mrz;
+        if (hasWallMomentum) {
+            ctl->Mbx -= Mrx;
+            ctl->Mby -= Mry;
+            ctl->Mbz -= Mrz;
+        }
+    }
+}
+
 /* Fonction qui initialise tous les obejts avant chaque etape de calcul */
 void ComputeForce::InitForTimeStep(const int &Nct, std::vector<Sphere> &sph, std::vector<Body> &bd, Contact *ct,
                                    std::vector<Plan> &pl, std::vector<PlanR> &plr, std::vector<Cone> &co,
@@ -75,14 +152,19 @@ void ComputeForce::SumForceAndMomentum(Contact *ct, const int Nct) noexcept {
             case Contact::Type::None:
                 break;
             case Contact::Type::SphereSphere:
-            case Contact::Type::SphereHollowBall:
+            case Contact::Type::SphereHollowBall: {
+                // xsi est l'elongation de a par rapport a b. L'ordre (a,b) d'un contact depend
+                // des cellules du linked-cell et peut s'inverser d'un pas a l'autre : on stocke
+                // donc chez b l'elongation de b par rapport a a, c'est-a-dire -xsi.
+                Elongation xsiB = ctl->xsi.Opposite();
                 ctl->sa->GetElongationManager().AddXsi(ctl->xsi, ctl->id_a_xsi);
-                ctl->sb->GetElongationManager().AddXsi(ctl->xsi, ctl->id_b_xsi);
+                ctl->sb->GetElongationManager().AddXsi(xsiB, ctl->id_b_xsi);
                 ctl->sa->AddForce(ctl->Fax, ctl->Fay, ctl->Faz);
                 ctl->sa->AddMomentum(ctl->Max, ctl->May, ctl->Maz);
                 ctl->sb->AddForce(ctl->Fbx, ctl->Fby, ctl->Fbz);
                 ctl->sb->AddMomentum(ctl->Mbx, ctl->Mby, ctl->Mbz);
                 break;
+            }
             case Contact::Type::SphereBody:
             case Contact::Type::BodyHollowBall:
                 ctl->sa->GetElongationManager().AddXsi(ctl->xsi, ctl->id_a_xsi);
@@ -92,14 +174,17 @@ void ComputeForce::SumForceAndMomentum(Contact *ct, const int Nct) noexcept {
                 ctl->bb->AddForce(ctl->Fbx, ctl->Fby, ctl->Fbz);
                 ctl->bb->AddMomentum(ctl->Mbx, ctl->Mby, ctl->Mbz);
                 break;
-            case Contact::Type::BodyBody:
+            case Contact::Type::BodyBody: {
+                // Meme raison que pour SphereSphere : l'ordre (a,b) peut s'inverser
+                Elongation xsiB = ctl->xsi.Opposite();
                 ctl->ba->GetElongationManager().AddXsi(ctl->xsi, ctl->id_a_xsi);
-                ctl->bb->GetElongationManager().AddXsi(ctl->xsi, ctl->id_b_xsi);
+                ctl->bb->GetElongationManager().AddXsi(xsiB, ctl->id_b_xsi);
                 ctl->ba->AddForce(ctl->Fax, ctl->Fay, ctl->Faz);
                 ctl->ba->AddMomentum(ctl->Max, ctl->May, ctl->Maz);
                 ctl->bb->AddForce(ctl->Fbx, ctl->Fby, ctl->Fbz);
                 ctl->bb->AddMomentum(ctl->Mbx, ctl->Mby, ctl->Mbz);
                 break;
+            }
             case Contact::Type::SpherePlan:
                 ctl->sa->AddForce(ctl->Fax, ctl->Fay, ctl->Faz);
                 ctl->sa->AddMomentum(ctl->Max, ctl->May, ctl->Maz);
@@ -250,6 +335,7 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Configuration &dat) noexc
                     ctl->Mbx = lbz * Fy - lby * Fz; //-(lby*Fz-lbz*Fy);
                     ctl->Mby = lbx * Fz - lbz * Fx; //-(lbz*Fx-lbx*Fz);
                     ctl->Mbz = lby * Fx - lbx * Fy; //-(lbx*Fy-lby*Fx);
+                    AddRollingResistanceSphereSphere(ctl, a, b, dat.muR, N, h);
                     break;
 
                 case Contact::Type::SphereBody: //10
@@ -431,6 +517,7 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Configuration &dat) noexc
                     ctl->Mbx = lby * Fz - lbz * Fy;
                     ctl->Mby = lbz * Fx - lbx * Fz;
                     ctl->Mbz = lbx * Fy - lby * Fx;
+                    AddRollingResistanceSphereWall(ctl, a, dat.muR, N, h, wbx, wby, wbz, true);
                     break;
                 case Contact::Type::BodyPlan: //11
                     // Cas du contact entre une particule et un plan
@@ -554,6 +641,7 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Configuration &dat) noexc
                     ctl->Mbx = lby * Fz - lbz * Fy;
                     ctl->Mby = lbz * Fx - lbx * Fz;
                     ctl->Mbz = lbx * Fy - lby * Fx;
+                    AddRollingResistanceSphereWall(ctl, a, dat.muR, N, h, wbx, wby, wbz, true);
                     break;
 
                 case Contact::Type::BodyPlanR: //12
@@ -677,6 +765,7 @@ void ComputeForce::Compute(Contact *ct, const int Nct, Configuration &dat) noexc
                     ctl->Mbx = lby * Fz - lbz * Fy;
                     ctl->Mby = lbz * Fx - lbx * Fz;
                     ctl->Mbz = lbx * Fy - lby * Fx;
+                    AddRollingResistanceSphereWall(ctl, a, dat.muR, N, h, wbx, wby, wbz, true);
                     break;
                 case Contact::Type::BodyCone: //13
                     // Cas du contact entre une particule et un cone
@@ -788,6 +877,7 @@ ctl->id_a_xsi = ContactIdentifier::computeIdentifier(CONTACT_TYPE::BODY_VS_CONE,
                     ctl->Max = laz * Fy - lay * Fz;
                     ctl->May = lax * Fz - laz * Fx;
                     ctl->Maz = lay * Fx - lax * Fy;
+                    AddRollingResistanceSphereWall(ctl, a, dat.muR, N, h, wbx, wby, wbz, false);
                     break;
                 case Contact::Type::BodyElbow: //14
                     // Cas du contact entre une particule et un coude

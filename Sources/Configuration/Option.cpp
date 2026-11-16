@@ -20,6 +20,7 @@ Option::Option() noexcept {
 	stop_time = -1.;
 	start_time = -1.;
 	tune_mu = -1;
+	tune_muR = -1;
 	tune_e = -1;
 	cancelG = false;
 	restart = 0;
@@ -113,6 +114,8 @@ int Option::Management(char **argv, int argc) noexcept {
 						printf("\t-ocv or -outcontactv in order to have the contact files in the Out directory used in SandPandaViewer\n");
 						printf("\t-gvd or -globalviscousdamping for activating a viscous force on spherical particles.\n");
 						printf("\t\tThe value of the viscous damping coefficient\n");
+						printf("\t-mur or -rollingresistance for activating a rolling resistance torque on spherical particles.\n");
+						printf("\t\tThe dimensionless rolling resistance coefficient (ex. 0.005), 0 = disabled (default)\n");
 						return 0;
 					}
 					if(!strcmp(argv[i], "-h")){
@@ -135,6 +138,8 @@ int Option::Management(char **argv, int argc) noexcept {
 						printf("\t-ocv or -outcontactv in order to have the contact files in the Out directory used in SandPandaViewer\n");
 						printf("\t-gvd or -globalviscousdamping for activating a viscous force on spherical particles.\n");
 						printf("\t\tThe value of the viscous damping coefficient\n");
+						printf("\t-mur or -rollingresistance for activating a rolling resistance torque on spherical particles.\n");
+						printf("\t\tThe dimensionless rolling resistance coefficient (ex. 0.005), 0 = disabled (default)\n");
 						return 0;
 					}
 					break;
@@ -203,6 +208,11 @@ int Option::Management(char **argv, int argc) noexcept {
 					}
 					if(!strcmp(argv[i], "-mu")){
 						sscanf(argv[i+1],"%lf",&tune_mu);
+						i+=1;
+					}
+					if(!strcmp(argv[i], "-mur") || !strcmp(argv[i], "-rollingresistance")){
+						sscanf(argv[i+1],"%lf",&tune_muR);
+						printf("Rolling resistance : muR = %e\n",tune_muR);
 						i+=1;
 					}
 					if(!strcmp(argv[i], "-modecompaction")){
@@ -484,6 +494,9 @@ void Option::InData(Configuration & dat, Gravity & gf, std::vector<Plan> & pl, s
 		dat.muS = tune_mu;
 	}
 	
+	if(tune_muR >= 0)
+		dat.muR = tune_muR;
+
 	if(cancelG)
 		gf.G = 0.0;
 	if(tune_e != -1)

@@ -18,6 +18,14 @@ public:
 	void Reset() noexcept;
 	void Display() const noexcept;
 	void Rotate(double nx, double ny, double nz) noexcept;
+	// Elongation vue depuis l'autre corps du contact : -xsi, meme statut
+	[[nodiscard]] Elongation Opposite() const noexcept {
+		Elongation e(*this);
+		e.x = -x;
+		e.y = -y;
+		e.z = -z;
+		return e;
+	}
 	
 	double x,y,z;
 	int status;

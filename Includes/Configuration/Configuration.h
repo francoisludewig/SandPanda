@@ -26,6 +26,8 @@ public:
 	double ax,ay,az;
 	int Nx,Ny,Nz;
 	double en,mu,k,muS,muD;
+	// Coefficient de resistance au roulement (sans dimension, 0 = desactive)
+	double muR{0.};
 	double dts,t0;
 	int modelTg{};
 	double Rmax{};
