@@ -9,7 +9,7 @@ private:
 	char **list;
 	int Nlist;
 public:
-	double visco,Vrdm,Wrdm,tune_e,tune_mu,Gamma,Freq,PQheight,PQVel,vr,delayVr,start_time,stop_time;
+	double visco,Vrdm,Wrdm,tune_e,tune_mu,tune_muR,Gamma,Freq,PQheight,PQVel,vr,delayVr,start_time,stop_time;
 	int cancelVel,RdmVel,Nprocess,parallel,CoeffAffinity,NtapMin,NtapMax,mode,compression,NoRotation,restart,outContact,limitNg,limitNbd,fps;
 	char directory[1024];
 	bool cancelG;
