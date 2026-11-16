@@ -4,7 +4,7 @@
 Solid::Solid() noexcept :
 	numero(0), Fcx(0), Fcy(0), Fcz(0),
 	Mcx(0), Mcy(0), Mcz(0), Mass(1), In(1), It(1), Is(1),
-	Force(0), activeGravity(0), V(), num(nullptr), GBx(nullptr),
+	Force(0), activeGravity(false), V(), num(nullptr), GBx(nullptr),
 	GBy(nullptr), GBz(nullptr), xMemory(0), yMemory(0), zMemory(0),
 	ControlGB(1), vcell(nullptr), Ngb(0) {}
 
@@ -59,13 +59,14 @@ void Solid::ComputeBase() noexcept {
 
 void Solid::LoadAccelerationFromFile(FILE *ft) noexcept {
 	fscanf(ft,"%lf\t%d",&Mass,&activeGravity);
+	if (Mass == 0) Mass = 1;
 	fscanf(ft,"%lf\t%lf\t%lf",&Fcx,&Fcy,&Fcz);
 	fscanf(ft,"%lf\t%lf\t%lf",&Mcx,&Mcy,&Mcz);
 	if(Fcx == 0 && Fcy == 0 && Fcz == 0 && Mcx == 0 && Mcy == 0 && Mcz == 0 && activeGravity == 0)
-		Force = 0;
+			Force = 0;
 		else
 			Force = 1;
-			}
+}
 
 void Solid::WriteAccelerationFromFile(FILE *ft) const noexcept {
 	fprintf(ft,"%e\t%d\n",Mass,activeGravity);
@@ -124,7 +125,7 @@ void Solid::UpdateGravityForceFromGB(const std::vector<Sphere> & sph, const Grav
 				if (gt.ngy * gt.G != 0)
 					Fy += sph[num[i]].GetFy();
 				if (gt.ngz * gt.G != 0)
-					Fz += sph[num[i]].GetFz();
+				 Fz += sph[num[i]].GetFz();
 			}
 		}
 	}
@@ -145,18 +146,33 @@ void Solid::UpDateGravityVelocity(const double dt, const Gravity &gt) noexcept {
 void Solid::UpDateVelocity(const double time, const double dt, const Gravity &gt) noexcept {
 
 	if (activeGravity == 1) {
-		if (Fcx != 0 || gt.ngx * gt.G != 0)
-			vx += ((Fcx + Fx) / Mass + gt.ngx * gt.G) * dt;
-		else
-			vx = V.ValueOfVx(time);
-		if (Fcy != 0 || gt.ngy * gt.G != 0)
-			vy += ((Fcy + Fy) / Mass + gt.ngy * gt.G) * dt;
-		else
-			vy = V.ValueOfVy(time);
-		if (Fcz != 0 || gt.ngz * gt.G != 0)
-			vz += ((Fcz + Fz) / Mass + gt.ngz * gt.G) * dt;
-		else
-			vz = V.ValueOfVz(time);
+		if (!noResponse) {
+			if (Fcx != 0 || gt.ngx * gt.G != 0)
+				vx += ((Fcx + Fx) / Mass + gt.ngx * gt.G) * dt;
+			else
+				vx = V.ValueOfVx(time);
+			if (Fcy != 0 || gt.ngy * gt.G != 0)
+				vy += ((Fcy + Fy) / Mass + gt.ngy * gt.G) * dt;
+			else
+				vy = V.ValueOfVy(time);
+			if (Fcz != 0 || gt.ngz * gt.G != 0)
+				vz += ((Fcz + Fz) / Mass + gt.ngz * gt.G) * dt;
+			else
+				vz = V.ValueOfVz(time);
+		} else {
+			if (gt.ngx * gt.G != 0)
+				vx += (gt.ngx * gt.G) * dt;
+			else
+				vx = V.ValueOfVx(time);
+			if (gt.ngy * gt.G != 0)
+				vy += (gt.ngy * gt.G) * dt;
+			else
+				vy = V.ValueOfVy(time);
+			if (gt.ngz * gt.G != 0)
+				vz += (gt.ngz * gt.G) * dt;
+			else
+				vz = V.ValueOfVz(time);
+		}
 	} else {
 		if (Fcx != 0)
 			vx += (Fcx + Fx) / Mass * dt;
@@ -288,7 +304,7 @@ void Solid::UpDateLinkedSphere(std::vector<Sphere> & sph, const double time, con
 	if(Mcy == 0)
 		wy = V.ValueOfWy(time);
 	if(Mcz == 0)
-	 wz = V.ValueOfWz(time);
+		wz = V.ValueOfWz(time);
 
 	for(int i = 0 ; i < Ngb ; i++){
 		opx = GBx[i] - x;
@@ -387,6 +403,17 @@ void Solid::OnOffGravity(const bool OnOff) noexcept {
 		vz = 0;
 	}
 }
+
+void Solid::OnOffNoResponse(bool OnOff) noexcept {
+	if(OnOff){
+		noResponse = 1;
+	}
+	else {
+		noResponse = 0;
+	}
+}
+
+
 
 void Solid::SetVelocityToZero() noexcept {
 	vx = 0;

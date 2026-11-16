@@ -286,8 +286,10 @@ void ReadWrite::readStart_stopSphere(char *directory, vector<Sphere> & sph, int 
 
 	printf("Number of Sphere = %d\n\n",Nsph);
 	sph.resize(Nsph);
-	for(int i = 0 ; i < sph.size() ; i++)
+	for(int i = 0 ; i < sph.size() ; i++) {
+		printf("Loading sph %d\n",i);
 		sph[i].readStartStop(ft);
+	}
 
 	fclose(ft);
 	fflush(ft);

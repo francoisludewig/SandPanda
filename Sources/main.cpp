@@ -160,6 +160,10 @@ int main(int argc, char **argv) {
             Ntp++;
         }
     }
+    if (opt.mode == 5) {
+        SimulationDataManager::WriteStart_Stop(opt, solids, Ntp);
+        Ntp++;
+    }
 
     if (opt.mode == 1 || opt.mode == 2) {
         if (opt.NtapMin == 1) {
@@ -193,7 +197,7 @@ int main(int argc, char **argv) {
                 solids->configuration.TIME = 0.0;
             }
             Ntp = Compaction::Run(solids, cell, Ntp, opt.directory, opt.NtapMin, opt.NtapMax, opt.Gamma, opt.Freq,
-                                  cellBounds, opt.isMonitoringActivated);
+                                  cellBounds, opt.isMonitoringActivated, true);
             break;
         case 2:
             if (opt.NtapMin == 1) {
@@ -203,6 +207,9 @@ int main(int argc, char **argv) {
             solids->configuration.Total = 0.0;
             Ntp = PowderPaQ::PowderPaQRun(solids, cell, Ntp, opt.directory, opt.NtapMin, opt.NtapMax, opt.PQheight,
                                           opt.PQVel, cellBounds, opt.isMonitoringActivated);
+            break;
+        case 5:
+            Compaction::OneTap(solids, cell, Ntp, opt.directory, opt.Gamma, opt.Freq, cellBounds);
             break;
         default:
             printf("Error mode selected doesn't exist.\n");

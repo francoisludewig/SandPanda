@@ -94,12 +94,13 @@ int Option::Management(char **argv, int argc) noexcept {
 					break;
 				case 'h':
 					if(!strcmp(argv[i], "-help")){
-						printf("SanPanda Version 5.0 c++\nOptions are :\n");
+						printf("SanPanda Version 5.1 c++\nOptions are :\n");
 						printf("\t-p or -parallel for parallel contact detection with OpenMP\n");
 						printf("\t-s or -sequential for sequential contact detection (default option)\n");
 						printf("\t-d or -directory to indicate the current directory of the simulation (default option is the current directory)\n");
 						printf("\t-a or -affinitycache for active affinity cache memory followed by a tag (integer)\n\t\t\texample : -a 1\n");
 						printf("\t-mc or modecompaction for compaction mode followed by compaction data : Numbers of first and last tap, Reduce Acceleration, Frequency\n\t\t\texample : -c 0 1000 4 25\n");
+						printf("\t-ot or modecompaction for compaction mode, for one tap, followed by compaction data : Reduce Acceleration, Frequency\n\t\t\texample : -c 0 1000 4 25\n");
 						printf("\t-e or -evolution for simple evolution of the original data (default option) in opposition to compaction option\n\n");
 						printf("\t-mpq or -modepowderpaq for compaction mode with PowderPaQ way, followed by compaction data : Numbers of first and last tap, freefall height and upward velocity\n\t\t\texample : -mpq 0 1000 0.01 0.001\n\n");
 						printf("\t-tgz to archive of all directories after simulation\n\n");
@@ -115,12 +116,13 @@ int Option::Management(char **argv, int argc) noexcept {
 						return 0;
 					}
 					if(!strcmp(argv[i], "-h")){
-						printf("SanPanda Version 5.0 c++\nOptions are :\n");
+						printf("SanPanda Version 5.1 c++\nOptions are :\n");
 						printf("\t-p or -parallel for parallel contact detection with OpenMP\n");
 						printf("\t-s or -sequential for sequential contact detection (default option)\n");
 						printf("\t-d or -directory to indicate the current directory of the simulation (default option is the current directory)\n");
 						printf("\t-a or -affinitycache for active affinity cache memory followed by a tag (integer)\n\t\t\texample : -a 1\n");
 						printf("\t-mc or modecompaction for compaction mode followed by compaction data : Numbers of first and last tap, Reduce Acceleration, Frequency\n\t\t\texample : -c 0 1000 4 25\n");
+						printf("\t-ot or modecompaction for compaction mode, for one tap, followed by compaction data : Reduce Acceleration, Frequency\n\t\t\texample : -c 0 1000 4 25\n");
 						printf("\t-e or -evolution for simple evolution of the original data (default option) in opposition to compaction option\n\n");
 						printf("\t-mpq or -modepowderpaq for compaction mode with PowderPaQ way, followed by compaction data : Numbers of first and last tap, freefall height and upward velocity\n\t\t\texample : -mpq 0 1000 0.01 0.001\n\n");
 						printf("\t-tgz to archive of all directories after simulation\n\n");
@@ -314,6 +316,21 @@ int Option::Management(char **argv, int argc) noexcept {
 					}
 					if(!strcmp(argv[i], "-outcontact")){
 						outContact += 2;
+					}
+					if(!strcmp(argv[i], "-ot")){
+						sscanf(argv[i+1],"%lf",&Gamma);
+						sscanf(argv[i+2],"%lf",&Freq);
+						printf("Tap characteristic : Gamma = %e, f = %e and A = %e\n",Gamma,Freq,Gamma*9.81/(4*M_PI*M_PI*Freq*Freq));
+						i+=2;
+						mode = 5;
+					}
+
+					if(!strcmp(argv[i], "-onetap")){
+						sscanf(argv[i+1],"%lf",&Gamma);
+						sscanf(argv[i+2],"%lf",&Freq);
+						printf("Tap characteristic : Gamma = %e, f = %e and A = %e\n",Gamma,Freq,Gamma*9.81/(4*M_PI*M_PI*Freq*Freq));
+						i+=2;
+						mode = 5;
 					}
 					break;
 				case 'N':

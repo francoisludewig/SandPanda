@@ -57,6 +57,9 @@ void ElongationManager::writeToFile(FILE *ft) const noexcept {
 
 void ElongationManager::readFromFile(FILE *ft) noexcept {
     fscanf(ft, "%d\n", &tp_count);
-    for(int i = 0 ; i < tp_count ; i++)
+    printf("%d\n",tp_count);
+    for(int i = 0 ; i < tp_count ; i++) {
         fscanf(ft,"%lu\t%d\t%lf\t%lf\t%lf\n",&tp_id[i],&tp_xsi[i].status,&tp_xsi[i].x,&tp_xsi[i].y,&tp_xsi[i].z);
+        printf("%lu\t%d\t%.16e\t%.16e\t%.16e\n",tp_id[i], tp_xsi[i].status,tp_xsi[i].x,tp_xsi[i].y,tp_xsi[i].z);
+    }
 }

@@ -81,10 +81,14 @@ void Sphere::readStartStop(FILE *ft) noexcept {
 	fscanf(ft,"%lf\t%lf\t%lf\n",&vx,&vy,&vz);
 	fscanf(ft,"%lf\t%lf\t%lf\n",&wx,&wy,&wz);
 	fscanf(ft,"%lf\t%lf\t%lf\t%d\t%d\n",&r,&m,&I,&sp,&NhollowBall);
+	printf("\t%e\t%e\t%e\t%e\n",x, y, z,r);
+
 	if(bodies == -9){
 		rho = m/(4./3.*M_PI*r*r*r);
 	}
-	
+
+	if (r != 0.0025)
+		printf("Stop !");
 	elongationManager.readFromFile(ft);
     r0 = r;
 }

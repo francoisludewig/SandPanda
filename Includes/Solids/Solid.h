@@ -39,9 +39,10 @@ public:
 	void UpDateGravityLinkedSphere(std::vector<Sphere> & sph, const Gravity& gt) const noexcept;
 	[[nodiscard]] double V_Max() const noexcept;
 	[[nodiscard]] double W_Max() const noexcept;
-	double Delay() const noexcept;
+	[[nodiscard]] double Delay() const noexcept;
 	void TimeStepInitialization() noexcept;
 	void OnOffGravity(bool OnOff) noexcept;
+	void OnOffNoResponse(bool OnOff) noexcept;
 	void SetVelocityToZero() noexcept;
 	void SetMemoryPosition() noexcept;
 	void GetMemoryPosition() noexcept;
@@ -85,12 +86,12 @@ protected:
 	double Fcx,Fcy,Fcz;
 	double Mcx,Mcy,Mcz;
 	double Mass,In,It,Is;
-	int Force,activeGravity;
+	int Force,activeGravity, noResponse{false};
 	Velocity V;
 	// List of grain boder
 	int *num;
 	double *GBx,*GBy,*GBz;
-	double R[3][3];
+	double R[3][3]{};
 	double xMemory,yMemory,zMemory;
 	int ControlGB;
 	class Cell **vcell;
