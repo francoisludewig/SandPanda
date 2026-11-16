@@ -1,361 +1,236 @@
-#include "../Includes/Velocity.h"
-#include "../Includes/Gravity.h"
-#include "../Includes/Plan.h"
-#include "../Includes/PlanR.h"
-#include "../Includes/Cone.h"
-#include "../Includes/Elbow.h"
-#include "../Includes/Sphere.h"
-#include "../Includes/Body.h"
-#include "../Includes/ReadWrite.h"
-#include "../Includes/Data.h"
-#include "../Includes/Evolution.h"
-#include "../Includes/Compaction.h"
-#include "../Includes/PowderPaQ.h"
-#include "../Includes/Option.h"
-#include "../Includes/Monitoring.h"
-#include <iostream>
+#include "../Includes/Solids/Velocity.h"
+#include "../Includes/Solids/Plan.h"
+#include "../Includes/Solids/Cone.h"
+#include "../Includes/Solids/Sphere.h"
+#include "../Includes/Solids/Body.h"
+#include "../Includes/ComputingForce.h"
+#include "../Includes/Configuration/Configuration.h"
+#include "../Includes/Dynamic/Evolution.h"
+#include "../Includes/Dynamic/Compaction.h"
+#include "../Includes/Dynamic/PowderPaQ.h"
+#include "../Includes/Solids/HollowBall.h"
+#include "../Includes/Repository/SimulationData.h"
+#include "../Includes/Repository/SimulationDataManager.h"
+#include "../Includes/Configuration/Option.h"
+#include "../Includes/Configuration/Monitoring.h"
 #include <vector>
-#include <filesystem>
+#include <memory>
+#include <chrono>
 
 using namespace std;
 
-void CancelVelocity(vector<Sphere> & sph, int & Nsph, vector<Body> & bd, int Nbd){
-	for(int i = 0 ;  i < Nsph ; i++){
-		sph[i].CancelVelocity();
-	}
-	for(int i = 0 ;  i < Nbd ; i++){
-		bd[i].CancelVelocity();
-	}
+class TimeDurationMeasure {
+public:
+    const uint64_t nanoInMinute = 60L * 1000000000L;
+    const uint64_t nanoInSecond = 1000000000L;
+
+    TimeDurationMeasure() = default;
+
+    ~TimeDurationMeasure() = default;
+
+    void Start() { t1 = std::chrono::high_resolution_clock::now(); }
+
+    void Stop() {
+        std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
+        delay = std::chrono::duration_cast<std::chrono::nanoseconds>(t2 - t1).count();
+    }
+
+    [[nodiscard]] std::string Nanosecond() const { return std::to_string(delay); }
+
+    [[nodiscard]] std::string Minutes() const {
+        return std::to_string(delay / nanoInMinute) + "m" + std::to_string((delay % nanoInMinute) / nanoInSecond) + "s"
+               + std::to_string(delay % nanoInSecond) + "ns";
+    }
+
+private:
+    std::chrono::high_resolution_clock::time_point t1;
+    uint64_t delay{0};
+};
+
+void CancelVelocity(vector<Sphere> &sph, vector<Body> &bd) {
+    for (auto &sphere: sph)
+        sphere.CancelVelocity();
+
+    for (auto &body: bd)
+        body.CancelVelocity();
 }
 
-void RandomVelocity(vector<Sphere> & sph, int & Nsph, vector<Body> & bd, int Nbd, double V, double W){
-	for(int i = 0 ;  i < Nsph ; i++){
-		sph[i].RandomVelocity(V,W);
-	}
-	for(int i = 0 ;  i < Nbd ; i++){
-		bd[i].RandomVelocity(V,W);
-	}
+void RandomVelocity(vector<Sphere> &sph, vector<Body> &bd, double V, double W) {
+    for (auto &sphere: sph)
+        sphere.RandomVelocity(V, W);
+
+    for (auto &body: bd)
+        body.RandomVelocity(V, W);
 }
 
-void FreezeRotation(vector<Body> & bd, int Nbd){
-	for(int i = 0 ;  i < Nbd ; i++){
-		bd[i].SetActiveRotation(1);
-	}
+void FreezeRotation(vector<Body> &bd) {
+    for (auto &body: bd)
+        body.SetActiveRotation(1);
 }
 
-/*
-void deborde(){
-	printf("Lack of Memory\n");
-	printf("Simulation is stopped\n");
-	exit(-1);
+void deborde() {
+    printf("Memory Lacking\n");
+    printf("Simulation is stopped\n");
+    exit(-1);
 }
-*/
 
-int main(int argc,char **argv){
-	int Ntp;
-	int Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nct = 0,Ncta = 0,Nctb = 0,Nctc = 0,Nbdsp,Nhb;
-	//double dila = 0;
-	bool record = true;
-	int Nthreshold = 0;
-    clock_t start = clock();
-	vector<Plan> pl;
-	vector<PlanR> plr;
-	vector<Cone> co;
-	vector<Elbow> elb;
-	vector<Sphere> sph;
-	vector<BodySpecie> bdsp;
-	vector<Body> bd;
-	vector<HollowBall> hb;
-	Option opt;
-	
-	Contact *ct = nullptr,*cta = nullptr,*ctb = nullptr,*ctc = nullptr;
-	Data dat;
-	Gravity gf;
-	
-	printf("\n");
-	
-	if(opt.Management(argv,argc) == 0)
-		return 0;
-	
-	if(opt.DirectoryManagement() == 0)
-		return 0;
-	
-	opt.Record();
-	
-	if(opt.restart == 0){
-		// Loading file from Export directory
-		ReadWrite::readOutContainer(opt.directory,Npl,Nplr,Nco,Nelb,pl,plr,co,elb);
-		ReadWrite::readOutSphere(opt.directory,Nsph,sph,opt.limitNg);
-		ReadWrite::readOutBodies(opt.directory,Nbd,bd,opt.limitNbd);
-		
-		Nsph0 = Nsph;
-		ReadWrite::readOutBodySpecie(opt.directory,Nbdsp,bdsp);
-		for(int i = 0 ; i < Nbd ; i++){
-			bd[i].UploadSpecies(Nbdsp,bdsp,sph,Nsph,i);
-		}
-		ReadWrite::readOutData(opt.directory, &gf, &dat);
-		ReadWrite::readOutHollowBall(opt.directory, Nhb, hb);
-	}
-	else{
-		// Loading file from Export directory
-		ReadWrite::readStart_stopContainer(opt.directory,Npl,Nplr,Nco,Nelb,pl,plr,co,elb);
-		ReadWrite::readStart_stopSphere(opt.directory,Nsph,sph,opt.limitNg);
-		ReadWrite::readStart_stopBodies(opt.directory,Nbd,bd,opt.limitNbd);
-		Nsph0 = Nsph;
-		ReadWrite::readOutBodySpecie(opt.directory,Nbdsp,bdsp);
-		for(int i = 0 ; i < Nbd ; i++){
-			bd[i].UploadSpecies(Nbdsp,bdsp,sph,Nsph,i);
-		}
-		ReadWrite::readStartStopData(opt.directory, &gf, &dat);
-		ReadWrite::readStart_stopHollowBall(opt.directory, Nhb, hb);
-	}
-	
-	opt.InData(dat, gf, pl, plr, co);
-	
-	// Calcul du rayon maximum dans Data
-	if(Nsph != 0)
-		dat.ComputeRmax(sph,Nsph);
-	
-	/*
+
+int main(int argc, char **argv) {
+    TimeDurationMeasure tm;
+    tm.Start();
+    int Ntp;
+    double dila = 0;
+
+    Option opt;
+
+    printf("\n");
+
+    if (opt.Management(argv, argc) == 0)
+        return 0;
+
+    if (opt.DirectoryManagement() == 0)
+        return 0;
+
+    opt.Record();
+
+
+    std::shared_ptr<SimulationData> solids;
+
+    if (opt.restart == 0)
+        solids = SimulationDataManager::FromExport(opt);
+    else
+        solids = SimulationDataManager::FromStart_Stop(opt);
+
+    opt.InData(solids->configuration, solids->gravity, solids->plans, solids->disks, solids->cones);
+
+    // Calcul du rayon maximum dans Data
+    if (!solids->spheres.empty())
+        solids->configuration.ComputeRmax(solids->spheres);
+
     // Calcul des cellules liees en fonction de dila et de Rmax dans Data
-	if(dila != 0)
-		dat.ComputeLinkedCell();
-	*/
+    if (dila != 0)
+        solids->configuration.ComputeLinkedCell();
 
-	// Annulation des vitesses
-	if(opt.cancelVel == 1){
-		CancelVelocity(sph,Nsph,bd,Nbd);
-	}
-	// Generation de vitesse aleatoire
-	if(opt.RdmVel == 1){
-		RandomVelocity(sph,Nsph,bd,Nbd,opt.Vrdm,opt.Wrdm);
-		
-	}
-	// Gel des rotations
-	if(opt.NoRotation == 1){
-		FreezeRotation(bd,Nbd);
-	}
-	
-	// Lien entre les spheres et les solides
-	Sphere::sphereLinking(Nsph, sph,  bd);
-	
-	for(int i = 0 ; i < Nco ; i++){
-		co[i].LimitLink(plr);
-	}
-	// Lien entre les spheres et la hollowball dans laquelle elles sont
-	for(int i = 0 ; i < Nhb ; i++){
-		hb[i].Makeavatar(sph,Nsph,i);
-	}
-	for(int i = 0 ; i < Nhb ; i++){
-		hb[i].LinkInSph(sph,Nsph,i);
-	}
-	
-	for(int i = 0 ; i < Npl ; i++){
-		pl[i].InitList(Nsph);
-	}
-	
-	printf("Nsph0 = %d & Nsph = %d\n",Nsph0,Nsph);
-	
-	printf("NctMax = %d\n",18*Nsph+75*Nbd);
-	// Dynamical allocation
-	switch(opt.parallel){
-		case 0:
-			ct  = new Contact[18*Nsph+75*Nbd];
-			cta = nullptr;
-			ctb = nullptr;
-			ctc = nullptr;
-			break;
-		case 1:
-			switch(opt.Nprocess){
-				case 2:
-					ct  = new Contact[18*Nsph];
-					cta = new Contact[9*Nsph];
-					ctb = nullptr;
-					ctc = nullptr;
-					break;
-				case 4:
-					ct  = new Contact[20*Nsph];
-					cta = new Contact[5*Nsph];
-					ctb = new Contact[5*Nsph];
-					ctc = new Contact[5*Nsph];
-					break;
-				default:
-					opt.Nprocess = 2;
-					printf("Nprocess must be 2 or 4\nThe value used in this simulation will be 2\n");
-					ct  = new Contact[18*Nsph];
-					cta = new Contact[9*Nsph];
-					ctb = nullptr;
-					ctc = nullptr;
-					opt.Nprocess = 2;
-					break;
-			}
-			break;
-	}
-	
-	int Ncell = dat.Nx*dat.Ny*dat.Nz;
-	dat.Ncellmax = Ncell;
-	printf("Ncell = %d\n",Ncell);
-    // TODO Remettre dans la stack au lieu du heap pour gagner en performance !!!
-    Sphere **cell = (Sphere**)malloc(sizeof(Sphere*)*Ncell);
-	//Sphere *cell[Ncell];
-	
-	
-	printf("List of Linking Cell for Solid\n");
-	printf("------------------------------\n\n");
-    fflush(stdout);
-	// Making list of linking cell for each solid
-	ContactDetection::listCellForPlan(&dat, pl, Npl, gf);
-	ContactDetection::listCellForPlanR(&dat, plr, Nplr, gf);
-	ContactDetection::listCellForCone(&dat, co, Nco, gf);
-	ContactDetection::listCellForElbow(&dat, elb, Nelb);
-	printf("\n");
-	// Control taille de la memoire demandee
-	printf("Etat de la memoire\n");
-	printf("------------------\n\n");
-	int All = 0;
-	All += Nsph*static_cast<int>(sizeof(Sphere));
-	All += Nbdsp*static_cast<int>(sizeof(BodySpecie));
-	All += Nbd*static_cast<int>(sizeof(Body));
-	All += Npl*static_cast<int>(sizeof(Plan));
-	All += Nplr*static_cast<int>(sizeof(PlanR));
-	All += Nco*static_cast<int>(sizeof(Cone));
-	All += Nelb*static_cast<int>(sizeof(Elbow));
-	All += Nhb*static_cast<int>(sizeof(HollowBall));
-	All += (18*Nsph+75*Nbd)*static_cast<int>(sizeof(Contact));
-	All += static_cast<int>(sizeof(cell));
-	All += static_cast<int>(sizeof(dat));
-	All += static_cast<int>(sizeof(Gravity));
-	
-	printf("Le programme a alloue %f ko\n",All/1000.);
-	printf("Le programme a alloue %f Mo\n",All/1000./1000.);
-	
-	if(dat.TIME != 0)
-		Ntp = (int)((dat.TIME-dat.t0)/(dat.dts))+1;
-	else
-		Ntp = 0;
+    // Annulation des vitesses
+    if (opt.cancelVel == 1)
+        CancelVelocity(solids->spheres, solids->bodies);
+    // Generation de vitesse aleatoire
+    if (opt.RdmVel == 1)
+        RandomVelocity(solids->spheres, solids->bodies, opt.Vrdm, opt.Wrdm);
+
+    // Gel des rotations
+    if (opt.NoRotation == 1)
+        FreezeRotation(solids->bodies);
+
+    // Lien entre les spheres et les solides
+    Sphere::sphereLinking(solids->spheres, solids->bodies);
 
 
-	if(opt.mode == 0){
-		if(Ntp == 0 && dat.t0 <= dat.TIME){
-			ReadWrite::writeStartStopContainer(opt.directory,Npl,Nplr,Nco,Nelb,pl,plr,co,elb);
-			ReadWrite::writeStartStopSphere(opt.directory,Nsph,sph);
-			ReadWrite::writeStartStopBodies(opt.directory,Nbd,bd,sph);
-			ReadWrite::writeStartStopData(opt.directory, &gf, &dat);
-			ReadWrite::writeStartStopHollowBall(opt.directory, Nhb, hb);
-			
-			ReadWrite::writeOutContainer(opt.directory,Ntp,Npl,Nplr,Nco,Nelb,pl,plr,co,elb,dat.outMode);
-			ReadWrite::writeOutSphere(opt.directory,Ntp,Nsph0,sph,dat.outMode);
-			ReadWrite::writeOutBodies(opt.directory,Ntp,Nbd,bd,dat.outMode);
-			ReadWrite::writeOutData(opt.directory, Ntp, &gf, &dat);
-			ReadWrite::writeOutHollowBall(opt.directory, Ntp, Nhb, hb);
-			Ntp++;
-		}
-	}
-	
-	if(opt.mode == 1 || opt.mode == 2){
-		if(opt.NtapMin == 1){
-			ReadWrite::writeStartStopContainer(opt.directory,Npl,Nplr,Nco,Nelb,pl,plr,co,elb);
-			ReadWrite::writeStartStopSphere(opt.directory,Nsph,sph);
-			ReadWrite::writeStartStopBodies(opt.directory,Nbd,bd,sph);
-			ReadWrite::writeStartStopData(opt.directory, &gf, &dat);
-			ReadWrite::writeStartStopHollowBall(opt.directory, Nhb, hb);
-			
-			ReadWrite::writeOutContainer(opt.directory,Ntp,Npl,Nplr,Nco,Nelb,pl,plr,co,elb,dat.outMode);
-			ReadWrite::writeOutSphere(opt.directory,Ntp,Nsph0,sph,dat.outMode);
-			ReadWrite::writeOutBodies(opt.directory,Ntp,Nbd,bd,dat.outMode);
-			ReadWrite::writeOutHollowBall(opt.directory, Ntp, Nhb, hb);
-			ReadWrite::writeOutData(opt.directory, Ntp, &gf, &dat);
-			Ntp++;
-		}
-	}
-	printf("Time Path = %e\n\n",dat.dt);
-	if(opt.isMonitoringActivated) {
-		auto name = std::string(opt.processName);
-		Monitoring::getInstance().initialize(name);
-	}
+    for (auto &cone: solids->cones)
+        cone.LimitLink(solids->disks);
 
-	switch(opt.mode){
-		case 0:
-			if(opt.parallel == 1)
-				Ntp = Evolution::EvolveOMP(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,Ncta,Nctb,Nctc,pl,plr,co,elb,sph,bd,hb,ct,cta,ctb,ctc,dat,gf,cell,Ntp, opt.directory,record,Nthreshold, opt.isMonitoringActivated);
-			else
-				Ntp = Evolution::Evolve(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,               pl,plr,co,elb,sph,bd,hb,ct,            dat,gf,cell,Ntp, opt.directory,record,Nthreshold, opt.isMonitoringActivated);
-			break;
-		case 1:
-            dat.Total = dat.TIME;
-			if(opt.parallel == 0)
-				Ntp = Compaction::Run(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct               ,pl,plr,co,elb,sph,bd,hb,ct            ,dat,gf,cell,Ntp, opt.directory,record,opt.NtapMin,opt.NtapMax,opt.Gamma,opt.Freq,Nthreshold, opt.isMonitoringActivated);
-			else
-				Ntp = Compaction::RunOMP(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,Ncta,Nctb,Nctc,pl,plr,co,elb,sph,bd,hb,ct,cta,ctb,ctc,dat,gf,cell,Ntp, opt.directory,record,opt.NtapMin,opt.NtapMax,opt.Gamma,opt.Freq,Nthreshold, opt.isMonitoringActivated);
-			
-			break;
-		case 2:
-			dat.Total = dat.TIME;
-			if(opt.parallel == 0)
-				Ntp = PowderPaQ::PowderPaQRun(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct               ,pl,plr,co,elb,sph,bd,hb,ct            ,dat,gf,cell,Ntp, opt.directory,record,opt.NtapMin,opt.NtapMax,Nthreshold,opt.PQheight,opt.PQVel);
-			else
-				Ntp = PowderPaQ::PowderPaQOMP(Npl,Nplr,Nco,Nelb,Nsph,Nsph0,Nbd,Nhb,Nct,Ncta,Nctb,Nctc,pl,plr,co,elb,sph,bd,hb,ct,cta,ctb,ctc,dat,gf,cell,Ntp, opt.directory,record,opt.NtapMin,opt.NtapMax,Nthreshold,opt.PQheight,opt.PQVel);
-			break;
-	}
-	
-	// Free of dynamical table
-	delete [] ct;
-	// OMP Vestion
-	if(opt.parallel == 1){
-		if(opt.Nprocess == 2)
-			delete [] cta;
-		else{
-			delete [] ctb;
-			delete [] ctc;
-		}
+    // Lien entre les spheres et la hollowball dans laquelle elles sont
+    for (int i = 0; i < solids->hollowBalls.size(); ++i)
+        solids->hollowBalls[i].Makeavatar(solids->spheres, i);
 
-	}
+    for (int i = 0; i < solids->hollowBalls.size(); ++i)
+        solids->hollowBalls[i].LinkInSph(solids->spheres, i);
 
-    free(cell);
 
-	// Liberation manuelle de tableau
-	for(int i = 0 ; i < Nsph ; i++){
-		sph[i].SphDealloc();
-	}
-	
-	
-	for(int i = 0 ; i < Nbdsp ; i++){
-		bdsp[i].FreeMemory();
-	}
-	
-	pl.clear();
-	plr.clear();
-	co.clear();
-	elb.clear();
-	sph.clear();
-	bd.clear();
-	bdsp.clear();
-	hb.clear();
-	
-	if(opt.compression == 1){
-		char commande[1024];
-        //TODO Use a library for archive in all operating systems
-		sprintf(commande,"tar -zcvmf %s/Out.tgz %s/Out",opt.directory,opt.directory);
-		system(commande);
-		sprintf(commande,"tar -zcvmf %s/Start_stop.tgz %s/Start_stop",opt.directory,opt.directory);
-		system(commande);
-		sprintf(commande,"tar -zcvmf %s/Export.tgz %s/Export",opt.directory,opt.directory);
-		system(commande);
+    for (auto &plan: solids->plans)
+        plan.InitList(static_cast<int>(solids->spheres.size()));
 
-        char directory[2048];
-        sprintf(directory,"%s/Export", opt.directory);
-        std::filesystem::remove_all(directory);
 
-        sprintf(directory,"%s/Start_stop", opt.directory);
-        std::filesystem::remove_all(directory);
+    int Ncell = solids->configuration.Nx * solids->configuration.Ny * solids->configuration.Nz;
+    solids->configuration.Ncellmax = Ncell;
+    printf("Ncell = %d\n", Ncell);
+    std::vector<Sphere *> cell(Ncell, nullptr);
 
-        sprintf(directory,"%s/Out", opt.directory);
-        std::filesystem::remove_all(directory);
-		//sprintf(commande,"rm -rf %s/Out %s/Start_stop %s/Export",opt.directory,opt.directory,opt.directory);
-		//system(commande);
-	}
-    clock_t stop = clock();
-    double elapsed = (double) (stop - start) / CLOCKS_PER_SEC;
-    printf("\nTime elapsed: %.5f\n", elapsed);
-	return 0;
+    solids->configuration.record = true;
+
+    if (solids->configuration.TIME != 0)
+        Ntp = static_cast<int>((solids->configuration.TIME - solids->configuration.t0) / (solids->configuration.dts)) +
+              1;
+    else
+        Ntp = 0;
+
+    if (opt.mode == 0) {
+        if (Ntp == 0 && solids->configuration.t0 <= solids->configuration.TIME) {
+            SimulationDataManager::WriteStart_Stop(opt, solids, Ntp);
+            Ntp++;
+        }
+    }
+    if (opt.mode == 5) {
+        SimulationDataManager::WriteStart_Stop(opt, solids, Ntp);
+        Ntp++;
+    }
+
+    if (opt.mode == 1 || opt.mode == 2) {
+        if (opt.NtapMin == 1) {
+            SimulationDataManager::WriteStart_Stop(opt, solids, Ntp);
+            Ntp++;
+        }
+    }
+
+    if (opt.isMonitoringActivated) {
+        auto name = std::string(opt.processName);
+        auto path = std::string(opt.scriptPath);
+        Monitoring::getInstance().initialize(name, path);
+    }
+    printf("Time Path = %e\n\n", solids->configuration.dt);
+
+
+    CellBounds cellBounds(0, 0, 0, solids->configuration.Nx, solids->configuration.Ny, solids->configuration.Nz, 0, 0,
+                          0, solids->configuration.Nx, solids->configuration.Ny, solids->configuration.Nz,
+                          solids->configuration.ax, solids->configuration.ay, solids->configuration.az,
+                          solids->configuration.x_min, solids->configuration.y_min, solids->configuration.z_min);
+
+    switch (opt.mode) {
+        case 0: {
+            Evolution evolution(solids, cellBounds, false);
+            Ntp = evolution.Evolve(cell, Ntp, opt.directory, opt.isMonitoringActivated);
+            break;
+        }
+        case 1:
+            if (opt.NtapMin == 1) {
+                solids->configuration.Total = 0.0;
+                solids->configuration.TIME = 0.0;
+            }
+            Ntp = Compaction::Run(solids, cell, Ntp, opt.directory, opt.NtapMin, opt.NtapMax, opt.Gamma, opt.Freq,
+                                  cellBounds, opt.isMonitoringActivated, true);
+            break;
+        case 2:
+            if (opt.NtapMin == 1) {
+                solids->configuration.Total = 0.0;
+                solids->configuration.TIME = 0.0;
+            }
+            solids->configuration.Total = 0.0;
+            Ntp = PowderPaQ::PowderPaQRun(solids, cell, Ntp, opt.directory, opt.NtapMin, opt.NtapMax, opt.PQheight,
+                                          opt.PQVel, cellBounds, opt.isMonitoringActivated);
+            break;
+        case 5:
+            Compaction::OneTap(solids, cell, Ntp, opt.directory, opt.Gamma, opt.Freq, cellBounds);
+            break;
+        default:
+            printf("Error mode selected doesn't exist.\n");
+    }
+
+    if (opt.compression == 1) {
+        char command[4096];
+        sprintf(command, "tar -zcvmf %s/Out.tgz %s/Out", opt.directory, opt.directory);
+        system(command);
+        sprintf(command, "tar -zcvmf %s/Start_stop.tgz %s/Start_stop", opt.directory, opt.directory);
+        system(command);
+        sprintf(command, "tar -zcvmf %s/Export.tgz %s/Export", opt.directory, opt.directory);
+        system(command);
+        sprintf(command, "rm -rf %s/Out %s/Start_stop %s/Export", opt.directory, opt.directory, opt.directory);
+        system(command);
+    }
+
+    tm.Stop();
+
+    printf("Time: %s ns\n", tm.Minutes().c_str());
+    printf("Time: %s ns\n", tm.Nanosecond().c_str());
+
+    return 0;
 }

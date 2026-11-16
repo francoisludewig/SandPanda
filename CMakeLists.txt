@@ -1,89 +1,147 @@
-cmake_minimum_required(VERSION 3.6)
+cmake_minimum_required(VERSION 3.5.0)
 
-project(SandPanda VERSION 1.0.0)
+project(SandPanda VERSION 1.1.0)
 
 set(SOURCES_FILES
- #Sources/AffinityCache.cpp
- Sources/HollowBall.cpp
- Sources/Body.cpp
- Sources/MasterSolid.cpp
- Sources/BodySpecie.cpp		
- Sources/Move.cpp
- Sources/Option.cpp
- Sources/Compaction.cpp		
- Sources/Periodicity.cpp
- Sources/ComputingForce.cpp	
- Sources/Plan.cpp
- Sources/Cone.cpp		
- Sources/PlanR.cpp
- Sources/Contact.cpp		
- Sources/PowderPaQ.cpp
- Sources/ContactDetection.cpp	
- Sources/ReadWrite.cpp
- Sources/Data.cpp
- Sources/Elbow.cpp		
- Sources/Solid.cpp
- Sources/Elongation.cpp		
- Sources/Sphere.cpp
- Sources/Evolution.cpp
- Sources/Gravity.cpp	
- Sources/Velocity.cpp	
- Sources/Sinusoid.cpp	
- Sources/main.cpp
-        Sources/Monitoring.cpp
+        Sources/Contact/ContactDetection.cpp
+        Sources/Contact/Contact.cpp
+        Sources/Contact/ContactDetectorSphereVersusCone.cpp
+        Sources/Contact/ContactDetectorSphereVersusDisk.cpp
+        Sources/Contact/ContactDetectorBodyVersusBody.cpp
+        Sources/Contact/ContactDetectorSphereVersusElbow.cpp
+        Sources/Contact/ContactDetectorBodyVersusCone.cpp
+        Sources/Contact/ContactDetectorSphereVersusPlan.cpp
+        Sources/Contact/ContactDetectorBodyVersusDisk.cpp
+        Sources/Contact/ContactDetectorSphereVersusSphere.cpp
+        Sources/Contact/ContactDetectorBodyVersusPlan.cpp
+        Sources/Contact/ContactDetectorBodyVersusElbow.cpp
+        Sources/Contact/ContactDetectorSphereVersusBody.cpp
+
+
+        Sources/Elongations/Elongation.cpp
+
+
+        Sources/Solids/HollowBall.cpp
+        Sources/Solids/Body.cpp
+        Sources/Solids/MasterSolid.cpp
+        Sources/Solids/BodySpecie.cpp
+        Sources/Solids/Plan.cpp
+        Sources/Solids/Cone.cpp
+        Sources/Solids/PlanR.cpp
+        Sources/Solids/Elbow.cpp
+        Sources/Solids/Solid.cpp
+        Sources/Solids/Sphere.cpp
+        Sources/Solids/Velocity.cpp
+        Sources/Solids/Sinusoid.cpp
+        Sources/LinkedCells/LinkedCellFiller.cpp
+        Sources/LinkedCells/SolidCellsBuilder.cpp
+
+        Sources/Dynamic/Move.cpp
+        Sources/Configuration/Option.cpp
+        Sources/Dynamic/Compaction.cpp
+        Sources/Dynamic/Periodicity.cpp
+        Sources/ComputingForce.cpp
+        Sources/Dynamic/PowderPaQ.cpp
+        Sources/Repository/ReadWrite.cpp
+        Sources/Configuration/Configuration.cpp
+        Sources/Configuration/Monitoring.cpp
+        Sources/Dynamic/Evolution.cpp
+        Sources/Configuration/Gravity.cpp
+        Sources/Repository/SimulationDataManager.cpp
+        Sources/main.cpp
+        Sources/Elongations/ElongationManager.cpp
+        Sources/Contact/ContactIdentifier.cpp
 )
 
 set(INCLUDES_FILES
- #Includes/AffinityCache.h
- Includes/HollowBall.h
- Includes/Body.h
- Includes/MasterSolid.h
- Includes/BodySpecie.h		
- Includes/Move.h
- Includes/Compaction.h		
- Includes/Option.h
- Includes/ComputingForce.h	
- Includes/Periodicity.h
- Includes/Cone.h			
- Includes/Plan.h
- Includes/Contact.h		
- Includes/PlanR.h
- Includes/ContactDetection.h	
- Includes/PowderPaQ.h
- Includes/Data.h			
- Includes/ReadWrite.h
- Includes/Elbow.h
- Includes/Elongation.h		
- Includes/Solid.h
- Includes/Evolution.h		
- Includes/Sphere.h		
- Includes/Gravity.h	
- Includes/Velocity.h
- Includes/Sinusoid.h
-        Includes/Monitoring.h
+        Includes/Contact/ContactDetection.h
+        Includes/Contact/Contact.h
+        Includes/Contact/ContactDetectorSphereVersusCone.h
+        Includes/Contact/ContactDetectorSphereVersusDisk.h
+        Includes/Contact/ContactDetectorBodyVersusBody.h
+        Includes/Contact/ContactDetectorSphereVersusElbow.h
+        Includes/Contact/ContactDetectorBodyVersusCone.h
+        Includes/Contact/ContactDetectorSphereVersusPlan.h
+        Includes/Contact/ContactDetectorBodyVersusDisk.h
+        Includes/Contact/ContactDetectorSphereVersusSphere.h
+        Includes/Contact/ContactDetectorBodyVersusPlan.h
+        Includes/Contact/ContactDetectorBodyVersusElbow.h
+        Includes/Contact/ContactDetectorSphereVersusBody.h
+
+        Includes/Elongations/Elongation.h
+        Includes/Elongations/ElongationManager.h
+
+        Includes/Solids/Body.h
+        Includes/Solids/MasterSolid.h
+        Includes/Solids/BodySpecie.h
+        Includes/Solids/Cone.h
+        Includes/Solids/Plan.h
+        Includes/Solids/PlanR.h
+        Includes/Solids/Elbow.h
+        Includes/Solids/Solid.h
+        Includes/Solids/Sphere.h
+        Includes/Solids/Velocity.h
+        Includes/Solids/Sinusoid.h
+        Includes/Solids/MechanicalPoint.h
+        Includes/Solids/HollowBall.h
+        Includes/Repository/SimulationData.h
+
+        Includes/LinkedCells/LinkedCellFiller.h
+        Includes/LinkedCells/SolidCellsBuilder.h
+
+        Includes/Dynamic/Move.h
+        Includes/Dynamic/Compaction.h
+        Includes/Configuration/Option.h
+        Includes/Configuration/Monitoring.h
+        Includes/ComputingForce.h
+        Includes/Dynamic/Periodicity.h
+        Includes/Dynamic/PowderPaQ.h
+        Includes/Configuration/Configuration.h
+        Includes/Repository/ReadWrite.h
+        Includes/Dynamic/Evolution.h
+        Includes/Configuration/Gravity.h
+        Includes/Repository/SimulationDataManager.h
+        Includes/Contact/ContactIdentifier.h
 )
 
 set(SandPanda_FILES
- ${INCLUDES_FILES}
- ${SOURCES_FILES}
+        ${INCLUDES_FILES}
+        ${SOURCES_FILES}
 )
 
-set (CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 20)
+
+find_package(OpenMP REQUIRED)
 
 add_executable(
- SandPanda
- ${SandPanda_FILES}
+        SandPanda
+        ${SandPanda_FILES}
 )
 
 target_link_libraries(
-SandPanda
-${GTEST_LIBRARIES}
+        SandPanda
+        ${GTEST_LIBRARIES}
+        ${OpenMP_}
 )
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set(CMAKE_CXX_FLAGS "-O0 -g")
-else()
-    set(CMAKE_CXX_FLAGS "-O3 -ftree-vectorize -fforward-propagate -m64")
-endif()
+
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(CMAKE_CXX_FLAGS "-O0 -g -pg -fno-omit-frame-pointer -DNOMP")
+elseif (CMAKE_BUILD_TYPE STREQUAL "Release")
+    set(CMAKE_CXX_FLAGS "-O3 -flto -march=native -DNOMP")
+else (CMAKE_BUILD_TYPE STREQUAL "OpenMP")
+    set(CMAKE_CXX_FLAGS "-O3 -flto -march=native")
+endif ()
+
+if (OPENMP_FOUND AND CMAKE_BUILD_TYPE STREQUAL "OpenMP")
+    message("OPENMP FOUND")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+endif ()
+
+install(TARGETS SandPanda
+        CONFIGURATIONS OpenMP
+        RUNTIME DESTINATION ~/.local/bin)
+
 
 enable_testing()
 

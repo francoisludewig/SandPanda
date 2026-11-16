@@ -1,0 +1,40 @@
+2c2
+< Directory : /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/IntegrationTests//Mix/Cone/New/
+---
+> Directory : /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/IntegrationTests//Mix/Cone/Original/
+6c6
+< FileName : /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/IntegrationTests//Mix/Cone/New/Export/container.txt
+---
+> FileName : /Users/ludewigfrancois/Documents/LuGaProjects/Meca2/Source/IntegrationTests//Mix/Cone/Original/Export/container.txt
+42a43,45
+> MasterSolid : 0 Plan
+> MasterSolid : 0 PlanR
+> MasterSolid : 0 Cone
+45a49,50
+> Nsph0 = 75 & Nsph = 150
+> NctMax = 8325
+47c52,53
+< Time Path = 1.012853e-06
+---
+> List of Linking Cell for Solid
+> ------------------------------
+51a58,65
+> 
+> Etat de la memoire
+> ------------------
+> 
+> Le programme a alloue 2612.728000 ko
+> Le programme a alloue 2.612728 Mo
+> Time Path = 1.012853e-06
+> 
+54,55c68,69
+<<<<<<< Updated upstream
+< Time: 2m50s357439511ns ns
+< Time: 170357439511 ns
+=======
+< Time: 2m39s619983045ns ns
+< Time: 159619983045 ns
+>>>>>>> Stashed changes
+---
+> Time: 2m47s306408065ns ns
+> Time: 167306408065 ns

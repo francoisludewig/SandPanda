@@ -3,7 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
-#include "Contact.h"
+#include "Contact/Contact.h"
 
 class Sphere;
 class Body;
@@ -11,17 +11,29 @@ class Plan;
 class PlanR;
 class Cone;
 class Elbow;
-class Data;
+class Configuration;
 
 class ComputeForce {
 public:
-	static void InitForTimeStep(const int & Nsph, const int & Nbd , const int & Nct ,int & Npl, int & Nplr, int & Nco, int & Nelb, std::vector<Sphere> & sph, std::vector<Body> & bd, Contact *ct, std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co, std::vector<Elbow> & elb) noexcept;
+	static void InitForTimeStep(const int & Nct, std::vector<Sphere> & sph, std::vector<Body> & bd, Contact *ct, std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co, std::vector<Elbow> & elb) noexcept;
 
 	static void InitForTimeStepOMP(const int & Nsph, const int & Nbd , const int & Nct , const int & Ncta , const int & Nctb , const int & Nctc ,int & Npl, int & Nplr, int & Nco, int & Nelb, std::vector<Sphere> & sph, std::vector<Body> & bd, Contact *ct, Contact *cta, Contact *ctb, Contact *ctc, std::vector<Plan> & pl, std::vector<PlanR> & plr, std::vector<Cone> & co, std::vector<Elbow> & elb) noexcept;
 
-	static void Compute(Contact *ct, const int Nct, Data & dat) noexcept;
+	static void Compute(Contact *ct, const int Nct,Configuration & dat) noexcept;
+
+	static void ComputeMutex(Contact *ct, const int Nct,Configuration & dat) noexcept;
+
+	static void SumForceAndMomentum(Contact *ct, const int Nct) noexcept;
+
 
 private:
+	static inline double DampingCoefficient(const double& en, const double& meff, const double& k) {
+		if(en != 0)
+			return sqrt(4*meff*k/(1+(M_PI/log(en))*(M_PI/log(en))));
+
+		return sqrt(4*meff*k);
+	}
+
 	/* Fonction qui calcul la force globale au contact */
 	static inline void ComputeContactForce(Contact *ctv, const double tx, const double ty, const double tz, const double T, const double N, double & Fx, double & Fy, double & Fz) noexcept {
 		if(T != 0){
@@ -44,19 +56,20 @@ private:
 			Fy += T*ty;
 			Fz += T*tz;
 		}
+		/*
 		// Ajout de la force et du moment
 		ctv->Fx = Fx;
 		ctv->Fy = Fy;
 		ctv->Fz = Fz;
+		*/
 	}
 	
 	/* Fonction qui calcul la vitesse de contact */
 	static inline void computeVelocity(const double Vax,const double Vay,const double Vaz,const double Vbx,const double Vby,const double Vbz, Contact *ctv,
 															double & Vn, double & Vt, double & Vtx, double & Vty, double & Vtz) noexcept {
-		double vx,vy,vz;
-		vx = Vax-Vbx;
-		vy = Vay-Vby;
-		vz = Vaz-Vbz;
+		const double vx = Vax - Vbx;
+		const double vy = Vay - Vby;
+		const double vz = Vaz - Vbz;
 		// Vn = produit scalaire de la vitesse relative et du vecteur normal au contact
 		Vn = vx*ctv->nx+ vy*ctv->ny+ vz*ctv->nz;
 		Vtx = vx - Vn*ctv->nx;

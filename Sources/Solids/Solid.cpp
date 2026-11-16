@@ -1,0 +1,507 @@
+#include "../../Includes/Solids/Solid.h"
+#include "../../Includes/Solids/Sphere.h"
+
+Solid::Solid() noexcept :
+	numero(0), Fcx(0), Fcy(0), Fcz(0),
+	Mcx(0), Mcy(0), Mcz(0), Mass(1), In(1), It(1), Is(1),
+	Force(0), activeGravity(false), V(), num(nullptr), GBx(nullptr),
+	GBy(nullptr), GBz(nullptr), xMemory(0), yMemory(0), zMemory(0),
+	ControlGB(1), vcell(nullptr), Ngb(0) {}
+
+Solid::~Solid() noexcept {
+	if(Ngb != 0){
+		delete [] num;
+		delete [] GBx;
+		delete [] GBy;
+		delete [] GBz;
+	}
+}
+
+Cell** Solid::getVcell() const noexcept {
+	return vcell;
+}
+
+void Solid::LoadFromFile(FILE *ft) noexcept {
+	fscanf(ft,"%lf\t%lf\t%lf",&x,&y,&z);
+	fscanf(ft,"%lf\t%lf\t%lf\t%lf",&q0,&q1,&q2,&q3);
+	ComputeBase();
+	V.LoadFromFile(ft);
+}
+
+void Solid::ComputeBase() noexcept {
+	QuaternionToBase();
+	// Elimination des erreurs
+	double max = fabs(nx);
+	if (max < fabs(ny))max = fabs(ny);
+	if (max < fabs(nz))max = fabs(nz);
+
+	if (fabs(nx) / max < pow(10., -15))nx = 0;
+	if (fabs(ny) / max < pow(10., -15))ny = 0;
+	if (fabs(nz) / max < pow(10., -15))nz = 0;
+
+	max = fabs(tx);
+	if (max < fabs(ty))max = fabs(ty);
+	if (max < fabs(tz))max = fabs(tz);
+
+	if (fabs(tx) / max < pow(10., -15))tx = 0;
+	if (fabs(ty) / max < pow(10., -15))ty = 0;
+	if (fabs(tz) / max < pow(10., -15))tz = 0;
+
+	max = fabs(sx);
+	if (max < fabs(sy))max = fabs(sy);
+	if (max < fabs(sz))max = fabs(sz);
+
+	if (fabs(sx) / max < pow(10., -15))sx = 0;
+	if (fabs(sy) / max < pow(10., -15))sy = 0;
+	if (fabs(sz) / max < pow(10., -15))sz = 0;
+}
+
+
+void Solid::LoadAccelerationFromFile(FILE *ft) noexcept {
+	fscanf(ft,"%lf\t%d",&Mass,&activeGravity);
+	if (Mass == 0) Mass = 1;
+	fscanf(ft,"%lf\t%lf\t%lf",&Fcx,&Fcy,&Fcz);
+	fscanf(ft,"%lf\t%lf\t%lf",&Mcx,&Mcy,&Mcz);
+	if(Fcx == 0 && Fcy == 0 && Fcz == 0 && Mcx == 0 && Mcy == 0 && Mcz == 0 && activeGravity == 0)
+			Force = 0;
+		else
+			Force = 1;
+}
+
+void Solid::WriteAccelerationFromFile(FILE *ft) const noexcept {
+	fprintf(ft,"%e\t%d\n",Mass,activeGravity);
+	fprintf(ft,"%e\t%e\t%e\n",Fcx,Fcy,Fcz);
+	fprintf(ft,"%e\t%e\t%e\n",Mcx,Mcy,Mcz);
+}
+
+void Solid::WriteToFile(FILE *ft) const noexcept {
+	fprintf(ft,"%e\t%e\t%e\n",x,y,z);
+	fprintf(ft,"%e\t%e\t%e\t%e\n",q0,q1,q2,q3);
+	V.WriteToFile(ft,0);
+}
+
+void Solid::WriteOutFile(FILE *ft, int mode) const noexcept {
+	if(mode == 0){
+		fprintf(ft,"%e\t%e\t%e\n",x,y,z);
+		fprintf(ft,"%e\t%e\t%e\t%e\n",q0,q1,q2,q3);
+	}
+	else{
+		fwrite(&x, sizeof(double), 1, ft);
+		fwrite(&y, sizeof(double), 1, ft);
+		fwrite(&z, sizeof(double), 1, ft);
+
+		fwrite(&nx, sizeof(double), 1, ft);
+		fwrite(&ny, sizeof(double), 1, ft);
+		fwrite(&nz, sizeof(double), 1, ft);
+
+		fwrite(&tx, sizeof(double), 1, ft);
+		fwrite(&ty, sizeof(double), 1, ft);
+		fwrite(&tz, sizeof(double), 1, ft);
+
+		fwrite(&sx, sizeof(double), 1, ft);
+		fwrite(&sy, sizeof(double), 1, ft);
+		fwrite(&sz, sizeof(double), 1, ft);
+	}
+	V.WriteToFile(ft,mode);
+}
+
+void Solid::Display() const noexcept {
+	printf("%e\t%e\t%e\n",x,y,z);
+	printf("%e\t%e\t%e\n",nx,ny,nz);
+	printf("%e\t%e\t%e\n",tx,ty,tz);
+	printf("%e\t%e\t%e\n",sx,sy,sz);
+	V.Display();
+}
+
+void Solid::UpdateGravityForceFromGB(const std::vector<Sphere> & sph, const Gravity &gt) noexcept {
+	if (activeGravity == 1) {
+		if (Ngb != 0) {
+			Fx = 0;
+			Fy = 0;
+			Fz = 0;
+			for (int i = 0; i < Ngb; i++) {
+				if (gt.ngx * gt.G != 0)
+					Fx += sph[num[i]].GetFx();
+				if (gt.ngy * gt.G != 0)
+					Fy += sph[num[i]].GetFy();
+				if (gt.ngz * gt.G != 0)
+				 Fz += sph[num[i]].GetFz();
+			}
+		}
+	}
+}
+
+void Solid::UpDateGravityVelocity(const double dt, const Gravity &gt) noexcept {
+	if (activeGravity == 1) {
+		if (gt.ngx * gt.G != 0)
+			vx += ((Fx) / Mass + gt.ngx * gt.G) * dt;
+		if (gt.ngy * gt.G != 0)
+			vy += ((Fy) / Mass + gt.ngy * gt.G) * dt;
+		if (gt.ngz * gt.G != 0)
+			vz += ((Fz) / Mass + gt.ngz * gt.G) * dt;
+	}
+}
+
+
+void Solid::UpDateVelocity(const double time, const double dt, const Gravity &gt) noexcept {
+
+	if (activeGravity == 1) {
+		if (!noResponse) {
+			if (Fcx != 0 || gt.ngx * gt.G != 0)
+				vx += ((Fcx + Fx) / Mass + gt.ngx * gt.G) * dt;
+			else
+				vx = V.ValueOfVx(time);
+			if (Fcy != 0 || gt.ngy * gt.G != 0)
+				vy += ((Fcy + Fy) / Mass + gt.ngy * gt.G) * dt;
+			else
+				vy = V.ValueOfVy(time);
+			if (Fcz != 0 || gt.ngz * gt.G != 0)
+				vz += ((Fcz + Fz) / Mass + gt.ngz * gt.G) * dt;
+			else
+				vz = V.ValueOfVz(time);
+		} else {
+			if (gt.ngx * gt.G != 0)
+				vx += (gt.ngx * gt.G) * dt;
+			else
+				vx = V.ValueOfVx(time);
+			if (gt.ngy * gt.G != 0)
+				vy += (gt.ngy * gt.G) * dt;
+			else
+				vy = V.ValueOfVy(time);
+			if (gt.ngz * gt.G != 0)
+				vz += (gt.ngz * gt.G) * dt;
+			else
+				vz = V.ValueOfVz(time);
+		}
+	} else {
+		if (Fcx != 0)
+			vx += (Fcx + Fx) / Mass * dt;
+		else
+			vx = V.ValueOfVx(time);
+		if (Fcy != 0)
+			vy += (Fcy + Fy) / Mass * dt;
+		else
+			vy = V.ValueOfVy(time);
+		if (Fcz != 0)
+			vz += (Fcz + Fz) / Mass * dt;
+		else
+			vz = V.ValueOfVz(time);
+	}
+
+	// Composantes de la force = somme contrainte + reaction
+	const double Mlx = Mcx+Mx;
+	const double Mly = Mcy+My;
+	const double Mlz = Mcz+Mz;
+	// Projection local
+	const double Mn = Mlx*nx+Mly*ny+Mlz*nz;
+	const double Mt = Mlx*tx+Mly*ty+Mlz*tz;
+	const double Ms = Mlx*sx+Mly*sy+Mlz*sz;
+	// Vitesse angulaire locale
+	const double wn = Mn/In*dt;
+	const double wt = Mt/It*dt;
+	const double ws = Ms/Is*dt;
+	// Incrementation dans la base globale
+	if (Mcx != 0)
+		wx += (wn * nx + wt * tx + ws * sx);
+	else
+		wx = V.ValueOfWx(time);
+	if (Mcy != 0)
+		wy += (wn * ny + wt * ty + ws * sy);
+	else
+		wy = V.ValueOfWy(time);
+
+	if (Mcz != 0)
+		wz += (wn * nz + wt * tz + ws * sz);
+	else
+		wz = V.ValueOfWz(time);
+}
+
+
+void Solid::UpdateForceFromGB(const std::vector<Sphere> & sph) noexcept {
+	if(Ngb != 0){
+		Fx = 0;
+		Fy = 0;
+		Fz = 0;
+		for(int i = 0 ; i < Ngb ; i++){
+			Fx += sph[num[i]].GetFx();
+			Fy += sph[num[i]].GetFy();
+			Fz += sph[num[i]].GetFz();
+		}
+	}
+}
+
+void Solid::MoveGravity(const double dt, const Gravity &gt) noexcept {
+	if (activeGravity == 1) {
+		// Translation
+		if (gt.ngx * gt.G != 0)
+			x += vx * dt;
+		if (gt.ngy * gt.G != 0)
+			y += vy * dt;
+		if (gt.ngz * gt.G != 0)
+			z += vz * dt;
+	}
+}
+
+void Solid::Move(const double dt) noexcept {
+	// Translation
+	x += vx*dt;
+	y += vy*dt;
+	z += vz*dt;
+	// Rotation
+	if(const double a = sqrt(wx * wx + wy * wy + wz * wz); a != 0){
+		const double sa = sin(a * dt / 2);
+		const double p0 = cos(a * dt / 2);
+		const double p1 = wx / a * sa;
+		const double p2 = wy / a * sa;
+		const double p3 = wz / a * sa;
+
+		const double ql0 = q0;
+		const double ql1 = q1;
+		const double ql2 = q2;
+		const double ql3 = q3;
+
+		q0 = ql0*p0 - ql1*p1 - ql2*p2 - ql3*p3;
+		q1 = ql0*p1 + ql1*p0 - ql2*p3 + ql3*p2;
+		q2 = ql0*p2 + ql1*p3 + ql2*p0 - ql3*p1;
+		q3 = ql0*p3 - ql1*p2 + ql2*p1 + ql3*p0;
+
+		ComputeBase();
+
+		const double lx = (x - V.ox);
+		const double ly = (y - V.oy);
+		const double lz = (z - V.oz);
+
+		x = ((1 - 2*p2*p2 - 2*p3*p3)*lx + (2*p1*p2 - 2*p3*p0)*ly     + (2*p1*p3 + 2*p2*p0)*lz)     + V.ox;
+		y = ((2*p1*p2 + 2*p3*p0)*lx     + (1 - 2*p1*p1 - 2*p3*p3)*ly + (2*p2*p3 - 2*p1*p0)*lz)     + V.oy;
+		z = ((2*p1*p3 - 2*p2*p0)*lx     + (2*p2*p3 + 2*p1*p0)*ly     + (1 - 2*p1*p1 - 2*p2*p2)*lz) + V.oz;
+	}
+}
+
+void Solid::UpDateGravityLinkedSphere(std::vector<Sphere> & sph, const Gravity& gt) const noexcept {
+	if (activeGravity == 1) {
+		for (int i = 0; i < Ngb; i++) {
+			if (gt.ngx * gt.G != 0)
+				sph[num[i]].X(x);
+			if (gt.ngy * gt.G != 0)
+				sph[num[i]].Y(y);
+			if (gt.ngz * gt.G != 0)
+				sph[num[i]].Z(z);
+		}
+	}
+}
+
+void Solid::UpDateLinkedSphere(std::vector<Sphere> & sph, const double time, const Gravity& gt) noexcept {
+	double opx,opy,opz;
+	// Prise de la vitesse imposee uniquement si aucune force est imposee
+	if(Fcx == 0 && gt.ngx*gt.G == 0)
+		vx = V.ValueOfVx(time);
+	if(Fcy == 0 && gt.ngy*gt.G == 0)
+		vy = V.ValueOfVy(time);
+	if(Fcz == 0 && gt.ngz*gt.G == 0)
+		vz = V.ValueOfVz(time);
+	if(Mcx == 0)
+		wx = V.ValueOfWx(time);
+	if(Mcy == 0)
+		wy = V.ValueOfWy(time);
+	if(Mcz == 0)
+		wz = V.ValueOfWz(time);
+
+	for(int i = 0 ; i < Ngb ; i++){
+		opx = GBx[i] - x;
+		opy = GBy[i] - y;
+		opz = GBz[i] - z;
+
+		sph[num[i]].Vx(vx + (wy*opz-wz*opy));
+		sph[num[i]].Vy(vy + (wz*opx-wx*opz));
+		sph[num[i]].Vz(vz + (wx*opy-wy*opx));
+
+		sph[num[i]].Wx(wx);
+		sph[num[i]].Wy(wy);
+		sph[num[i]].Wz(wz);
+		// Mise a jour des gB uniquement si autorise
+		if(ControlGB == 1){
+			sph[num[i]].X(x + GBx[i]*nx + GBy[i]*tx + GBz[i]*sx);
+			sph[num[i]].Y(y + GBx[i]*ny + GBy[i]*ty + GBz[i]*sy);
+			sph[num[i]].Z(z + GBx[i]*nz + GBy[i]*tz + GBz[i]*sz);
+		}
+	}
+}
+
+void Solid::SetControlGB(const int v, std::vector<Sphere> & sph) noexcept {
+	if(v == 0 || v == 1){
+		ControlGB = v;
+		if(ControlGB == 1){
+			for(int i = 0 ; i < Ngb ; i++)
+				sph[num[i]].DisableIntegration();// autoIntegrate = 0;
+				}
+		if(ControlGB == 0){
+			for(int i = 0 ; i < Ngb ; i++)
+				sph[num[i]].EnableIntegration();// autoIntegrate = 1;
+				}
+	}
+}
+
+void Solid::UpDateGravityVelocityLinkedSphere(std::vector<Sphere> & sph, const double time, const Gravity& gt) noexcept {
+	double opx,opy,opz;
+	if(activeGravity == 1){
+		if(gt.ngx*gt.G == 0)
+			vx = V.ValueOfVx(time);
+			if(gt.ngy*gt.G == 0)
+				vy = V.ValueOfVy(time);
+				if(gt.ngz*gt.G == 0)
+					vz = V.ValueOfVz(time);
+					}
+	for(int i = 0 ; i < Ngb ; i++){
+		opx = GBx[i] - x;
+		opy = GBy[i] - y;
+		opz = GBz[i] - z;
+
+		sph[num[i]].Vx(vx + (wy*opz-wz*opy));
+		sph[num[i]].Vy(vy + (wz*opx-wx*opz));
+		sph[num[i]].Vz(vz + (wx*opy-wy*opx));
+		sph[num[i]].Wx(wx);
+		sph[num[i]].Wy(wy);
+		sph[num[i]].Wz(wz);
+	}
+}
+
+
+void Solid::UpDateVelocityLinkedSphere(std::vector<Sphere> & sph, const double time) noexcept {
+	double opx,opy,opz;
+	if(Force == 0 && activeGravity == 0){
+		vx = V.ValueOfVx(time);
+		vy = V.ValueOfVy(time);
+		vz = V.ValueOfVz(time);
+		wx = V.ValueOfWx(time);
+		wy = V.ValueOfWy(time);
+		wz = V.ValueOfWz(time);
+	}
+	for(int i = 0 ; i < Ngb ; i++){
+		opx = GBx[i] - x;
+		opy = GBy[i] - y;
+		opz = GBz[i] - z;
+
+		sph[num[i]].Vx(vx + (wy*opz-wz*opy));
+		sph[num[i]].Vy(vy + (wz*opx-wx*opz));
+		sph[num[i]].Vz(vz + (wx*opy-wy*opx));
+
+		sph[num[i]].Wx(wx);
+		sph[num[i]].Wy(wy);
+		sph[num[i]].Wz(wz);
+	}
+}
+
+
+void Solid::OnOffGravity(const bool OnOff) noexcept {
+	if(OnOff){
+		activeGravity = 1;
+	}
+	else{
+		activeGravity = 0;
+		vx = 0;
+		vy = 0;
+		vz = 0;
+	}
+}
+
+void Solid::OnOffNoResponse(bool OnOff) noexcept {
+	if(OnOff){
+		noResponse = 1;
+	}
+	else {
+		noResponse = 0;
+	}
+}
+
+
+
+void Solid::SetVelocityToZero() noexcept {
+	vx = 0;
+	vy = 0;
+	vz = 0;
+	wx = 0;
+	wy = 0;
+	wz = 0;
+}
+
+double Solid::V_Max() const noexcept {
+	return(V.VMax());
+}
+
+double Solid::W_Max() const noexcept {
+	return(V.WMax());
+}
+
+double Solid::Delay() const noexcept {
+	return(V.Delay());
+}
+
+void Solid::SetVx(const double newA0, const double newA1, const double newW, const double newPhi) noexcept {
+	V.Set(Velocity::VelocityType::vx, newA0, newA1, newW, newPhi);
+}
+
+void Solid::SetWx(const double newA0, const double newA1, const double newW, const double newPhi) noexcept {
+	V.Set(Velocity::VelocityType::wx, newA0, newA1, newW, newPhi);
+}
+
+void Solid::SetVy(const double newA0, const double newA1, const double newW, const double newPhi) noexcept {
+	V.Set(Velocity::VelocityType::vy, newA0, newA1, newW, newPhi);
+}
+
+void Solid::SetWy(const double newA0, const double newA1, const double newW, const double newPhi) noexcept {
+	V.Set(Velocity::VelocityType::wy, newA0, newA1, newW, newPhi);
+}
+
+void Solid::SetVz(double newA0, double newA1, double newW, double newPhi) noexcept {
+	V.Set(Velocity::VelocityType::vz, newA0, newA1, newW, newPhi);
+}
+
+void Solid::SetWz(double newA0, double newA1, double newW, double newPhi) noexcept {
+	V.Set(Velocity::VelocityType::wz, newA0, newA1, newW, newPhi);
+}
+
+
+void Solid::TimeStepInitialization() noexcept {
+	Fx = 0.;
+	Fy = 0.;
+	Fz = 0.;
+	Mx = 0.;
+	My = 0.;
+	Mz = 0.;
+}
+
+void Solid::SetMemoryPosition() noexcept {
+	xMemory = x;
+	yMemory = y;
+	zMemory = z;
+}
+
+void Solid::GetMemoryPosition() noexcept {
+	x = xMemory;
+	y = yMemory;
+	z = zMemory;
+}
+
+void Solid::UpDateForce() noexcept {
+	if(Fcx == 0 && Fcy == 0 && Fcz == 0 && Mcx == 0 && Mcy == 0 && Mcz == 0 && activeGravity == 0)
+		Force = 0;
+	else
+		Force = 1;
+}
+
+void Solid::SetFcx(double fx) noexcept {
+	Fcx = fx;
+}
+
+void Solid::SetFcy(double fy) noexcept {
+	Fcy = fy;
+}
+
+void Solid::SetFcz(double fz) noexcept {
+	Fcz = fz;
+}
+
+double Solid::GetFcy() noexcept {
+	return Fcy;
+}
+
