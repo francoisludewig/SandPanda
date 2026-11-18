@@ -24,10 +24,8 @@ class Gravity;
 class Evolution{
 public:
 	Evolution(const std::shared_ptr<SimulationData>& solids,
-			  const CellBounds& cellBounds,
-			  const bool isMultiThreads) :
+			  const CellBounds& cellBounds) :
 		cellBounds(cellBounds),
-		isMultiThreads(isMultiThreads),
 		solids (solids){
 		ct = nullptr;
 		solidCells = SolidCellsBuilder::Build(solids->configuration, solids->plans, solids->disks, solids->cones, solids->elbows, solids->gravity, cellBounds);
@@ -46,6 +44,5 @@ private:
 	SolidCells solidCells;
 	CellBounds cellBounds;
     int Nct;
-    bool isMultiThreads;
     std::shared_ptr<SimulationData> solids;
 };

@@ -95,7 +95,7 @@ int Option::Management(char **argv, int argc) noexcept {
 					break;
 				case 'h':
 					if(!strcmp(argv[i], "-help")){
-						printf("SanPanda Version 5.1 c++\nOptions are :\n");
+						printf("SanPanda Version 5.2 c++\nOptions are :\n");
 						printf("\t-p or -parallel for parallel contact detection with OpenMP\n");
 						printf("\t-s or -sequential for sequential contact detection (default option)\n");
 						printf("\t-d or -directory to indicate the current directory of the simulation (default option is the current directory)\n");
@@ -119,7 +119,7 @@ int Option::Management(char **argv, int argc) noexcept {
 						return 0;
 					}
 					if(!strcmp(argv[i], "-h")){
-						printf("SanPanda Version 5.1 c++\nOptions are :\n");
+						printf("SanPanda Version 5.2 c++\nOptions are :\n");
 						printf("\t-p or -parallel for parallel contact detection with OpenMP\n");
 						printf("\t-s or -sequential for sequential contact detection (default option)\n");
 						printf("\t-d or -directory to indicate the current directory of the simulation (default option is the current directory)\n");
@@ -204,7 +204,7 @@ int Option::Management(char **argv, int argc) noexcept {
 						isMonitoringActivated = true;
 						sscanf(argv[i+1],"%31[^\n]", processName);
 						sscanf(argv[i+2],"%2047[^\n]", scriptPath);
-						i++;
+						i+=2;
 					}
 					if(!strcmp(argv[i], "-mu")){
 						sscanf(argv[i+1],"%lf",&tune_mu);

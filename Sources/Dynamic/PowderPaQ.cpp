@@ -74,7 +74,7 @@ void PowderPaQ::PowderPaQrelaxation(std::vector<Plan> & pl,std::vector<PlanR> & 
 
 int PowderPaQ::PowderPaQRun(std::shared_ptr<SimulationData>& solids, std::vector<Sphere*>& cell, int & Ntp, char *name, int ntpi, int ntpf, double PQheight, double PQVel, const CellBounds& cellBounds, bool
                             isMonitoringActivated) noexcept {
-	Evolution evolution(solids, cellBounds, false);
+	Evolution evolution(solids, cellBounds);
 	solids->configuration.record = 0;
 	for(int nt = ntpi  ; nt <= ntpf ; nt++){
 		//Secousse

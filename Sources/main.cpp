@@ -187,7 +187,7 @@ int main(int argc, char **argv) {
 
     switch (opt.mode) {
         case 0: {
-            Evolution evolution(solids, cellBounds, false);
+            Evolution evolution(solids, cellBounds);
             Ntp = evolution.Evolve(cell, Ntp, opt.directory, opt.isMonitoringActivated);
             break;
         }
@@ -197,7 +197,7 @@ int main(int argc, char **argv) {
                 solids->configuration.TIME = 0.0;
             }
             Ntp = Compaction::Run(solids, cell, Ntp, opt.directory, opt.NtapMin, opt.NtapMax, opt.Gamma, opt.Freq,
-                                  cellBounds, opt.isMonitoringActivated, true);
+                                  cellBounds, opt.isMonitoringActivated, false);
             break;
         case 2:
             if (opt.NtapMin == 1) {

@@ -121,8 +121,8 @@ void Compaction::Relaxation(std::vector<Plan> &pl, std::vector<PlanR> &plr, std:
 int Compaction::Run(std::shared_ptr<SimulationData> &solids, std::vector<Sphere *> &cell, int &Ntp, char *name,
                     int ntpi, int ntpf, double Gamma, double f, const CellBounds &cellBounds, bool
                     isMonitoringActivated, bool withoutConvection) noexcept {
-    Evolution evolution(solids, cellBounds, false);
-    solids->configuration.record = true;
+    Evolution evolution(solids, cellBounds);
+    solids->configuration.record = false;
     for (int nt = ntpi; nt <= ntpf; nt++) {
         if (!withoutConvection) {
             //Secousse
@@ -148,7 +148,6 @@ int Compaction::Run(std::shared_ptr<SimulationData> &solids, std::vector<Sphere 
             Ntp = evolution.Evolve(cell, Ntp, name, false);
         }
 
-        /*
         if(solids->configuration.record == 0){
             // Enregistrement
             ReadWrite::writeStartStopContainer(name,solids->plans,solids->disks,solids->cones,solids->elbows);
@@ -168,7 +167,6 @@ int Compaction::Run(std::shared_ptr<SimulationData> &solids, std::vector<Sphere 
                 Monitoring::getInstance().metrics(nt, ntpf);
             }
         }
-        */
     }
     return Ntp;
 }
@@ -179,7 +177,7 @@ int Compaction::OneTap(const std::shared_ptr<SimulationData> &solids, std::vecto
     solids->configuration.Total = 0.0;
     solids->configuration.t0 = 0.0;
     solids->configuration.record = true;
-    Evolution evolution(solids, cellBounds, false);
+    Evolution evolution(solids, cellBounds);
     //Secousse
     Secousse(solids->plans, solids->disks, solids->cones, Gamma, f, solids->configuration);
     printf("Total = %e\n", solids->configuration.Total);
